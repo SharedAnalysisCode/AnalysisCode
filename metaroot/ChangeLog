@@ -1,0 +1,33 @@
+2011.07.18  Alex Tuna <tuna@cern.ch>
+	* Added plot_graph_asymm_errors in plot.py
+M       plot.py
+	
+2011.07.01  Ryan Reece  <ryan.reece@cern.ch>
+    * globbing for * in HistGetter files
+M       file.py
+M       style.py
+
+2011.06.24 John Alison
+	* Adding range limits in stack_with_data_and_ratio
+	
+2010.09.01 Ryan Reece <ryan.reece@cern.ch>
+	* bugfix in Sample for __add__ operator
+	* tagging: MetaROOT-00-00-05
+
+2010.08.30 Ryan Reece <ryan.reece@cern.ch>
+	* added load function Sample class
+	* tagging: MetaROOT-00-00-04
+M      HistGetter.py
+
+2010.08.30 Ryan Reece <ryan.reece@cern.ch>
+	* added Sample class for histogram scaling
+	* tagging: MetaROOT-00-00-03
+M      HistGetter.py
+
+2010.08.17 Ryan Reece <ryan.reece@cern.ch>
+	* reverse order of drawing in pile_hists such that top plot in the legend
+	  is draw last.
+	* added ChangeLog
+M      HistFormatter.py
+A      ChangeLog
+

@@ -1,0 +1,37 @@
+#------------------- Makefile.tarball -----------------
+# Builds the input tarball for batch jobs. The makefile 
+# is called from the batch_merge.py script. 
+#=-----------------------------------------------------
+
+DFILES='*.d'
+SOFILES='*.so'
+PYCFILES='*.pyc'
+PCMFILES='*.pcm'
+
+TARBALL= histtarball.tar.gz #default value (typically 
+                          #overridden on command line)
+PYTHON =  $(wildcard pyframe/*.py) \
+          $(wildcard pyutils/*.py) \
+          $(wildcard metaroot/*.py) \
+          $(wildcard pyplot/*.py) \
+          $(wildcard ssdilep/*.py) \
+          $(wildcard */*/*.py)
+
+TARINPUTS = ssdilep \
+            metaroot \
+            pyframe \
+            pyplot \
+            pyutils \
+            $(wildcard *.sh)
+
+all: $(TARBALL)
+
+$(TARBALL): $(PYTHON)
+	tar czf $(TARBALL)  --exclude=$(DFILES) --exclude=$(SOFILES) --exclude=$(PYCFILES) --exclude=$(PCMFILES) $(TARINPUTS) 
+
+
+
+
+
+
+

@@ -1,0 +1,133 @@
+#!/usr/bin/env python                                                                                                                                                            
+# -*- coding: utf-8 -*-                                                                                                                                                          
+
+"""                                                                                                                                                                              
+algs.py                                                                                                                                                                          
+                                                                                                                                                                                 
+This module contains a set of analysis specific algs                                                                                                                             
+for calculating variables, applying selection and                                                                                                                                
+plotting.                                                                                                                                                                        
+"""
+
+## std modules                                                                                                                                                                   
+import itertools
+import os
+import math
+import ROOT
+
+## logging                                                                                                                                                                       
+import logging
+log = logging.getLogger(__name__)
+
+## python                                                                                                                                                                        
+from itertools import combinations
+from copy import copy
+
+## pyframe                                                                                                                                                                       
+import pyframe
+
+import mcutils
+
+GeV = 1000.0
+
+#------------------------------------------------------------------------------                                                                                                  
+class CutAlg(pyframe.core.Algorithm):
+    """                                                                                                                                                                          
+    Filtering alg for applying a single cut.  The predefined cuts must be                                                                                                        
+    implemeneted as a function with the prefix "cut_". One can then specify the                                                                                                  
+    cut to be applied by passing the cut=<cut name> in the constructor, which                                                                                                    
+    will execture the cut_<cut name>() function.                                                                                                                                 
+    """
+    #__________________________________________________________________________    
+    def __init__(self,
+                 name     = None,
+                 cut      = None,
+                 cutflow  = None,
+                 isfilter = True,
+                 ):
+        pyframe.core.Algorithm.__init__(self, name if name else cut,isfilter=isfilter)
+        self.cutflow = cutflow
+
+    #__________________________________________________________________________                                                                                                  
+    def execute(self, weight):
+        pyframe.core.Algorithm.execute(self, weight)
+
+        return self.apply_cut(self.name)
+
+    #__________________________________________________________________________                                                                                                  
+    def apply_cut(self,cutname):
+        if self.store.has_key(cutname): return self.store[cutname]
+        cut_function = 'cut_%s'%cutname
+        assert hasattr(self,cut_function),"cut %s doesnt exist!'"%(cutname)
+        self.store[cutname] = result = getattr(self,cut_function)()
+        return result
+
+    #__________________________________________________________________________   
+
+    def cut_AtLeastOneLooseElectrons(self):
+        return self.chain.nel > 0
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_AtLeastTwoLooseElectrons(self):
+      return self.chain.nel > 1
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_OneLooseElectron(self):
+        return self.chain.nel == 1
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_TwoLooseElectrons(self):
+        return self.chain.nel == 2
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_LeadElectronIsLoose(self):
+        cname = "LeadElectronIsLoose"
+        electrons  = self.store['electrons']
+        if electrons[0].tlv.Pt()>30*GeV and electrons[0].isLHLoose and electrons[0].tlv.Eta()<2.47 and not(1.37<electrons[0].tlv.Eta()<1.52) and electrons[0].trkd0sig<5 and electrons[0].trkz0sintheta<0.5 : return True;
+         
+        return False;    
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_SubLeadElectronIsLoose(self):
+        cname = "SubLeadElectronIsLoose"
+        electrons  = self.store['electrons']
+        if electrons[1].tlv.Pt()>30*GeV and electrons[1].isLHLoose and electrons[1].tlv.Eta()<2.47 and not(1.37<electrons[1].tlv.Eta()<1.52) and electrons[1].trkd0sig<5 and electrons[1].trkz0sintheta<0.5 : return True;
+        
+        return False;    
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_LeadElectronIsTight(self):
+        cname = "LeadElectronIsTight"
+        electrons  = self.store['electrons']
+        if electrons[0].tlv.Pt()>30*GeV and electrons[0].isLHMedium and electrons[0].tlv.Eta()<2.47 and not(1.37<electrons[0].tlv.Eta()<1.52) and electrons[0].trkd0sig<5 and electrons[0].trkz0sintheta<0.5 and electrons[0].isIsolated_Loose : return True;
+
+        return False;
+
+    #__________________________________________________________________________                                                                                                 
+                                                                                                                                                                               
+    def cut_SubLeadElectronIsTight(self):
+        cname = "SubLeadElectronIsTight"
+        electrons  = self.store['electrons']
+        if electrons[1].tlv.Pt()>30*GeV and electrons[1].isLHMedium and electrons[1].tlv.Eta()<2.47 and not(1.37<electrons[1].tlv.Eta()<1.52) and electrons[1].trkd0sig<5 and electrons[1].trkz0sintheta<0.5 and electrons[1].isIsolated_Loose : return True;
+
+        return False;
+
+    #__________________________________________________________________________                                                                                               
+    def cut_TwoOSElectrons(self):
+      electrons  = self.store['electrons']
+      if len(electrons)==2:
+        if electrons[0].trkcharge * electrons[1].trkcharge < 0.0:
+          return True
+      return False
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_TwoSSElectrons(self):
+      electrons  = self.store['electrons']
+      if len(electrons)==2:
+        if electrons[0].trkcharge * electrons[1].trkcharge > 0.0:
+          return True
+      return False
+
+    #__________________________________________________________________________                                                                                                  
+    def cut_PASS(self):
+      return True
