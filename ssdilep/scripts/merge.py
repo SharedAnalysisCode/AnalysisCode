@@ -111,8 +111,8 @@ mumu_signals = []
 #--------------
 # Estimators
 #--------------
-#for s in mc_backgrounds + mumu_signals + [data]: 
-for s in mc_backgrounds: 
+for s in mc_backgrounds + mumu_signals + [data]: 
+#for s in mc_backgrounds: 
     histmgr.load_base_estimator(hm,s)
 
 if options.fakest == "FakeFactor":
@@ -125,7 +125,7 @@ if options.fakest == "FakeFactor":
 elif options.fakest == "Subtraction":
   fakes_mumu.estimator = histmgr.DataBkgSubEstimator(
       hm=hm,
-      sample=mc_backgrounds,
+      sample=fakes_mumu,
       data_sample=data,
       background_samples=mc_backgrounds,
       )
@@ -213,8 +213,8 @@ if options.makeplot == "True":
 
 else:
  funcs.write_hist(
-         backgrounds = mc_backgrounds,
-         signal      = mc_backgrounds, # This can be a list
+         backgrounds = mumu_backgrounds,
+         signal      = mumu_backgrounds, # This can be a list
          data        = data,
          region      = options.region,
          icut        = int(options.icut),
