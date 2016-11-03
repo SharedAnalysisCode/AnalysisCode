@@ -111,12 +111,7 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='OneMuon') 
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AllMuPt22') 
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AllMuEta247') 
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='OneJet') 
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='TwoMuons')
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='MuPairsMZwindow') 
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
 
     
     ## weights configuration
@@ -155,11 +150,20 @@ def analyze(config):
     ## --------------------------------------- 
 
     loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindow',
+            region   = 'ZWindowOS',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEle_MediumLLH_isolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEle_MediumLLH_isolLoose_OS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
                ['ZMassWindow_MediumLLH_isolLoose',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowSS',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEle_MediumLLH_isolLoose_SS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ZMassWindow_MediumLLH_isolLoose_SS',None],
                ],
             )
 

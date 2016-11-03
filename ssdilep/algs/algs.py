@@ -1018,14 +1018,40 @@ class CutAlg(pyframe.core.Algorithm):
         if (self.chain.nel==0 and self.chain.nmuon==2): return True
         return False
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+    # -- stuff added by Miha -----------------|
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
     def cut_ExactlyTwoTightEle_MediumLLH_isolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
-        if len(electrons)==2: return True
+        if len(electrons)==2: 
+          return True
+          if electrons[0].trkcharge*electrons[1].trkcharge == charge: return True
+        return False
+ 
+    ## could remove these two if cuts would have parameters
+    def cut_ExactlyTwoTightEle_MediumLLH_isolLoose_OS(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electrons)==2: 
+          if electrons[0].trkcharge*electrons[1].trkcharge == -1: return True
+        return False
+
+    def cut_ExactlyTwoTightEle_MediumLLH_isolLoose_SS(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electrons)==2: 
+          if electrons[0].trkcharge*electrons[1].trkcharge == 1: return True
         return False
 
     def cut_ZMassWindow_MediumLLH_isolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         mZ = 91.1876*GeV
+        if len(electrons)==2 :
+          if abs( (electrons[0].tlv + electrons[1].tlv).M() - mZ) < 15*GeV:
+            return True;
+        return False
+
+    def cut_ZMassWindow_MediumLLH_isolLoose_SS(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        mZ = (91.1876-2.0)*GeV # 2 GeV shift for the SS Z peak
         if len(electrons)==2 :
           if abs( (electrons[0].tlv + electrons[1].tlv).M() - mZ) < 15*GeV:
             return True;
@@ -1588,6 +1614,18 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
         self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
         self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        #leading
+        self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(e lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(e lead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(e lead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        #subleading
+        self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(e sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(e sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(e sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
               
         # ---------------
         # Fill histograms
@@ -1611,6 +1649,25 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
             self.h_el_phi.Fill(ele.tlv.Phi(), weight)
             self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
             self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
+          
+          ele1 = electrons[1]
+          ele2 = electrons[0]
+          if electrons[0].tlv.Pt() > electrons[1].tlv.Pt():
+            ele1 = electrons[0]
+            ele2 = electrons[1]
+          assert ele1.tlv.Pt()>ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
+ 
+          self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
+          self.h_el_lead_eta.Fill(ele1.caloCluster_eta, weight)
+          self.h_el_lead_phi.Fill(ele1.tlv.Phi(), weight)
+          self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
+          self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
+
+          self.h_el_sublead_pt.Fill(ele2.tlv.Pt()/GeV, weight)
+          self.h_el_sublead_eta.Fill(ele2.caloCluster_eta, weight)
+          self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
+          self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
+          self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
           
 
 
