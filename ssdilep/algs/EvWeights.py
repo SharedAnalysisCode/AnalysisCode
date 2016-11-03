@@ -190,4 +190,43 @@ class MuTrigSF(pyframe.core.Algorithm):
           self.store[self.key] = trig_sf
         return True
 
+#------------------------------------------------------------------------------
+class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
+    """
+    ExactlyTwoTightEleSF
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="ExactlyTwoTightEleSF",
+            key            = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+
+        assert key, "Must provide key for storing mu reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      self.isoLevels = [
+          "isolLoose",
+          "isolTight",
+          ]
+      self.IDLevels = [
+          "LooseAndBLayerLLH",
+          "MediumLLH",
+          "TightLLH",
+          ]
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+        sf=1.0
+        if "mc" in self.sampletype: 
+          electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
+          for ele in electrons:
+            sf *= getattr(ele,"RecoEff_SF").at(0)
+            sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
 # EOF
