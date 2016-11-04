@@ -74,8 +74,9 @@ mc_backgrounds = [
     #samples.Wenu,
     #samples.Wmunu,
     #samples.Wtaunu,
-    samples.Zee,
-    samples.Zmumu,
+    samples.mytestSample,
+    #samples.Zee,
+    #samples.Zmumu,
     #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
@@ -111,8 +112,8 @@ mumu_signals = []
 #--------------
 # Estimators
 #--------------
-for s in mc_backgrounds + mumu_signals + [data]: 
-#for s in mc_backgrounds: 
+#for s in mc_backgrounds + mumu_signals + [data]: 
+for s in mc_backgrounds + mumu_signals: 
     histmgr.load_base_estimator(hm,s)
 
 if options.fakest == "FakeFactor":
@@ -163,8 +164,9 @@ mumu_backgrounds = [
     #samples.Wenu,
     #samples.Wmunu,
     #samples.Wtaunu,
-    samples.Zee,
-    samples.Zmumu,
+  #samples.Zee,
+    samples.mytestSample,
+   # samples.Zmumu,
     #samples.Ztautau,
     ##samples.ttX,
     #samples.singletop,
@@ -195,7 +197,7 @@ if options.makeplot == "True":
  funcs.plot_hist(
     backgrounds   = mumu_backgrounds,
     signal        = mumu_signals , 
-    data          = data,
+    #data          = data,
     region        = options.region,
     label         = options.label,
     histname      = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
@@ -215,7 +217,7 @@ else:
  funcs.write_hist(
          backgrounds = mumu_backgrounds,
          signal      = mumu_backgrounds, # This can be a list
-         data        = data,
+         #data        = data,
          region      = options.region,
          icut        = int(options.icut),
          histname    = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
