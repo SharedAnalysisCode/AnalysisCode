@@ -30,6 +30,25 @@ import mcutils
 
 GeV = 1000.0
 
+#------------------------------------------------------------------------------
+class LPXKfactor(pyframe.core.Algorithm):
+    """
+    multiply event weight by the LPXKfactor
+
+    if 'key' is specified the MC weight will be put in the store
+    """
+    #__________________________________________________________________________
+    def __init__(self, cutflow=None,key=None):
+        pyframe.core.Algorithm.__init__(self, name="MCEventWeight", isfilter=True)
+        self.cutflow = cutflow
+        self.key = key
+    #__________________________________________________________________________
+    def execute(self, weight):
+        if "mc" in self.sampletype: 
+            lpxk = self.chain.LPXKfactor
+            if self.key: self.store[self.key] = lpxk
+            self.set_weight(lpxk*weight)
+        return True
 
 #------------------------------------------------------------------------------
 class TrigPresc(pyframe.core.Algorithm):
