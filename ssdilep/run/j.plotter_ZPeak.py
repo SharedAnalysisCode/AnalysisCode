@@ -153,8 +153,8 @@ def analyze(config):
             region   = 'ZWindowOS',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEle_MediumLLH_isolLoose_OS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindow_MediumLLH_isolLoose',None],
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ZMassWindowMediumLLHisolLoose',None],
                ],
             )
 
@@ -162,8 +162,8 @@ def analyze(config):
             region   = 'ZWindowSS',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEle_MediumLLH_isolLoose_SS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindow_MediumLLH_isolLoose_SS',None],
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ZMassWindowMediumLLHisolLooseSS',None],
                ],
             )
 

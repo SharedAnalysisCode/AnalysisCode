@@ -1021,7 +1021,7 @@ class CutAlg(pyframe.core.Algorithm):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
     # -- stuff added by Miha -----------------|
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
-    def cut_ExactlyTwoTightEle_MediumLLH_isolLoose(self):
+    def cut_ExactlyTwoTightEleMediumLLHisolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         if len(electrons)==2: 
           return True
@@ -1029,19 +1029,19 @@ class CutAlg(pyframe.core.Algorithm):
         return False
  
     ## could remove these two if cuts would have parameters
-    def cut_ExactlyTwoTightEle_MediumLLH_isolLoose_OS(self):
+    def cut_ExactlyTwoTightEleMediumLLHisolLooseOS(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         if len(electrons)==2: 
           if electrons[0].trkcharge*electrons[1].trkcharge == -1: return True
         return False
 
-    def cut_ExactlyTwoTightEle_MediumLLH_isolLoose_SS(self):
+    def cut_ExactlyTwoTightEleMediumLLHisolLooseSS(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         if len(electrons)==2: 
           if electrons[0].trkcharge*electrons[1].trkcharge == 1: return True
         return False
 
-    def cut_ZMassWindow_MediumLLH_isolLoose(self):
+    def cut_ZMassWindowMediumLLHisolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         mZ = 91.1876*GeV
         if len(electrons)==2 :
@@ -1049,7 +1049,7 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
-    def cut_ZMassWindow_MediumLLH_isolLoose_SS(self):
+    def cut_ZMassWindowMediumLLHisolLooseSS(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         mZ = (91.1876-2.0)*GeV # 2 GeV shift for the SS Z peak
         if len(electrons)==2 :
