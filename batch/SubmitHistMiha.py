@@ -35,7 +35,7 @@ OUTFILE="ntuple.root"         # file output by pyframe job
 
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
-SCRIPT="./AnalysisCode/run/j.plotter_ZPeak.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_TwoMu.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_MuPairs.py"  # pyframe job script
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -177,15 +177,17 @@ def submit(tag,job_sys,samps,config={}):
         cmd =  'printf "'
         cmd += '&\n'
         cmd += '(executable=\\"%s\\")\n' % BEXEC
-        cmd += '(jobName=\\"j.hist.%s\\")\n' % tag
-        cmd += '(memory=2000)\n'
+        cmd += '(jobName=\\"j.hist.'+str(tag)+'.'+str(samps[line_intiger].name)+'\\")\n'
+        cmd += '(memory=4000)\n'
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'
+        cmd += '(gmlog="gmlog")\n'
+        cmd += '(cpuTime="700")\n'
         cmd += '(environment=(\\"CONFIG\\" \\"%s\\")\n'    % abscfg
         cmd += '             (\\"INTARBALL\\" \\"%s\\")\n' % absintar
         cmd += '             (\\"OUTFILE\\" \\"%s\\")\n'   % OUTFILE
         cmd += '             (\\"OUTPATH\\" \\"%s\\")\n'   % absoutpath
-        cmd += '             (\\"SCRIPT\\" \\"%s\\")\n'   % SCRIPT
+        cmd += '             (\\"SCRIPT\\" \\"%s\\")\n'    % SCRIPT
         cmd += '             (\\"PBS_ARRAYID\\" \\"%s\\"))'   % str(line_intiger+1)
         cmd += '">>' + TEMPXRSL
         cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL

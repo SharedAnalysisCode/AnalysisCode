@@ -54,6 +54,8 @@ GRL += [
         "304243","304308","304337","304409","304431","304494",
         ]
 
+#GRL += ['301973','302300','302872','303304','303338',]
+
 ds_name = '00%s.physics_Main'
 mc_names= 'user.gucchiel%s'
 
@@ -507,9 +509,9 @@ WtaunuPowheg = Sample( name =   'WtaunuPowheg',
 #                         
 #-----------------------------------------------------------------------------
 
-ZeePP       = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee",     xsec =  1950.6321 ) # use LO s-sec because of the LPXkfactor
-ZmumuPP     = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu",   xsec =  1950.6321 ) # use LO s-sec because of the LPXkfactor
-ZtautauPP   = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau", xsec =  1950.6321 ) # use LO s-sec because of the LPXkfactor
+ZeePP       = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee",     xsec =  1950.6321 )
+ZmumuPP     = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu",   xsec =  1950.6321 ) 
+ZtautauPP   = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau", xsec =  1950.6321 )
 
 
 ZeePowheg       = Sample( name         = "ZeePowheg",     
@@ -939,7 +941,8 @@ single_DCH = [DCH500]
 # Collections 
 #-------------------------------------------------------------------------------
 
-all_data = data.daughters
+all_data = []
+all_data += data.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters

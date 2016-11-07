@@ -105,10 +105,10 @@ echo "CFG:        ${CFG}"
 
 
 echo
-echo "copying input locally..."
+echo "making a soft link locally..."
 TMPINPUT="`mktemp ntuple.XXXXXXX`.root"
-echo cp ${INPUT} ${TMPINPUT}
-cp ${INPUT} ${TMPINPUT}
+echo ln -s ${INPUT} ${TMPINPUT}
+ln -s ${INPUT} ${TMPINPUT}
 
 ls -alh
 
