@@ -7,6 +7,7 @@ import os
 
 from ssdilep.samples import samples
 from ssdilep.plots   import vars_mumu
+from ssdilep.plots   import vars_ee
 #from ssdilep.plots   import vars_fakes
 from systematics     import *
 
@@ -43,8 +44,9 @@ parser.add_option('-t', '--tag', dest='tag',
 # Configuration
 #-----------------
 #lumi =  3158.13
-#lumi =  3212.96
-lumi =  18232.8
+lumi =  3212.96
+#lumi =  18232.8
+#lumi = 5000
 
 # Control regions
 plotsfile = []
@@ -71,33 +73,20 @@ data = samples.data
 mc_backgrounds = [
     #samples.diboson_sherpa,
     #samples.diboson_powheg,
-    #samples.Wenu,
-    #samples.Wmunu,
-    #samples.Wtaunu,
-    samples.Zee,
+    samples.WZ,
+    samples.ZZ,
+    samples.WW,
+    samples.Wenu,
+    samples.Wmunu,
+    samples.Wtaunu,
+    #samples.mytestSample,
+    samples.ZeePowheg,
     samples.Zmumu,
-    #samples.Ztautau,
+    samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
-    ##samples.ttbar,
+    samples.ttbar,
    ]
-
-"""
-mc_backgrounds = [
-    ##samples.diboson_sherpa,
-    ##samples.diboson_powheg,
-    samples.WenuPowheg,
-    samples.WmunuPowheg,
-    samples.WtaunuPowheg,
-    samples.ZeePowheg,
-    samples.ZmumuPowheg,
-    samples.ZtautauPowheg,
-    ##samples.ttX,
-    samples.singletop,
-    ##samples.ttbar,
-    #fakes_mumu,
-    ]
-"""
 
 fakes_mumu = samples.fakes.copy()
 #fakes_mumu=[]
@@ -111,8 +100,8 @@ mumu_signals = []
 #--------------
 # Estimators
 #--------------
-for s in mc_backgrounds + mumu_signals + [data]: 
-#for s in mc_backgrounds: 
+#for s in mc_backgrounds + mumu_signals + [data]: 
+for s in mc_backgrounds + [data]: 
     histmgr.load_base_estimator(hm,s)
 
 if options.fakest == "FakeFactor":
@@ -149,7 +138,7 @@ mc_sys = [
 
 #fakes_mumu.estimator.add_systematics(FF)
 
-mumu_vdict  = vars_mumu.vars_dict
+mumu_vdict  = vars_ee.vars_dict
 #fakes_vdict = vars_fakes.vars_dict
 
 #-----------------
@@ -158,17 +147,21 @@ mumu_vdict  = vars_mumu.vars_dict
 
 ## order backgrounds for plots
 mumu_backgrounds = [
-    ##samples.diboson_sherpa,
-    ##samples.diboson_powheg,
-    #samples.Wenu,
-    #samples.Wmunu,
-    #samples.Wtaunu,
-    samples.Zee,
+    #samples.diboson_sherpa,
+  #samples.diboson_powheg,
+    samples.WZ,
+    samples.ZZ,
+    samples.WW,  
+    samples.Wenu,
+    samples.Wmunu,
+    samples.Wtaunu,
+    samples.ZeePowheg,
+    #samples.mytestSample,
     samples.Zmumu,
-    #samples.Ztautau,
-    ##samples.ttX,
+    samples.Ztautau,
+    #samples.ttX,
     #samples.singletop,
-    ##samples.ttbar,
+    samples.ttbar,
     #fakes_mumu,
     ]
 
@@ -193,8 +186,8 @@ signal =[]
 
 if options.makeplot == "True":
  funcs.plot_hist(
-    backgrounds   = mumu_backgrounds,
-    signal        = mumu_signals , 
+    backgrounds   = mc_backgrounds,
+    signal        = signal, 
     data          = data,
     region        = options.region,
     label         = options.label,
@@ -206,7 +199,7 @@ if options.makeplot == "True":
     icut          = int(options.icut),
     #sys_dict      = sys_dict,
     sys_dict      = None,
-    do_ratio_plot = False,
+    do_ratio_plot = True,
     save_eps      = True,
     plotsfile       = plotsfile
     )
@@ -214,7 +207,7 @@ if options.makeplot == "True":
 else:
  funcs.write_hist(
          backgrounds = mumu_backgrounds,
-         signal      = mumu_backgrounds, # This can be a list
+         #signal      = mumu_backgrounds, # This can be a list
          data        = data,
          region      = options.region,
          icut        = int(options.icut),

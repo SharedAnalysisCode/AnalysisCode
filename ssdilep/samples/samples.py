@@ -136,6 +136,95 @@ fakes    = Sample( name         = "fakes",
                    )
 
 
+
+
+#-----------------------------------------------------------------------------                                                                                                  
+# VV (Sherpa) massed sliced samples
+# Notes:                                                                                                                                                                        
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonSherpa
+#-----------------------------------------------------------------------------                                         
+
+WW_evmuv_2000M3000   = Sample( name = "Sherpa_CT10_VV_evmuv_2000M3000",  xsec =  0.000027134)
+WW_muvmuv_1000M2000  = Sample( name = "Sherpa_CT10_VV_muvmuv_1000M2000",  xsec =  0.0011137)
+WW_muvmuv_5000M      = Sample( name = "Sherpa_CT10_VV_muvmuv_5000M",  xsec = 1.3982e-06 )
+WW_muvmuv_150M500    = Sample( name = "Sherpa_CT10_VV_muvmuv_150M500",  xsec =  0.2335)
+WW_muvmuv_500M1000   = Sample( name = "Sherpa_CT10_VV_muvmuv_500M1000",  xsec =  0.0097999)
+WW_evmuv_3000M4000   = Sample( name = "Sherpa_CT10_VV_evmuv_3000M4000",  xsec =  0.0000013573)
+WW_muvmuv_4000M5000  = Sample( name = "Sherpa_CT10_VV_muvmuv_4000M5000",  xsec =  6.4982e-06)
+WW_evev_3000M4000    = Sample( name = "Sherpa_CT10_VV_evev_3000M4000",  xsec =  2.7399e-05)
+WW_evmuv_500M1000    = Sample( name = "Sherpa_CT10_VV_evmuv_500M1000",  xsec =  0.016)
+
+WZ_lvee_4000M5000    = Sample( name = "Sherpa_CT10_VV_lvee_4000M5000",  xsec =  9.7264e-06)
+WZ_lvee_500M1000     = Sample( name = "Sherpa_CT10_VV_lvee_500M1000",  xsec =  0.0060272)
+WZ_lvmumu_1000M2000  = Sample( name = "Sherpa_CT10_VV_lvmumu_1000M2000",  xsec =  0.00040954)
+WZ_lvmumu_3000M4000  = Sample( name = "Sherpa_CT10_VV_lvmumu_3000M4000",  xsec =  6.9018e-06)
+WZ_lvee_1000M2000    = Sample( name = "Sherpa_CT10_VV_lvee_1000M2000",  xsec =  0.00027244)
+WZ_lvee_3000M4000    = Sample( name = "Sherpa_CT10_VV_lvee_3000M4000",  xsec =  4.0674e-07)
+
+ZZ_qqmumu_5000M      = Sample( name = "Sherpa_CT10_VV_qqmumu_5000M",  xsec =4.8259e-09  )  
+ZZ_llmumu_5000M      = Sample( name = "Sherpa_CT10_VV_llmumu_5000M",  xsec = 6.9756e-10 )
+ZZ_llmumu_150M500    = Sample( name = "Sherpa_CT10_VV_llmumu_150M500",  xsec = 0.021013 )
+ZZ_llmumu_50M150     = Sample( name = "Sherpa_CT10_VV_llmumu_50M150",  xsec = 1.2263 )
+ZZ_llmumu_4000M5000  = Sample( name = "Sherpa_CT10_VV_llmumu_4000M5000",  xsec = 7.6292e-09 )
+ZZ_llmumu_2000M3000  = Sample( name = "Sherpa_CT10_VV_llmumu_2000M3000",  xsec =  1.6039e-06)
+ZZ_llee_5000M        = Sample( name = "Sherpa_CT10_VV_llee_5000M",  xsec = 5.4441e-10 )
+ZZ_qqee_2000M3000    = Sample( name = "Sherpa_CT10_VV_qqee_2000M3000",  xsec = 1.0039e-05 )
+ZZ_llee_50M150       = Sample( name = "Sherpa_CT10_VV_llee_50M150",  xsec =  1.4348)
+
+ZZ = Sample( name =   'ZZ',
+                  tlatex = 'ZZ (Sherpa)',
+                  fill_color = ROOT.kYellow-7,
+                  line_color =  ROOT.kYellow-6,
+                  marker_color =  ROOT.kYellow-6,
+                  daughters = [
+                                ZZ_qqmumu_5000M,
+                                ZZ_llmumu_5000M,
+                                ZZ_llmumu_150M500,
+                                ZZ_llmumu_50M150,
+                                ZZ_llmumu_4000M5000,
+                                ZZ_llmumu_2000M3000,
+                                ZZ_llee_5000M,
+                                ZZ_qqee_2000M3000,
+                                ZZ_llee_50M150,                   
+                                ],
+             ) 
+WZ = Sample( name =   'WZ',
+                  tlatex = 'WZ (Sherpa)',
+                  fill_color = ROOT.kViolet+1,
+                  line_color =  ROOT.kViolet+2,
+                  marker_color =  ROOT.kViolet+2,
+                  daughters = [
+                               WZ_lvee_4000M5000,
+                               WZ_lvee_500M1000,
+                               WZ_lvmumu_1000M2000,
+                               WZ_lvmumu_3000M4000,
+                               WZ_lvee_1000M2000,
+                               WZ_lvee_3000M4000,
+                               ],
+             )
+WW = Sample( name =   'WW',
+                  tlatex = 'WW (Sherpa)',
+                  fill_color = ROOT.kCyan,
+                  line_color =  ROOT.kCyan-1,
+                  marker_color =  ROOT.kCyan-1,
+                  daughters = [
+                               WW_evmuv_2000M3000,
+                               WW_muvmuv_1000M2000,
+                               WW_muvmuv_5000M,
+                               WW_muvmuv_150M500,
+                               WW_muvmuv_500M1000,
+                               WW_evmuv_3000M4000,
+                               WW_muvmuv_4000M5000,
+                               WW_evev_3000M4000,
+                               WW_evmuv_500M1000,
+                               ],
+             )
+
+
+
+
+
+
 #-----------------------------------------------------------------------------
 # VV (Sherpa)
 # Notes:
@@ -158,20 +247,6 @@ WqqZll          = Sample( name = "WqqZll",         xsec = 3.7583     )
 WqqZvv          = Sample( name = "WqqZvv",         xsec = 7.4151     )
 ZqqZll          = Sample( name = "ZqqZll",         xsec = 2.3645727  )
 ZqqZvv          = Sample( name = "ZqqZvv",         xsec = 4.63359232 )
-
-
-Zmumu= Sample(name="zumu", xsec=1)
-
-mytestSample = Sample( name= 'ZmumuTest',
-                       tlatex= 'ZmumuTest',
-                       fill_color=ROOT.kYellow,
-                       line_color=ROOT.kYellow,
-                       marker_color=ROOT.kYellow,
-                       daughters= [ 
-                                  Zmumu,
-                                  ],
-                       )
-
 
 
 diboson_sherpa = Sample( name =   'diboson_sherpa',
@@ -820,8 +895,10 @@ ttbar_hdamp172p5_allhad               = Sample( name =  "ttbar_hdamp172p5_allhad
 ttbar_nonallhad                       = Sample( name =  "ttbar_nonallhad",            xsec = 451.645680001 )
 ttbar_hdamp172p5_dil                  = Sample( name =  "ttbar_hdamp172p5_dil",       xsec = 73.3282274    )
 
-ttbar = Sample( name =  'ttbar',
-                    tlatex = 'ttbar',
+ttbar_dilep = Sample( name = "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil" , xsec = 87.627231743)
+
+ttbar = Sample( name =  'ttbar_dilep',
+                    tlatex = 'ttbar_dilep',
                     fill_color = ROOT.kCyan+1,
                     line_color =  ROOT.kCyan+2,
                     marker_color =  ROOT.kCyan+2,

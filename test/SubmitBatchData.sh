@@ -8,8 +8,8 @@
 INFILES="/gpfs_data/local/atlas/ucchielli/ExoticNtuples/v1/Data/"
 #INPATH="/home/ATLAS-T3/ucchielli/SSCode/SSDiLep/ssdilep/Zmumu/nominal"
 
-INSCRIPT="/home/ATLAS-T3/ucchielli/SSCode/SSDiLep/ssdilep/run"
-SCRIPT="j.plotter_FF.py"
+INSCRIPT="/home/ATLAS-T3/ucchielli/AnalysisCode/ssdilep/run"
+SCRIPT="j.plotter_ZPeak.py"
 
 QUEUE=T3_BO_LOCAL
 

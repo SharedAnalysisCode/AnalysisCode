@@ -14,6 +14,10 @@ cutflow_weighted          = Var(name = 'cutflow_weighted_mumu',log=False)
 cutflow                   = Var(name = 'cutflow_mumu',log=False)
 cutflow_weighted_mu_pairs = Var(name = 'cutflow_weighted_mumu_mu_pairs',log=False)
 cutflow_mu_pairs          = Var(name = 'cutflow_mumu_mu_pairs',log=False)
+cutflow_ZWindowSS           = Var(name = 'cutflow_ZWindowSS',log=False)
+cutflow_weighted_ZWindowSS  = Var(name = 'cutflow_weighted_ZWindowSS',log=False)
+cutflow_ZWindowOS           = Var(name = 'cutflow_ZWindowOS',log=False)
+cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
 
 
 
@@ -123,6 +127,22 @@ muons_chargeprod = Var(name = 'muons_chargeprod',
               #rebin  = 10,
               log     = False,
               )
+
+MuMuInvariantMass = Var(name='MuMuInvariantMass',
+               path   = 'event',
+               xmin   = 0.,
+               xmax   = 200000.,
+               #rebin  = ,
+               log    = False,
+               )
+
+invMass = Var(name='invMass',
+               path   = 'event',
+               xmin   = 70,
+               xmax   = 110,
+               #rebin  = 10,
+               log    = False,
+               )
 
 
 ## Single muon variables
@@ -458,6 +478,8 @@ vars_list.append(nelectrons)
 vars_list.append(njets)
 vars_list.append(nmuonpairs)
 vars_list.append(mujet_dphi)
+vars_list.append(MuMuInvariantMass)
+vars_list.append(invMass)
 #vars_list.append(scdphi)
 #vars_list.append(muons_dphi)
 #vars_list.append(muons_deta)
