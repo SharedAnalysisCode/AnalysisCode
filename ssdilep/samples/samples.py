@@ -54,7 +54,9 @@ GRL += [
         "304243","304308","304337","304409","304431","304494",
         ]
 
-ds_name = '%s.physics_Main'
+#GRL += ['301973','302300','302872','303304','303338',]
+
+ds_name = '00%s.physics_Main'
 mc_names= 'user.gucchiel%s'
 
 for run in GRL:
@@ -258,17 +260,17 @@ diboson_sherpa = Sample( name =   'diboson_sherpa',
                                 lllvOFMinus,  
                                 lllvSFPlus,   
                                 lllvOFPlus,   
-                                #llvv,          # histograms fail
-                                llvvjj_ss_EW4,
-                                llvvjj_ss_EW6,
-                                lllvjj_EW6,   
-                                lllljj_EW6,   
+                                llvv,          # histograms fail
+                                #llvvjj_ss_EW4,
+                                #llvvjj_ss_EW6,
+                                #lllvjj_EW6,   
+                                #lllljj_EW6,   
                                 #WplvWmqq,     
                                 #WpqqWmlv,     
                                 #WlvZqq,       
-                                #WqqZll,       
+                                WqqZll,       
                                 #WqqZvv,       
-                                #ZqqZll,       
+                                ZqqZll,       
                                 #ZqqZvv,
                               ],
                 ) 
@@ -536,7 +538,7 @@ Wplusmunu    = Sample( name =  "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wplusmunu",    
 Wminusmunu   = Sample( name =  "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wminusmunu",   xsec = 8579.0011  ) 
 
 Wplustaunu   = Sample( name =  "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wplustaunu",   xsec = 11500.9154 ) 
-Wminustaunu  = Sample( name =  "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wminustaunu",  xsec = 8579.0011  ) 
+Wminustaunu  = Sample( name =  "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wminustaunu",  xsec = 8579.0011  )
 
 
 WenuPowheg = Sample( name =   'WenuPowheg',
@@ -582,9 +584,9 @@ WtaunuPowheg = Sample( name =   'WtaunuPowheg',
 #                         
 #-----------------------------------------------------------------------------
 
-ZeePP       = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee",     xsec = 1950.6321 ) 
-ZmumuPP     = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu",   xsec = 1950.6321 ) 
-ZtautauPP   = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau", xsec = 1950.6321 ) 
+ZeePP       = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee",     xsec =  1950.6321 )
+ZmumuPP     = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu",   xsec =  1950.6321 ) 
+ZtautauPP   = Sample( name  = "PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau", xsec =  1950.6321 )
 
 
 ZeePowheg       = Sample( name         = "ZeePowheg",     
@@ -891,6 +893,7 @@ singletop = Sample( name =   'singletop',
 ttbar_hdamp172p5_nonallhad            = Sample( name =  "ttbar_hdamp172p5_nonallhad", xsec = 451.645679998 )
 ttbar_hdamp172p5_allhad               = Sample( name =  "ttbar_hdamp172p5_allhad",    xsec = 380.11432     )
 ttbar_nonallhad                       = Sample( name =  "ttbar_nonallhad",            xsec = 451.645680001 )
+ttbar_hdamp172p5_dil                  = Sample( name =  "ttbar_hdamp172p5_dil",       xsec = 73.3282274    )
 
 ttbar_dilep = Sample( name = "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil" , xsec = 87.627231743)
 
@@ -903,7 +906,7 @@ ttbar = Sample( name =  'ttbar_dilep',
                                  #ttbar_hdamp172p5_nonallhad,
                                  #ttbar_hdamp172p5_allhad,   
                                  #ttbar_nonallhad,           
-                                 ttbar_dilep,
+                                 ttbar_hdamp172p5_dil,           
                                 ],
                 ) 
 
@@ -1015,32 +1018,33 @@ single_DCH = [DCH500]
 # Collections 
 #-------------------------------------------------------------------------------
 
-all_data = data.daughters
+all_data = []
+all_data += data.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters
 all_mc += diboson_sherpa.daughters
-all_mc += diboson_powheg.daughters
+#all_mc += diboson_powheg.daughters
 
-all_mc += Wenu.daughters
-all_mc += Wmunu.daughters
-all_mc += Wtaunu.daughters
+#all_mc += Wenu.daughters
+#all_mc += Wmunu.daughters
+#all_mc += Wtaunu.daughters
 
 all_mc += WenuPowheg.daughters
-all_mc += WmunuPowheg.daughters
-all_mc += WtaunuPowheg.daughters
+#all_mc += WmunuPowheg.daughters
+#all_mc += WtaunuPowheg.daughters
 
-all_mc += Zee.daughters
-all_mc += Zmumu.daughters
-all_mc += Ztautau.daughters
+#all_mc += Zee.daughters
+#all_mc += Zmumu.daughters
+#all_mc += Ztautau.daughters
 
 all_mc += ZeePowheg.daughters
-all_mc += ZmumuPowheg.daughters
-all_mc += ZtautauPowheg.daughters
+#all_mc += ZmumuPowheg.daughters
+#all_mc += ZtautauPowheg.daughters
 
 #####all_mc += ttX.daughters
 #all_mc += singletop.daughters
-#####all_mc += ttbar.daughters
+all_mc += ttbar.daughters
 #####all_mc += all_DCH.daughters
 #####all_mc += single_DCH
 

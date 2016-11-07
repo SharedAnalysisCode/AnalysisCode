@@ -1655,7 +1655,7 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           if electrons[0].tlv.Pt() > electrons[1].tlv.Pt():
             ele1 = electrons[0]
             ele2 = electrons[1]
-          assert ele1.tlv.Pt()>ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
+          assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
  
           self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
           self.h_el_lead_eta.Fill(ele1.caloCluster_eta, weight)

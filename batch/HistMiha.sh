@@ -20,13 +20,13 @@ echo
 echo "Environment variables..."
 echo " User name:   $USER"
 echo " User home:   $HOME"
-echo " Queue name:  $LSB_QUEUE"
-echo " Job name:    $LSB_JOBNAME"
-echo " Job-id:      $LSB_JOBID"
-echo " Task-id:     $LSB_JOBINDEX "
-echo " Work dir:    $PWD"
-echo " Submit host: $LSB_HOSTS"
-echo " Worker node: $HOSTNAME"
+#echo " Queue name:  $PBS_O_QUEUE"
+#echo " Job name:    $PBS_JOBNAME"
+#echo " Job-id:      $PBS_JOBID"
+echo " Task-id:     $PBS_ARRAYID"
+#echo " Work dir:    $PBS_O_WORKDIR"
+#echo " Submit host: $PBS_O_HOST"
+#echo " Worker node: $HOSTNAME"
 echo " Temp dir:    $TMPDIR"
 echo " parameters passed: $*"
 echo 
@@ -37,8 +37,8 @@ echo " OUTPATH:     $OUTPATH"
 echo " CONFIG:      $CONFIG"
 echo " INTARBALL:   $INTARBALL"
 
-#echo
-#export 
+echo
+export 
 
 MYDIR=Hist_${RANDOM}${RANDOM}
 
@@ -58,6 +58,12 @@ ls ${TMPDIR} -la
 echo "cd ${MYDIR}"
 cd ${MYDIR}
 
+export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
+source $AtlasSetup/scripts/asetup.sh AtlasOffline,21.0.7 --cmtconfig x86_64-slc6-gcc49-opt --nosave
+. /ceph/grid/runtime/APPS/HEP/ATLAS-SITE
+lsetup root
+
 ## copy over working area
 ##echo "ls /data/fscutti"
 ##ls /data/fscutti
@@ -65,15 +71,12 @@ cd ${MYDIR}
 ## copy over working area
 echo "copying input tarball ${INTARBALL}..."
 cp $INTARBALL .
-#DESTINATION=$PWD
-#INTARBALLNAME=$INTARBALL
-#shutil.copy(INTARBALL,os.path.dirname(PWD))
 date
 ENDTIME=`date +%s`
 TOTALTIME=$(($ENDTIME-$STARTTIME))
 echo "Total Time: ${TOTALTIME}s"
 echo "extracting input tarball..."
-tar -xzf *.tar.gz
+tar xzf *.tar.gz
 date
 ENDTIME=`date +%s`
 TOTALTIME=$(($ENDTIME-$STARTTIME))
@@ -83,12 +86,12 @@ ls -alh
 
 echo 
 echo "setting up workarea..."
-source '/home/ATLAS-T3/ucchielli/SSCode/SSDiLep/setup.sh'
+source ./setup.sh
 
 echo 
-echo "reading in config file '${CONFIG}', line ${LSB_JOBINDEX}"
+echo "reading in config file '${CONFIG}', line ${PBS_ARRAYID}"
 ## READ IN CONFIG
-line=`sed -n -e ${LSB_JOBINDEX}p ${CONFIG}`
+line=`sed -n -e ${PBS_ARRAYID}p ${CONFIG}`
 echo ${line}
 arrIN=(${line//;/ });
 SAMPLE=${arrIN[0]}
@@ -102,10 +105,12 @@ echo "CFG:        ${CFG}"
 
 
 echo
-echo "copying input locally..."
+echo "making a soft link locally..."
 TMPINPUT="`mktemp ntuple.XXXXXXX`.root"
-echo cp ${INPUT} ${TMPINPUT}
-cp ${INPUT} ${TMPINPUT}
+echo ln -s ${INPUT} ${TMPINPUT}
+ln -s ${INPUT} ${TMPINPUT}
+
+ls -alh
 
 
 echo ""

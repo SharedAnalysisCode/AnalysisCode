@@ -2,7 +2,7 @@
 
 ## Batch
 
-INPATH="/ceph/grid/home/atlas/miham/ssdilep/EXOT12_test/merged/nominal/"
+INPATH="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12/merged/nominal/"
 INSCRIPT="../ssdilep/run"
 SCRIPT="j.plotter_ZPeak.py"
 
