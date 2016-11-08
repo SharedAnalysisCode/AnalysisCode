@@ -151,6 +151,24 @@ def analyze(config):
     ## --------------------------------------- 
 
     loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowOSWide',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ZMassWindowMediumLLHisolLooseWide',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowSSWide',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ZMassWindowMediumLLHisolLooseWide',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
             region   = 'ZWindowOS',
             plot_all = False,
             cut_flow = [

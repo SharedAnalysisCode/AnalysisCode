@@ -1057,6 +1057,15 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_ZMassWindowMediumLLHisolLooseWide(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        mZ = 91.1876*GeV
+        if len(electrons)==2 :
+          if (electrons[0].tlv + electrons[1].tlv).M() < 130*GeV:
+            if (electrons[0].tlv + electrons[1].tlv).M() > 60*GeV:
+              return True;
+        return False
+
     #__________________________________________________________________________
     def cut_PASS(self):
       return True
@@ -1592,9 +1601,12 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         # should probably make this configurable
         ## get event candidate
         electrons  = self.store['electrons_tight_MediumLLH_isolLoose']
+        met_trk    = self.store['met_trk']
+        met_clus   = self.store['met_clus']
         
         EVT    = os.path.join(region, 'event')
         ELECTRONS = os.path.join(region, 'electrons')
+        MET    = os.path.join(region, 'met')
         
         # -----------------
         # Create histograms
@@ -1604,9 +1616,16 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
-        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 40, 70, 110)", dir=EVT)
+        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 150, 50, 200)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
+        ## met plots
+        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
+        self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
+        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
         self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
@@ -1640,6 +1659,13 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
+          ## met plots
+          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
+          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
+          self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
+          self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
+          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
+          self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
 
           
           #electron
