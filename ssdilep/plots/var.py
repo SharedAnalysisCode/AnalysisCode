@@ -21,9 +21,11 @@ class Var(object):
             title = None,
             path  = None,
             rebin = None,
+            rebinVar = [],
             xmin  = None,
             xmax  = None,
             log   = None,
+            logx  = None,
             ):
         self.name = name
         if not title: title = name
@@ -34,9 +36,11 @@ class Var(object):
         self.title = title
         self.path  = path
         self.rebin = rebin
+        self.rebinVar = rebinVar
         self.xmin  = xmin
         self.xmax  = xmax
         self.log   = log
+        self.logx  = logx
 
 
 

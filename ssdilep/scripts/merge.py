@@ -44,7 +44,7 @@ parser.add_option('-t', '--tag', dest='tag',
 # Configuration
 #-----------------
 #lumi =  3158.13
-lumi =  3212.96
+lumi =  18084.1
 #lumi =  18232.8
 #lumi = 5000
 
@@ -73,16 +73,18 @@ data = samples.data
 mc_backgrounds = [
     #samples.diboson_sherpa,
     #samples.diboson_powheg,
-    samples.WZ,
-    samples.ZZ,
-    samples.WW,
-    samples.Wenu,
-    samples.Wmunu,
-    samples.Wtaunu,
+    #samples.WZ,
+    #samples.ZZ,
+    #samples.WW,
+    #samples.Wenu,
+    #samples.Wmunu,
+    #samples.Wtaunu,
     #samples.mytestSample,
     samples.ZeePowheg,
-    samples.Zmumu,
-    samples.Ztautau,
+    samples.WenuPowheg,
+    samples.diboson_sherpa,
+    #samples.Zmumu,
+    #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
     samples.ttbar,
@@ -148,21 +150,22 @@ mumu_vdict  = vars_ee.vars_dict
 ## order backgrounds for plots
 mumu_backgrounds = [
     #samples.diboson_sherpa,
-  #samples.diboson_powheg,
-    samples.WZ,
-    samples.ZZ,
-    samples.WW,  
-    samples.Wenu,
-    samples.Wmunu,
-    samples.Wtaunu,
-    samples.ZeePowheg,
+    #samples.diboson_powheg,
+    #samples.WZ,
+    #samples.ZZ,
+    #samples.WW,
+    #samples.Wenu,
+    #samples.Wmunu,
+    #samples.Wtaunu,
     #samples.mytestSample,
-    samples.Zmumu,
-    samples.Ztautau,
+    samples.ZeePowheg,
+    samples.WenuPowheg,
+    samples.diboson_sherpa,
+    #samples.Zmumu,
+    #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
     samples.ttbar,
-    #fakes_mumu,
     ]
 
 """
@@ -195,7 +198,9 @@ if options.makeplot == "True":
     xmin          = mumu_vdict[options.vname]['xmin'],
     xmax          = mumu_vdict[options.vname]['xmax'],
     rebin         = mumu_vdict[options.vname]['rebin'],
+    rebinVar      = mumu_vdict[options.vname]['rebinVar'],
     log           = mumu_vdict[options.vname]['log'],
+    logx          = mumu_vdict[options.vname]['logx'],
     icut          = int(options.icut),
     #sys_dict      = sys_dict,
     sys_dict      = None,

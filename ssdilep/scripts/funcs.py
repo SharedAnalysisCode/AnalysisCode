@@ -6,6 +6,7 @@ description:
 
 '''
 
+from array import array
 ## modules
 import ROOT
 from pyplot import histutils
@@ -34,6 +35,7 @@ def get_hists(
         histname  = None,
         samples   = None,
         rebin     = None,
+        rebinVar  = [],
         sys_dict  = None,
         ):
     '''
@@ -44,7 +46,11 @@ def get_hists(
     for s in samples:
       if not s.hist(region=region,icut=icut,histname=histname): continue
       h = s.hist(region=region,icut=icut,histname=histname).Clone()
-      if rebin and h: h.Rebin(rebin)
+      if rebin and len(rebinVar)==0 and h: h.Rebin(rebin)
+      elif len(rebinVar)>1 and h:
+        print "Performing variable bin rebining with on " + histname
+        runArray = array('d',rebinVar)
+        h = h.Rebin( len(rebinVar)-1, histname+"Var", runArray )
       hists[s] = h
       assert h, 'failed to gen hist for %s'%s.name
       h.SetName('h_%s_%s'%(region,s.name))
@@ -203,6 +209,7 @@ def plot_hist(
     xmin          = None,
     xmax          = None,
     rebin         = None,
+    rebinVar      = [],
     sys_dict      = None,
     do_ratio_plot = False,
     save_eps      = False,
@@ -217,6 +224,7 @@ def plot_hist(
 
     '''
     print 'making plot: ', histname, ' in region', region
+    print 'rebinVar', rebinVar
     
     #assert signal, "ERROR: no signal provided for plot_hist"
     assert backgrounds, "ERROR: no background provided for plot_hist"
@@ -232,6 +240,7 @@ def plot_hist(
         histname=histname,
         samples=samples,
         rebin=rebin,
+        rebinVar=rebinVar,
         sys_dict=sys_dict,
         )
     ## sum nominal background
@@ -449,6 +458,7 @@ def plot_hist(
       if logx: 
         pad2.SetLogx(logx) 
         xaxis2.SetMoreLogLabels()
+        xaxis2.SetNoExponent()
       else: 
         pass
 
@@ -529,6 +539,17 @@ def write_hist(
     
     fout.Close()
 
+#____________________________________________________________
+def generateLogBins(bins_N,bins_min,bins_max):
+  bins = []
+  bins += [bins_min]
+  bins_factor = pow( Decimal(bins_max)/Decimal(bins_min) , Decimal(1)/Decimal(bins_N) )
+  for i in range(1,bins_N+1):
+    bins += [bins[i-1]*bins_factor]
+  for i in range(bins_N+1):
+    bins[i] = round(bins[i],0)
+    if i!=0: assert bins[i]!=bins[i-1], "two consetuvie bin edges have the same value due to rounding"
+  return bins
 
 def list_open_files():
     l = ROOT.gROOT.GetListOfFiles()

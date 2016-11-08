@@ -3,8 +3,8 @@
 # Strings are passed to the scrieta but this is redundant!
 
 #electron variables
-python ../ssdilep/scripts/merge.py --var="el_lead_pt" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
-python ../ssdilep/scripts/merge.py --var="el_sublead_pt" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
+python ../ssdilep/scripts/merge.py --var="el_lead_pt" --reg="ZWindowOS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
+'''python ../ssdilep/scripts/merge.py --var="el_sublead_pt" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="el_lead_eta" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="el_subead_eta" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="el_lead_phi" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
@@ -26,7 +26,4 @@ python ../ssdilep/scripts/merge.py --var="actualIntPerXing" --reg="ZWindowOS" --
 python ../ssdilep/scripts/merge.py --var="ZbosonPt" --reg="ZWindowOS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="ZbosonEta" --reg="ZWindowOS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 
-
-
-
-
+'''

@@ -24,7 +24,7 @@ class Sample(object):
                  name          = '',
                  tlatex        = None,
                  xsec          = 0.0,
-                 feff          = 9.0, 
+                 feff          = 1.0, 
                  kfactor       = 1.0,
                  files         = [],
                  type          = "mc",

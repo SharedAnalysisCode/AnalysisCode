@@ -7,6 +7,7 @@ variables for the ee channel
 
 ## modules
 from var import Var
+from funcs import generateLogBins
 
 ## Cutflows
 ## ---------------------------------------
@@ -14,6 +15,10 @@ cutflow_ZWindowSS           = Var(name = 'cutflow_ZWindowSS',log=False)
 cutflow_weighted_ZWindowSS  = Var(name = 'cutflow_weighted_ZWindowSS',log=False)
 cutflow_ZWindowOS           = Var(name = 'cutflow_ZWindowOS',log=False)
 cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
+
+## Non-equidistant bins
+## ---------------------------------------
+bins_pt = generateLogBins(60,30,2000)
 
 
 
@@ -57,13 +62,14 @@ invMass = Var(name='invMass',
               xmin   = 70,
               xmax   = 110,
               #rebin  = 10,
-              log    = False,
+              log    = True,
               )
 ZbosonPt = Var(name='ZbosonPt',
                path   = 'event',
                xmin   = 0.,
                xmax   = 2000.,
-               log    = False,
+               rebin  = 50,
+               log    = True,
                )
 ZbosonEta = Var(name='ZbosonEta',
                 path   = 'event',
@@ -76,10 +82,12 @@ ZbosonEta = Var(name='ZbosonEta',
 ## ---------------------------------------
 el_lead_pt = Var(name = 'el_lead_pt',
               path   = 'electrons',
-              xmin   = 0.,
-              xmax   = 1000.,
-              rebin  = 50,
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = bins_pt,
               log    = True,
+              logx   = True,
               )
 
 el_sublead_pt = Var(name = 'el_sublead_pt',
@@ -276,7 +284,6 @@ vars_list.append(ZbosonEta)
 
 vars_dict = {}
 for var in vars_list: vars_dict[var.name] = var.__dict__
-
 
 ## EOF
 

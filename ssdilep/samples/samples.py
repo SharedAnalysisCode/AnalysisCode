@@ -696,6 +696,54 @@ Zee = Sample( name =   'Zee',
                               ],
                 ) 
 
+#-----
+# Zee Sherpa 2.2.1
+#-----
+
+Zee_221_Pt0_70_CVetoBVeto         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt0_70_CVetoBVeto",                xsec = 1586.66000797 ) 
+Zee_221_Pt70_140_CVetoBVeto       = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt70_140_CVetoBVeto",              xsec = 74.392831376  )
+Zee_221_Pt140_280_CVetoBVeto      = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt140_280_CVetoBVeto",             xsec = 24.406766768  )
+Zee_221_Pt280_500_CVetoBVeto      = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt280_500_CVetoBVeto",             xsec = 4.747987696   )
+
+                                                                                                         
+Zee_221_Pt0_70_CFilterBVeto       = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt0_70_CFilterBVeto",              xsec = 218.160449136 )
+Zee_221_Pt70_140_CFilterBVeto     = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt70_140_CFilterBVeto",            xsec = 19.829640036  )
+Zee_221_Pt140_280_CFilterBVeto    = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt140_280_CFilterBVeto",           xsec = 9.138632129   )
+Zee_221_Pt280_500_CFilterBVeto    = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt280_500_CFilterBVeto",           xsec = 2.223207556   )
+
+                                                                                                         
+Zee_221_Pt0_70_BFilter            = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt0_70_BFilter",                   xsec = 123.301682947 )
+Zee_221_Pt70_140_BFilter          = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt70_140_BFilter",                 xsec = 12.308466245  )
+Zee_221_Pt140_280_BFilter         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt140_280_BFilter",                xsec = 5.931173859   )
+Zee_221_Pt280_500_BFilter         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_Pt280_500_BFilter",                xsec = 1.457160985   )
+
+Zee_221_Pt500_1000                = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_MAXHTPTV500_1000",                 xsec = 1.76307831    )
+Zee_221_Pt1000_E_CM               = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_MAXHTPTV1000_E_CMS.root",          xsec = 0.144870607   )
+
+
+Zee221 = Sample( name =   'Zee',
+                  tlatex = 'Sherpa.221 Z #rightarrow ee+jets',
+                  fill_color = ROOT.kOrange+1,
+                  line_color =  ROOT.kOrange+2,
+                  marker_color =  ROOT.kOrange+2,
+                  daughters = [
+                               Zee_221_Pt0_70_CVetoBVeto,        
+                               Zee_221_Pt70_140_CVetoBVeto,                                    
+                               Zee_221_Pt140_280_CVetoBVeto,     
+                               Zee_221_Pt280_500_CVetoBVeto,     
+                               Zee_221_Pt0_70_CFilterBVeto,      
+                               Zee_221_Pt70_140_CFilterBVeto,    
+                               Zee_221_Pt140_280_CFilterBVeto,   
+                               Zee_221_Pt280_500_CFilterBVeto,   
+                               Zee_221_Pt0_70_BFilter,           
+                               Zee_221_Pt70_140_BFilter,         
+                               Zee_221_Pt140_280_BFilter,        
+                               Zee_221_Pt280_500_BFilter,        
+                               Zee_221_Pt500_1000,
+                               Zee_221_Pt1000_E_CM,   
+                              ],
+                ) 
+
 
 #-------
 # Zmumu
@@ -1038,7 +1086,8 @@ all_mc += WenuPowheg.daughters
 #all_mc += Zmumu.daughters
 #all_mc += Ztautau.daughters
 
-all_mc += ZeePowheg.daughters
+all_mc += Zee221.daughters
+#all_mc += ZeePowheg.daughters
 #all_mc += ZmumuPowheg.daughters
 #all_mc += ZtautauPowheg.daughters
 
