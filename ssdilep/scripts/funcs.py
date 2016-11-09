@@ -273,8 +273,16 @@ def plot_hist(
         h_data = hists[data]
         if blind: apply_blind(h_data,blind)
         h_ratio = h_data.Clone('%s_ratio'%(h_data.GetName()))
-        h_ratio.Divide(h_total)
-    
+        ## dont use Divide as it will propagate MC stat error to the ratio.
+        #h_ratio.Divide(h_total)
+        for i in range(1,h_ratio.GetNbinsX()):
+          if h_total.GetBinContent(i)!=0:
+            h_ratio.SetBinContent(i, h_ratio.GetBinContent(i)/h_total.GetBinContent(i) )
+            h_ratio.SetBinError(i, h_ratio.GetBinError(i)/h_total.GetBinContent(i) )
+          else:
+            h_ratio.SetBinContent(i, -100 )
+            h_ratio.SetBinError(i, 0 )            
+
     yaxistitle = None
     for b in reversed(backgrounds):
       if not b in hists.keys(): continue

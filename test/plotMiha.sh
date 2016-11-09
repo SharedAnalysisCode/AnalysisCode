@@ -18,7 +18,7 @@ python ../ssdilep/scripts/merge.py --var="el_sublead_phi" --reg="ZWindowOS" --la
 #Event variables
 python ../ssdilep/scripts/merge.py --var="invMass" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="actualIntPerXing" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
-python ../ssdilep/scripts/merge.py --var="ZbosonPt2" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
+python ../ssdilep/scripts/merge.py --var="ZbosonPt" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="ZbosonEta" --reg="ZWindowSS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="invMass" --reg="ZWindowOS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
 python ../ssdilep/scripts/merge.py --var="actualIntPerXing" --reg="ZWindowOS" --lab="" --tag="Powheg" --icut="1" --input="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12" --output="./Plots" --makeplot=True --fakest=""
