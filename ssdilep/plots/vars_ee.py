@@ -18,7 +18,8 @@ cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
 
 ## Non-equidistant bins
 ## ---------------------------------------
-bins_pt = generateLogBins(60,30,2000)
+bins_pt = generateLogBins(35,30,2000)
+bins_met = generateLogBins(15,1,1000)
 
 
 
@@ -65,17 +66,39 @@ invMass = Var(name='invMass',
               log    = True,
               )
 ZbosonPt = Var(name='ZbosonPt',
-               path   = 'event',
-               xmin   = 0.,
-               xmax   = 2000.,
-               rebin  = 50,
-               log    = True,
+              path   = 'event',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = bins_pt,
+              log    = True,
+              logx   = True,
                )
 ZbosonEta = Var(name='ZbosonEta',
                 path   = 'event',
                 xmin   = -6,
                 xmax   = 6,
                 log    = False,
+                )
+
+met_trk_et = Var(name='met_trk_et',
+                path   = 'met',
+                xmin   = 0.,
+                xmax   = 1000.,
+                rebin  = 1,
+                rebinVar  = [0] + bins_met,
+                log    = True,
+                logx   = True,
+                )
+
+met_clus_et = Var(name='met_clus_et',
+                path   = 'met',
+                xmin   = 0.,
+                xmax   = 1000.,
+                rebin  = 1,
+                rebinVar  = [0] + bins_met,
+                log    = True,
+                logx   = True,
                 )
 
 ## Single muon variables
@@ -92,10 +115,12 @@ el_lead_pt = Var(name = 'el_lead_pt',
 
 el_sublead_pt = Var(name = 'el_sublead_pt',
               path   = 'electrons',
-              xmin   = 0.,
-              xmax   = 1000.,
-              rebin  = 50,
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = bins_pt,
               log    = True,
+              logx   = True,
               )
 el_lead_eta = Var(name = 'el_lead_eta',
               path    = 'electrons',
@@ -265,12 +290,15 @@ vars_list.append(actualIntPerXing)
 vars_list.append(NPV)
 vars_list.append(nelectrons)
 vars_list.append(invMass)
+vars_list.append(met_trk_et)
+vars_list.append(met_clus_et)
+vars_list.append(invMass)
 vars_list.append(el_lead_pt)
-#vars_list.append(el_sublead_pt)
+vars_list.append(el_sublead_pt)
 vars_list.append(el_lead_eta)
-#vars_list.append(el_sublead_eta)
+vars_list.append(el_sublead_eta)
 vars_list.append(el_lead_phi)
-#vars_list.append(el_sublead_phi)
+vars_list.append(el_sublead_phi)
 vars_list.append(el_lead_trkd0)
 #vars_list.append(el_sublead_trkd0)
 vars_list.append(el_lead_trkd0sig)

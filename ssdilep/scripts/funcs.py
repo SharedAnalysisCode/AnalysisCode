@@ -328,13 +328,13 @@ def plot_hist(
     else: c = ROOT.TCanvas(cname,cname,800,700)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-3
+    ymin = 1.e-1
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue
       ymax = max([ymax,hists[b].GetMaximum()])
     if data: ymax = max([ymax,h_data.GetMaximum()])
-    if log: ymax *= 100000.
+    if log: ymax *= 8000.
     else:   ymax *= 1.8
     xtitle = h_total.GetXaxis().GetTitle()
 
@@ -401,7 +401,7 @@ def plot_hist(
 
     if data: h_data.Draw("SAME")
     pad1.SetLogy(log)
-    pad1.SetLogx(logx)
+    if logx!=None : pad1.SetLogx(logx)
     leg.Draw()
     pad1.RedrawAxis()
 

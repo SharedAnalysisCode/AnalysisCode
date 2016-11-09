@@ -80,14 +80,14 @@ mc_backgrounds = [
     #samples.Wmunu,
     #samples.Wtaunu,
     #samples.mytestSample,
-    samples.ZeePowheg,
-    samples.WenuPowheg,
+    samples.Zee221,
     samples.diboson_sherpa,
     #samples.Zmumu,
     #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
     samples.ttbar,
+    samples.WenuPowheg,
    ]
 
 fakes_mumu = samples.fakes.copy()
@@ -158,14 +158,14 @@ mumu_backgrounds = [
     #samples.Wmunu,
     #samples.Wtaunu,
     #samples.mytestSample,
-    samples.ZeePowheg,
-    samples.WenuPowheg,
+    samples.Zee221,
     samples.diboson_sherpa,
     #samples.Zmumu,
     #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
     samples.ttbar,
+    samples.WenuPowheg,
     ]
 
 """

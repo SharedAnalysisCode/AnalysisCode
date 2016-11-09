@@ -72,6 +72,8 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
+    #all_mc = []
+
     #nominal = all_data + all_mc 
     nominal = all_mc 
     nominal += all_data
