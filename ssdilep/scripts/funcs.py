@@ -507,7 +507,8 @@ def write_hist(
     also write smtot hists for summed background.
     No folder structure is provided
     """
-    samples = backgrounds + signal
+    samples = backgrounds
+    if signal: samples += [signal]
     if data: samples += [data]
     ## generate nominal hists
     hists = get_hists(
