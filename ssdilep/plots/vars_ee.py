@@ -81,6 +81,17 @@ ZbosonEta = Var(name='ZbosonEta',
                 log    = False,
                 )
 
+chargeFlipHist = Var(name='chargeFlipHist',
+                path   = 'event',
+                xmin   = 0,
+                xmax   = 10000,
+                rebin  = 1,
+                log    = False,
+                )
+
+## MET
+## ---------------------------------------
+
 met_trk_et = Var(name='met_trk_et',
                 path   = 'met',
                 xmin   = 0.,
@@ -308,6 +319,7 @@ vars_list.append(el_lead_trkz0)
 vars_list.append(el_lead_trkz0sintheta)
 vars_list.append(ZbosonPt)
 vars_list.append(ZbosonEta)
+vars_list.append(chargeFlipHist)
 #vars_list.append(el_sublead_trkz0sintheta)
 
 vars_dict = {}

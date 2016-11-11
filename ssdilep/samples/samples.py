@@ -1071,7 +1071,7 @@ all_data += data.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters
-#all_mc += diboson_sherpa.daughters
+all_mc += diboson_sherpa.daughters
 #all_mc += diboson_powheg.daughters
 
 #all_mc += Wenu.daughters

@@ -9,6 +9,9 @@ for calculating variables, applying selection and
 plotting.
 """
 
+## numpy
+import numpy as np
+
 ## std modules
 import itertools
 import os
@@ -1057,6 +1060,22 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_ZMassWindowMediumLLHisolLooseSideband(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        mZ = 91.1876*GeV
+        if len(electrons)==2 :
+          if (abs( (electrons[0].tlv + electrons[1].tlv).M() - mZ) > 15*GeV) and (abs( (electrons[0].tlv + electrons[1].tlv).M() - mZ) < 30*GeV):
+            return True;
+        return False
+
+    def cut_ZMassWindowMediumLLHisolLooseSSSideband(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        mZ = (91.1876-2.0)*GeV # 2 GeV shift for the SS Z peak
+        if len(electrons)==2 :
+          if (abs( (electrons[0].tlv + electrons[1].tlv).M() - mZ) > 15*GeV) and (abs( (electrons[0].tlv + electrons[1].tlv).M() - mZ) < 30*GeV):
+            return True;
+        return False
+
     def cut_ZMassWindowMediumLLHisolLooseWide(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         mZ = 91.1876*GeV
@@ -1646,6 +1665,12 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
         self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
               
+        # charge-flip histograms
+        pt_bins  = [30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.] # last pt bin is open
+        eta_bins = [0.0, 0.75, 1.1, 1.37, 1.52, 1.7, 1.9, 2.1, 2.3, 2.5]
+        tot_bins = len(pt_bins)*len(pt_bins)*(len(eta_bins)-1)*(len(eta_bins)-1)
+        self.h_chargeFlipHist = self.hist('h_chargeFlipHist', "ROOT.TH1F('$', ';pt: "+str(len(pt_bins))+" eta: "+str(len(eta_bins)-1)+";Events',"+str(tot_bins)+",0,"+str(tot_bins)+")", dir=EVT)
+
         # ---------------
         # Fill histograms
         # ---------------
@@ -1694,6 +1719,17 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
           self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
           self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
+
+          # charge-flip histograms
+          ptbin1 = np.digitize( ele1.tlv.Pt()/GeV, pt_bins )
+          ptbin2 = np.digitize( ele2.tlv.Pt()/GeV, pt_bins )
+          etabin1 = np.digitize( abs(ele1.caloCluster_eta), eta_bins )
+          etabin2 = np.digitize( abs(ele2.caloCluster_eta), eta_bins )
+          assert ptbin1!=0 and ptbin2!=0 and etabin1!=0 and etabin2!=0, "bins shouldn't be 0"
+          # encode pt1, pt2, eta1, eta2 into 1D bins given pt_bins and eta_bins
+          totBin = ( (ptbin1-1)*(len(eta_bins)-1) + etabin1-1 )*(len(eta_bins)-1)*len(pt_bins) + ( (ptbin2-1)*(len(eta_bins)-1) + etabin2 )
+          self.h_chargeFlipHist.Fill(totBin,weight)
+ 
           
 
 
