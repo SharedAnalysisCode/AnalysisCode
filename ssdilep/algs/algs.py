@@ -2159,11 +2159,11 @@ class VarsAlg(pyframe.core.Algorithm):
         self.store['electrons_tight_MediumLLH_isolLoose'] = electrons_tight_MediumLLH_isolLoose
         
         # tight electrons (isoTight // TightLLH)
-        electrons_tight_MediumLLH_isolLoose = []
+        electrons_tight_TightLLH_isolTight = []
         for ele in electrons:
           if ( ele.pt>30*GeV and ele.isIsolated_Tight and ele.LHTight and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
-            electrons_tight_MediumLLH_isolLoose += [ele]
-        self.store['electrons_tight_TightLLH_isolTight'] = electrons_tight_MediumLLH_isolLoose
+            electrons_tight_TightLLH_isolTight += [ele]
+        self.store['electrons_tight_TightLLH_isolTight'] = electrons_tight_TightLLH_isolTight
 
         if bool(len(jets)) and bool(len(muons)):
           self.store['mujet_dphi'] = muons[0].tlv.DeltaPhi(jets[0].tlv)
