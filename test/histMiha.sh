@@ -4,7 +4,7 @@
 
 INPATH="/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12/merged/nominal/"
 INSCRIPT="../ssdilep/run"
-SCRIPT="j.plotter_ZPeak.py"
+SCRIPT="j.plotter_FFele.py"
 
 python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee.root --sampletype="mc" --events=100000   #--config="sys:FF_DN" 
 #python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/llll.root --sampletype="mc" --events=100000   #--config="sys:FF_DN" 

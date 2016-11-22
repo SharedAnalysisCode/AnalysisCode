@@ -229,7 +229,56 @@ class Particle(pyframe.core.ParticleProxy):
     def isTrueIsoMuon(self):
       matchtype = self.truthType in [6]
       return self.isTruthMatchedToMuon and matchtype
+    
+    #========================================================================#
+    #                          Type of the electron                          #
+    #________________________________________________________________________#
+    #
+    #                truthType  truthOrigin  firstEgTT  firstEgTO  charge-flip
+    # 1 prompt             2        12/13          2      12/13            0
+    # 2 flip type 2        2        12/13          2      12/13            1
+    # 3 flip tpye 4        4            5          2      12/13            1
+    # 4 brem               4            5          2      12/13            0
+    # 5 FSR                4            5         15         40          N/A
+    # 6 fake                               else  
+    # 0 not-electron
+    #_________________________________________________________________________
+    def electronType(self):
+      if self.m < 0.510 and self.m > 0.511 :
+        return 0
+      else :
+        trueCharge = -self.firstEgMotherPdgId/11.
+        chargeEval = abs(self.trkcharge - trueCharge) # 0: SS, 2: OS, else: PdgId != 13
+        if   self.truthType==2 and self.truthOrigin in [12,13] and self.firstEgMotherTruthType== 2 and self.firstEgMotherTruthOrigin in [12,13] and chargeEval==0 :
+          return 1
+        elif self.truthType==2 and self.truthOrigin in [12,13] and self.firstEgMotherTruthType== 2 and self.firstEgMotherTruthOrigin in [12,13] and chargeEval==2 :
+          return 2
+        elif self.truthType==4 and self.truthOrigin== 5 and self.firstEgMotherTruthType== 2 and self.firstEgMotherTruthOrigin in [12,13] and chargeEval==2 :
+          return 3
+        elif self.truthType==4 and self.truthOrigin== 5 and self.firstEgMotherTruthType== 2 and self.firstEgMotherTruthOrigin in [12,13] and chargeEval==0 :
+          return 4
+        elif self.truthType==4 and self.truthOrigin== 5 and self.firstEgMotherTruthType==15 and self.firstEgMotherTruthOrigin==40 :
+          return 5
+        else :
+          return 6 
 
+    #========================================================================#
+    #                   Type of the electron   (simplified)                  #
+    #________________________________________________________________________#
+    #
+    #                truthType  truthOrigin
+    # 1 prompt             2        12/13
+    # 2 not prompt         else
+    # 0 not-electron
+    #_________________________________________________________________________
+    def electronTypeSimple(self):
+      if self.m < 0.510 and self.m > 0.511 :
+        return 0
+      else :
+        if   self.truthType==2 and self.truthOrigin in [12,13] :
+          return 1
+        else :
+          return 2
 
 class ParticlesBuilder(pyframe.core.Algorithm):
     #__________________________________________________________________________

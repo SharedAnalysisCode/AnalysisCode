@@ -325,6 +325,36 @@ class Algorithm(object):
             self.hists[name] = h
 
         return self.hists[name]
+
+    #_________________________________________________________________________
+    def hist2DVariable(self, name="", xaxis=[], yaxis=[], dir=""):
+        """
+        Call this function in your algorithm to book a new histogram or
+        retrieve it if it already exists.
+        """
+        if dir:
+            name = os.path.join(dir, name)
+
+        if not self.hists.has_key(name):
+            # So that the temporary objects would be
+            # created in a general memory space.
+            ROOT.gROOT.cd()
+                            
+            # create new
+            xArray = array.array('d',xaxis)
+            yArray = array.array('d',yaxis)
+            h = ROOT.TH2F('$'.replace("$", os.path.basename(name)),';', len(xaxis)-1, xArray, len(yaxis)-1, yArray)
+
+            h.SetDirectory(0)
+
+            # Calculate the statistical uncertainties correctly for
+            # weighted histograms:
+            if isinstance(h, ROOT.TH1):
+                h.Sumw2()
+
+            self.hists[name] = h
+
+        return self.hists[name]
     #_________________________________________________________________________
     def set_weight(self, weight=1.0):
         """

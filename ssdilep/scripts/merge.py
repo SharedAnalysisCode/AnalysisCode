@@ -68,6 +68,7 @@ hm = histmgr.HistMgr(basedir=options.indir,target_lumi=lumi)
 
 ## data
 data = samples.data
+data = []
 ## backgrounds 
 
 mc_backgrounds = [
@@ -80,7 +81,8 @@ mc_backgrounds = [
     #samples.Wmunu,
     #samples.Wtaunu,
     #samples.mytestSample,
-    samples.Zee221,
+    #samples.Zee221,
+    samples.AZNLOCTEQ6L1_DYee,
     #samples.diboson_sherpa,
     #samples.Zmumu,
     #samples.Ztautau,
@@ -103,7 +105,8 @@ mumu_signals = []
 # Estimators
 #--------------
 #for s in mc_backgrounds + mumu_signals + [data]: 
-for s in mc_backgrounds + [data]: 
+#for s in mc_backgrounds + [data]: 
+for s in mc_backgrounds: 
     histmgr.load_base_estimator(hm,s)
 
 if options.fakest == "FakeFactor":
@@ -158,7 +161,8 @@ mumu_backgrounds = [
     #samples.Wmunu,
     #samples.Wtaunu,
     #samples.mytestSample,
-    samples.Zee221,
+    #samples.Zee221,
+    samples.AZNLOCTEQ6L1_DYee,
     #samples.diboson_sherpa,
     #samples.Zmumu,
     #samples.Ztautau,
@@ -217,8 +221,8 @@ else:
          region      = options.region,
          icut        = int(options.icut),
          histname    = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
-         #rebin       = mumu_vdict[options.vname]['rebin'],
-         rebin       = 1,
+         rebin       = mumu_vdict[options.vname]['rebin'],
+         rebinVar    = mumu_vdict[options.vname]['rebinVar'],
          sys_dict    = None,
          outname     = plotsfile
          )

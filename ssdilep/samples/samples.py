@@ -54,7 +54,7 @@ GRL += [
         "304243","304308","304337","304409","304431","304494",
         ]
 
-#GRL += ['279984','298595','298609',]
+#GRL += ['276336','303007',]
 
 ds_name = '00%s.physics_Main'
 mc_names= 'user.gucchiel%s'
@@ -744,6 +744,59 @@ Zee221 = Sample( name =   'Zee',
                               ],
                 ) 
 
+#-----
+# Zee Powheg Mass-binned
+#-----
+
+AZNLOCTEQ6L1_DYee_120M180         = Sample( name =  "AZNLOCTEQ6L1_DYee_120M180",                xsec = 0.017478*1000.         ) 
+AZNLOCTEQ6L1_DYee_180M250         = Sample( name =  "AZNLOCTEQ6L1_DYee_180M250",                xsec = 0.0029212*1000.        ) 
+AZNLOCTEQ6L1_DYee_250M400         = Sample( name =  "AZNLOCTEQ6L1_DYee_250M400",                xsec = 0.001082*1000.         ) 
+AZNLOCTEQ6L1_DYee_400M600         = Sample( name =  "AZNLOCTEQ6L1_DYee_400M600",                xsec = 0.0001955*1000.        ) 
+AZNLOCTEQ6L1_DYee_600M800         = Sample( name =  "AZNLOCTEQ6L1_DYee_600M800",                xsec = 0.000037401*1000.      ) 
+AZNLOCTEQ6L1_DYee_800M1000        = Sample( name =  "AZNLOCTEQ6L1_DYee_800M1000",               xsec = 0.000010607*1000.      ) 
+AZNLOCTEQ6L1_DYee_1000M1250       = Sample( name =  "AZNLOCTEQ6L1_DYee_1000M1250",              xsec = 0.0000042582*1000.     ) 
+AZNLOCTEQ6L1_DYee_1250M1500       = Sample( name =  "AZNLOCTEQ6L1_DYee_1250M1500",              xsec = 0.0000014219*1000.     ) 
+AZNLOCTEQ6L1_DYee_1500M1750       = Sample( name =  "AZNLOCTEQ6L1_DYee_1500M1750",              xsec = 0.00000054521*1000.    ) 
+AZNLOCTEQ6L1_DYee_1750M2000       = Sample( name =  "AZNLOCTEQ6L1_DYee_1750M2000",              xsec = 0.00000022991*1000.    ) 
+AZNLOCTEQ6L1_DYee_2000M2250       = Sample( name =  "AZNLOCTEQ6L1_DYee_2000M2250",              xsec = 0.00000010387*1000.    ) 
+AZNLOCTEQ6L1_DYee_2250M2500       = Sample( name =  "AZNLOCTEQ6L1_DYee_2250M2500",              xsec = 0.0000000494*1000.     ) 
+AZNLOCTEQ6L1_DYee_2500M2750       = Sample( name =  "AZNLOCTEQ6L1_DYee_2500M2750",              xsec = 0.000000024452*1000.   ) 
+AZNLOCTEQ6L1_DYee_2750M3000       = Sample( name =  "AZNLOCTEQ6L1_DYee_2750M3000",              xsec = 0.000000012487*1000.   ) 
+AZNLOCTEQ6L1_DYee_3000M3500       = Sample( name =  "AZNLOCTEQ6L1_DYee_3000M3500",              xsec = 0.000000010029*1000.   ) 
+AZNLOCTEQ6L1_DYee_3500M4000       = Sample( name =  "AZNLOCTEQ6L1_DYee_3500M4000",              xsec = 0.0000000029342*1000.  ) 
+AZNLOCTEQ6L1_DYee_4000M4500       = Sample( name =  "AZNLOCTEQ6L1_DYee_4000M4500",              xsec = 0.00000000089764*1000. ) 
+AZNLOCTEQ6L1_DYee_4500M5000       = Sample( name =  "AZNLOCTEQ6L1_DYee_4500M5000",              xsec = 0.00000000028071*1000. ) 
+AZNLOCTEQ6L1_DYee_5000M           = Sample( name =  "AZNLOCTEQ6L1_DYee_5000M",                  xsec = 0.00000000012649*1000. ) 
+
+
+AZNLOCTEQ6L1_DYee = Sample( name =   'Zee',
+                  tlatex = 'Powheg Z #rightarrow ee',
+                  fill_color = ROOT.kOrange+1,
+                  line_color =  ROOT.kOrange+2,
+                  marker_color =  ROOT.kOrange+2,
+                  daughters = [
+                              AZNLOCTEQ6L1_DYee_120M180,        
+                              AZNLOCTEQ6L1_DYee_180M250,        
+                              AZNLOCTEQ6L1_DYee_250M400,        
+                              AZNLOCTEQ6L1_DYee_400M600,        
+                              AZNLOCTEQ6L1_DYee_600M800,        
+                              AZNLOCTEQ6L1_DYee_800M1000,        
+                              AZNLOCTEQ6L1_DYee_1000M1250,        
+                              AZNLOCTEQ6L1_DYee_1250M1500,        
+                              AZNLOCTEQ6L1_DYee_1500M1750,        
+                              AZNLOCTEQ6L1_DYee_1750M2000,        
+                              AZNLOCTEQ6L1_DYee_2000M2250,        
+                              AZNLOCTEQ6L1_DYee_2250M2500,        
+                              AZNLOCTEQ6L1_DYee_2500M2750,        
+                              AZNLOCTEQ6L1_DYee_2750M3000,        
+                              AZNLOCTEQ6L1_DYee_3000M3500,        
+                              AZNLOCTEQ6L1_DYee_3500M4000,        
+                              AZNLOCTEQ6L1_DYee_4000M4500,        
+                              AZNLOCTEQ6L1_DYee_4500M5000,        
+                              AZNLOCTEQ6L1_DYee_5000M,              
+                              ],
+                ) 
+
 
 #-------
 # Zmumu
@@ -1071,14 +1124,14 @@ all_data += data.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters
-all_mc += diboson_sherpa.daughters
+#all_mc += diboson_sherpa.daughters
 #all_mc += diboson_powheg.daughters
 
 #all_mc += Wenu.daughters
 #all_mc += Wmunu.daughters
 #all_mc += Wtaunu.daughters
 
-all_mc += WenuPowheg.daughters
+#all_mc += WenuPowheg.daughters
 #all_mc += WmunuPowheg.daughters
 #all_mc += WtaunuPowheg.daughters
 
@@ -1086,14 +1139,15 @@ all_mc += WenuPowheg.daughters
 #all_mc += Zmumu.daughters
 #all_mc += Ztautau.daughters
 
-all_mc += Zee221.daughters
-#all_mc += ZeePowheg.daughters
+#all_mc += Zee221.daughters
+#all_mc += AZNLOCTEQ6L1_DYee.daughters
+all_mc += ZeePowheg.daughters
 #all_mc += ZmumuPowheg.daughters
 #all_mc += ZtautauPowheg.daughters
 
 #####all_mc += ttX.daughters
 #all_mc += singletop.daughters
-all_mc += ttbar.daughters
+#all_mc += ttbar.daughters
 #####all_mc += all_DCH.daughters
 #####all_mc += single_DCH
 
