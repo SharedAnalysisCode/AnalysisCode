@@ -26,7 +26,9 @@ public:
   TH1F* m_hSSSideband;
 
   double m_ptBins[12] = {30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.,400.};
-  double m_etaBins[10] = {0.0, 0.75, 1.1, 1.37, 1.52, 1.7, 1.9, 2.1, 2.3, 2.5};
+  //double m_etaBins[10] = {0.0, 0.75, 1.1, 1.37, 1.52, 1.7, 1.9, 2.1, 2.3, 2.5};
+  //double m_etaBins[18] = {0.0, 0.25, 0.50, 0.75, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
+  double m_etaBins[16] = {0.0, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
 
   int m_NetaBins;
   int m_NptBins;
@@ -34,6 +36,8 @@ public:
   ROOT::Math::Minimizer* m_min = nullptr;
   TH1D* m_flipRatePt = nullptr;
   TH1D* m_flipRateEta = nullptr;
+
+  TFile* m_outFile = nullptr;
 
   ROOT::Math::Minimizer* NumericalMinimization1D(const char* minName = "Minuit2", const char* algoName = "" , int randomSeed = -1);
   double LogLikelihood1D(const double*);
@@ -87,6 +91,11 @@ m_hSSSideband(hSSSideband)
     m_flipRatePt->SetBinContent(pt+1,pars.Value());
     m_flipRatePt->SetBinError(pt+1,pars.StepSize());
   }
+
+  m_outFile = new TFile( (std::string("chargeFlipRates_")+hOSCenter->GetTitle()+std::string(".root")).c_str(), "RECREATE" );
+  m_flipRatePt->Write();
+  m_flipRateEta->Write();
+  m_outFile->Close();
 }
 
 //-------------------------------------------------
@@ -101,7 +110,7 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
 
    min->SetMaxFunctionCalls(1e7); // for Minuit/Minuit2
    min->SetMaxIterations(1e5);  // for GSL
-   min->SetTolerance(1e-4);
+   min->SetTolerance(1e-5);
    min->SetPrintLevel(1);
 
    auto func = &NumericalMinimizer::LogLikelihood1D;
@@ -154,15 +163,21 @@ double NumericalMinimizer::LogLikelihood1D(const double *xx )
     if (m_etaBins[eta1] >= 1.37 && m_etaBins[eta1] < 1.52) continue;
     etaNorm += (m_etaBins[eta1+1]-m_etaBins[eta1])*xx[eta1];
   }
-  return value + 1e6*pow((etaNorm-1),2);
+  return value + 1e8*pow((etaNorm-1),2);
 }
 
 void charge_flip_measurement(){
 
-  std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowOS_Powheg.root";
+  /*std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowOS_Powheg.root";
   std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowOS-Sideband_Powheg.root";
   std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS_Powheg.root";
   std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  */
+  std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS_Powheg.root";
+  std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS-Sideband_Powheg.root";
+  std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  
 
   TFile* OSCenterFile   = new TFile(OSCenterInputFile.c_str());
   TFile* OSSidebandFile = new TFile(OSSidebandInputFile.c_str());
@@ -250,7 +265,7 @@ void charge_flip_measurement(){
   //ATLAS_LABEL(0.20,0.88,1); myText(0.35,0.9,1,"internal",0.055);
   //myText(0.20,0.84,1,"#sqrt{s} = 13 TeV, 13.9 fb^{-1}",0.055);
 
-  c1->Print("c1.eps");
-  c2->Print("c2.eps");
+  c1->Print("chargeFlipEta.eps");
+  c2->Print("chargeFlipPt.eps");
 
 }

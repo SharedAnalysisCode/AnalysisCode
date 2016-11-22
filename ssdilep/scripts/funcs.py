@@ -498,6 +498,7 @@ def write_hist(
         icut        = None,
         histname    = None,
         rebin       = None,
+        rebinVar    = [],
         sys_dict    = None,
         outname     = None,
         ):
@@ -526,6 +527,13 @@ def write_hist(
     for s,h in hists.items():
         hname = 'h_%s_nominal_%s' % (region,s.name)
         h.SetNameTitle(hname,hname)
+        if rebin and len(rebinVar)==0 and h:
+          h.Rebin(rebin)
+          print "rebin ",rebin
+        elif len(rebinVar)>1 and h:
+          print "Performing variable bin rebining with on " + histname
+          runArray = array('d',rebinVar)
+          h = h.Rebin( len(rebinVar)-1, histname+"Var", runArray )
         fout.WriteTObject(h,hname)
         ## systematics
         if hasattr(h,'sys_hists'):

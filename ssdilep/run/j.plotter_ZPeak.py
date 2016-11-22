@@ -75,6 +75,10 @@ def analyze(config):
     loop += ssdilep.algs.vars.ParticlesBuilder(
         key='muons',
         )
+    loop += ssdilep.algs.vars.ParticlesBuilder(
+        key='electrons',
+        )
+
 
     ## build MET
     ## ---------------------------------------
@@ -148,31 +152,13 @@ def analyze(config):
     ##-------------------------------------------------------------------------
 
     ## MyTestRegion
-    ## --------------------------------------- 
+    ## ---------------------------------------
 
     loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowOSWide',
+            region   = 'ZWindowAS',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindowMediumLLHisolLooseWide',None],
-               ],
-            )
-
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowSSWide',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindowMediumLLHisolLooseWide',None],
-               ],
-            )
-
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowOS',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
                ['ZMassWindowMediumLLHisolLoose',None],
                ],
             )
@@ -187,10 +173,10 @@ def analyze(config):
             )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowOS-Sideband',
+            region   = 'ZWindowAS-Sideband',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
                ['ZMassWindowMediumLLHisolLooseSideband',None],
                ],
             )
@@ -204,6 +190,159 @@ def analyze(config):
                ],
             )
 
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'BeyondZAS',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['Mass130GeVMediumLLHisolLoose',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'BeyondZSS',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['Mass130GeVMediumLLHisolLoose',None],
+               ],
+            )
+
+    ## TruthStudies
+    ## --------------------------------------- 
+
+    ## prompt opposite-sign
+    '''
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSBothPromp',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLooseBothPrompt',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSCHF1',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndCHF1',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSCHF2',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndCHF2',None],
+               ],
+            )
+
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSBrem',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndBrem',None],
+               ],
+            )
+
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSFSR',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndFSR',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSFake',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndFake',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeOSBothNonPromp',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLooseBothNonPrompt',None],
+               ],
+            )
+
+    ## prompt same-sign (should be 0)
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSBothPromp',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLooseBothPrompt',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSCHF1',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndCHF1',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSCHF2',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndCHF2',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSBrem',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndBrem',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSFSR',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndFSR',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSFake',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoosePromptAndFake',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZeeSSBothNonPromp',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLooseBothNonPrompt',None],
+               ],
+            )
+
+    '''
 
     
     loop += pyframe.algs.HistCopyAlg()

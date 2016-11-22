@@ -19,6 +19,9 @@ cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
 ## Non-equidistant bins
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
+bins_invM = generateLogBins(40,130,2000)
+bins_Zpeak = [50,70,74,77,80,82,83,84,85,86,87,88,89,90,91,92,93,94,95,97,99,102,105,110,130]
+bins_Zpeak2 = [50,80,100,130]
 bins_met = generateLogBins(15,1,1000)
 
 
@@ -60,9 +63,11 @@ njets = Var(name = 'njets',
             )
 invMass = Var(name='invMass',
               path   = 'event',
-              xmin   = 70,
-              xmax   = 110,
-              #rebin  = 10,
+              xmin   = 130,
+              xmax   = 2000,
+              rebin  = 1,
+              rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
               log    = True,
               )
 ZbosonPt = Var(name='ZbosonPt',
@@ -87,6 +92,18 @@ chargeFlipHist = Var(name='chargeFlipHist',
                 xmax   = 10000,
                 rebin  = 1,
                 log    = False,
+                )
+
+el_pt_eta_all = Var(name='el_pt_eta_all',
+                path   = 'electrons',
+                )
+
+el_pt_eta_chf2 = Var(name='el_pt_eta_chf2',
+                path   = 'electrons',
+                )
+
+el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
+                path   = 'electrons',
                 )
 
 ## MET
@@ -303,7 +320,6 @@ vars_list.append(nelectrons)
 vars_list.append(invMass)
 vars_list.append(met_trk_et)
 vars_list.append(met_clus_et)
-vars_list.append(invMass)
 vars_list.append(el_lead_pt)
 vars_list.append(el_sublead_pt)
 vars_list.append(el_lead_eta)
@@ -320,6 +336,9 @@ vars_list.append(el_lead_trkz0sintheta)
 vars_list.append(ZbosonPt)
 vars_list.append(ZbosonEta)
 vars_list.append(chargeFlipHist)
+vars_list.append(el_pt_eta_all)
+vars_list.append(el_pt_eta_chf2)
+vars_list.append(el_pt_eta_chf4)
 #vars_list.append(el_sublead_trkz0sintheta)
 
 vars_dict = {}

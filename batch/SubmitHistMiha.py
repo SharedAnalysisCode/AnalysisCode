@@ -27,7 +27,6 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-#RUN = "Hist17SepDataWeight"
 RUN = "EXOT12"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
@@ -92,7 +91,7 @@ def main():
     all_sys = ntup_sys + plot_sys
 
     ## ensure output path exists
-    prepare_path(OUTPATH)
+    #prepare_path(OUTPATH)
     
     ## auto-build tarball
     if AUTOBUILD:
@@ -161,8 +160,8 @@ def submit(tag,job_sys,samps,config={}):
     nsubjobs   = len(samps)
     if TESTMODE: nsubjobs = 1
 
-    prepare_path(absoutpath)
-    prepare_path(abslogpath)
+    #prepare_path(absoutpath)
+    #prepare_path(abslogpath)
 
     vars=[]
     vars+=["CONFIG=%s" % abscfg]
