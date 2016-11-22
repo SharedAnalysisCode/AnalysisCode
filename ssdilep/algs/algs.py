@@ -32,6 +32,7 @@ import pyframe
 import mcutils
 
 GeV = 1000.0
+g_mZ = 91.1876*GeV
 
 #------------------------------------------------------------------------------
 class CutAlg(pyframe.core.Algorithm):
@@ -718,6 +719,16 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_METhigher50(self):
       met = self.store["met_clus"]
       return met.tlv.Pt() > 50 * GeV
+
+    #__________________________________________________________________________
+    def cut_METtrkLow25(self):
+      met = self.store["met_trk"]
+      return met.tlv.Pt() < 25 * GeV
+
+    #__________________________________________________________________________
+    def cut_METtrkLow60(self):
+      met = self.store["met_trk"]
+      return met.tlv.Pt() < 60 * GeV
    
     #__________________________________________________________________________
     def cut_SumCosDPhi02(self):
@@ -1024,6 +1035,25 @@ class CutAlg(pyframe.core.Algorithm):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
     # -- stuff added by Miha -----------------|
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+    def cut_AtLeastOneLooseEleLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)>0: 
+          return True
+        return False
+
+    def cut_ZVetoLooseEleLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)<1: False
+        for pair in itertools.combinations(electrons,2):
+          if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) < 20*GeV:
+            return False
+        return True
+
+    def cut_DYVetoTightEleMediumLLHisolLoose(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electrons)>1: False
+        return True
+
     def cut_ExactlyTwoTightEleMediumLLHisolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         if len(electrons)==2: 
@@ -1584,6 +1614,48 @@ class PlotAlg(pyframe.algs.CutFlowAlg,CutAlg):
              self.h_mumu_musublead_phi.Fill(mp.sublead.tlv.Phi(), pweight * weight)
           """   
 
+    #__________________________________________________________________________
+    def check_region(self,cutnames):
+        cut_passed = True
+        for cn in cutnames:
+            ## could use this to fail when cuts not available
+            #if not cuts.has_key(cn): return False
+    
+            ## pass if None
+            if cn == 'ALL': continue
+            #if cn.startswith("MuPairs"): continue
+
+            if cn.startswith('!'):
+                cut_passed = not self.apply_cut(cn[1:])
+            else:
+                cut_passed = self.apply_cut(cn) and cut_passed
+            #if not cut_passed:
+            #    return False
+        return cut_passed
+    
+    
+    """ 
+    #__________________________________________________________________________
+    def get_obj_cutflow(self, obj_key, cut, list_weights=None, cut_prefix=""):
+        for o in self.store[obj_key]:
+          if hasattr(o,"cdict") and hasattr(o,"wdict"):
+            obj_weight = 1.0
+            if list_weights: 
+              for w in list_weights:
+                obj_weight *= o.GetWeight(w)
+                if cut_prefix: 
+                  if cut.startswith(cut_prefix): 
+                    obj_passed = o.HasPassedCut(cut) and passed
+            self.hists[self.region+"_"+obj_key].count_if(obj_passed, cut, obj_weight * weight)
+    """
+
+    #__________________________________________________________________________
+    def reset_attributes(self,objects):
+        for o in objects:
+          o.ResetCuts()
+          o.ResetWeights()
+        return 
+        
 #------------------------------------------------------------------------------
 class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
     """
@@ -1813,6 +1885,48 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
                 self.h_el_pt_eta_chf4.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
 
 
+    #__________________________________________________________________________
+    def check_region(self,cutnames):
+        cut_passed = True
+        for cn in cutnames:
+            ## could use this to fail when cuts not available
+            #if not cuts.has_key(cn): return False
+    
+            ## pass if None
+            if cn == 'ALL': continue
+            #if cn.startswith("MuPairs"): continue
+
+            if cn.startswith('!'):
+                cut_passed = not self.apply_cut(cn[1:])
+            else:
+                cut_passed = self.apply_cut(cn) and cut_passed
+            #if not cut_passed:
+            #    return False
+        return cut_passed
+    
+    
+    """ 
+    #__________________________________________________________________________
+    def get_obj_cutflow(self, obj_key, cut, list_weights=None, cut_prefix=""):
+        for o in self.store[obj_key]:
+          if hasattr(o,"cdict") and hasattr(o,"wdict"):
+            obj_weight = 1.0
+            if list_weights: 
+              for w in list_weights:
+                obj_weight *= o.GetWeight(w)
+                if cut_prefix: 
+                  if cut.startswith(cut_prefix): 
+                    obj_passed = o.HasPassedCut(cut) and passed
+            self.hists[self.region+"_"+obj_key].count_if(obj_passed, cut, obj_weight * weight)
+    """
+
+    #__________________________________________________________________________
+    def reset_attributes(self,objects):
+        for o in objects:
+          o.ResetCuts()
+          o.ResetWeights()
+        return 
+
 #------------------------------------------------------------------------------
 class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
     """
@@ -1858,6 +1972,8 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
     #_________________________________________________________________________
     def initialize(self):
         pyframe.algs.CutFlowAlg.initialize(self)
+        self.pt_bins  = [30., 40., 50., 60., 70., 80., 100., 125., 180., 250., 350., 500.]
+        self.eta_bins = [0.0, 1.37, 1.52, 2.01, 2.47]
     #_________________________________________________________________________
     def execute(self, weight):
    
@@ -1915,7 +2031,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         
         # should probably make this configurable
         ## get event candidate
-        electrons  = self.store['electrons_tight_MediumLLH_isolLoose']
+        electrons  = self.store['electrons_loose_LooseLLH']
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
         
@@ -1931,9 +2047,6 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
-        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
-        self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
-        self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -1943,38 +2056,38 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
-        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
-        #leading
-        self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(e lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(e lead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(e lead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
-        #subleading
-        self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(e sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(e sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(e sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        # tight
+        self.h_el_t_pt = self.hist('h_el_t_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_t_eta = self.hist('h_el_t_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_t_phi = self.hist('h_el_t_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_t_trkd0sig = self.hist('h_el_t_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_t_trkz0sintheta = self.hist('h_el_t_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_t_2D_pt_eta = self.hist2DVariable('h_el_t_2D_pt_eta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
+        # loose
+        self.h_el_l_pt = self.hist('h_el_l_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_l_eta = self.hist('h_el_l_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_l_phi = self.hist('h_el_l_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_l_trkd0sig = self.hist('h_el_l_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_l_trkz0sintheta = self.hist('h_el_l_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_l_2D_pt_eta = self.hist2DVariable('h_el_l_2D_pt_eta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
+        # strictly loose
+        self.h_el_sl_pt = self.hist('h_el_sl_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_sl_eta = self.hist('h_el_sl_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_sl_phi = self.hist('h_el_sl_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_sl_trkd0sig = self.hist('h_el_sl_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_sl_trkz0sintheta = self.hist('h_el_sl_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_sl_2D_pt_eta = self.hist2DVariable('h_el_sl_2D_pt_eta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
 
 
         # ---------------
         # Fill histograms
         # ---------------
         if passed:
-          assert len(electrons)==2, "should have exactly two tight electrons at this point"
           ## event plots
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
           self.h_NPV.Fill(self.chain.NPV, weight)
           self.h_nelectrons.Fill(len(electrons), weight)
-          self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
-          self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
-          self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
           ## met plots
           self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
           self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
@@ -1983,33 +2096,37 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
 
-          
           #electron
           for ele in electrons:
-            self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight)
-            self.h_el_eta.Fill(ele.caloCluster_eta, weight)
-            self.h_el_phi.Fill(ele.tlv.Phi(), weight)
-            self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
-            self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
-          
-          ele1 = electrons[1]
-          ele2 = electrons[0]
-          if electrons[0].tlv.Pt() > electrons[1].tlv.Pt():
-            ele1 = electrons[0]
-            ele2 = electrons[1]
-          assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
- 
-          self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
-          self.h_el_lead_eta.Fill(ele1.caloCluster_eta, weight)
-          self.h_el_lead_phi.Fill(ele1.tlv.Phi(), weight)
-          self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
-          self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
+            # loose (all of them are loose here)
+            elSF_LooseLLH =  getattr(ele,"RecoEff_SF").at(0)
+            elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
+            self.h_el_l_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
+            self.h_el_l_eta.Fill(ele.caloCluster_eta,         weight*elSF_LooseLLH)
+            self.h_el_l_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
+            self.h_el_l_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_LooseLLH)
+            self.h_el_l_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_LooseLLH)
+            self.h_el_l_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_LooseLLH)
+            if ele.isIsolated_Loose and ele.LHMedium:
+              # tight
+              elSF_MediumLLH_isolLoose =  getattr(ele,"RecoEff_SF").at(0)
+              elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
+              elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLH_isolLoose").at(0)
+              self.h_el_t_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_eta.Fill(ele.caloCluster_eta,         weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_phi.Fill(ele.tlv.Phi(),               weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_MediumLLH_isolLoose)
+            else:
+              # strictly loose (they failed the tight criteria)
+              self.h_el_sl_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
+              self.h_el_sl_eta.Fill(ele.caloCluster_eta,         weight*elSF_LooseLLH)
+              self.h_el_sl_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
+              self.h_el_sl_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_LooseLLH)
+              self.h_el_sl_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_LooseLLH)
+              self.h_el_sl_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_LooseLLH)
 
-          self.h_el_sublead_pt.Fill(ele2.tlv.Pt()/GeV, weight)
-          self.h_el_sublead_eta.Fill(ele2.caloCluster_eta, weight)
-          self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
-          self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
-          self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
 
     #__________________________________________________________________________
     def check_region(self,cutnames):
@@ -2150,6 +2267,13 @@ class VarsAlg(pyframe.core.Algorithm):
             self.store['tag'] = copy(muon1)
             self.store['probe'] = copy(muon2) 
           """ 
+
+        # loose electrons (no iso // LooseLLH)
+        electrons_loose_LooseLLH = []
+        for ele in electrons:
+          if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
+            electrons_loose_LooseLLH += [ele]
+        self.store['electrons_loose_LooseLLH'] = electrons_loose_LooseLLH
 
         # tight electrons (isoLoose // MediumLLH)
         electrons_tight_MediumLLH_isolLoose = []

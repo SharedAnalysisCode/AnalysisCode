@@ -116,7 +116,10 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DYVetoTightEleMediumLLHisolLoose')
 
     
     ## weights configuration
@@ -132,11 +135,11 @@ def analyze(config):
             key='SingleMuonTrigSF',
             scale=None,
             )
-    """ 
+
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
             )
-    
+    """
     ## objects
     ## +++++++++++++++++++++++++++++++++++++++
     """
@@ -155,11 +158,10 @@ def analyze(config):
     ## ---------------------------------------
 
     loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'ZWindowAS',
+            region   = 'FakeEnrichedRegion-nominal',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindowMediumLLHisolLoose',None],
+               ['METtrkLow25',None],
                ],
             )
 
