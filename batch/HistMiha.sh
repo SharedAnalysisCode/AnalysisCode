@@ -114,7 +114,7 @@ ls -alh
 
 
 echo ""
-echo "executing job..."
+echo "executing job..." 
 echo ${SCRIPT} --input ${TMPINPUT} --sampletype ${SAMPLETYPE} --config "${CFG}"
 ${SCRIPT} --input ${TMPINPUT} --sampletype ${SAMPLETYPE} --config "${CFG}"
 
@@ -125,7 +125,7 @@ echo "finished execution"
 echo 
 echo "preparing output dir..."
 
-if [ ! -d ${OUTPATH} ]; then mkdir ${OUTPATH}; chmod a+rxw ${OUTPATH}; fi
+if [ ! -d ${OUTPATH} ]; then mkdir -p ${OUTPATH}; chmod a+rxw ${OUTPATH}; fi
 
 echo "copying output"
 echo cp ${OUTFILE} ${OUTPATH}/${SAMPLE}.root 

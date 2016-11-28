@@ -116,7 +116,8 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
+    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DYVetoTightEleMediumLLHisolLoose')
@@ -162,6 +163,23 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['METtrkLow25',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgFFee(
+            region   = 'FakeEnrichedRegion-MET60',
+            plot_all = False,
+            cut_flow = [
+               ['METtrkLow60',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgFFee(
+            region   = 'FakeEnrichedRegion-ASjet',
+            plot_all = False,
+            cut_flow = [
+               ['METtrkLow25',None],
+               ['EleJetDphi28',None],
                ],
             )
 

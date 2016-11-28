@@ -248,4 +248,93 @@ class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
           self.store[self.key] = sf
         return True
 
+#------------------------------------------------------------------------------
+class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
+    """
+    ExactlyTwoLooseEleFF
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="ExactlyTwoLooseEleFF",
+            key            = None,
+            typeFF         = "TL",
+            config_file    = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.typeFF            = typeFF
+        self.config_file       = config_file
+
+        assert key, "Must provide key for storing mu reco sf"
+        assert typeFF in ["TL","LT","LL"], "allowed types: TL, LT, LL"
+        assert config_file, "Must provide config file!"
+    #_________________________________________________________________________
+    def initialize(self):
+
+      f = ROOT.TFile.Open(self.config_file)
+      assert f, "Failed to open fake-factor config file: %s"%(self.config_file)
+
+      h_ff = f.Get("FR")
+      assert h_ff, "Failed to get 'h_ff' from %s"%(self.config_file)
+
+      self.h_ff = h_ff.Clone()
+      self.h_ff.SetDirectory(0)
+      f.Close()
+
+      self.isoLevels = [
+      "isolLoose",
+      "isolTight",
+      ]
+      self.IDLevels = [
+      "LooseAndBLayerLLH",
+      "MediumLLH",
+      "TightLLH",
+      ]
+    #_________________________________________________________________________
+    def execute(self, weight):
+        sf=1.0
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)!=2:
+          if self.key: 
+            self.store[self.key] = sf
+          return True
+
+        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, electrons[0].caloCluster_eta ) )
+        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, electrons[1].caloCluster_eta ) )
+        if f1*f2==0:
+          sf=0
+          if self.key: 
+            self.store[self.key] = sf
+            return True
+        alpha = 1./((1-f1)*(1-f2))
+
+        if "mc" in self.sampletype: 
+          sf *= getattr(electrons[0],"RecoEff_SF").at(0)
+          sf *= getattr(electrons[1],"RecoEff_SF").at(0)
+          if self.typeFF=="TL":
+            sf *= getattr(electrons[0],"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= alpha*f2*(1.-f1)
+          if self.typeFF=="LT":
+            sf *= getattr(electrons[1],"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= alpha*f1*(1.-f2)
+          if self.typeFF=="LL":
+            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= -alpha*f1*f2
+
+        else:
+          if self.typeFF=="TL":
+            sf *= alpha*f2*(1.-f1)
+          if self.typeFF=="LT":
+            sf *= alpha*f1*(1.-f2)
+          if self.typeFF=="LL":
+            sf *= -alpha*f1*f2
+
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
 # EOF

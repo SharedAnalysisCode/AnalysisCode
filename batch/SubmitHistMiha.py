@@ -27,14 +27,14 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "EXOT12"
+RUN = "TestFFele"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
 
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
-SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_TwoMu.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_MuPairs.py"  # pyframe job script
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -72,7 +72,7 @@ def main():
     all_data = samples.all_data
 
     #all_mc = []
-    all_data = []
+    #all_data = []
 
     #nominal = all_data + all_mc 
     nominal = all_mc 
@@ -172,7 +172,7 @@ def submit(tag,job_sys,samps,config={}):
      
     VARS = ','.join(vars)
 
-    for line_intiger in range(nsubjobs):
+    for line_intiger in range(51,52):
 
         TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
         JOBLISTF = os.path.join(JOBDIR,'joblist_%s.xml' % (time.strftime("d%d_m%m_y%Y")) )

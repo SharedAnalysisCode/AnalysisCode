@@ -1124,14 +1124,14 @@ all_data += data.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters
-#all_mc += diboson_sherpa.daughters
+all_mc += diboson_sherpa.daughters
 #all_mc += diboson_powheg.daughters
 
 #all_mc += Wenu.daughters
 #all_mc += Wmunu.daughters
 #all_mc += Wtaunu.daughters
 
-#all_mc += WenuPowheg.daughters
+all_mc += WenuPowheg.daughters
 #all_mc += WmunuPowheg.daughters
 #all_mc += WtaunuPowheg.daughters
 
@@ -1139,15 +1139,15 @@ all_mc = []
 #all_mc += Zmumu.daughters
 #all_mc += Ztautau.daughters
 
-#all_mc += Zee221.daughters
+all_mc += Zee221.daughters
 #all_mc += AZNLOCTEQ6L1_DYee.daughters
-all_mc += ZeePowheg.daughters
+#all_mc += ZeePowheg.daughters
 #all_mc += ZmumuPowheg.daughters
 #all_mc += ZtautauPowheg.daughters
 
 #####all_mc += ttX.daughters
 #all_mc += singletop.daughters
-#all_mc += ttbar.daughters
+all_mc += ttbar.daughters
 #####all_mc += all_DCH.daughters
 #####all_mc += single_DCH
 
