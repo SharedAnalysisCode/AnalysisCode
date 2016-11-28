@@ -9,9 +9,6 @@ for calculating variables, applying selection and
 plotting.
 """
 
-## numpy
-import numpy as np
-
 ## std modules
 import itertools
 import os
@@ -1930,10 +1927,10 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
 
           # charge-flip histograms
-          ptbin1 = np.digitize( ele1.tlv.Pt()/GeV, pt_bins )
-          ptbin2 = np.digitize( ele2.tlv.Pt()/GeV, pt_bins )
-          etabin1 = np.digitize( abs(ele1.caloCluster_eta), eta_bins )
-          etabin2 = np.digitize( abs(ele2.caloCluster_eta), eta_bins )
+          ptbin1 = digitize( ele1.tlv.Pt()/GeV, pt_bins )
+          ptbin2 = digitize( ele2.tlv.Pt()/GeV, pt_bins )
+          etabin1 = digitize( abs(ele1.caloCluster_eta), eta_bins )
+          etabin2 = digitize( abs(ele2.caloCluster_eta), eta_bins )
           assert ptbin1!=0 and ptbin2!=0 and etabin1!=0 and etabin2!=0, "bins shouldn't be 0"
           # encode pt1, pt2, eta1, eta2 into 1D bins given pt_bins and eta_bins
           totBin = ( (ptbin1-1)*(len(eta_bins)-1) + etabin1-1 )*(len(eta_bins)-1)*len(pt_bins) + ( (ptbin2-1)*(len(eta_bins)-1) + etabin2 )
@@ -2162,8 +2159,10 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
           #electron
           for ele in electrons:
             # loose (all of them are loose here)
-            elSF_LooseLLH =  getattr(ele,"RecoEff_SF").at(0)
-            elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
+            elSF_LooseLLH = 1.
+            if("mc" in self.sampletype):
+              elSF_LooseLLH *= getattr(ele,"RecoEff_SF").at(0)
+              elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
             self.h_el_l_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
             self.h_el_l_eta.Fill(ele.caloCluster_eta,         weight*elSF_LooseLLH)
             self.h_el_l_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
@@ -2172,9 +2171,11 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
             self.h_el_l_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_LooseLLH)
             if ele.isIsolated_Loose and ele.LHMedium:
               # tight
-              elSF_MediumLLH_isolLoose =  getattr(ele,"RecoEff_SF").at(0)
-              elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
-              elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLH_isolLoose").at(0)
+              elSF_MediumLLH_isolLoose =  1.
+              if("mc" in self.sampletype):
+                elSF_MediumLLH_isolLoose *= getattr(ele,"RecoEff_SF").at(0)
+                elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
+                elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLH_isolLoose").at(0)
               self.h_el_t_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_MediumLLH_isolLoose)
               self.h_el_t_eta.Fill(ele.caloCluster_eta,         weight*elSF_MediumLLH_isolLoose)
               self.h_el_t_phi.Fill(ele.tlv.Phi(),               weight*elSF_MediumLLH_isolLoose)
@@ -2630,4 +2631,13 @@ def log_bins_str(nbins,xmin,xmax):
     bins_str = "%d, array.array('f',%s)" % (len(bins)-1, str(bins))
     return bins_str 
 
-
+#____________________________________________________________
+def digitize(value, binEdges):
+  assert isinstance(binEdges,list), "binEdges must be an array of bin edges"
+  if value < binEdges[0]: return 0
+  elif value > binEdges[-1]: return len(binEdges)
+  for i in range(len(binEdges)):
+    edlow = binEdges[i]
+    edhigh = binEdges[i+1]
+    if value >= edlow and value <= edhigh:
+      return i+1

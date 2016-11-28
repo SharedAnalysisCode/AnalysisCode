@@ -125,7 +125,7 @@ echo "finished execution"
 echo 
 echo "preparing output dir..."
 
-if [ ! -d ${OUTPATH} ]; then mkdir -p ${OUTPATH}; chmod a+rxw ${OUTPATH}; fi
+if [ ! -d ${OUTPATH} ]; then mkdir -p ${OUTPATH}; chmod a+rxw `dirname $OUTPATH`; chmod a+rxw ${OUTPATH}; fi
 
 echo "copying output"
 echo cp ${OUTFILE} ${OUTPATH}/${SAMPLE}.root 
