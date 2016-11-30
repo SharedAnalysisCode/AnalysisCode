@@ -311,13 +311,13 @@ def plot_hist(
    
     nLegend = len(signal+backgrounds) + 2
     x_legend = 0.63
-    x_leg_shift = -0.055
+    x_leg_shift = 0
     y_leg_shift = -0.1 
     legYCompr = 8.0
     legYMax = 0.85
     legYMin = legYMax - (legYMax - (0.55 + y_leg_shift)) / legYCompr * nLegend
     legXMin = x_legend + x_leg_shift
-    legXMax = legXMin + 0.4
+    legXMax = legXMin + 0.25
   
     ## create legend (could use metaroot functionality?)
     if not do_ratio_plot:
@@ -328,7 +328,7 @@ def plot_hist(
     leg.SetFillColor(0)
     leg.SetFillStyle(0)
     leg.SetTextSize(0.045)
-    if data: leg.AddEntry(h_data,"#font[42]{"+str(data.tlatex)+"}",'PL')
+    if data: leg.AddEntry(h_data,"#font[42]{"+str(data.tlatex)+"}",'P')
     if signal:
      for s in signal:
        sig_tag = s.tlatex
@@ -420,7 +420,10 @@ def plot_hist(
        if sig_rescale: hists[s].Scale(sig_rescale)
        hists[s].Draw("SAME,HIST")
 
-    if data: h_data.Draw("SAME")
+    if data: 
+      h_data.Sumw2(0)
+      h_data.SetBinErrorOption(1);
+      h_data.Draw("SAME X0 P E")
     pad1.SetLogy(log)
     if logx!=None : pad1.SetLogx(logx)
     leg.Draw()
@@ -492,7 +495,9 @@ def plot_hist(
         g_stat.Draw("E2")
         leg.AddEntry(g_stat,"#font[42]{"+str("MC Stat.")+"}",'F')
 
-      if data: h_ratio.Draw("SAME") 
+      if data: 
+        h_ratio.SetBinErrorOption(0);
+        h_ratio.Draw("SAME X0 P E") 
       pad2.RedrawAxis("g")
 
     print 'saving plot...'

@@ -2393,8 +2393,6 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         # Fill histograms
         # ---------------
         if passed:
-          if (not (electrons[0].LHMedium and electrons[0].isIsolated_Loose)) and (not (electrons[1].LHMedium and electrons[1].isIsolated_Loose)):
-            print weight
           assert len(electrons)==2, "should have exactly two tight electrons at this point"
           ## event plots 
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
