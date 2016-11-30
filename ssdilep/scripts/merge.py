@@ -68,11 +68,9 @@ hm = histmgr.HistMgr(basedir=options.indir,target_lumi=lumi)
 
 ## data
 data = samples.data
-data = []
 ## backgrounds 
 
 mc_backgrounds = [
-    #samples.diboson_sherpa,
     #samples.diboson_powheg,
     #samples.WZ,
     #samples.ZZ,
@@ -88,7 +86,8 @@ mc_backgrounds = [
     #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
-    #samples.ttbar,
+    samples.ttbar,
+    samples.diboson_sherpa,
     #samples.WenuPowheg,
    ]
 
@@ -105,8 +104,8 @@ mumu_signals = []
 # Estimators
 #--------------
 #for s in mc_backgrounds + mumu_signals + [data]: 
-#for s in mc_backgrounds + [data]: 
-for s in mc_backgrounds: 
+#for s in mc_backgrounds: 
+for s in mc_backgrounds + [data]: 
     histmgr.load_base_estimator(hm,s)
 
 if options.fakest == "FakeFactor":
@@ -152,7 +151,6 @@ mumu_vdict  = vars_ee.vars_dict
 
 ## order backgrounds for plots
 mumu_backgrounds = [
-    #samples.diboson_sherpa,
     #samples.diboson_powheg,
     #samples.WZ,
     #samples.ZZ,
@@ -168,7 +166,9 @@ mumu_backgrounds = [
     #samples.Ztautau,
     #samples.ttX,
     #samples.singletop,
-    #samples.ttbar,
+    samples.ttbar,
+    samples.diboson_sherpa,
+    fakes_mumu,
     #samples.WenuPowheg,
     ]
 
@@ -193,7 +193,7 @@ signal =[]
 
 if options.makeplot == "True":
  funcs.plot_hist(
-    backgrounds   = mc_backgrounds,
+    backgrounds   = mumu_backgrounds,
     signal        = signal, 
     data          = data,
     region        = options.region,

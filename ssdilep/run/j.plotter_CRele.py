@@ -118,6 +118,7 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLHOS')
     
     ## weights configuration
     ## ---------------------------------------
@@ -176,7 +177,6 @@ def analyze(config):
             region   = 'opposite-sign-CR',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLH',None],
                ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
                ['Mass130GeVMediumLLHisolLoose',None],
                ],
@@ -191,8 +191,6 @@ def analyze(config):
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHOS',None],
-               ['NotExactlyTwoTightEleMediumLLHisolLoose',None],
                ['ExactlyTwoLooseEleLooseLLHTL',['ExactlyTwoLooseEleFFTL']],
                ['Mass130GeVLooseLLH',None],
                ],
@@ -203,8 +201,6 @@ def analyze(config):
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHOS',None],
-               ['NotExactlyTwoTightEleMediumLLHisolLoose',None],
                ['ExactlyTwoLooseEleLooseLLHLT',['ExactlyTwoLooseEleFFLT']],
                ['Mass130GeVLooseLLH',None],
                ],
@@ -215,8 +211,6 @@ def analyze(config):
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHOS',None],
-               ['NotExactlyTwoTightEleMediumLLHisolLoose',None],
                ['ExactlyTwoLooseEleLooseLLHLL',['ExactlyTwoLooseEleFFLL']],
                ['Mass130GeVLooseLLH',None],
                ],

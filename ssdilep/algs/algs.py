@@ -965,7 +965,7 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_PassSingleEleChain(self):
-      chain = ["HLT_e24_lhmedium_L1EM20VH","HLT_e60_lhmedium","HLT_e120_lhloose"]
+      chain = ["HLT_e24_lhmedium_L1EM18VH","HLT_e24_lhmedium_L1EM20VH","HLT_e60_lhmedium","HLT_e120_lhloose"]
       for i in xrange(self.chain.passedTriggers.size()):
         if self.chain.passedTriggers.at(i) in chain: return True
       return False
@@ -1049,7 +1049,7 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_ZVetoLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
-        if len(electrons)<1: False
+        if len(electrons)<1: return False
         for pair in itertools.combinations(electrons,2):
           if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) < 20*GeV:
             return False
@@ -1057,7 +1057,7 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_DYVetoTightEleMediumLLHisolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
-        if len(electrons)>1: False
+        if len(electrons)>1: return False
         return True
 
     ##  tight: MediumLLH isolLoose   loose: LooseLLH
@@ -2393,8 +2393,10 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         # Fill histograms
         # ---------------
         if passed:
+          if (not (electrons[0].LHMedium and electrons[0].isIsolated_Loose)) and (not (electrons[1].LHMedium and electrons[1].isIsolated_Loose)):
+            print weight
           assert len(electrons)==2, "should have exactly two tight electrons at this point"
-          ## event plots
+          ## event plots 
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
           self.h_NPV.Fill(self.chain.NPV, weight)
@@ -2583,7 +2585,7 @@ class VarsAlg(pyframe.core.Algorithm):
         # loose electrons (no iso // LooseLLH)
         electrons_loose_LooseLLH = []
         for ele in electrons:
-          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronTypeSimple()!=1):
+          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronType() not in [1,2,3]):
             continue
           if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_loose_LooseLLH += [ele]
@@ -2592,20 +2594,11 @@ class VarsAlg(pyframe.core.Algorithm):
         # tight electrons (isoLoose // MediumLLH)
         electrons_tight_MediumLLH_isolLoose = []
         for ele in electrons:
-          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronTypeSimple()!=1):
+          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronType() not in [1,2,3]):
             continue
           if ( ele.pt>30*GeV and ele.isIsolated_Loose and ele.LHMedium and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_tight_MediumLLH_isolLoose += [ele]
         self.store['electrons_tight_MediumLLH_isolLoose'] = electrons_tight_MediumLLH_isolLoose
-        
-        # tight electrons (isoTight // TightLLH)
-        electrons_tight_TightLLH_isolTight = []
-        for ele in electrons:
-          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronTypeSimple()!=1):
-            continue
-          if ( ele.pt>30*GeV and ele.isIsolated_Tight and ele.LHTight and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
-            electrons_tight_TightLLH_isolTight += [ele]
-        self.store['electrons_tight_TightLLH_isolTight'] = electrons_tight_TightLLH_isolTight
 
         if bool(len(jets)) and bool(len(muons)):
           self.store['mujet_dphi'] = muons[0].tlv.DeltaPhi(jets[0].tlv)
@@ -2635,9 +2628,9 @@ def log_bins_str(nbins,xmin,xmax):
 def digitize(value, binEdges):
   assert isinstance(binEdges,list), "binEdges must be an array of bin edges"
   if value < binEdges[0]: return 0
-  elif value > binEdges[-1]: return len(binEdges)
+  elif value >= binEdges[-1]: return len(binEdges)
   for i in range(len(binEdges)):
     edlow = binEdges[i]
     edhigh = binEdges[i+1]
-    if value >= edlow and value <= edhigh:
+    if value >= edlow and value < edhigh:
       return i+1

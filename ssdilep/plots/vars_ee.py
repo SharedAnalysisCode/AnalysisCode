@@ -19,7 +19,7 @@ cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
 ## Non-equidistant bins
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
-bins_invM = generateLogBins(40,130,2000)
+bins_invM = generateLogBins(50,130,2000)
 bins_Zpeak = [50,70,74,77,80,82,83,84,85,86,87,88,89,90,91,92,93,94,95,97,99,102,105,110,130]
 bins_Zpeak2 = [50,80,100,130]
 bins_met = generateLogBins(15,1,1000)
@@ -69,6 +69,7 @@ invMass = Var(name='invMass',
               rebinVar  = bins_invM,
               #rebinVar  = bins_Zpeak2,
               log    = True,
+              logx   = True
               )
 ZbosonPt = Var(name='ZbosonPt',
               path   = 'event',
@@ -83,6 +84,7 @@ ZbosonEta = Var(name='ZbosonEta',
                 path   = 'event',
                 xmin   = -6,
                 xmax   = 6,
+                rebin  = 2,
                 log    = False,
                 )
 
@@ -103,6 +105,18 @@ el_pt_eta_chf2 = Var(name='el_pt_eta_chf2',
                 )
 
 el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
+                path   = 'electrons',
+                )
+
+el_t_2D_pt_eta = Var(name='el_t_2D_pt_eta',
+                path   = 'electrons',
+                )
+
+el_l_2D_pt_eta = Var(name='el_l_2D_pt_eta',
+                path   = 'electrons',
+                )
+
+el_sl_2D_pt_eta = Var(name='el_sl_2D_pt_eta',
                 path   = 'electrons',
                 )
 
@@ -131,6 +145,36 @@ met_clus_et = Var(name='met_clus_et',
 
 ## Single muon variables
 ## ---------------------------------------
+el_t_pt = Var(name = 'el_t_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              #rebinVar  = bins_pt,
+              log    = True,
+              logx   = True,
+              )
+
+el_l_pt = Var(name = 'el_l_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              #rebinVar  = bins_pt,
+              log    = True,
+              logx   = True,
+              )
+
+el_sl_pt = Var(name = 'el_sl_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              #rebinVar  = bins_pt,
+              log    = True,
+              logx   = True,
+              )
+
 el_lead_pt = Var(name = 'el_lead_pt',
               path   = 'electrons',
               xmin   = 30.,
@@ -162,7 +206,7 @@ el_sublead_eta = Var(name = 'el_sublead_eta',
               path    = 'electrons',
               xmin    = -2.5,
               xmax    = 2.5,
-              rebin   = 4,
+              #rebin   = 4,
               log     = False,
               )
 
@@ -202,7 +246,7 @@ el_lead_trkd0sig = Var(name = 'el_lead_trkd0sig',
               path    = 'electrons',
               xmin    = 0.,
               xmax    = 10.,
-              rebin   = 3,
+              rebin   = 1,
               log     = False,
               )
 
@@ -210,7 +254,7 @@ el_sublead_trkd0sig = Var(name = 'el_sublead_trkd0sig',
               path    = 'electrons',
               xmin    = 0.,
               xmax    = 10.,
-              rebin   = 3,
+              rebin   = 1,
               log     = False,
               )
 
@@ -327,9 +371,9 @@ vars_list.append(el_sublead_eta)
 vars_list.append(el_lead_phi)
 vars_list.append(el_sublead_phi)
 vars_list.append(el_lead_trkd0)
-#vars_list.append(el_sublead_trkd0)
+vars_list.append(el_sublead_trkd0)
 vars_list.append(el_lead_trkd0sig)
-#vars_list.append(el_sublead_trkd0sig)
+vars_list.append(el_sublead_trkd0sig)
 vars_list.append(el_lead_trkz0)
 #vars_list.append(el_sublead_trkz0)
 vars_list.append(el_lead_trkz0sintheta)
@@ -339,6 +383,12 @@ vars_list.append(chargeFlipHist)
 vars_list.append(el_pt_eta_all)
 vars_list.append(el_pt_eta_chf2)
 vars_list.append(el_pt_eta_chf4)
+vars_list.append(el_sl_2D_pt_eta)
+vars_list.append(el_t_2D_pt_eta)
+vars_list.append(el_l_2D_pt_eta)
+vars_list.append(el_l_pt)
+vars_list.append(el_t_pt)
+vars_list.append(el_sl_pt)
 #vars_list.append(el_sublead_trkz0sintheta)
 
 vars_dict = {}

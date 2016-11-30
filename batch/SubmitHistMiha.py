@@ -27,14 +27,15 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "FFelectron"
+RUN = "CRelectron3"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
 
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
-SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+#SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_TwoMu.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_MuPairs.py"  # pyframe job script
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -132,7 +133,7 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.%s'%tag)
+    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     for s in samps:
 
@@ -153,7 +154,7 @@ def submit(tag,job_sys,samps,config={}):
 
     f.close()
 
-    abscfg     = os.path.abspath(cfg)
+    abscfg     = os.path.abspath(cfg) 
     absintar   = os.path.abspath(INTARBALL)
     absoutpath = os.path.abspath(os.path.join(OUTPATH,tag))
     abslogpath = os.path.abspath(os.path.join(OUTPATH,'log_%s'%tag))
@@ -163,23 +164,14 @@ def submit(tag,job_sys,samps,config={}):
     #prepare_path(absoutpath)
     #prepare_path(abslogpath)
 
-    vars=[]
-    vars+=["CONFIG=%s" % abscfg]
-    vars+=["INTARBALL=%s" % absintar]
-    vars+=["OUTFILE=%s" % OUTFILE]
-    vars+=["OUTPATH=%s" % absoutpath]
-    vars+=["SCRIPT=%s" % SCRIPT]
-     
-    VARS = ','.join(vars)
-
-    for line_intiger in range(51,52):
+    for line_intiger in range(30,31):
 
         TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
         JOBLISTF = os.path.join(JOBDIR,'joblist_%s.xml' % (time.strftime("d%d_m%m_y%Y")) )
         cmd =  'printf "'
         cmd += '&\n'
         cmd += '(executable=\\"%s\\")\n' % BEXEC
-        cmd += '(jobName=\\"j.hist.'+str(tag)+'.'+str(samps[line_intiger].name)+'\\")\n'
+        cmd += '(jobName=\\"'+str(os.path.basename(SCRIPT)[0:-2])+str(tag)+'.'+str(samps[line_intiger].name)+'\\")\n'
         cmd += '(memory=4000)\n'
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'

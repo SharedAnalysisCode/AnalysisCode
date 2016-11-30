@@ -7,6 +7,7 @@ description:
 '''
 
 from array import array
+import sys
 ## modules
 import ROOT
 from pyplot import histutils
@@ -14,6 +15,15 @@ from math import sqrt
 from decimal import Decimal
 #import sys_conv
 
+
+# atlas style
+# remove this import if you don't have it
+hackyPath = sys.modules[__name__].__file__[0:(-9 if sys.modules[__name__].__file__[-1]=="c" else -8)] + "atlasstyle-00-03-05/"
+print hackyPath
+ROOT.gROOT.LoadMacro(str(hackyPath + "AtlasStyle.C"))
+ROOT.gROOT.LoadMacro(str(hackyPath + "AtlasUtils.C"))
+ROOT.gROOT.LoadMacro(str(hackyPath + "AtlasLabels.C"))
+ROOT.SetAtlasStyle()
 
 # - - - - - - - - - - - class defs  - - - - - - - - - - - - #
 
@@ -263,7 +273,8 @@ def plot_hist(
     else:
         h_total_stat = make_stat_hist(h_total)
         g_stat = make_band_graph_from_hist(h_total_stat)
-        g_stat.SetFillColor(ROOT.kGray+1)
+        g_stat.SetFillColor(ROOT.kGray+2)
+        g_stat.SetLineColor(ROOT.kGray+2)
         g_tot = None
 
     ## blind data and create ratio 
@@ -271,6 +282,7 @@ def plot_hist(
     h_ratio = None
     if data: 
         h_data = hists[data]
+        h_data.SetMarkerSize(0.8)
         if blind: apply_blind(h_data,blind)
         h_ratio = h_data.Clone('%s_ratio'%(h_data.GetName()))
         ## dont use Divide as it will propagate MC stat error to the ratio.
@@ -297,10 +309,10 @@ def plot_hist(
       if not b in hists.keys(): continue
       h_stack.Add(hists[b])
    
-    nLegend = len(signal+backgrounds) + 1
+    nLegend = len(signal+backgrounds) + 2
     x_legend = 0.63
     x_leg_shift = -0.055
-    y_leg_shift = 0.0 
+    y_leg_shift = -0.1 
     legYCompr = 8.0
     legYMax = 0.85
     legYMin = legYMax - (legYMax - (0.55 + y_leg_shift)) / legYCompr * nLegend
@@ -311,20 +323,21 @@ def plot_hist(
     if not do_ratio_plot:
       legXMin -= 0.005
       legXMax -= 0.058
-    leg = ROOT.TLegend(legXMin,legYMin,legXMax,legYMax)
+    leg = ROOT.TLegend(legXMin,legYMin+0.05,legXMax,legYMax+0.05)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)
     leg.SetFillStyle(0)
-    if data: leg.AddEntry(h_data,data.tlatex,'PL')
+    leg.SetTextSize(0.045)
+    if data: leg.AddEntry(h_data,"#font[42]{"+str(data.tlatex)+"}",'PL')
     if signal:
      for s in signal:
        sig_tag = s.tlatex
        if sig_rescale: sig_tag = "%d #times "%int(sig_rescale) + sig_tag
        if not s in hists.keys(): continue
-       leg.AddEntry(hists[s],sig_tag,'F')
+       leg.AddEntry(hists[s],"#font[42]{"+str(sig_tag)+"}",'F')
     for b in backgrounds: 
       if not b in hists.keys(): continue
-      leg.AddEntry(hists[b],b.tlatex,'F')
+      leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
 
 
     ## create canvas
@@ -332,17 +345,17 @@ def plot_hist(
     if not reg: reg = ""
     name = '_'.join([reg,histname]).replace('/','_') 
     cname = "c_final_%s"%name
-    if do_ratio_plot: c = ROOT.TCanvas(cname,cname,750,800)
-    else: c = ROOT.TCanvas(cname,cname,800,700)
+    if do_ratio_plot: c = ROOT.TCanvas(cname,cname,600,600)
+    else: c = ROOT.TCanvas(cname,cname,600,600)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-1
+    ymin = 1.e-2
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue
       ymax = max([ymax,hists[b].GetMaximum()])
     if data: ymax = max([ymax,h_data.GetMaximum()])
-    if log: ymax *= 8000.
+    if log: ymax *= 4000.
     else:   ymax *= 1.8
     xtitle = h_total.GetXaxis().GetTitle()
 
@@ -392,9 +405,9 @@ def plot_hist(
       xaxis1.SetTitleOffset( 1.3* xaxis1.GetTitleOffset() / scale  )
       xaxis1.SetLabelOffset( 1.* xaxis1.GetLabelOffset() / scale )
 
-    yaxis1.SetTitleSize( yaxis1.GetTitleSize() * scale )
-    yaxis1.SetTitleOffset( 2.1 * yaxis1.GetTitleOffset() / scale )
-    yaxis1.SetLabelSize( 0.8 * yaxis1.GetLabelSize() * scale )
+    yaxis1.SetTitleSize( yaxis1.GetTitleSize() * scale /1.3 )
+    yaxis1.SetTitleOffset( 2.1 * yaxis1.GetTitleOffset() / scale /1.8 )
+    yaxis1.SetLabelSize( 0.8 * yaxis1.GetLabelSize() * scale / 1.09 )
     yaxis1.SetLabelOffset( 1. * yaxis1.GetLabelOffset() / scale )
     xaxis1.SetNdivisions(510)
     yaxis1.SetNdivisions(510)
@@ -426,8 +439,9 @@ def plot_hist(
     lumi = backgrounds[0].estimator.hm.target_lumi/1000.
     textsize = 0.8
     if not do_ratio_plot: textsize = 0.8
-    latex_y = ty-2.*th
-    tlatex.DrawLatex(tx,latex_y,'#scale[%lf]{#scale[%lf]{#int}L dt = %2.1f fb^{-1}, #sqrt{s} = 13 TeV}'%(textsize,0.8*textsize,lumi) )
+    latex_y = ty-2.*th+0.05
+    tlatex.DrawLatex(tx,latex_y-0.054,'#font[42]{#sqrt{s} = 13 TeV, %2.1f fb^{-1}}'%(lumi) )
+    ROOT.ATLASLabel(tx,latex_y,"Internal",1) 
     if label:
       latex_y -= 0.06
       #for i,line in enumerate(label):
@@ -447,18 +461,18 @@ def plot_hist(
 
     if do_ratio_plot:
       pad2.cd()
-      fr2 = pad2.DrawFrame(xmin,0.49,xmax,1.51,';%s;Data / Bkg_{SM}'%(xtitle))
+      fr2 = pad2.DrawFrame(xmin,0.49,xmax,1.51,';%s;Data / Bkg.'%(xtitle))
       xaxis2 = fr2.GetXaxis()
       yaxis2 = fr2.GetYaxis()
       scale = (1. / rsplit)
-      yaxis2.SetTitleSize( yaxis2.GetTitleSize() * scale )
-      yaxis2.SetLabelSize( yaxis2.GetLabelSize() * scale )
-      yaxis2.SetTitleOffset( 2.1* yaxis2.GetTitleOffset() / scale  )
+      yaxis2.SetTitleSize( yaxis2.GetTitleSize() * scale / 1.2 )
+      yaxis2.SetLabelSize( yaxis2.GetLabelSize() * scale / 1.2 )
+      yaxis2.SetTitleOffset( 2.1* yaxis2.GetTitleOffset() / scale / 2 )
       yaxis2.SetLabelOffset(0.4 * yaxis2.GetLabelOffset() * scale )
-      xaxis2.SetTitleSize( xaxis2.GetTitleSize() * scale )
+      xaxis2.SetTitleSize( xaxis2.GetTitleSize() * scale / 1.2 )
       xaxis2.SetLabelSize( 0.8 * xaxis2.GetLabelSize() * scale )
       xaxis2.SetTickLength( xaxis2.GetTickLength() * scale )
-      xaxis2.SetTitleOffset( 3.2* xaxis2.GetTitleOffset() / scale  )
+      xaxis2.SetTitleOffset( 3.2* xaxis2.GetTitleOffset() / scale / 1.2  )
       xaxis2.SetLabelOffset( 2.5* xaxis2.GetLabelOffset() / scale )
       yaxis2.SetNdivisions(510)
       xaxis2.SetNdivisions(510)
@@ -474,10 +488,12 @@ def plot_hist(
          g_tot.Draw("E2")
          g_stat.Draw("SAME,E2")
 
-      else: g_stat.Draw("E2")
+      else: 
+        g_stat.Draw("E2")
+        leg.AddEntry(g_stat,"#font[42]{"+str("MC Stat.")+"}",'F')
 
       if data: h_ratio.Draw("SAME") 
-      pad2.RedrawAxis()
+      pad2.RedrawAxis("g")
 
     print 'saving plot...'
     if save_eps:

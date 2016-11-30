@@ -114,10 +114,10 @@ fakes_TT = Sample( name         = 'fakes_TT',
 """
 fakes_cr    = Sample( name      = "fakes_cr",
                    tlatex       = "Fakes CR",
-                   fill_color   = ROOT.kGray,
-                   line_color   = ROOT.kGray+1,
+                   fill_color   = ROOT.kGray-10,
+                   line_color   = ROOT.kGray-8,
                    line_style   = 1,
-                   marker_color = ROOT.kGray+1,
+                   marker_color = ROOT.kGray-8,
                    marker_style = 20,
                    type         = "datadriven",
                    )
@@ -250,10 +250,10 @@ ZqqZvv          = Sample( name = "ZqqZvv",         xsec = 4.63359232 )
 
 
 diboson_sherpa = Sample( name =   'diboson_sherpa',
-                  tlatex = 'Di-boson (Sherpa)',
-                  fill_color = ROOT.kYellow-7,
-                  line_color =  ROOT.kYellow-6,
-                  marker_color =  ROOT.kYellow-6,
+                  tlatex = 'diboson',
+                  fill_color = ROOT.kBlue-10,
+                  line_color =  ROOT.kBlue-8,
+                  marker_color =  ROOT.kBlue-8,
                   daughters = [
                                 llll,         
                                 lllvSFMinus,  
@@ -721,7 +721,7 @@ Zee_221_Pt500_1000                = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_
 Zee_221_Pt1000_E_CM               = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_MAXHTPTV1000_E_CMS",               xsec = 0.144870607   )
 
 
-Zee221 = Sample( name =   'Zee',
+Zee221 = Sample( name =   'Zee221',
                   tlatex = 'Sherpa.221 Z #rightarrow ee+jets',
                   fill_color = ROOT.kOrange+1,
                   line_color =  ROOT.kOrange+2,
@@ -771,9 +771,9 @@ AZNLOCTEQ6L1_DYee_5000M           = Sample( name =  "AZNLOCTEQ6L1_DYee_5000M",  
 
 AZNLOCTEQ6L1_DYee = Sample( name =   'Zee',
                   tlatex = 'Powheg Z #rightarrow ee',
-                  fill_color = ROOT.kOrange+1,
-                  line_color =  ROOT.kOrange+2,
-                  marker_color =  ROOT.kOrange+2,
+                  fill_color = ROOT.kRed-10,
+                  line_color =  ROOT.kRed-8,
+                  marker_color =  ROOT.kRed-8,
                   daughters = [
                               AZNLOCTEQ6L1_DYee_120M180,        
                               AZNLOCTEQ6L1_DYee_180M250,        
@@ -999,10 +999,10 @@ ttbar_hdamp172p5_dil                  = Sample( name =  "ttbar_hdamp172p5_dil", 
 ttbar_dilep = Sample( name = "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil" , xsec = 87.627231743)
 
 ttbar = Sample( name =  'ttbar_dilep',
-                    tlatex = 'ttbar_dilep',
-                    fill_color = ROOT.kCyan+1,
-                    line_color =  ROOT.kCyan+2,
-                    marker_color =  ROOT.kCyan+2,
+                    tlatex = 't#bar{t}',
+                    fill_color = ROOT.kCyan-10,
+                    line_color =  ROOT.kCyan-8,
+                    marker_color =  ROOT.kCyan-8,
                     daughters = [
                                  #ttbar_hdamp172p5_nonallhad,
                                  #ttbar_hdamp172p5_allhad,   
@@ -1131,7 +1131,7 @@ all_mc += diboson_sherpa.daughters
 #all_mc += Wmunu.daughters
 #all_mc += Wtaunu.daughters
 
-all_mc += WenuPowheg.daughters
+#all_mc += WenuPowheg.daughters
 #all_mc += WmunuPowheg.daughters
 #all_mc += WtaunuPowheg.daughters
 
@@ -1139,8 +1139,8 @@ all_mc += WenuPowheg.daughters
 #all_mc += Zmumu.daughters
 #all_mc += Ztautau.daughters
 
-all_mc += Zee221.daughters
-#all_mc += AZNLOCTEQ6L1_DYee.daughters
+#all_mc += Zee221.daughters
+all_mc += AZNLOCTEQ6L1_DYee.daughters
 #all_mc += ZeePowheg.daughters
 #all_mc += ZmumuPowheg.daughters
 #all_mc += ZtautauPowheg.daughters

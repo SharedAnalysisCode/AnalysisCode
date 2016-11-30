@@ -314,8 +314,8 @@ class FakeEstimator(BaseEstimator):
         # ---------
         # LL REGION
         # ---------
-        region_ll_den = region.replace("_NUM","_LLDEN")
-      
+        region_ll_den = region.replace("-CR","-CR-LL")
+
         h_ll_den = self.data_sample.hist(histname=histname,
                                 region=region_ll_den,
                                 icut=icut,
@@ -328,13 +328,13 @@ class FakeEstimator(BaseEstimator):
             print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
             continue
           h_ll_den.Add(hmc_ll,-1)
-        if "LLDEN" in region: return h_ll_den
+        if "CR-LL" in region: return h_ll_den
         
         
         # ---------
         # TL REGION 
         # ---------
-        region_tl_den = region.replace("_NUM","_TLDEN")
+        region_tl_den = region.replace("-CR","-CR-TL")
 
         h_tl_den = self.data_sample.hist(histname=histname,
                                   region=region_tl_den,
@@ -348,13 +348,13 @@ class FakeEstimator(BaseEstimator):
             print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
             continue
           h_tl_den.Add(hmc_tl,-1)
-        if "TLDEN" in region: return h_tl_den
+        if "CR-TL" in region: return h_tl_den
         
         
         # ---------
         # LT REGION 
         # ---------        
-        region_lt_den = region.replace("_NUM","_LTDEN")
+        region_lt_den = region.replace("-CR","-CR-LT")
 
         h_lt_den = self.data_sample.hist(histname=histname,
                                   region=region_lt_den,
@@ -368,12 +368,12 @@ class FakeEstimator(BaseEstimator):
             print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
             continue
           h_lt_den.Add(hmc_lt,-1)
-        if "LTDEN" in region: return h_lt_den
+        if "CR-LT" in region: return h_lt_den
         
         
         h = h_tl_den.Clone("fakes_hist")
         h.Add(h_lt_den)
-        h.Add(h_ll_den,-1)
+        h.Add(h_ll_den)
         
         """ 
         region_den = region.replace("_NUM","_DEN")

@@ -298,10 +298,11 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
             self.store[self.key] = sf
           return True
 
-        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, electrons[0].caloCluster_eta ) )
-        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, electrons[1].caloCluster_eta ) )
+        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].caloCluster_eta ) ) )
+        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].caloCluster_eta ) ) )
         if f1*f2==0:
           sf=0
+          print "WARNING - FF weight equals zero!!"
           if self.key: 
             self.store[self.key] = sf
             return True
@@ -315,12 +316,12 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
             sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
             sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
             sf *= alpha*f2*(1.-f1)
-          if self.typeFF=="LT":
+          elif self.typeFF=="LT":
             sf *= getattr(electrons[1],"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
             sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
             sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
             sf *= alpha*f1*(1.-f2)
-          if self.typeFF=="LL":
+          elif self.typeFF=="LL":
             sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
             sf *= -alpha*f1*f2
@@ -328,9 +329,9 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
         else:
           if self.typeFF=="TL":
             sf *= alpha*f2*(1.-f1)
-          if self.typeFF=="LT":
+          elif self.typeFF=="LT":
             sf *= alpha*f1*(1.-f2)
-          if self.typeFF=="LL":
+          elif self.typeFF=="LL":
             sf *= -alpha*f1*f2
 
         if self.key: 
