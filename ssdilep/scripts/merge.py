@@ -44,7 +44,7 @@ parser.add_option('-t', '--tag', dest='tag',
 # Configuration
 #-----------------
 #lumi =  3158.13
-lumi =  18084.1
+lumi =  18232.76
 #lumi =  18232.8
 #lumi = 5000
 

@@ -279,7 +279,7 @@ el_lead_trkz0sintheta = Var(name = 'el_lead_trkz0sintheta',
               xmin    = -0.8,
               xmax    = 0.8,
               rebin   = 2,
-              log     = False,
+              log     = True,
               )
 
 el_sublead_trkz0sintheta = Var(name = 'el_sublead_trkz0sintheta',
@@ -287,7 +287,7 @@ el_sublead_trkz0sintheta = Var(name = 'el_sublead_trkz0sintheta',
               xmin    = -0.8,
               xmax    = 0.8,
               rebin   = 2,
-              log     = False,
+              log     = True,
               )
 
 # isolation
@@ -375,7 +375,7 @@ vars_list.append(el_sublead_trkd0)
 vars_list.append(el_lead_trkd0sig)
 vars_list.append(el_sublead_trkd0sig)
 vars_list.append(el_lead_trkz0)
-#vars_list.append(el_sublead_trkz0)
+vars_list.append(el_sublead_trkz0)
 vars_list.append(el_lead_trkz0sintheta)
 vars_list.append(ZbosonPt)
 vars_list.append(ZbosonEta)
@@ -389,7 +389,7 @@ vars_list.append(el_l_2D_pt_eta)
 vars_list.append(el_l_pt)
 vars_list.append(el_t_pt)
 vars_list.append(el_sl_pt)
-#vars_list.append(el_sublead_trkz0sintheta)
+vars_list.append(el_sublead_trkz0sintheta)
 
 vars_dict = {}
 for var in vars_list: vars_dict[var.name] = var.__dict__
