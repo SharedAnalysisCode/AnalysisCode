@@ -500,22 +500,22 @@ def plot_hist(
         h_ratio.SetBinErrorOption(0);
         h_ratio.Draw("SAME X0 P E") 
         for bin_itr in range(1,h_ratio.GetNbinsX()+1):
-          if h_ratio.GetBinContent(bin_itr)>1.5:
+          if h_ratio.GetBinContent(bin_itr)>1.51:
             print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
             arrowX = h_ratio.GetBinCenter(bin_itr)
             arrow = ROOT.TArrow(arrowX,1.4,arrowX,1.5,0.012,"=>");
             arrow.SetLineWidth(2)
-            arrow.SetLineColor(ROOT.kOrange+1)
-            arrow.SetFillColor(ROOT.kOrange+1)
+            arrow.SetLineColor(ROOT.kViolet+1)
+            arrow.SetFillColor(ROOT.kViolet+1)
             arrows += [arrow]
             arrow.Draw()
-          elif h_ratio.GetBinContent(bin_itr)<0.5 and h_ratio.GetBinContent(bin_itr) not in [-100,0]:
+          elif h_ratio.GetBinContent(bin_itr)<0.49 and h_ratio.GetBinContent(bin_itr) not in [-100,0]:
             print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
             arrowX = h_ratio.GetBinCenter(bin_itr)
             arrow = ROOT.TArrow(arrowX,0.50,arrowX,0.60,0.012,"<=");
             arrow.SetLineWidth(2)
-            arrow.SetLineColor(ROOT.kOrange+1)
-            arrow.SetFillColor(ROOT.kOrange+1)
+            arrow.SetLineColor(ROOT.kViolet+1)
+            arrow.SetFillColor(ROOT.kViolet+1)
             arrows += [arrow]
             arrow.Draw()
       pad2.RedrawAxis("g")
