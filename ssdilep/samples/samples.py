@@ -230,12 +230,12 @@ WW = Sample( name =   'WW',
 # Notes:
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonSherpa
 #-----------------------------------------------------------------------------
-llll            = Sample( name = "llll",           xsec = 12.849     )
-lllvSFMinus     = Sample( name = "lllvSFMinus",    xsec = 1.8442     )
-lllvOFMinus     = Sample( name = "lllvOFMinus",    xsec = 3.6254     )
-lllvSFPlus      = Sample( name = "lllvSFPlus",     xsec = 2.5618     )
-lllvOFPlus      = Sample( name = "lllvOFPlus",     xsec = 5.0248     )
-llvv            = Sample( name = "llvv",           xsec = 14.0       )
+llll            = Sample( name = "llll",           xsec = 12.583     )
+lllvSFMinus     = Sample( name = "lllvSFMinus",    xsec = 1.8446     )
+lllvOFMinus     = Sample( name = "lllvOFMinus",    xsec = 3.6235     )
+lllvSFPlus      = Sample( name = "lllvSFPlus",     xsec = 2.5656     )
+lllvOFPlus      = Sample( name = "lllvOFPlus",     xsec = 5.0169     )
+llvv            = Sample( name = "llvv",           xsec = 14.022     )
 llvvjj_ss_EW4   = Sample( name = "llvvjj_ss_EW4",  xsec = 0.025797   )
 llvvjj_ss_EW6   = Sample( name = "llvvjj_ss_EW6",  xsec = 0.043004   )
 lllvjj_EW6      = Sample( name = "lllvjj_EW6",     xsec = 0.042017   )
@@ -243,11 +243,10 @@ lllljj_EW6      = Sample( name = "lllljj_EW6",     xsec = 0.031496   )
 WplvWmqq        = Sample( name = "WplvWmqq",       xsec = 25.995     )
 WpqqWmlv        = Sample( name = "WpqqWmlv",       xsec = 26.4129606 )
 WlvZqq          = Sample( name = "WlvZqq",         xsec = 12.543     )
-WqqZll          = Sample( name = "WqqZll",         xsec = 3.7583     )
+WqqZll          = Sample( name = "WqqZll",         xsec = 3.4234     )
 WqqZvv          = Sample( name = "WqqZvv",         xsec = 7.4151     )
-ZqqZll          = Sample( name = "ZqqZll",         xsec = 2.3645727  )
+ZqqZll          = Sample( name = "ZqqZll",         xsec = 2.35278615 )
 ZqqZvv          = Sample( name = "ZqqZvv",         xsec = 4.63359232 )
-
 
 diboson_sherpa = Sample( name =   'diboson_sherpa',
                   tlatex = 'diboson',
@@ -994,9 +993,7 @@ singletop = Sample( name =   'singletop',
 ttbar_hdamp172p5_nonallhad            = Sample( name =  "ttbar_hdamp172p5_nonallhad", xsec = 451.645679998 )
 ttbar_hdamp172p5_allhad               = Sample( name =  "ttbar_hdamp172p5_allhad",    xsec = 380.11432     )
 ttbar_nonallhad                       = Sample( name =  "ttbar_nonallhad",            xsec = 451.645680001 )
-ttbar_hdamp172p5_dil                  = Sample( name =  "ttbar_hdamp172p5_dil",       xsec = 73.3282274    )
-
-ttbar_dilep = Sample( name = "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil" , xsec = 87.627231743)
+ttbar_hdamp172p5_dil                  = Sample( name =  "ttbar_hdamp172p5_dil",       xsec = 0.073329*1000 )
 
 ttbar = Sample( name =  'ttbar_dilep',
                     tlatex = 't#bar{t}',

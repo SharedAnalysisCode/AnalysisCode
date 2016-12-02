@@ -214,7 +214,7 @@ el_lead_phi = Var(name = 'el_lead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
-              rebin   = 4,
+              rebin   = 1,
               log     = False,
               )
 
@@ -222,7 +222,7 @@ el_sublead_phi = Var(name = 'el_sublead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
-              rebin   = 4,
+              rebin   = 1,
               log     = False,
               )
 
