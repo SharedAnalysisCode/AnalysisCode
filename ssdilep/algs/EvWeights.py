@@ -298,11 +298,10 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
             self.store[self.key] = sf
           return True
 
-        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].caloCluster_eta ) ) )
-        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].caloCluster_eta ) ) )
+        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].eta ) ) )
+        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].eta ) ) )
         if f1*f2==0:
           sf=0
-          print "WARNING - FF weight equals zero!!"
           if self.key: 
             self.store[self.key] = sf
             return True

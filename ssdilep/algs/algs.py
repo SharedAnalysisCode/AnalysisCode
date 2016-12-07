@@ -1902,7 +1902,7 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           #electron
           for ele in electrons:
             self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight)
-            self.h_el_eta.Fill(ele.caloCluster_eta, weight)
+            self.h_el_eta.Fill(ele.eta, weight)
             self.h_el_phi.Fill(ele.tlv.Phi(), weight)
             self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
             self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
@@ -1915,13 +1915,13 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
  
           self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
-          self.h_el_lead_eta.Fill(ele1.caloCluster_eta, weight)
+          self.h_el_lead_eta.Fill(ele1.eta, weight)
           self.h_el_lead_phi.Fill(ele1.tlv.Phi(), weight)
           self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
           self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
 
           self.h_el_sublead_pt.Fill(ele2.tlv.Pt()/GeV, weight)
-          self.h_el_sublead_eta.Fill(ele2.caloCluster_eta, weight)
+          self.h_el_sublead_eta.Fill(ele2.eta, weight)
           self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
           self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
           self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
@@ -1929,8 +1929,8 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           # charge-flip histograms
           ptbin1 = digitize( ele1.tlv.Pt()/GeV, pt_bins )
           ptbin2 = digitize( ele2.tlv.Pt()/GeV, pt_bins )
-          etabin1 = digitize( abs(ele1.caloCluster_eta), eta_bins )
-          etabin2 = digitize( abs(ele2.caloCluster_eta), eta_bins )
+          etabin1 = digitize( abs(ele1.eta), eta_bins )
+          etabin2 = digitize( abs(ele2.eta), eta_bins )
           assert ptbin1!=0 and ptbin2!=0 and etabin1!=0 and etabin2!=0, "bins shouldn't be 0"
           # encode pt1, pt2, eta1, eta2 into 1D bins given pt_bins and eta_bins
           totBin = ( (ptbin1-1)*(len(eta_bins)-1) + etabin1-1 )*(len(eta_bins)-1)*len(pt_bins) + ( (ptbin2-1)*(len(eta_bins)-1) + etabin2 )
@@ -1938,11 +1938,11 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           ### true charge-flip
           if self.sampletype == "mc":
             for ele in electrons:
-              self.h_el_pt_eta_all.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
+              self.h_el_pt_eta_all.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight)
               if(ele.electronType()==2):
-                self.h_el_pt_eta_chf2.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
+                self.h_el_pt_eta_chf2.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight)
               if(ele.electronType()==3):
-                self.h_el_pt_eta_chf4.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
+                self.h_el_pt_eta_chf4.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight)
 
 
     #__________________________________________________________________________
@@ -2164,11 +2164,11 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
               elSF_LooseLLH *= getattr(ele,"RecoEff_SF").at(0)
               elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
             self.h_el_l_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
-            self.h_el_l_eta.Fill(ele.caloCluster_eta,         weight*elSF_LooseLLH)
+            self.h_el_l_eta.Fill(ele.eta,                     weight*elSF_LooseLLH)
             self.h_el_l_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
             self.h_el_l_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_LooseLLH)
             self.h_el_l_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_LooseLLH)
-            self.h_el_l_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_LooseLLH)
+            self.h_el_l_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.eta, weight*elSF_LooseLLH)
             if ele.isIsolated_Loose and ele.LHMedium:
               # tight
               elSF_MediumLLH_isolLoose =  1.
@@ -2177,19 +2177,19 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
                 elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
                 elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLH_isolLoose").at(0)
               self.h_el_t_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_eta.Fill(ele.caloCluster_eta,         weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_eta.Fill(ele.eta,                     weight*elSF_MediumLLH_isolLoose)
               self.h_el_t_phi.Fill(ele.tlv.Phi(),               weight*elSF_MediumLLH_isolLoose)
               self.h_el_t_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_MediumLLH_isolLoose)
               self.h_el_t_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_MediumLLH_isolLoose)
+              self.h_el_t_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.eta, weight*elSF_MediumLLH_isolLoose)
             else:
               # strictly loose (they failed the tight criteria)
               self.h_el_sl_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
-              self.h_el_sl_eta.Fill(ele.caloCluster_eta,         weight*elSF_LooseLLH)
+              self.h_el_sl_eta.Fill(ele.eta,                     weight*elSF_LooseLLH)
               self.h_el_sl_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
               self.h_el_sl_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_LooseLLH)
               self.h_el_sl_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_LooseLLH)
-              self.h_el_sl_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.caloCluster_eta, weight*elSF_LooseLLH)
+              self.h_el_sl_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.eta, weight*elSF_LooseLLH)
 
 
     #__________________________________________________________________________
@@ -2409,11 +2409,10 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
           self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
-        
           #electron
           for ele in electrons:
             self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight)
-            self.h_el_eta.Fill(ele.caloCluster_eta, weight)
+            self.h_el_eta.Fill(ele.eta, weight)
             self.h_el_phi.Fill(ele.tlv.Phi(), weight)
             self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
             self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
@@ -2426,13 +2425,13 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
  
           self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
-          self.h_el_lead_eta.Fill(ele1.caloCluster_eta, weight)
+          self.h_el_lead_eta.Fill(ele1.eta, weight)
           self.h_el_lead_phi.Fill(ele1.tlv.Phi(), weight)
           self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
           self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
 
           self.h_el_sublead_pt.Fill(ele2.tlv.Pt()/GeV, weight)
-          self.h_el_sublead_eta.Fill(ele2.caloCluster_eta, weight)
+          self.h_el_sublead_eta.Fill(ele2.eta, weight)
           self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
           self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
           self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
@@ -2495,6 +2494,7 @@ class VarsAlg(pyframe.core.Algorithm):
                  key_met = 'met_clus',
                  key_electrons = 'electrons',
                  require_prompt = False,
+                 use_simple_truth = False,
                  ):
         pyframe.core.Algorithm.__init__(self, name)
         self.key_muons = key_muons
@@ -2502,6 +2502,7 @@ class VarsAlg(pyframe.core.Algorithm):
         self.key_met = key_met
         self.key_electrons = key_electrons
         self.require_prompt = require_prompt
+        self.use_simple_truth = use_simple_truth
 
     #__________________________________________________________________________
     def execute(self, weight):
@@ -2583,7 +2584,7 @@ class VarsAlg(pyframe.core.Algorithm):
         # loose electrons (no iso // LooseLLH)
         electrons_loose_LooseLLH = []
         for ele in electrons:
-          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronType() not in [1,2,3]):
+          if self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
             continue
           if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_loose_LooseLLH += [ele]
@@ -2592,7 +2593,7 @@ class VarsAlg(pyframe.core.Algorithm):
         # tight electrons (isoLoose // MediumLLH)
         electrons_tight_MediumLLH_isolLoose = []
         for ele in electrons:
-          if self.require_prompt and ("mc" in self.sampletype) and (ele.electronType() not in [1,2,3]):
+          if self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
             continue
           if ( ele.pt>30*GeV and ele.isIsolated_Loose and ele.LHMedium and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_tight_MediumLLH_isolLoose += [ele]

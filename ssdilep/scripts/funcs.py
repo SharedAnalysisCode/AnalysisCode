@@ -266,15 +266,15 @@ def plot_hist(
         total_hists = get_total_stat_sys_hists(h_bkg_list,sys_dict)
         
         g_stat = make_band_graph_from_hist(total_hists[0])
-        g_stat.SetFillColor(ROOT.kGray+1)
+        g_stat.SetFillColor(ROOT.kGray)
         g_tot  = make_band_graph_from_hist(total_hists[3],total_hists[4])
         g_tot.SetFillColor(ROOT.kRed)
 
     else:
         h_total_stat = make_stat_hist(h_total)
         g_stat = make_band_graph_from_hist(h_total_stat)
-        g_stat.SetFillColor(ROOT.kGray+2)
-        g_stat.SetLineColor(ROOT.kGray+2)
+        g_stat.SetFillColor(ROOT.kGray)
+        g_stat.SetLineColor(ROOT.kGray)
         g_tot = None
 
     ## blind data and create ratio 
@@ -283,17 +283,25 @@ def plot_hist(
     if data: 
         h_data = hists[data]
         h_data.SetMarkerSize(0.8)
+        h_data.Sumw2(0)
+        h_data.SetBinErrorOption(1)
         if blind: apply_blind(h_data,blind)
         h_ratio = h_data.Clone('%s_ratio'%(h_data.GetName()))
+        h_ratioGr = ROOT.TGraphAsymmErrors()
+        h_ratioGr.SetMarkerSize(0.8)
         ## dont use Divide as it will propagate MC stat error to the ratio.
         #h_ratio.Divide(h_total)
         for i in range(1,h_ratio.GetNbinsX()+1):
-          if h_total.GetBinContent(i)!=0:
+          if h_total.GetBinContent(i)!=0 and h_data.GetBinContent(i)!=0:
             h_ratio.SetBinContent(i, h_ratio.GetBinContent(i)/h_total.GetBinContent(i) )
             h_ratio.SetBinError(i, h_ratio.GetBinError(i)/h_total.GetBinContent(i) )
+            h_ratioGr.SetPoint(h_ratioGr.GetN(), h_ratio.GetBinCenter(i), h_ratio.GetBinContent(i) )
+            h_ratioGr.SetPointError(h_ratioGr.GetN()-1, 0,0, h_data.GetBinErrorLow(i)/h_total.GetBinContent(i), h_data.GetBinErrorUp(i)/h_total.GetBinContent(i) )
           else:
             h_ratio.SetBinContent(i, -100 )
-            h_ratio.SetBinError(i, 0 )            
+            h_ratio.SetBinError(i, 0 )
+            h_ratioGr.SetPoint(h_ratioGr.GetN(), h_ratio.GetBinCenter(i), h_ratio.GetBinContent(i) )
+            h_ratioGr.SetPointError(h_ratioGr.GetN()-1, 0,0, 0,0 )
 
     yaxistitle = None
     for b in reversed(backgrounds):
@@ -349,7 +357,7 @@ def plot_hist(
     else: c = ROOT.TCanvas(cname,cname,600,600)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-2
+    ymin = 1.e-1
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue
@@ -363,10 +371,14 @@ def plot_hist(
     else: rsplit = 0.
     pad1 = ROOT.TPad("pad1","top pad",0.,rsplit,1.,1.)
     pad1.SetLeftMargin(0.15)
+    pad1.SetLeftMargin(0.15)
     pad1.SetTicky()
     pad1.SetTickx()
-    if do_ratio_plot: pad1.SetBottomMargin(0.04)
-    else: pad1.SetBottomMargin(0.15)
+    if do_ratio_plot:
+      pad1.SetBottomMargin(0.04)
+      pad1.SetTopMargin(0.07)
+    else: 
+      pad1.SetBottomMargin(0.15)
 
     pad1.Draw()
     if do_ratio_plot:
@@ -421,8 +433,6 @@ def plot_hist(
        hists[s].Draw("SAME,HIST")
 
     if data: 
-      h_data.Sumw2(0)
-      h_data.SetBinErrorOption(1);
       h_data.Draw("SAME X0 P E")
     pad1.SetLogy(log)
     if logx!=None : pad1.SetLogx(logx)
@@ -497,27 +507,30 @@ def plot_hist(
 
       arrows = []
       if data: 
-        h_ratio.SetBinErrorOption(0);
-        h_ratio.Draw("SAME X0 P E") 
+        #h_ratio.Draw("SAME X0 P E0")
+        h_ratioGr.Draw("SAME E0 P")
+        h_ratioGr.SetLineWidth(2)
         for bin_itr in range(1,h_ratio.GetNbinsX()+1):
-          if h_ratio.GetBinContent(bin_itr)>1.51:
+          if (h_total.GetBinContent(bin_itr)==0 or h_data.GetBinContent(bin_itr)==0): continue
+          if (h_ratio.GetBinContent(bin_itr)-h_data.GetBinErrorLow(bin_itr)/h_total.GetBinContent(bin_itr)) > 1.51:
             print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
             arrowX = h_ratio.GetBinCenter(bin_itr)
-            arrow = ROOT.TArrow(arrowX,1.4,arrowX,1.5,0.012,"=>");
+            arrow = ROOT.TArrow(arrowX,1.35,arrowX,1.5,0.012,"=>");
             arrow.SetLineWidth(2)
-            arrow.SetLineColor(ROOT.kViolet+1)
-            arrow.SetFillColor(ROOT.kViolet+1)
+            arrow.SetLineColor(ROOT.kRed+1)
+            arrow.SetFillColor(ROOT.kRed+1)
             arrows += [arrow]
             arrow.Draw()
-          elif h_ratio.GetBinContent(bin_itr)<0.49 and h_ratio.GetBinContent(bin_itr) not in [-100,0]:
+          elif (h_ratio.GetBinContent(bin_itr)+h_data.GetBinErrorUp(bin_itr)/h_total.GetBinContent(bin_itr)) < 0.49 and h_ratio.GetBinContent(bin_itr) not in [-100,0]:
             print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
             arrowX = h_ratio.GetBinCenter(bin_itr)
-            arrow = ROOT.TArrow(arrowX,0.50,arrowX,0.60,0.012,"<=");
+            arrow = ROOT.TArrow(arrowX,0.50,arrowX,0.65,0.012,"<=");
             arrow.SetLineWidth(2)
-            arrow.SetLineColor(ROOT.kViolet+1)
-            arrow.SetFillColor(ROOT.kViolet+1)
+            arrow.SetLineColor(ROOT.kRed+1)
+            arrow.SetFillColor(ROOT.kRed+1)
             arrows += [arrow]
             arrow.Draw()
+      pad2.RedrawAxis()
       pad2.RedrawAxis("g")
 
     print 'saving plot...'

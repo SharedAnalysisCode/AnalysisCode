@@ -2,6 +2,7 @@
 '''
 SubmitHist.py
 '''
+import ROOT
 
 ## modules
 import os
@@ -27,7 +28,7 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "CRelectron3"
+RUN = "CRelectron7"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -135,13 +136,25 @@ def submit(tag,job_sys,samps,config={}):
     ## construct config file
     cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
+    nsubjobs = 0
+    jobnames = []
     for s in samps:
 
         ## input
-        sinput = input_file(s,job_sys) 
+        sinput = input_file(s,job_sys)
 
         ## sample type
         stype  = s.type
+ 
+        nlines = 1
+        if os.stat(sinput).st_size>5e8:
+            print sinput
+            tempFile = ROOT.TFile.Open(sinput)
+            tempFile.cd("physics")
+            t = ROOT.gDirectory.Get("nominal")
+            nevents = t.GetEntries()
+            print "number of events ",nevents, " lines ",nevents//500000+1
+            nlines = nevents//500000 + 1
 
         ## config
         sconfig = {}
@@ -149,8 +162,20 @@ def submit(tag,job_sys,samps,config={}):
         sconfig.update(s.config)
         sconfig_str = ",".join(["%s:%s"%(key,val) for key,val in sconfig.items()])
 
-        line = ';'.join([s.name,sinput,stype,sconfig_str])
-        f.write('%s\n'%line) 
+        for i in range(nlines) :
+            line = ""
+            if nlines==1 :
+                line = ';'.join([s.name,sinput,stype,sconfig_str])
+            elif len(sconfig_str)==0:
+                line = ';'.join([s.name+".part"+str(i+1),sinput,stype, "min_entry:"+str( i*500000 )+",max_entry:"+str( (i+1)*500000 )])
+            elif len(sconfig_str)!=0:
+                line = ';'.join([s.name+".part"+str(i+1),sinput,stype,",min_entry:"+str( i*500000 )+",max_entry:"+str( (i+1)*500000 )])
+            f.write('%s\n'%line)
+            nsubjobs+=1
+            jobname=str(os.path.basename(SCRIPT)[0:-2])+str(tag)+'.'+str(s.name)
+            if nlines>1:
+                jobname+='.part'+str(i+1)
+            jobnames+=[jobname]
 
     f.close()
 
@@ -158,20 +183,20 @@ def submit(tag,job_sys,samps,config={}):
     absintar   = os.path.abspath(INTARBALL)
     absoutpath = os.path.abspath(os.path.join(OUTPATH,tag))
     abslogpath = os.path.abspath(os.path.join(OUTPATH,'log_%s'%tag))
-    nsubjobs   = len(samps)
     if TESTMODE: nsubjobs = 1
 
     #prepare_path(absoutpath)
     #prepare_path(abslogpath)
-
-    for line_intiger in range(30,31):
+ 
+    assert len(jobnames)==nsubjobs,"weird"
+    for line_intiger in range(nsubjobs):
 
         TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
         JOBLISTF = os.path.join(JOBDIR,'joblist_%s.xml' % (time.strftime("d%d_m%m_y%Y")) )
         cmd =  'printf "'
         cmd += '&\n'
         cmd += '(executable=\\"%s\\")\n' % BEXEC
-        cmd += '(jobName=\\"'+str(os.path.basename(SCRIPT)[0:-2])+str(tag)+'.'+str(samps[line_intiger].name)+'\\")\n'
+        cmd += '(jobName=\\"'+jobnames[line_intiger]+'\\")\n'
         cmd += '(memory=4000)\n'
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'
