@@ -1,0 +1,11 @@
+*.log
+*.d
+*.pcm
+*.so
+*.root
+*.rootrc
+*.pdf
+atlasstyle*
+run/*.eps
+run/*.root
+run/Plots
