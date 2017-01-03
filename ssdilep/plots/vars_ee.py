@@ -16,6 +16,8 @@ cutflow_weighted_ZWindowSS  = Var(name = 'cutflow_weighted_ZWindowSS',log=False)
 cutflow_ZWindowOS           = Var(name = 'cutflow_ZWindowOS',log=False)
 cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
 
+cutflow_presel = Var(name = 'cutflow_presel', log=False)
+
 ## Non-equidistant bins
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
@@ -148,31 +150,31 @@ met_clus_et = Var(name='met_clus_et',
 el_t_pt = Var(name = 'el_t_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 2000.,
-              rebin  = 1,
+              xmax   = 250.,
+              rebin  = 4,
               #rebinVar  = bins_pt,
               log    = True,
-              logx   = True,
+              logx   = False,
               )
 
 el_l_pt = Var(name = 'el_l_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 2000.,
-              rebin  = 1,
+              xmax   = 250.,
+              rebin  = 4,
               #rebinVar  = bins_pt,
               log    = True,
-              logx   = True,
+              logx   = False,
               )
 
 el_sl_pt = Var(name = 'el_sl_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 2000.,
-              rebin  = 1,
+              xmax   = 250.,
+              rebin  = 4,
               #rebinVar  = bins_pt,
               log    = True,
-              logx   = True,
+              logx   = False,
               )
 
 el_lead_pt = Var(name = 'el_lead_pt',

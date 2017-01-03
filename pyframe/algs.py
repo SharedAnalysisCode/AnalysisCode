@@ -379,7 +379,7 @@ class AttachTLVs(pyframe.core.Algorithm):
                 if p.prefix.startswith('muon_'):
                     p.tlv.SetPtEtaPhiM(p.pt, p.eta, p.phi, p.m)
                 elif p.prefix.startswith('el_'):
-                    p.tlv.SetPtEtaPhiM(p.pt, p.eta, p.phi, 0.0)
+                    p.tlv.SetPtEtaPhiM(p.pt, p.eta, p.phi, p.m)
                 elif p.prefix.startswith('ph_'):
                     p.tlv.SetPtEtaPhiM(p.pt, p.etas2, p.phi, 0.0)
                 elif p.prefix.startswith('jet_'):

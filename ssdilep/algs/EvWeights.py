@@ -241,8 +241,9 @@ class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
           electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
           for ele in electrons:
             sf *= getattr(ele,"RecoEff_SF").at(0)
-            sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
+            sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
             sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
         if self.key: 
           self.store[self.key] = sf
@@ -311,18 +312,24 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
           sf *= getattr(electrons[0],"RecoEff_SF").at(0)
           sf *= getattr(electrons[1],"RecoEff_SF").at(0)
           if self.typeFF=="TL":
-            sf *= getattr(electrons[0],"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
+            sf *= getattr(electrons[0],"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
             sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
             sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= alpha*f2*(1.-f1)
           elif self.typeFF=="LT":
-            sf *= getattr(electrons[1],"IsoEff_SF_" + self.IDLevels[1] + "_" + self.isoLevels[0] ).at(0)
+            sf *= getattr(electrons[1],"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
             sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
             sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= alpha*f1*(1.-f2)
           elif self.typeFF=="LL":
             sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= -alpha*f1*f2
 
         else:

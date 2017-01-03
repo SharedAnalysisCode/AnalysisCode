@@ -364,7 +364,7 @@ def plot_hist(
       ymax = max([ymax,hists[b].GetMaximum()])
     if data: ymax = max([ymax,h_data.GetMaximum()])
     if log: ymax *= 4000.
-    else:   ymax *= 1.8
+    else:   ymax *= 1.4
     xtitle = h_total.GetXaxis().GetTitle()
 
     if do_ratio_plot: rsplit = 0.3

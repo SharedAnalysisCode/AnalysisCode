@@ -2032,7 +2032,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
     #_________________________________________________________________________
     def initialize(self):
         pyframe.algs.CutFlowAlg.initialize(self)
-        self.pt_bins  = [30., 40., 50., 60., 70., 80., 100., 125., 180., 250., 350., 500.]
+        self.pt_bins  = [30., 50., 70., 100., 125., 180., 250., 350., 500., 2000.]
         self.eta_bins = [0.0, 1.37, 1.52, 2.01, 2.47]
     #_________________________________________________________________________
     def execute(self, weight):
@@ -2123,6 +2123,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_t_trkd0sig = self.hist('h_el_t_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
         self.h_el_t_trkz0sintheta = self.hist('h_el_t_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         self.h_el_t_2D_pt_eta = self.hist2DVariable('h_el_t_2D_pt_eta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
+        self.h_el_t_2D_pt_Ceta = self.hist2DVariable('h_el_t_2D_pt_Ceta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
         # loose
         self.h_el_l_pt = self.hist('h_el_l_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
         self.h_el_l_eta = self.hist('h_el_l_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
@@ -2130,6 +2131,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_l_trkd0sig = self.hist('h_el_l_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
         self.h_el_l_trkz0sintheta = self.hist('h_el_l_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         self.h_el_l_2D_pt_eta = self.hist2DVariable('h_el_l_2D_pt_eta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
+        self.h_el_l_2D_pt_Ceta = self.hist2DVariable('h_el_l_2D_pt_Ceta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
         # strictly loose
         self.h_el_sl_pt = self.hist('h_el_sl_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
         self.h_el_sl_eta = self.hist('h_el_sl_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
@@ -2137,6 +2139,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_sl_trkd0sig = self.hist('h_el_sl_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
         self.h_el_sl_trkz0sintheta = self.hist('h_el_sl_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         self.h_el_sl_2D_pt_eta = self.hist2DVariable('h_el_sl_2D_pt_eta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
+        self.h_el_sl_2D_pt_Ceta = self.hist2DVariable('h_el_sl_2D_pt_Ceta',  self.pt_bins, self.eta_bins, dir=ELECTRONS)
 
 
         # ---------------
@@ -2158,38 +2161,68 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
 
           #electron
           for ele in electrons:
+            # trigger
+            assert len(ele.isTrigMatchedToChain)==(len(self.chain.el_listTrigChains)/self.chain.nel),"size of isTrigMatchedToChain not the same as listTrigChains"
+            elePassTrigger = 0
+            if ele.tlv.Pt()/GeV <= 65.:
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
+                if triggerStr=="HLT_e24_lhvloose_L1EM20VH" and isMatched==1:
+                  for i in xrange(self.chain.passedTriggers.size()):
+                    if self.chain.passedTriggers.at(i) == "HLT_e24_lhvloose_L1EM20VH":
+                      elePassTrigger = 1. if self.sampletype == "mc" else 77.77
+            elif ele.tlv.Pt()/GeV <= 125.:
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
+                if triggerStr=="HLT_e60_lhvloose" and isMatched==1:
+                  for i in xrange(self.chain.passedTriggers.size()):
+                    if self.chain.passedTriggers.at(i) == "HLT_e60_lhvloose":
+                      elePassTrigger = 1. if self.sampletype == "mc" else 31.40
+            elif ele.tlv.Pt()/GeV <= 145.:
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
+                if triggerStr=="HLT_e120_lhloose" and isMatched==1:
+                  for i in xrange(self.chain.passedTriggers.size()):
+                    if self.chain.passedTriggers.at(i) == "HLT_e120_lhloose":
+                      elePassTrigger = 1. if self.sampletype == "mc" else 3.314
+            else :
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
+                if triggerStr=="HLT_e140_lhloose_nod0" and isMatched==1:
+                  for i in xrange(self.chain.passedTriggers.size()):
+                    if self.chain.passedTriggers.at(i) == "HLT_e140_lhloose_nod0":
+                      elePassTrigger = 1. if self.sampletype == "mc" else 1.
             # loose (all of them are loose here)
             elSF_LooseLLH = 1.
             if("mc" in self.sampletype):
               elSF_LooseLLH *= getattr(ele,"RecoEff_SF").at(0)
               elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
-            self.h_el_l_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
-            self.h_el_l_eta.Fill(ele.eta,                     weight*elSF_LooseLLH)
-            self.h_el_l_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
-            self.h_el_l_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_LooseLLH)
-            self.h_el_l_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_LooseLLH)
-            self.h_el_l_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.eta, weight*elSF_LooseLLH)
+            self.h_el_l_pt.Fill(ele.tlv.Pt()/GeV,             weight*elePassTrigger*elSF_LooseLLH)
+            self.h_el_l_eta.Fill(ele.eta,                     weight*elePassTrigger*elSF_LooseLLH)
+            self.h_el_l_phi.Fill(ele.tlv.Phi(),               weight*elePassTrigger*elSF_LooseLLH)
+            self.h_el_l_trkd0sig.Fill(ele.trkd0sig,           weight*elePassTrigger*elSF_LooseLLH)
+            self.h_el_l_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger*elSF_LooseLLH)
+            self.h_el_l_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight*elePassTrigger*elSF_LooseLLH)
+            self.h_el_l_2D_pt_Ceta.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight*elePassTrigger*elSF_LooseLLH)
             if ele.isIsolated_Loose and ele.LHMedium:
               # tight
               elSF_MediumLLH_isolLoose =  1.
               if("mc" in self.sampletype):
                 elSF_MediumLLH_isolLoose *= getattr(ele,"RecoEff_SF").at(0)
                 elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
-                elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLH_isolLoose").at(0)
-              self.h_el_t_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_eta.Fill(ele.eta,                     weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_phi.Fill(ele.tlv.Phi(),               weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_MediumLLH_isolLoose)
-              self.h_el_t_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.eta, weight*elSF_MediumLLH_isolLoose)
+                elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLHisolLoose").at(0)
+              self.h_el_t_pt.Fill(ele.tlv.Pt()/GeV,             weight*elePassTrigger*elSF_MediumLLH_isolLoose)
+              self.h_el_t_eta.Fill(ele.eta,                     weight*elePassTrigger*elSF_MediumLLH_isolLoose)
+              self.h_el_t_phi.Fill(ele.tlv.Phi(),               weight*elePassTrigger*elSF_MediumLLH_isolLoose)
+              self.h_el_t_trkd0sig.Fill(ele.trkd0sig,           weight*elePassTrigger*elSF_MediumLLH_isolLoose)
+              self.h_el_t_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger*elSF_MediumLLH_isolLoose)
+              self.h_el_t_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight*elePassTrigger*elSF_MediumLLH_isolLoose)
+              self.h_el_t_2D_pt_Ceta.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight*elePassTrigger*elSF_MediumLLH_isolLoose)
             else:
               # strictly loose (they failed the tight criteria)
-              self.h_el_sl_pt.Fill(ele.tlv.Pt()/GeV,             weight*elSF_LooseLLH)
-              self.h_el_sl_eta.Fill(ele.eta,                     weight*elSF_LooseLLH)
-              self.h_el_sl_phi.Fill(ele.tlv.Phi(),               weight*elSF_LooseLLH)
-              self.h_el_sl_trkd0sig.Fill(ele.trkd0sig,           weight*elSF_LooseLLH)
-              self.h_el_sl_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elSF_LooseLLH)
-              self.h_el_sl_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, ele.eta, weight*elSF_LooseLLH)
+              self.h_el_sl_pt.Fill(ele.tlv.Pt()/GeV,             weight*elePassTrigger*elSF_LooseLLH)
+              self.h_el_sl_eta.Fill(ele.eta,                     weight*elePassTrigger*elSF_LooseLLH)
+              self.h_el_sl_phi.Fill(ele.tlv.Phi(),               weight*elePassTrigger*elSF_LooseLLH)
+              self.h_el_sl_trkd0sig.Fill(ele.trkd0sig,           weight*elePassTrigger*elSF_LooseLLH)
+              self.h_el_sl_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger*elSF_LooseLLH)
+              self.h_el_sl_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight*elePassTrigger*elSF_LooseLLH)
+              self.h_el_sl_2D_pt_Ceta.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight*elePassTrigger*elSF_LooseLLH)
 
 
     #__________________________________________________________________________

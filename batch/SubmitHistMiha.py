@@ -20,7 +20,7 @@ USER   = os.getenv('USER')
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/presc/merged' # input NTUP path
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/menu_singlemu/merged' # input NTUP path
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/HIGG3D3_p2666_p2667_v1_presc/merged' # input NTUP path
-NTUP='/ceph/grid/home/atlas/miham/AnalysisCode/EXOT12/merged' # input NTUP path
+NTUP='/ceph/grid/home/atlas/miham/ntuples/v2ntuples18ifb/mergedEXOT19and0' # input NTUP path
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
 INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) )
@@ -28,15 +28,15 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "CRelectron7"
+RUN = "FFelectron40"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
 
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
-#SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+#SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_TwoMu.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_VR_MuPairs.py"  # pyframe job script
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -138,6 +138,7 @@ def submit(tag,job_sys,samps,config={}):
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
+    maxevents = 2000000
     for s in samps:
 
         ## input
@@ -147,14 +148,14 @@ def submit(tag,job_sys,samps,config={}):
         stype  = s.type
  
         nlines = 1
-        if os.stat(sinput).st_size>5e8:
+        if os.stat(sinput).st_size>10e8:
             print sinput
             tempFile = ROOT.TFile.Open(sinput)
             tempFile.cd("physics")
             t = ROOT.gDirectory.Get("nominal")
             nevents = t.GetEntries()
-            print "number of events ",nevents, " lines ",nevents//500000+1
-            nlines = nevents//500000 + 1
+            print "number of events ",nevents, " lines ",nevents//maxevents+1
+            nlines = nevents//maxevents + 1
 
         ## config
         sconfig = {}
@@ -167,9 +168,9 @@ def submit(tag,job_sys,samps,config={}):
             if nlines==1 :
                 line = ';'.join([s.name,sinput,stype,sconfig_str])
             elif len(sconfig_str)==0:
-                line = ';'.join([s.name+".part"+str(i+1),sinput,stype, "min_entry:"+str( i*500000 )+",max_entry:"+str( (i+1)*500000 )])
+                line = ';'.join([s.name+".part"+str(i+1),sinput,stype, "min_entry:"+str( i*maxevents )+",max_entry:"+str( (i+1)*maxevents )])
             elif len(sconfig_str)!=0:
-                line = ';'.join([s.name+".part"+str(i+1),sinput,stype,",min_entry:"+str( i*500000 )+",max_entry:"+str( (i+1)*500000 )])
+                line = ';'.join([s.name+".part"+str(i+1),sinput,stype,",min_entry:"+str( i*maxevents )+",max_entry:"+str( (i+1)*maxevents )])
             f.write('%s\n'%line)
             nsubjobs+=1
             jobname=str(os.path.basename(SCRIPT)[0:-2])+str(tag)+'.'+str(s.name)
@@ -189,6 +190,7 @@ def submit(tag,job_sys,samps,config={}):
     #prepare_path(abslogpath)
  
     assert len(jobnames)==nsubjobs,"weird"
+
     for line_intiger in range(nsubjobs):
 
         TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )

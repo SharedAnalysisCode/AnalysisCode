@@ -130,7 +130,7 @@ if [ ! -d ${OUTPATH} ]; then mkdir -p ${OUTPATH}; chmod a+rxw `dirname $OUTPATH`
 echo "copying output"
 echo cp ${OUTFILE} ${OUTPATH}/${SAMPLE}.root 
 cp ${OUTFILE} ${OUTPATH}/${SAMPLE}.root
-chmod a+r ${OUTPATH}/${SAMPLE}.root
+chmod a+wr ${OUTPATH}/${SAMPLE}.root
 
 echo "cd ${TMPDIR}"
 cd ${TMPDIR}
