@@ -116,7 +116,7 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
+    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
     #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
@@ -189,7 +189,12 @@ def analyze(config):
     ##-------------------------------------------------------------------------
     ## run the job
     ##-------------------------------------------------------------------------
-    loop.run(chain, 0, config['events'],
+    min_entry = int(config.get('min_entry') if ('min_entry' in config.keys()) else  0)
+    max_entry = int(config.get('max_entry') if ('max_entry' in config.keys()) else -1)
+    print min_entry," ",max_entry
+    loop.run(chain, 
+            min_entry = min_entry,
+            max_entry = max_entry,
             branches_on_file = config.get('branches_on_file'),
             do_var_log = config.get('do_var_log'),
             )
