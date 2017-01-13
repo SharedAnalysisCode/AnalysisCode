@@ -370,7 +370,6 @@ class FakeEstimator(BaseEstimator):
           h_lt_den.Add(hmc_lt,-1)
         if "CR-LT" in region: return h_lt_den
         
-        
         h = h_tl_den.Clone("fakes_hist")
         h.Add(h_lt_den)
         h.Add(h_ll_den)
@@ -388,6 +387,43 @@ class FakeEstimator(BaseEstimator):
           hmc = s.hist(histname=histname,region=region_den,icut=icut,sys=sys,mode=mode)
           h.Add(hmc,-1)
         """
+        return h
+
+#------------------------------------------------------------
+class FakeEstimator1D(BaseEstimator):
+    '''
+    Estimator for merging different regions
+    '''
+    #____________________________________________________________
+    def __init__(self,data_sample,mc_samples,**kw):
+        BaseEstimator.__init__(self,**kw)
+        self.data_sample = data_sample
+        self.mc_samples = mc_samples
+    #____________________________________________________________
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+        
+        # ---------
+        # L REGION
+        # ---------
+        region_l_den = region.replace("-VR","-VR-L")
+
+        h_l_den = self.data_sample.hist(histname=histname,
+                                region=region_l_den,
+                                icut=icut,
+                                sys=sys,
+                                mode=mode,
+                                ).Clone()
+        for s in self.mc_samples:
+          hmc_l = s.hist(histname=histname,region=region_l_den,icut=icut,sys=sys,mode=mode)
+          if not hmc_l: 
+            print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
+            continue
+          h_l_den.Add(hmc_l,-1)
+        if "VR-L" in region: return h_l_den
+        
+        
+        h = h_l_den.Clone("fakes_hist")
+
         return h
 
     #__________________________________________________________________________

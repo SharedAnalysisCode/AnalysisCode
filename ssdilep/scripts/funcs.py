@@ -71,6 +71,7 @@ def get_hists(
                                      histname  = histname,
                                      sample    = s,
                                      rebin     = rebin,
+                                     rebinVar  = rebinVar,
                                      sys_dict  = sys_dict,
                                      )
 
@@ -84,6 +85,7 @@ def get_sys_hists(
         histname = None,
         sample   = None,
         rebin    = None,
+        rebinVar = [],
         sys_dict = None,
         ):
     
@@ -103,9 +105,14 @@ def get_sys_hists(
           h_up.SetName('h_%s_%s_up_%s'%(region,sys.name,sample.name))
           h_dn.SetName('h_%s_%s_dn_%s'%(region,sys.name,sample.name))
           
-          if rebin:
-           if h_up: h_up.Rebin(rebin)
-           if h_dn: h_dn.Rebin(rebin)
+          if rebin and len(rebinVar)==0 :
+            if h_up: h_up.Rebin(rebin)
+            if h_dn: h_dn.Rebin(rebin)
+          elif len(rebinVar)>1 :
+            runArray = array('d',rebinVar)
+            print "Performing variable bin rebining with on " + histname + " SYS: " + str(sys) + " " + name
+            if h_up: h_up = h_up.Rebin( len(rebinVar)-1, histname+"Var", runArray )
+            if h_dn: h_dn = h_dn.Rebin( len(rebinVar)-1, histname+"Var", runArray )
              
         hist_dict[sys] = (h_up,h_dn)
     return hist_dict 
@@ -221,7 +228,7 @@ def plot_hist(
     rebin         = None,
     rebinVar      = [],
     sys_dict      = None,
-    do_ratio_plot = False,
+    do_ratio_plot = True,
     save_eps      = False,
     plotsfile     = None,
     sig_rescale   = None,
@@ -267,8 +274,10 @@ def plot_hist(
         
         g_stat = make_band_graph_from_hist(total_hists[0])
         g_stat.SetFillColor(ROOT.kGray)
+        g_stat.SetLineColor(ROOT.kGray)
         g_tot  = make_band_graph_from_hist(total_hists[3],total_hists[4])
-        g_tot.SetFillColor(ROOT.kRed)
+        g_tot.SetFillColor(ROOT.kOrange-3)
+        g_tot.SetLineColor(ROOT.kOrange-3)
 
     else:
         h_total_stat = make_stat_hist(h_total)
@@ -357,14 +366,14 @@ def plot_hist(
     else: c = ROOT.TCanvas(cname,cname,600,600)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-1
+    ymin = 1.e-1 if log else 0.0
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue
       ymax = max([ymax,hists[b].GetMaximum()])
     if data: ymax = max([ymax,h_data.GetMaximum()])
     if log: ymax *= 4000.
-    else:   ymax *= 1.4
+    else:   ymax *= 1.7
     xtitle = h_total.GetXaxis().GetTitle()
 
     if do_ratio_plot: rsplit = 0.3
@@ -411,11 +420,13 @@ def plot_hist(
     scale = (1.3+rsplit)
 
     if not do_ratio_plot:
-      xaxis1.SetTitleSize( xaxis1.GetTitleSize() * scale )
-      xaxis1.SetLabelSize( 0.9 * xaxis1.GetLabelSize() * scale )
+      xaxis1.SetTitleSize( 0.7 * xaxis1.GetTitleSize() * scale )
+      xaxis1.SetLabelSize( 0.7 * xaxis1.GetLabelSize() * scale )
       xaxis1.SetTickLength( xaxis1.GetTickLength() * scale )
-      xaxis1.SetTitleOffset( 1.3* xaxis1.GetTitleOffset() / scale  )
+      xaxis1.SetTitleOffset( xaxis1.GetTitleOffset() / scale  )
       xaxis1.SetLabelOffset( 1.* xaxis1.GetLabelOffset() / scale )
+      xaxis1.SetNoExponent()
+      xaxis1.SetMoreLogLabels()
 
     yaxis1.SetTitleSize( yaxis1.GetTitleSize() * scale /1.3 )
     yaxis1.SetTitleOffset( 2.1 * yaxis1.GetTitleOffset() / scale /1.8 )
@@ -459,7 +470,7 @@ def plot_hist(
       latex_y -= 0.06
       #for i,line in enumerate(label):
       #  tlatex.DrawLatex(tx,latex_y-i*0.06,"#scale[%lf]{%s}"%(textsize,line))
-      tlatex.DrawLatex(tx,latex_y - 0.06,"#scale[%lf]{%s}"%(textsize,label))
+      tlatex.DrawLatex(tx,latex_y - 0.04,"#font[42]{%s}"%label)
     if blind:
         line = ROOT.TLine()
         line.SetLineColor(ROOT.kBlack)
@@ -500,6 +511,8 @@ def plot_hist(
       if g_tot: 
          g_tot.Draw("E2")
          g_stat.Draw("SAME,E2")
+         leg.AddEntry(g_stat,"#font[42]{"+str("MC Stat.")+"}",'F')
+         leg.AddEntry(g_tot, "#font[42]{"+str("#oplus Sys. Unc.")+"}",'F')
 
       else: 
         g_stat.Draw("E2")

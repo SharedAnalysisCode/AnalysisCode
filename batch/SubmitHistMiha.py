@@ -20,7 +20,9 @@ USER   = os.getenv('USER')
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/presc/merged' # input NTUP path
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/menu_singlemu/merged' # input NTUP path
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/HIGG3D3_p2666_p2667_v1_presc/merged' # input NTUP path
-NTUP='/ceph/grid/home/atlas/miham/ntuples/v2ntuples18ifb/mergedEXOT19and0' # input NTUP path
+#NTUP='/ceph/grid/home/atlas/miham/ntuples/v2ntuples18ifb/mergedEXOT19and0' # input NTUP path
+NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT12' # input NTUP path
+# NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT19and0' # input NTUP path
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
 INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) )
@@ -28,17 +30,23 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "FFelectron40"
+RUN = "SSVRele36_2"
+#RUN = "ZPeak36_4"
+#RUN = "CRelectron36"
+#RUN = "FFelectron36_3"
+# RUN = "WJets36_2"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
 
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
-SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
+#SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
-#SCRIPT="./ssdilep/run/j.plotter_VR_TwoMu.py"  # pyframe job script
-#SCRIPT="./ssdilep/run/j.plotter_VR_MuPairs.py"  # pyframe job script
+#SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
+
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
 DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
@@ -73,8 +81,8 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    #all_mc = []
-    #all_data = []
+    # all_mc = []
+    all_data = []
 
     #nominal = all_data + all_mc 
     nominal = all_mc 
@@ -134,7 +142,7 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
+    cfg = os.path.join(JOBDIR,'ConfigHist.RETRY2.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
@@ -168,9 +176,9 @@ def submit(tag,job_sys,samps,config={}):
             if nlines==1 :
                 line = ';'.join([s.name,sinput,stype,sconfig_str])
             elif len(sconfig_str)==0:
-                line = ';'.join([s.name+".part"+str(i+1),sinput,stype, "min_entry:"+str( i*maxevents )+",max_entry:"+str( (i+1)*maxevents )])
+                line = ';'.join([s.name+".part"+str(i+1),sinput,stype,"min_entry:"+str( i*maxevents )+",max_entry:"+str( (i+1)*maxevents )])
             elif len(sconfig_str)!=0:
-                line = ';'.join([s.name+".part"+str(i+1),sinput,stype,",min_entry:"+str( i*maxevents )+",max_entry:"+str( (i+1)*maxevents )])
+                line = ';'.join([s.name+".part"+str(i+1),sinput,stype,str(sconfig_str)+",min_entry:"+str( i*maxevents )+",max_entry:"+str( (i+1)*maxevents )])
             f.write('%s\n'%line)
             nsubjobs+=1
             jobname=str(os.path.basename(SCRIPT)[0:-2])+str(tag)+'.'+str(s.name)
@@ -203,7 +211,7 @@ def submit(tag,job_sys,samps,config={}):
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'
         cmd += '(gmlog="gmlog")\n'
-        cmd += '(cpuTime="700")\n'
+        cmd += '(cpuTime="300")\n'
         cmd += '(environment=(\\"CONFIG\\" \\"%s\\")\n'    % abscfg
         cmd += '             (\\"INTARBALL\\" \\"%s\\")\n' % absintar
         cmd += '             (\\"OUTFILE\\" \\"%s\\")\n'   % OUTFILE

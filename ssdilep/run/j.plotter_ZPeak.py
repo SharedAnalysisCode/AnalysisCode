@@ -100,7 +100,7 @@ def analyze(config):
         met_key='met_clus', 
         )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons')   
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=False, use_simple_truth=False)  
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -116,7 +116,9 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLH')
 
     
     ## weights configuration
@@ -135,6 +137,14 @@ def analyze(config):
     """ 
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            chargeFlipSF=False,
+            )
+
+    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
+            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            chargeFlipSF=True,
             )
     
     ## objects
@@ -173,6 +183,15 @@ def analyze(config):
             )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowSSchfSF',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
+               ['ZMassWindowMediumLLHisolLooseSS',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
             region   = 'ZWindowAS-Sideband',
             plot_all = False,
             cut_flow = [
@@ -191,20 +210,11 @@ def analyze(config):
             )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'BeyondZAS',
+            region   = 'ZWindowSSchfSF-Sideband',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['Mass130GeVMediumLLHisolLoose',None],
-               ],
-            )
-
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'BeyondZSS',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['Mass130GeVMediumLLHisolLoose',None],
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
+               ['ZMassWindowMediumLLHisolLooseSSSideband',None],
                ],
             )
 
@@ -350,7 +360,12 @@ def analyze(config):
     ##-------------------------------------------------------------------------
     ## run the job
     ##-------------------------------------------------------------------------
-    loop.run(chain, 0, config['events'],
+    min_entry = int(config.get('min_entry') if ('min_entry' in config.keys()) else  0)
+    max_entry = int(config.get('max_entry') if ('max_entry' in config.keys()) else -1)
+    print min_entry," ",max_entry
+    loop.run(chain, 
+            min_entry = min_entry,
+            max_entry = max_entry,
             branches_on_file = config.get('branches_on_file'),
             do_var_log = config.get('do_var_log'),
             )

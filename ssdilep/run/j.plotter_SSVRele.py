@@ -44,11 +44,11 @@ def analyze(config):
     config.setdefault('sys',None)
     systematic = config['sys']
 
-    sys_somesys    = None
+    sys_FF    = None
 
     if   systematic == None: pass
-    elif systematic == 'SOMESYS_UP':      sys_somesys    = 'up'
-    elif systematic == 'SOMESYS_DN':      sys_somesys    = 'dn'
+    elif systematic == 'FF_UP':      sys_FF    = 'UP'
+    elif systematic == 'FF_DN':      sys_FF    = 'DN'
     else: 
         assert False, "Invalid systematic %s!"%(systematic)
 
@@ -94,13 +94,13 @@ def analyze(config):
     
     ## initialize and/or decorate objects
     ## ---------------------------------------
-    loop += ssdilep.algs.vars.PairsBuilder(
-        obj_keys=['muons'],
-        pair_key='mu_pairs',
-        met_key='met_clus', 
-        )
+    #loop += ssdilep.algs.vars.PairsBuilder(
+    #    obj_keys=['muons'],
+    #    pair_key='mu_pairs',
+    #    met_key='met_clus', 
+    #    )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=True)  
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)   
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -116,32 +116,43 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DYVetoTightEleMediumLLHisolLoose')
-
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLHSS')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='Mass130GeV200LooseLLH')
     
     ## weights configuration
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
-    """
-    No trigger scale factors!!!
-    loop += ssdilep.algs.EvWeights.MuTrigSF(
-            is_single_mu = True,
-            mu_trig_level="Loose_Loose",
-            mu_trig_chain="HLT_mu20_L1MU15",
-            key='SingleMuonTrigSF',
-            scale=None,
-            )
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            chargeFlipSF=True,
             )
-    """
+
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+            key='ExactlyTwoLooseEleFFTL',
+            typeFF="TL",
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
+            )
+
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+            key='ExactlyTwoLooseEleFFLT',
+            typeFF="LT",
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
+            )
+
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+            key='ExactlyTwoLooseEleFFLL',
+            typeFF="LL",
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
+            )
+    
     ## objects
     ## +++++++++++++++++++++++++++++++++++++++
     """
@@ -159,28 +170,42 @@ def analyze(config):
     ## MyTestRegion
     ## ---------------------------------------
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-nominal',
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-CR',
             plot_all = False,
             cut_flow = [
-               ['METtrkLow25',None],
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-MET60',
+    
+    ## Fake Estimation
+    ## ---------------------------------------
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-CR-TL',
             plot_all = False,
+            loose_el = True,
             cut_flow = [
-               ['METtrkLow60',None],
+               ['ExactlyTwoLooseEleLooseLLHTL',['ExactlyTwoLooseEleFFTL']],
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-ASjet',
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-CR-LT',
             plot_all = False,
+            loose_el = True,
             cut_flow = [
-               ['METtrkLow25',None],
-               ['EleJetDphi28',None],
+               ['ExactlyTwoLooseEleLooseLLHLT',['ExactlyTwoLooseEleFFLT']],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-CR-LL',
+            plot_all = False,
+            loose_el = True,
+            cut_flow = [
+               ['ExactlyTwoLooseEleLooseLLHLL',['ExactlyTwoLooseEleFFLL']],
                ],
             )
 

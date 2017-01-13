@@ -728,6 +728,27 @@ class CutAlg(pyframe.core.Algorithm):
       return met.tlv.Pt() < 60 * GeV
 
     #__________________________________________________________________________
+    def cut_METtrkLow60(self):
+      met = self.store["met_trk"]
+      return met.tlv.Pt() < 60 * GeV
+
+    #__________________________________________________________________________
+    def cut_METhigher25(self):
+      met = self.store["met_trk"]
+      return met.tlv.Pt() > 25 * GeV
+
+    #__________________________________________________________________________
+    def cut_MThigher50(self):
+      met = self.store["met_trk"]
+      ele = self.store["electrons_loose_LooseLLH"][0]
+      return math.sqrt( 2*ele.tlv.Pt()*met.tlv.Pt()*(1-math.cos(ele.tlv.Phi()-met.tlv.Phi())) ) > 50 * GeV
+
+    def cut_MTlow120(self):
+      met = self.store["met_trk"]
+      ele = self.store["electrons_loose_LooseLLH"][0]
+      return math.sqrt( 2*ele.tlv.Pt()*met.tlv.Pt()*(1-math.cos(ele.tlv.Phi()-met.tlv.Phi())) ) < 120 * GeV
+
+    #__________________________________________________________________________
     def cut_EleJetDphi28(self):
       lead_ele = self.store["electrons_loose_LooseLLH"][0]
       lead_jet = None
@@ -1033,6 +1054,19 @@ class CutAlg(pyframe.core.Algorithm):
 
         return False
 
+    def cut_PassSingleEleChain(self):
+        # SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0
+        runNumber = self.chain.runNumber
+        chain = []
+        if runNumber < 290000. :
+          chain = ["HLT_e24_lhmedium_L1EM20VH", "HLT_e60_lhmedium","HLT_e120_lhloose"]
+        else :
+          chain = ["HLT_e26_lhtight_nod0", "HLT_e60_lhmedium_nod0","HLT_e140_lhloose_nod0"]
+        for i in xrange(self.chain.passedTriggers.size()):
+            if self.chain.passedTriggers.at(i) in chain: return True
+
+        return False
+
     def cut_isEEEvent(self):
         if (self.chain.nel==2 and self.chain.nmuon==0): return True
         return False
@@ -1062,6 +1096,30 @@ class CutAlg(pyframe.core.Algorithm):
 
     ##  tight: MediumLLH isolLoose   loose: LooseLLH
     # ---------------------------------------------------
+    def cut_ExactlyZeroMuons(self):
+        muons = self.store['muons']
+        if len(muons)==0: 
+          return True
+        return False
+
+    def cut_ExactlyOneLooseEleLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==1: 
+          return True
+        return False
+
+    def cut_ExactlyOneTightEleMediumLLHisolLoose(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electrons)==1: 
+          return True
+        return False
+
+    def cut_ExactlyZeroTightEleMediumLLHisolLoose(self):
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electrons)==0: 
+          return True
+        return False
+
     def cut_AtLeastOneLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)>0: 
@@ -1111,6 +1169,12 @@ class CutAlg(pyframe.core.Algorithm):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2: 
           if electrons[0].trkcharge*electrons[1].trkcharge == -1: return True
+        return False
+
+    def cut_ExactlyTwoLooseEleLooseLLHSS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2: 
+          if electrons[0].trkcharge*electrons[1].trkcharge == 1: return True
         return False
  
     def cut_ExactlyTwoTightEleMediumLLHisolLooseOS(self):
@@ -1180,6 +1244,14 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_Mass130GeV200LooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if tempMass > 130*GeV and tempMass < 200*GeV :
+            return True;
+        return False
+
     #----- exactly two prompt
     def cut_ExactlyTwoTightEleMediumLLHisolLooseBothPrompt(self):
         if not self.sampletype == "mc" : return False
@@ -1241,6 +1313,12 @@ class CutAlg(pyframe.core.Algorithm):
         elif electrons[0].electronType() != 1 and electrons[1].electronType() != 1 : return True
         else : return False
 
+    def cut_BadJetVeto(self):
+        jets = self.store['jets']
+        for jet in jets:
+          if not jet.isClean:
+            return False
+        return True
 
     #__________________________________________________________________________
     def cut_PASS(self):
@@ -2032,8 +2110,11 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
     #_________________________________________________________________________
     def initialize(self):
         pyframe.algs.CutFlowAlg.initialize(self)
-        self.pt_bins  = [30., 50., 70., 100., 125., 180., 250., 350., 500., 2000.]
+        self.pt_bins  = [30., 35., 40., 45., 50., 55., 60., 65., 70., 75., 80., 90., 100., 120., 140., 180., 250., 350., 500., 2000.]
         self.eta_bins = [0.0, 1.37, 1.52, 2.01, 2.47]
+        self.trigger_strings   = ["HLT_e24_lhvloose_nod0_L1EM20VH","HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
+        self.trigger_bounds    = [31.                             ,65.                             ,125.                   ,145.                   ,99999999.]
+        self.trigger_prescaled = [138.43197                       ,112.3913                        ,25.5606                ,6.69107                ,1.0      ]
     #_________________________________________________________________________
     def execute(self, weight):
    
@@ -2164,30 +2245,17 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
             # trigger
             assert len(ele.isTrigMatchedToChain)==(len(self.chain.el_listTrigChains)/self.chain.nel),"size of isTrigMatchedToChain not the same as listTrigChains"
             elePassTrigger = 0
-            if ele.tlv.Pt()/GeV <= 65.:
-              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
-                if triggerStr=="HLT_e24_lhvloose_L1EM20VH" and isMatched==1:
-                  for i in xrange(self.chain.passedTriggers.size()):
-                    if self.chain.passedTriggers.at(i) == "HLT_e24_lhvloose_L1EM20VH":
-                      elePassTrigger = 1. if self.sampletype == "mc" else 77.77
-            elif ele.tlv.Pt()/GeV <= 125.:
-              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
-                if triggerStr=="HLT_e60_lhvloose" and isMatched==1:
-                  for i in xrange(self.chain.passedTriggers.size()):
-                    if self.chain.passedTriggers.at(i) == "HLT_e60_lhvloose":
-                      elePassTrigger = 1. if self.sampletype == "mc" else 31.40
-            elif ele.tlv.Pt()/GeV <= 145.:
-              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
-                if triggerStr=="HLT_e120_lhloose" and isMatched==1:
-                  for i in xrange(self.chain.passedTriggers.size()):
-                    if self.chain.passedTriggers.at(i) == "HLT_e120_lhloose":
-                      elePassTrigger = 1. if self.sampletype == "mc" else 3.314
-            else :
-              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains) :
-                if triggerStr=="HLT_e140_lhloose_nod0" and isMatched==1:
-                  for i in xrange(self.chain.passedTriggers.size()):
-                    if self.chain.passedTriggers.at(i) == "HLT_e140_lhloose_nod0":
-                      elePassTrigger = 1. if self.sampletype == "mc" else 1.
+            for trig,bound,scale in zip(self.trigger_strings,self.trigger_bounds,self.trigger_prescaled):
+              if ele.tlv.Pt()/GeV <= bound:
+                for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains):
+                  if triggerStr==trig and isMatched==1:
+                    for i in xrange(self.chain.passedTriggers.size()):
+                      if self.chain.passedTriggers.at(i) == trig:
+                        elePassTrigger = 1. if self.sampletype == "mc" else scale
+                        break
+                    break
+                break
+
             # loose (all of them are loose here)
             elSF_LooseLLH = 1.
             if("mc" in self.sampletype):
@@ -2223,6 +2291,234 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
               self.h_el_sl_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger*elSF_LooseLLH)
               self.h_el_sl_2D_pt_eta.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight*elePassTrigger*elSF_LooseLLH)
               self.h_el_sl_2D_pt_Ceta.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight*elePassTrigger*elSF_LooseLLH)
+
+
+    #__________________________________________________________________________
+    def check_region(self,cutnames):
+        cut_passed = True
+        for cn in cutnames:
+            ## could use this to fail when cuts not available
+            #if not cuts.has_key(cn): return False
+    
+            ## pass if None
+            if cn == 'ALL': continue
+            #if cn.startswith("MuPairs"): continue
+
+            if cn.startswith('!'):
+                cut_passed = not self.apply_cut(cn[1:])
+            else:
+                cut_passed = self.apply_cut(cn) and cut_passed
+            #if not cut_passed:
+            #    return False
+        return cut_passed
+    
+    
+    """ 
+    #__________________________________________________________________________
+    def get_obj_cutflow(self, obj_key, cut, list_weights=None, cut_prefix=""):
+        for o in self.store[obj_key]:
+          if hasattr(o,"cdict") and hasattr(o,"wdict"):
+            obj_weight = 1.0
+            if list_weights: 
+              for w in list_weights:
+                obj_weight *= o.GetWeight(w)
+                if cut_prefix: 
+                  if cut.startswith(cut_prefix): 
+                    obj_passed = o.HasPassedCut(cut) and passed
+            self.hists[self.region+"_"+obj_key].count_if(obj_passed, cut, obj_weight * weight)
+    """
+
+    #__________________________________________________________________________
+    def reset_attributes(self,objects):
+        for o in objects:
+          o.ResetCuts()
+          o.ResetWeights()
+        return 
+
+#------------------------------------------------------------------------------
+class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
+    """
+
+    For making a set of standard plots after each cut in a cutflow.  PlotAlg
+    inherets from CutAlg so all the functionality from CutAlg is available for
+    applying selection. In addition you can apply weights at different points
+    in the selection.
+
+    The selection should be configured by specifying 'cut_flow' in the
+    constructor as such:
+
+    cut_flow = [
+        ['Cut1', ['Weight1a','Weight1b'],
+        ['Cut2', ['Weight2']],
+        ['Cut3', None],
+        ...
+        ]
+
+    The weights must be available in the store.
+
+    'region' will set the name of the dir where the plots are saved
+
+    Inhereting from CutFlowAlg provides the functionality to produce cutflow
+    histograms that will be named 'cutflow_<region>' and 'cutflow_raw_<region>'
+
+    """
+    #__________________________________________________________________________
+    def __init__(self,
+                 name     = 'PlotAlgWJets',
+                 region   = '',
+                 obj_keys = [], # make cutflow hist for just this objects
+                 cut_flow = None,
+                 plot_all = True,
+                 ):
+        pyframe.algs.CutFlowAlg.__init__(self,key=region,obj_keys=obj_keys)
+        CutAlg.__init__(self,name,isfilter=False)
+        self.cut_flow = cut_flow
+        self.region   = region
+        self.plot_all = plot_all
+        self.obj_keys = obj_keys
+    
+    #_________________________________________________________________________
+    def initialize(self):
+        pyframe.algs.CutFlowAlg.initialize(self)
+        self.trigger_strings   = ["HLT_e24_lhvloose_nod0_L1EM20VH","HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
+        self.trigger_bounds    = [31.                             ,65.                             ,125.                   ,145.                   ,99999999.]
+        self.trigger_prescaled = [138.43197                       ,112.3913                        ,25.5606                ,6.69107                ,1.0      ]
+    #_________________________________________________________________________
+    def execute(self, weight):
+   
+        # next line fills in the cutflow hists
+        # the first bin of the cutflow does not
+        # take into account object weights
+        pyframe.algs.CutFlowAlg.execute(self, weight)
+
+        list_cuts = []
+        for cut, list_weights in self.cut_flow:
+            ## apply weights for this cut
+            if list_weights:
+              for w in list_weights: weight *= self.store[w]
+
+            list_cuts.append(cut)
+            passed = self.check_region(list_cuts)
+            self.hists[self.region].count_if(passed, cut, weight)
+
+            ## if plot_all is True, plot after each cut, 
+            ## else only plot after full selection
+            
+            # obj cutflow is computed at the end of the cutflow
+            #if len(list_cuts)==len(self.cut_flow):
+            if self.obj_keys:
+             for k in self.obj_keys:
+              for o in self.store[k]:
+               if hasattr(o,"cdict") and hasattr(o,"wdict"):
+                obj_passed = True
+                obj_weight = 1.0
+                if list_weights:
+                 for w in list_weights:
+                  if w.startswith("MuPairs"):
+                   obj_weight *= o.GetWeight(w) 
+                for c in list_cuts:
+                 if c.startswith("MuPairs"):
+                  obj_passed = o.HasPassedCut(c) and obj_passed
+                self.hists[self.region+"_"+k].count_if(obj_passed and passed, c, obj_weight * weight)
+            
+            if (self.plot_all or len(list_cuts)==len(self.cut_flow)):
+               region_name = os.path.join(self.region,'_'.join(list_cuts))
+               region_name = region_name.replace('!', 'N')
+               region = os.path.join('/regions/', region_name)
+               
+               #if passed:             
+               self.plot(region, passed, list_cuts, cut, list_weights=list_weights, weight=weight)
+
+        return True
+
+    #__________________________________________________________________________
+    def finalize(self):
+        pyframe.algs.CutFlowAlg.finalize(self)
+
+    #__________________________________________________________________________
+    def plot(self, region, passed, list_cuts, cut, list_weights=None, weight=1.0):
+        
+        # should probably make this configurable
+        ## get event candidate
+        electrons  = self.store['electrons_loose_LooseLLH']
+        met_trk    = self.store['met_trk']
+        met_clus   = self.store['met_clus']
+        
+        EVT    = os.path.join(region, 'event')
+        ELECTRONS = os.path.join(region, 'electrons')
+        MET    = os.path.join(region, 'met')
+        
+        # -----------------
+        # Create histograms
+        # -----------------
+        ## event plots
+        self.h_averageIntPerXing = self.hist('h_averageIntPerXing', "ROOT.TH1F('$', ';averageInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
+        self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
+        self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
+        self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
+        ## met plots
+        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
+        self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
+        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+
+        self.h_met_trk_mt = self.hist('h_met_trk_mt', "ROOT.TH1F('$', ';#m_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_clus_mt = self.hist('h_met_clus_mt', "ROOT.TH1F('$', ';#m_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+
+        ##Electron plots
+        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+
+
+        # ---------------
+        # Fill histograms
+        # ---------------
+        if passed:
+          # trigger
+          assert len(electrons)==1,"size of electrons should be exactly 1"
+          ele = electrons[0]
+          assert len(ele.isTrigMatchedToChain)==(len(self.chain.el_listTrigChains)/self.chain.nel),"size of isTrigMatchedToChain not the same as listTrigChains"
+          elePassTrigger = 0
+          for trig,bound,scale in zip(self.trigger_strings,self.trigger_bounds,self.trigger_prescaled):
+            if ele.tlv.Pt()/GeV <= bound:
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains):
+                if triggerStr==trig and isMatched==1:
+                  for i in xrange(self.chain.passedTriggers.size()):
+                    if self.chain.passedTriggers.at(i) == trig:
+                      elePassTrigger = 1. if self.sampletype == "mc" else scale
+                      break
+                  break
+              break
+          ## event plots
+          self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight*elePassTrigger)
+          self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight*elePassTrigger)
+          self.h_NPV.Fill(self.chain.NPV, weight*elePassTrigger)
+          self.h_nelectrons.Fill(len(electrons), weight*elePassTrigger)
+          ## met plots
+          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight*elePassTrigger)
+          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight*elePassTrigger)
+          self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight*elePassTrigger)
+          self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight*elePassTrigger)
+          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight*elePassTrigger)
+          self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight*elePassTrigger)
+
+          ele1T = ROOT.TLorentzVector()
+          ele1T.SetPtEtaPhiM( electrons[0].tlv.Pt(), 0., electrons[0].tlv.Phi(), electrons[0].tlv.M() )
+
+          self.h_met_trk_mt.Fill ( (ele1T+met_trk.tlv).M()/GeV , weight*elePassTrigger)
+          self.h_met_clus_mt.Fill( (ele1T+met_clus.tlv).M()/GeV, weight*elePassTrigger)
+
+          #electron
+          self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight*elePassTrigger)
+          self.h_el_eta.Fill(ele.eta, weight*elePassTrigger)
+          self.h_el_phi.Fill(ele.tlv.Phi(), weight*elePassTrigger)
+          self.h_el_trkd0sig.Fill(ele.trkd0sig, weight*elePassTrigger)
+          self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger)
 
 
     #__________________________________________________________________________

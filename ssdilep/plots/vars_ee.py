@@ -21,10 +21,14 @@ cutflow_presel = Var(name = 'cutflow_presel', log=False)
 ## Non-equidistant bins
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
+bins_pt_2 = generateLogBins(20,30,1000)
+bins_mt = generateLogBins(50,50,2000)
 bins_invM = generateLogBins(50,130,2000)
+bins_invM_2 = generateLogBins(15,130,200)
 bins_Zpeak = [50,70,74,77,80,82,83,84,85,86,87,88,89,90,91,92,93,94,95,97,99,102,105,110,130]
 bins_Zpeak2 = [50,80,100,130]
 bins_met = generateLogBins(15,1,1000)
+bins_met_2 = generateLogBins(50,25,2000)
 
 
 
@@ -73,6 +77,37 @@ invMass = Var(name='invMass',
               log    = True,
               logx   = True
               )
+
+invMass_2 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 120,
+              xmax   = 210,
+              rebin  = 1,
+              rebinVar  = bins_invM_2,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = False,
+              )
+
+invMassPeak = Var(name='invMass',
+              path   = 'event',
+              xmin   = 71.5,
+              xmax   = 110,
+              rebin  = 1,
+              #rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              )
+
+invMassPeak_2 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 71.5,
+              xmax   = 110,
+              rebin  = 2,
+              #rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              )
 ZbosonPt = Var(name='ZbosonPt',
               path   = 'event',
               xmin   = 30.,
@@ -82,11 +117,28 @@ ZbosonPt = Var(name='ZbosonPt',
               log    = True,
               logx   = True,
                )
+ZbosonPt_2 = Var(name='ZbosonPt',
+              path   = 'event',
+              xmin   = 30.,
+              xmax   = 1000.,
+              rebin  = 1,
+              rebinVar  = bins_pt_2,
+              log    = False,
+              logx   = True,
+               )
 ZbosonEta = Var(name='ZbosonEta',
                 path   = 'event',
                 xmin   = -6,
                 xmax   = 6,
                 rebin  = 2,
+                log    = False,
+                )
+
+ZbosonEta_2 = Var(name='ZbosonEta',
+                path   = 'event',
+                xmin   = -6,
+                xmax   = 6,
+                rebin  = 4,
                 log    = False,
                 )
 
@@ -135,6 +187,46 @@ met_trk_et = Var(name='met_trk_et',
                 logx   = True,
                 )
 
+met_trk_et_WJets = Var(name='met_trk_et',
+                path   = 'met',
+                xmin   = 20.,
+                xmax   = 2000.,
+                rebin  = 1,
+                rebinVar  = bins_met_2,
+                log    = True,
+                logx   = True,
+                )
+
+met_trk_et_WJets_tight = Var(name='met_trk_et',
+                path   = 'met',
+                xmin   = 20.,
+                xmax   = 65.,
+                rebin  = 2,
+                #rebinVar  = bins_met_2,
+                log    = False,
+                logx   = False,
+                )
+
+met_trk_mt = Var(name='met_trk_mt',
+                path   = 'met',
+                xmin   = 40.,
+                xmax   = 2000.,
+                rebin  = 1,
+                rebinVar  = bins_mt,
+                log    = True,
+                logx   = True,
+                )
+
+met_trk_mt_tight = Var(name='met_trk_mt',
+                path   = 'met',
+                xmin   = 40.,
+                xmax   = 130.,
+                rebin  = 2,
+                #rebinVar  = bins_mt,
+                log    = False,
+                logx   = False,
+                )
+
 met_clus_et = Var(name='met_clus_et',
                 path   = 'met',
                 xmin   = 0.,
@@ -150,34 +242,60 @@ met_clus_et = Var(name='met_clus_et',
 el_t_pt = Var(name = 'el_t_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 250.,
+              xmax   = 2000.,
               rebin  = 4,
-              #rebinVar  = bins_pt,
+              rebinVar  = bins_pt,
               log    = True,
-              logx   = False,
+              logx   = True,
+              do_ratio_plot = False,
+              label = "tight",
               )
 
 el_l_pt = Var(name = 'el_l_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 250.,
+              xmax   = 2000.,
               rebin  = 4,
-              #rebinVar  = bins_pt,
+              rebinVar  = bins_pt,
               log    = True,
-              logx   = False,
+              logx   = True,
+              do_ratio_plot = False,
+              label = "loose",
               )
 
 el_sl_pt = Var(name = 'el_sl_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 250.,
+              xmax   = 2000.,
               rebin  = 4,
-              #rebinVar  = bins_pt,
+              rebinVar  = bins_pt,
               log    = True,
-              logx   = False,
+              logx   = True,
+              do_ratio_plot = False,
+              label = "strictly loose",
               )
 
 el_lead_pt = Var(name = 'el_lead_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = bins_pt,
+              log    = True,
+              logx   = True,
+              )
+
+el_lead_pt_2 = Var(name = 'el_lead_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 1000.,
+              rebin  = 1,
+              rebinVar  = bins_pt_2,
+              log    = True,
+              logx   = True,
+              )
+
+el_pt = Var(name = 'el_pt',
               path   = 'electrons',
               xmin   = 30.,
               xmax   = 2000.,
@@ -196,19 +314,81 @@ el_sublead_pt = Var(name = 'el_sublead_pt',
               log    = True,
               logx   = True,
               )
+
+el_sublead_pt_2 = Var(name = 'el_sublead_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 1000.,
+              rebin  = 1,
+              rebinVar  = bins_pt_2,
+              log    = False,
+              logx   = True,
+              )
+
 el_lead_eta = Var(name = 'el_lead_eta',
               path    = 'electrons',
-              xmin    = -2.5,
-              xmax    = 2.5,
+              xmin    = -2.47,
+              xmax    = 2.47,
               #rebin   = 5,
               log     = False,
               )
 
+el_lead_eta_2 = Var(name = 'el_lead_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              rebin   = 4,
+              log     = False,
+              )
+
+el_eta = Var(name = 'el_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              #rebin   = 5,
+              log     = False,
+              )
+
+el_t_eta = Var(name = 'el_t_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              #rebin   = 5,
+              log     = False,
+              do_ratio_plot = False,
+              )
+
+el_l_eta = Var(name = 'el_l_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              #rebin   = 5,
+              log     = False,
+              do_ratio_plot = False,
+              )
+
+el_sl_eta = Var(name = 'el_sl_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              #rebin   = 5,
+              log     = False,
+              do_ratio_plot = False,
+              )
+
 el_sublead_eta = Var(name = 'el_sublead_eta',
               path    = 'electrons',
-              xmin    = -2.5,
-              xmax    = 2.5,
+              xmin    = -2.47,
+              xmax    = 2.47,
               #rebin   = 4,
+              log     = False,
+              )
+
+el_sublead_eta_2 = Var(name = 'el_sublead_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              rebin   = 4,
               log     = False,
               )
 
@@ -220,11 +400,35 @@ el_lead_phi = Var(name = 'el_lead_phi',
               log     = False,
               )
 
+el_lead_phi_2 = Var(name = 'el_lead_phi',
+              path    = 'electrons',
+              xmin    = -3.2,
+              xmax    = 3.2,
+              rebin   = 4,
+              log     = False,
+              )
+
+el_phi = Var(name = 'el_phi',
+              path    = 'electrons',
+              xmin    = -3.14,
+              xmax    = 3.14,
+              rebin   = 1,
+              log     = False,
+              )
+
 el_sublead_phi = Var(name = 'el_sublead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
               rebin   = 1,
+              log     = False,
+              )
+
+el_sublead_phi_2 = Var(name = 'el_sublead_phi',
+              path    = 'electrons',
+              xmin    = -3.2,
+              xmax    = 3.2,
+              rebin   = 4,
               log     = False,
               )
 
@@ -392,9 +596,31 @@ vars_list.append(el_l_pt)
 vars_list.append(el_t_pt)
 vars_list.append(el_sl_pt)
 vars_list.append(el_sublead_trkz0sintheta)
+vars_list.append(el_t_eta)
+vars_list.append(el_l_eta)
+vars_list.append(el_sl_eta)
+vars_list.append(el_pt)
+vars_list.append(el_eta)
+vars_list.append(met_trk_mt)
+vars_list.append(el_phi)
 
 vars_dict = {}
 for var in vars_list: vars_dict[var.name] = var.__dict__
+
+vars_dict["invMassPeak"] = invMassPeak.__dict__
+vars_dict["met_trk_et_WJets"] = met_trk_et_WJets.__dict__
+vars_dict["met_trk_et_WJets_tight"] = met_trk_et_WJets_tight.__dict__
+vars_dict["met_trk_mt_tight"] = met_trk_mt_tight.__dict__
+vars_dict["el_lead_pt_2"] = el_lead_pt_2.__dict__
+vars_dict["el_sublead_pt_2"] = el_sublead_pt_2.__dict__
+vars_dict["el_lead_eta_2"] = el_lead_eta_2.__dict__
+vars_dict["el_sublead_eta_2"] = el_sublead_eta_2.__dict__
+vars_dict["el_lead_phi_2"] = el_lead_phi_2.__dict__
+vars_dict["el_sublead_phi_2"] = el_sublead_phi_2.__dict__
+vars_dict["invMassPeak_2"] = invMassPeak_2.__dict__
+vars_dict["ZbosonPt_2"] = ZbosonPt_2.__dict__
+vars_dict["invMass_2"] = invMass_2.__dict__
+vars_dict["ZbosonEta_2"] = ZbosonEta_2.__dict__
 
 ## EOF
 
