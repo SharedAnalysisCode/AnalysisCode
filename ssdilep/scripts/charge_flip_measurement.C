@@ -163,20 +163,22 @@ double NumericalMinimizer::LogLikelihood1D(const double *xx )
     if (m_etaBins[eta1] >= 1.37 && m_etaBins[eta1] < 1.52) continue;
     etaNorm += (m_etaBins[eta1+1]-m_etaBins[eta1])*xx[eta1];
   }
-  return value + 1e8*pow((etaNorm-1),2);
+  return value + 1e9*pow((etaNorm-1),2);
 }
 
 void charge_flip_measurement(){
 
-  /*std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowOS_Powheg.root";
-  std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowOS-Sideband_Powheg.root";
-  std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS_Powheg.root";
-  std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
-  */
+  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  
+  /*
   std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS_Powheg.root";
   std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS-Sideband_Powheg.root";
   std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowSS_Powheg.root";
   std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  */
   
 
   TFile* OSCenterFile   = new TFile(OSCenterInputFile.c_str());
@@ -184,14 +186,14 @@ void charge_flip_measurement(){
   TFile* SSCenterFile   = new TFile(SSCenterInputFile.c_str());
   TFile* SSSidebandFile = new TFile(SSSidebandInputFile.c_str());
 
-  TH1F* hOSCenterData = (TH1F*) OSCenterFile->Get("h_ZWindowOS_nominal_data");
-  TH1F* hOSCenterMC   = (TH1F*) OSCenterFile->Get("h_ZWindowOS_nominal_Zee");
+  TH1F* hOSCenterData = (TH1F*) OSCenterFile->Get("h_ZWindowAS_nominal_data");
+  TH1F* hOSCenterMC   = (TH1F*) OSCenterFile->Get("h_ZWindowAS_nominal_Zee221");
   TH1F* hSSCenterData = (TH1F*) SSCenterFile->Get("h_ZWindowSS_nominal_data");
-  TH1F* hSSCenterMC   = (TH1F*) SSCenterFile->Get("h_ZWindowSS_nominal_Zee");
-  TH1F* hOSSidebandData = (TH1F*) OSSidebandFile->Get("h_ZWindowOS-Sideband_nominal_data");
-  TH1F* hOSSidebandMC   = (TH1F*) OSSidebandFile->Get("h_ZWindowOS-Sideband_nominal_Zee");
+  TH1F* hSSCenterMC   = (TH1F*) SSCenterFile->Get("h_ZWindowSS_nominal_Zee221");
+  TH1F* hOSSidebandData = (TH1F*) OSSidebandFile->Get("h_ZWindowAS-Sideband_nominal_data");
+  TH1F* hOSSidebandMC   = (TH1F*) OSSidebandFile->Get("h_ZWindowAS-Sideband_nominal_Zee221");
   TH1F* hSSSidebandData = (TH1F*) SSSidebandFile->Get("h_ZWindowSS-Sideband_nominal_data");
-  TH1F* hSSSidebandMC   = (TH1F*) SSSidebandFile->Get("h_ZWindowSS-Sideband_nominal_Zee");
+  TH1F* hSSSidebandMC   = (TH1F*) SSSidebandFile->Get("h_ZWindowSS-Sideband_nominal_Zee221");
 
   if(hOSCenterData) std::cout << "h_ZWindowOS_nominal_data found" <<std::endl; else std::cout << "h_ZWindowOS_nominal_data not found" <<std::endl;
   if(hOSCenterMC) std::cout << "h_ZWindowOS_nominal_Zee found" <<std::endl; else std::cout << "h_ZWindowOS_nominal_Zee not found" <<std::endl;
@@ -202,8 +204,8 @@ void charge_flip_measurement(){
   if(hSSSidebandData) std::cout << "h_ZWindowSS-Sideband_nominal_data found" <<std::endl; else std::cout << "h_ZWindowSS-Sideband_nominal_data not found" <<std::endl;
   if(hSSSidebandMC) std::cout << "h_ZWindowSS-Sideband_nominal_Zee found" <<std::endl; else std::cout << "h_ZWindowSS-Sideband_nominal_Zee not found" <<std::endl;
 
-  hOSCenterData->Add(hSSCenterData);
-  hOSSidebandData->Add(hSSSidebandData);
+  //hOSCenterData->Add(hSSCenterData);
+  //hOSSidebandData->Add(hSSSidebandData);
 
   std::cout << " data charge-flip measurement " << std::endl;
   NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData);
@@ -229,7 +231,7 @@ void charge_flip_measurement(){
   c1->cd();
   drawComparison2(c1,NM2.m_flipRateEta,NM1.m_flipRateEta,"f(#eta)","#eta",1e-2,10,0,2.47);
   ATLASLabel(0.20,0.83,"internal",1);
-  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 18.2 fb^{-1}");
+  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   myText(0.60,0.75,1,"P_{CHF}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
   gROOT->ProcessLine("pad_1->SetLogy();");
@@ -250,7 +252,7 @@ void charge_flip_measurement(){
   histo_overUnderFlow(NM1.m_flipRatePt);
   drawComparison2(c2,NM2.m_flipRatePt,NM1.m_flipRatePt,"#sigma(p_{T})","p_{T} [GeV]",0,0.2,30,400,true);
   ATLASLabel(0.20,0.83,"internal",1);
-  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 18.2 fb^{-1}");
+  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   myText(0.60,0.75,1,"P_{CHF}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
   //c2->SetLogy();
@@ -265,7 +267,30 @@ void charge_flip_measurement(){
   //ATLAS_LABEL(0.20,0.88,1); myText(0.35,0.9,1,"internal",0.055);
   //myText(0.20,0.84,1,"#sqrt{s} = 13 TeV, 13.9 fb^{-1}",0.055);
 
+
+
+  TH1D* etaRatio = (TH1D*) NM1.m_flipRateEta->Clone();
+  TH1D* ptRatio = (TH1D*) NM1.m_flipRatePt->Clone();
+
+  etaRatio->Divide(NM2.m_flipRateEta);
+  ptRatio->Divide(NM2.m_flipRatePt);
+
+  //TF1 * ptFit = new TF1("ptFit","[0]*TMath::Log(log(x-[1]))",30,5000);
+  //ptRatio->Fit("ptFit","goff","",30,1000);
+
+  //gROOT->ProcessLine("pad_2->cd();");
+  //ptFit->Draw("same");
+
+  TFile *outfile = new TFile("chargeFlipRate.root","RECREATE");
+  etaRatio->SetName("etaFunc");
+  etaRatio->Write();
+  ptRatio->SetName("ptFunc");
+  ptRatio->Write();
+  //ptFit->Write();
+
   c1->Print("chargeFlipEta.eps");
   c2->Print("chargeFlipPt.eps");
+
+  outfile->Close();
 
 }

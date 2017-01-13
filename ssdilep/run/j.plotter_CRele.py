@@ -94,13 +94,13 @@ def analyze(config):
     
     ## initialize and/or decorate objects
     ## ---------------------------------------
-    loop += ssdilep.algs.vars.PairsBuilder(
-        obj_keys=['muons'],
-        pair_key='mu_pairs',
-        met_key='met_clus', 
-        )
+    #loop += ssdilep.algs.vars.PairsBuilder(
+    #    obj_keys=['muons'],
+    #    pair_key='mu_pairs',
+    #    met_key='met_clus', 
+    #    )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=True)   
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)   
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -116,24 +116,15 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLHOS')
     
     ## weights configuration
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
-    '''
-    No trigger scale factors!!!
-    loop += ssdilep.algs.EvWeights.MuTrigSF(
-            is_single_mu = True,
-            mu_trig_level="Loose_Loose",
-            mu_trig_chain="HLT_mu20_L1MU15",
-            key='SingleMuonTrigSF',
-            scale=None,
-            )
-    '''
+
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
             )
@@ -141,19 +132,22 @@ def analyze(config):
     loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
             key='ExactlyTwoLooseEleFFTL',
             typeFF="TL",
-            config_file=os.path.join(main_path,'ssdilep/data/fakeRate-07-06-2016.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
             )
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
             key='ExactlyTwoLooseEleFFLT',
             typeFF="LT",
-            config_file=os.path.join(main_path,'ssdilep/data/fakeRate-07-06-2016.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
             )
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
             key='ExactlyTwoLooseEleFFLL',
             typeFF="LL",
-            config_file=os.path.join(main_path,'ssdilep/data/fakeRate-07-06-2016.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
             )
     
     ## objects

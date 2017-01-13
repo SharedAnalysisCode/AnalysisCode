@@ -44,11 +44,11 @@ def analyze(config):
     config.setdefault('sys',None)
     systematic = config['sys']
 
-    sys_somesys    = None
+    sys_FF    = None
 
     if   systematic == None: pass
-    elif systematic == 'SOMESYS_UP':      sys_somesys    = 'up'
-    elif systematic == 'SOMESYS_DN':      sys_somesys    = 'dn'
+    elif systematic == 'FF_UP':      sys_FF    = 'UP'
+    elif systematic == 'FF_DN':      sys_FF    = 'DN'
     else: 
         assert False, "Invalid systematic %s!"%(systematic)
 
@@ -118,30 +118,30 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
     #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
     #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
+    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DYVetoTightEleMediumLLHisolLoose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyOneLooseEleLooseLLH')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='METhigher25')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='MThigher50')
 
     
     ## weights configuration
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
-    """
-    No trigger scale factors!!!
-    loop += ssdilep.algs.EvWeights.MuTrigSF(
-            is_single_mu = True,
-            mu_trig_level="Loose_Loose",
-            mu_trig_chain="HLT_mu20_L1MU15",
-            key='SingleMuonTrigSF',
-            scale=None,
+
+    loop += ssdilep.algs.EvWeights.ExactlyOneTightEleSF(
+            key='ExactlyOneTightEleSF_MediumLLH_isolLoose',
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
-            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+    loop += ssdilep.algs.EvWeights.ExactlyOneLooseEleFakeFactor(
+            key='ExactlyOneLooseEleFF',
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            sys = sys_FF,
             )
-    """
+
+
     ## objects
     ## +++++++++++++++++++++++++++++++++++++++
     """
@@ -159,30 +159,42 @@ def analyze(config):
     ## MyTestRegion
     ## ---------------------------------------
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-nominal',
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-VR',
             plot_all = False,
             cut_flow = [
-               ['METtrkLow25',None],
+               ['ExactlyOneTightEleMediumLLHisolLoose',["ExactlyOneTightEleSF_MediumLLH_isolLoose"]],
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-MET60',
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-tight-VR',
             plot_all = False,
             cut_flow = [
+               ['ExactlyOneTightEleMediumLLHisolLoose',["ExactlyOneTightEleSF_MediumLLH_isolLoose"]],
                ['METtrkLow60',None],
+               ['MTlow120',None],
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-ASjet',
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-VR-L',
             plot_all = False,
             cut_flow = [
-               ['METtrkLow25',None],
-               ['EleJetDphi28',None],
+               ['ExactlyZeroTightEleMediumLLHisolLoose',["ExactlyOneLooseEleFF"]],
                ],
             )
+
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-tight-VR-L',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyZeroTightEleMediumLLHisolLoose',["ExactlyOneLooseEleFF"]],
+               ['METtrkLow60',None],
+               ['MTlow120',None],
+               ],
+            )
+
 
     
     loop += pyframe.algs.HistCopyAlg()

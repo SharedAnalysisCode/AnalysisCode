@@ -26,6 +26,8 @@ class Var(object):
             xmax  = None,
             log   = None,
             logx  = None,
+            do_ratio_plot  = True,
+            label  = None,
             ):
         self.name = name
         if not title: title = name
@@ -41,6 +43,8 @@ class Var(object):
         self.xmax  = xmax
         self.log   = log
         self.logx  = logx
+        self.do_ratio_plot  = do_ratio_plot
+        self.label  = label
 
 
 

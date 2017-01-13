@@ -44,7 +44,8 @@ parser.add_option('-t', '--tag', dest='tag',
 # Configuration
 #-----------------
 #lumi =  3158.13
-lumi =  18232.76
+#lumi =  18232.76
+lumi =  36470.16
 #lumi =  18232.8
 #lumi = 5000
 
@@ -70,28 +71,43 @@ hm = histmgr.HistMgr(basedir=options.indir,target_lumi=lumi)
 data = samples.data
 ## backgrounds 
 
+# mc_backgrounds = [
+#     samples.WenuPowheg,
+#     samples.ZeePowheg,
+#     samples.ttbar,
+#     samples.singletop,
+#     samples.diboson_sherpa,
+#    ]
+
 mc_backgrounds = [
-    #samples.diboson_powheg,
-    #samples.WZ,
-    #samples.ZZ,
-    #samples.WW,
-    #samples.Wenu,
-    #samples.Wmunu,
-    #samples.Wtaunu,
-    #samples.mytestSample,
-    #samples.Zee221,
-    #samples.AZNLOCTEQ6L1_DYee,
-    #samples.diboson_sherpa,
-    #samples.Zmumu,
-    samples.WenuPowheg,
-    samples.ZeePowheg,
-    #samples.Ztautau,
-    #samples.ttX,
+    samples.AZNLOCTEQ6L1_DYee,
     samples.ttbar,
-    #samples.VV_ee,
+    samples.VV_ee,
     samples.singletop,
-    samples.diboson_sherpa,
+    samples.ttX,
    ]
+
+# mc_backgrounds = [
+#     #samples.diboson_powheg,
+#     #samples.WZ,
+#     #samples.ZZ,
+#     #samples.WW,
+#     #samples.Wmunu,
+#     #samples.Wtaunu,
+#     #samples.mytestSample,
+#     samples.Zee221,
+#     #samples.AZNLOCTEQ6L1_DYee,
+#     #samples.Zmumu,
+#     #samples.WenuPowheg,
+#     #samples.ZeePowheg,
+#     #samples.Ztautau,
+#     samples.ttbar,
+#     #samples.VV_ee,
+#     samples.WenuPowheg,
+#     samples.singletop,
+#     samples.diboson_sherpa,
+#     samples.ttX,
+#    ]
 
 fakes_mumu = samples.fakes.copy()
 #fakes_mumu=[]
@@ -112,6 +128,13 @@ for s in mc_backgrounds + [data]:
 
 if options.fakest == "FakeFactor":
   fakes_mumu.estimator = histmgr.FakeEstimator(
+      hm=hm, 
+      sample=fakes_mumu,
+      data_sample = data,
+      mc_samples = mc_backgrounds )
+
+elif options.fakest == "FakeFactor1D":
+  fakes_mumu.estimator = histmgr.FakeEstimator1D(
       hm=hm, 
       sample=fakes_mumu,
       data_sample = data,
@@ -152,30 +175,44 @@ mumu_vdict  = vars_ee.vars_dict
 #-----------------
 
 ## order backgrounds for plots
+# mumu_backgrounds = [
+#     samples.WenuPowheg,
+#     samples.ZeePowheg,
+#     samples.ttbar,
+#     samples.singletop,
+#     samples.diboson_sherpa,
+#    ]
+
 mumu_backgrounds = [
-    #samples.diboson_powheg,
-    #samples.WZ,
-    #samples.ZZ,
-    #samples.WW,
-    #samples.Wenu,
-    #samples.Wmunu,
-    #samples.Wtaunu,
-    #samples.mytestSample,
-    #samples.Zee221,
-    #samples.AZNLOCTEQ6L1_DYee,
-    #samples.diboson_sherpa,
-    #samples.Zmumu,
-    samples.WenuPowheg,
-    samples.ZeePowheg,
-    #samples.Ztautau,
-    #samples.ttX,
+    samples.AZNLOCTEQ6L1_DYee,
+    fakes_mumu,
     samples.ttbar,
-    #samples.VV_ee,
+    samples.VV_ee,
     samples.singletop,
-    samples.diboson_sherpa,
-    #fakes_mumu,
-    #samples.WenuPowheg,
-    ]
+    samples.ttX,
+   ]
+
+# mumu_backgrounds = [
+#     #samples.diboson_powheg,
+#     #samples.WZ,
+#     #samples.ZZ,
+#     #samples.WW,
+#     #samples.Wmunu,
+#     #samples.Wtaunu,
+#     #samples.mytestSample,
+#     samples.Zee221,
+#     samples.diboson_sherpa,
+#     #samples.AZNLOCTEQ6L1_DYee,
+#     #samples.Zmumu,
+#     #samples.WenuPowheg,
+#     #samples.ZeePowheg,
+#     #samples.Ztautau,
+#     samples.ttbar,
+#     #samples.VV_ee,
+#     samples.WenuPowheg,
+#     samples.singletop,
+#     samples.ttX,
+#    ]
 
 """
 mumu_backgrounds = [
@@ -202,7 +239,7 @@ if options.makeplot == "True":
     signal        = signal, 
     data          = data,
     region        = options.region,
-    label         = options.label,
+    label         = options.label if options.label else mumu_vdict[options.vname]['label'],
     histname      = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
     xmin          = mumu_vdict[options.vname]['xmin'],
     xmax          = mumu_vdict[options.vname]['xmax'],
@@ -213,9 +250,9 @@ if options.makeplot == "True":
     icut          = int(options.icut),
     #sys_dict      = sys_dict,
     sys_dict      = None,
-    do_ratio_plot = True,
+    do_ratio_plot = mumu_vdict[options.vname]['do_ratio_plot'],
     save_eps      = True,
-    plotsfile       = plotsfile
+    plotsfile     = plotsfile
     )
 
 else:
