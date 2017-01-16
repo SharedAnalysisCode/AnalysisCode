@@ -13,6 +13,8 @@ from systematics     import *
 
 from optparse import OptionParser
 
+DO_SYS = True
+
 
 #-----------------
 # input
@@ -165,7 +167,8 @@ mc_sys = [
 #for s in mc_backgrounds + mumu_signals:
 #    s.estimator.add_systematics(mc_sys)
 
-#fakes_mumu.estimator.add_systematics(FF)
+if (DO_SYS):
+  fakes_mumu.estimator.add_systematics(FF)
 
 mumu_vdict  = vars_ee.vars_dict
 #fakes_vdict = vars_fakes.vars_dict
@@ -177,6 +180,7 @@ mumu_vdict  = vars_ee.vars_dict
 ## order backgrounds for plots
 # mumu_backgrounds = [
 #     samples.WenuPowheg,
+#     fakes_mumu,
 #     samples.ZeePowheg,
 #     samples.ttbar,
 #     samples.singletop,
@@ -248,8 +252,7 @@ if options.makeplot == "True":
     log           = mumu_vdict[options.vname]['log'],
     logx          = mumu_vdict[options.vname]['logx'],
     icut          = int(options.icut),
-    #sys_dict      = sys_dict,
-    sys_dict      = None,
+    sys_dict      = sys_dict if DO_SYS else None,
     do_ratio_plot = mumu_vdict[options.vname]['do_ratio_plot'],
     save_eps      = True,
     plotsfile     = plotsfile

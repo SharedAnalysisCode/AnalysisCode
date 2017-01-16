@@ -132,6 +132,12 @@ def analyze(config):
             chargeFlipSF=True,
             )
 
+    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
+            key='ExactlyTwoTightEleSF_MediumLLH_isolLooseNOSF',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            chargeFlipSF=False,
+            )
+
     loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
             key='ExactlyTwoLooseEleFFTL',
             typeFF="TL",
@@ -175,6 +181,14 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-CR-noCHF',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLooseNOSF']],
                ],
             )
 

@@ -50,7 +50,7 @@ SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
 DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 
@@ -82,7 +82,7 @@ def main():
     all_data = samples.all_data
 
     # all_mc = []
-    all_data = []
+    # all_data = []
 
     #nominal = all_data + all_mc 
     nominal = all_mc 
@@ -94,12 +94,10 @@ def main():
         ]    
     
     plot_sys = [
-        ['FF_UP',        all_data + all_mc],
-        ['FF_DN',        all_data + all_mc],
+        ['FF_UP',        nominal],
+        ['FF_DN',        nominal],
         ]    
     
-    all_sys = ntup_sys + plot_sys
-
     ## ensure output path exists
     #prepare_path(OUTPATH)
     
@@ -142,7 +140,7 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.RETRY2.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
+    cfg = os.path.join(JOBDIR,'ConfigHist.retry.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []

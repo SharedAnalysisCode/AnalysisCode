@@ -314,7 +314,7 @@ class FakeEstimator(BaseEstimator):
         # ---------
         # LL REGION
         # ---------
-        region_ll_den = region.replace("-CR","-CR-LL")
+        region_ll_den = region.replace("-noCHF","").replace("-CR","-CR-LL")
 
         h_ll_den = self.data_sample.hist(histname=histname,
                                 region=region_ll_den,
@@ -334,7 +334,7 @@ class FakeEstimator(BaseEstimator):
         # ---------
         # TL REGION 
         # ---------
-        region_tl_den = region.replace("-CR","-CR-TL")
+        region_tl_den = region.replace("-noCHF","").replace("-CR","-CR-TL")
 
         h_tl_den = self.data_sample.hist(histname=histname,
                                   region=region_tl_den,
@@ -354,7 +354,7 @@ class FakeEstimator(BaseEstimator):
         # ---------
         # LT REGION 
         # ---------        
-        region_lt_den = region.replace("-CR","-CR-LT")
+        region_lt_den = region.replace("-noCHF","").replace("-CR","-CR-LT")
 
         h_lt_den = self.data_sample.hist(histname=histname,
                                   region=region_lt_den,
@@ -388,6 +388,33 @@ class FakeEstimator(BaseEstimator):
           h.Add(hmc,-1)
         """
         return h
+
+    #__________________________________________________________________________
+    def add_systematics(self, sys):
+        if not isinstance(sys,list): sys = [sys]
+        self.allowed_systematics += sys
+        self.data_sample.estimator.add_systematics(sys)
+        for s in self.mc_samples:
+          s.estimator.add_systematics(sys)
+
+    #__________________________________________________________________________
+    def is_affected_by_systematic(self, sys):
+        """
+        Override BaseEstimator implemenation.
+        Check all daughter systematics
+        """
+        if sys in self.allowed_systematics: return True
+        for s in self.mc_samples + [self.data_sample]: 
+            if s.estimator.is_affected_by_systematic(sys): return True
+        return False
+
+    #__________________________________________________________________________
+    def flush_hists(self):
+        BaseEstimator.flush_hists(self)
+        self.data_sample.estimator.flush_hists()
+        for s in self.mc_samples:
+          s.estimator.flush_hists()
+
 
 #------------------------------------------------------------
 class FakeEstimator1D(BaseEstimator):
