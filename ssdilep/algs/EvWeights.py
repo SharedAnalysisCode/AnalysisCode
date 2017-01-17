@@ -210,6 +210,78 @@ class MuTrigSF(pyframe.core.Algorithm):
         return True
 
 #------------------------------------------------------------------------------
+class OneOrTwoBjetsSF(pyframe.core.Algorithm):
+    """
+    OneOrTwoBjetsSF
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="OneOrTwoBjetsSF",
+            key            = None,
+            ):
+
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+
+        assert key, "Must provide key for storing ele reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      pass
+    #_________________________________________________________________________
+    def execute(self, weight):
+      sf=1.0
+      if "mc" in self.sampletype: 
+        jets = self.store['jets']
+        for jet in jets:
+          if jet.isFix77:
+            sf *= getattr(jet,"jvtSF").at(0)
+            sf *= getattr(jet,"SFFix77").at(0)
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
+
+#------------------------------------------------------------------------------
+class ExactlyOneTightEleSF(pyframe.core.Algorithm):
+    """
+    ExactlyOneTightEleSF
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="ExactlyTwoTightEleSF",
+            key            = None,
+            ):
+
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+
+        assert key, "Must provide key for storing ele reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      self.isoLevels = [
+          "isolLoose",
+          "isolTight",
+          ]
+      self.IDLevels = [
+          "LooseAndBLayerLLH",
+          "MediumLLH",
+          "TightLLH",
+          ]
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+        sf=1.0
+        if "mc" in self.sampletype: 
+          electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
+          for ele in electrons:
+            sf *= getattr(ele,"RecoEff_SF").at(0)
+            sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            #sf *= getattr(ele,"TrigMCEff_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
+
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
+#------------------------------------------------------------------------------
 class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
     """
     ExactlyTwoTightEleSF
@@ -426,7 +498,7 @@ class ExactlyTwoLooseEleFakeFactor(pyframe.core.Algorithm):
     ExactlyTwoLooseEleFakeFactor
     """
     #__________________________________________________________________________
-    def __init__(self, name="ExactlyTwoLooseEleFF",
+    def __init__(self, name="ExactlyTwoLooseEleFakeFactor",
             key            = None,
             typeFF         = "TL",
             sys            = None,
@@ -447,9 +519,9 @@ class ExactlyTwoLooseEleFakeFactor(pyframe.core.Algorithm):
       f = ROOT.TFile.Open(self.config_file)
       assert f, "Failed to open fake-factor config file: %s"%(self.config_file)
       
-      if sys=="UP":
+      if self.sys=="UP":
         h_ff = f.Get("FFup")
-      elif sys=="DN":
+      elif self.sys=="DN":
         h_ff = f.Get("FFdn")
       else:
         h_ff = f.Get("FF")
@@ -526,7 +598,7 @@ class ExactlyOneLooseEleFakeFactor(pyframe.core.Algorithm):
     ExactlyOneLooseEleFakeFactor
     """
     #__________________________________________________________________________
-    def __init__(self, name="ExactlyTwoLooseEleFF",
+    def __init__(self, name="ExactlyOneLooseEleFakeFactor",
             key            = None,
             sys            = None,
             config_file    = None,

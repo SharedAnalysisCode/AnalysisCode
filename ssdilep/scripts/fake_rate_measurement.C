@@ -16,8 +16,8 @@
 void fake_rate_measurement_helper(std::string var = "nominal"){
   
   double mcscale = 1.0;
-  if (var=="mcup") mcscale = 1.05;
-  else if (var=="mcdn") mcscale = 0.95;
+  if (var=="mcup") mcscale = 1.10;
+  else if (var=="mcdn") mcscale = 0.90;
 
   std::string var2 = var;
   if (var=="mcup") var2 = "nominal";
@@ -247,8 +247,8 @@ void fake_rate_measurement(){
   leg.AddEntry(temp1,"#font[42]{nominal}","pe0");
   leg.AddEntry(temp2,"#font[42]{MET < 60}","pe0");
   leg.AddEntry(temp3,"#font[42]{away side jet}","pe0");
-  leg.AddEntry(temp4,"#font[42]{MC up 5%}","pe0");
-  leg.AddEntry(temp5,"#font[42]{MC down 5%}","pe0");
+  leg.AddEntry(temp4,"#font[42]{MC up 10%}","pe0");
+  leg.AddEntry(temp5,"#font[42]{MC down 10%}","pe0");
   leg.AddEntry(temp6,"#font[42]{Final Sys. Unc.}","f");
 
   TCanvas c1("c1","c1",600,600);

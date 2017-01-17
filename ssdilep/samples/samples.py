@@ -1251,10 +1251,10 @@ all_mc = []
 
 ### EXOT12 dilep
 all_mc += VV_ee.daughters
-#all_mc += AZNLOCTEQ6L1_DYee.daughters
-#all_mc += singletop.daughters
-#all_mc += ttbar.daughters
-#all_mc += ttX.daughters
+all_mc += AZNLOCTEQ6L1_DYee.daughters
+all_mc += singletop.daughters
+all_mc += ttbar.daughters
+all_mc += ttX.daughters
 
 ### EXOT12 ZPeak
 # all_mc += diboson_sherpa.daughters

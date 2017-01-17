@@ -13,7 +13,7 @@ from systematics     import *
 
 from optparse import OptionParser
 
-DO_SYS = True
+DO_SYS = False
 
 
 #-----------------
@@ -82,11 +82,11 @@ data = samples.data
 #    ]
 
 mc_backgrounds = [
-    samples.AZNLOCTEQ6L1_DYee,
     samples.ttbar,
     samples.VV_ee,
     samples.singletop,
     samples.ttX,
+    samples.AZNLOCTEQ6L1_DYee,
    ]
 
 # mc_backgrounds = [
@@ -188,12 +188,12 @@ mumu_vdict  = vars_ee.vars_dict
 #    ]
 
 mumu_backgrounds = [
-    samples.AZNLOCTEQ6L1_DYee,
-    fakes_mumu,
     samples.ttbar,
+    fakes_mumu,
     samples.VV_ee,
     samples.singletop,
     samples.ttX,
+    samples.AZNLOCTEQ6L1_DYee,
    ]
 
 # mumu_backgrounds = [

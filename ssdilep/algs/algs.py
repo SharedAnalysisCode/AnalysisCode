@@ -1165,6 +1165,54 @@ class CutAlg(pyframe.core.Algorithm):
             return True
         return False
 
+    def cut_ExactlyTwoLooseEleLooseLLHTLOS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2:
+          if electrons[0].isIsolated_Loose and electrons[0].LHMedium and not (electrons[1].isIsolated_Loose and electrons[1].LHMedium):
+            if electrons[0].trkcharge*electrons[1].trkcharge == -1:
+              return True
+        return False
+
+    def cut_ExactlyTwoLooseEleLooseLLHLTOS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2:
+          if electrons[1].isIsolated_Loose and electrons[1].LHMedium and not (electrons[0].isIsolated_Loose and electrons[0].LHMedium):
+            if electrons[0].trkcharge*electrons[1].trkcharge == -1:
+              return True
+        return False
+
+    def cut_ExactlyTwoLooseEleLooseLLHLLOS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2:
+          if not (electrons[0].isIsolated_Loose and electrons[0].LHMedium) and not (electrons[1].isIsolated_Loose and electrons[1].LHMedium):
+            if electrons[0].trkcharge*electrons[1].trkcharge == -1:
+              return True
+        return False
+
+    def cut_ExactlyTwoLooseEleLooseLLHTLSS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2:
+          if electrons[0].isIsolated_Loose and electrons[0].LHMedium and not (electrons[1].isIsolated_Loose and electrons[1].LHMedium):
+            if electrons[0].trkcharge*electrons[1].trkcharge == 1:
+              return True
+        return False
+
+    def cut_ExactlyTwoLooseEleLooseLLHLTSS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2:
+          if electrons[1].isIsolated_Loose and electrons[1].LHMedium and not (electrons[0].isIsolated_Loose and electrons[0].LHMedium):
+            if electrons[0].trkcharge*electrons[1].trkcharge == 1:
+              return True
+        return False
+
+    def cut_ExactlyTwoLooseEleLooseLLHLLSS(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2:
+          if not (electrons[0].isIsolated_Loose and electrons[0].LHMedium) and not (electrons[1].isIsolated_Loose and electrons[1].LHMedium):
+            if electrons[0].trkcharge*electrons[1].trkcharge == 1:
+              return True
+        return False
+
     def cut_ExactlyTwoLooseEleLooseLLHOS(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2: 
@@ -1312,6 +1360,18 @@ class CutAlg(pyframe.core.Algorithm):
         if len(electrons)!=2 : return False
         elif electrons[0].electronType() != 1 and electrons[1].electronType() != 1 : return True
         else : return False
+
+    #----- one or two b-jets
+    def cut_OneOrTwoBjets(self):
+        nbjets = 0
+        jets = self.store['jets']
+        for jet in jets:
+          if jet.isFix77:
+            nbjets += 1
+        if nbjets in [1,2]:
+          return True
+        else:
+          return False
 
     def cut_BadJetVeto(self):
         jets = self.store['jets']
@@ -1943,8 +2003,9 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
               
         # charge-flip histograms
-        pt_bins  = [30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.] # last pt bin is open
-        eta_bins = [0.0, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
+        #pt_bins  = [30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.] # last pt bin is open
+        pt_bins  = [30., 34., 38., 43., 48., 55., 62., 70., 100., 140., 200.] # last pt bin is open
+        eta_bins = [0.0, 0.50, 1.0, 1.20, 1.42, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
         #eta_bins = [0.0, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1]
         tot_bins = len(pt_bins)*len(pt_bins)*(len(eta_bins)-1)*(len(eta_bins)-1)
         self.h_chargeFlipHist = self.hist('h_chargeFlipHist', "ROOT.TH1F('$', ';pt: "+str(len(pt_bins))+" eta: "+str(len(eta_bins)-1)+";Events',"+str(tot_bins)+",0,"+str(tot_bins)+")", dir=EVT)
@@ -2464,8 +2525,8 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
-        self.h_met_trk_mt = self.hist('h_met_trk_mt', "ROOT.TH1F('$', ';#m_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_mt = self.hist('h_met_clus_mt', "ROOT.TH1F('$', ';#m_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_trk_mt = self.hist('h_met_trk_mt', "ROOT.TH1F('$', ';m_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_clus_mt = self.hist('h_met_clus_mt', "ROOT.TH1F('$', ';m_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
         self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
@@ -2674,6 +2735,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
+        jets       = self.store['jets']
         
         EVT    = os.path.join(region, 'event')
         ELECTRONS = os.path.join(region, 'electrons')
@@ -2687,6 +2749,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
+        self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
+        self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
@@ -2731,6 +2795,14 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
+
+          nbjets = 0
+          for jet in jets:
+            if jet.isFix77:
+              nbjets += 1
+          self.h_njets.Fill(len(jets), weight)
+          self.h_nbjets.Fill(nbjets, weight)
+
           ## met plots
           self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
           self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)

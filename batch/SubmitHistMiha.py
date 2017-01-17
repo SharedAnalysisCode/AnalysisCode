@@ -30,8 +30,9 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "SSVRele36_2"
-#RUN = "ZPeak36_4"
+RUN = "SSVRele36_3"
+#RUN = "ZPeak36_6"
+#RUN = "TTBAR36_2"
 #RUN = "CRelectron36"
 #RUN = "FFelectron36_3"
 # RUN = "WJets36_2"
@@ -44,13 +45,14 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
+#SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
 DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 
@@ -140,7 +142,7 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.retry.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
+    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []

@@ -138,21 +138,21 @@ def analyze(config):
             chargeFlipSF=False,
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
             key='ExactlyTwoLooseEleFFTL',
             typeFF="TL",
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
             sys = sys_FF,
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
             key='ExactlyTwoLooseEleFFLT',
             typeFF="LT",
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
             sys = sys_FF,
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
             key='ExactlyTwoLooseEleFFLL',
             typeFF="LL",
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),

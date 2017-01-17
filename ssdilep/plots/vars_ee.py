@@ -21,6 +21,7 @@ cutflow_presel = Var(name = 'cutflow_presel', log=False)
 ## Non-equidistant bins
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
+print bins_pt
 bins_pt_2 = generateLogBins(20,30,1000)
 bins_mt = generateLogBins(50,50,2000)
 bins_invM = generateLogBins(50,130,2000)

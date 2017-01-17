@@ -18,7 +18,7 @@ class NumericalMinimizer {
 
 public:
   NumericalMinimizer();
-  NumericalMinimizer(TH1F* hOSCenter=nullptr, TH1F* hSSCenter=nullptr, TH1F* hOSSideband=nullptr, TH1F* hSSSideband=nullptr);
+  NumericalMinimizer(TH1F* hOSCenter=nullptr, TH1F* hSSCenter=nullptr, TH1F* hOSSideband=nullptr, TH1F* hSSSideband=nullptr, double aa=1e9);
 
   TH1F* m_hOSCenter;
   TH1F* m_hSSCenter;
@@ -29,6 +29,8 @@ public:
   //double m_etaBins[10] = {0.0, 0.75, 1.1, 1.37, 1.52, 1.7, 1.9, 2.1, 2.3, 2.5};
   //double m_etaBins[18] = {0.0, 0.25, 0.50, 0.75, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
   double m_etaBins[16] = {0.0, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
+
+  const double m_constraint = 1e9;
 
   int m_NetaBins;
   int m_NptBins;
@@ -41,14 +43,16 @@ public:
 
   ROOT::Math::Minimizer* NumericalMinimization1D(const char* minName = "Minuit2", const char* algoName = "" , int randomSeed = -1);
   double LogLikelihood1D(const double*);
+  double LogLikelihood1Dfull(const double*);
 
 };
 
-NumericalMinimizer::NumericalMinimizer (TH1F* hOSCenter, TH1F* hSSCenter, TH1F* hOSSideband, TH1F* hSSSideband):
+NumericalMinimizer::NumericalMinimizer (TH1F* hOSCenter, TH1F* hSSCenter, TH1F* hOSSideband, TH1F* hSSSideband, double aa):
 m_hOSCenter(hOSCenter),
 m_hSSCenter(hSSCenter),
 m_hOSSideband(hOSSideband),
-m_hSSSideband(hSSSideband)
+m_hSSSideband(hSSSideband),
+m_constraint(aa)
 {
   std::string xTitle = std::string( m_hOSCenter->GetXaxis()->GetTitle() );
   std::stringstream ss(xTitle);
@@ -110,16 +114,16 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
 
    min->SetMaxFunctionCalls(1e7); // for Minuit/Minuit2
    min->SetMaxIterations(1e5);  // for GSL
-   min->SetTolerance(1e-5);
+   min->SetTolerance(1e-4);
    min->SetPrintLevel(1);
 
-   auto func = &NumericalMinimizer::LogLikelihood1D;
+   auto func = &NumericalMinimizer::LogLikelihood1Dfull;
    ROOT::Math::Functor f(this,func,m_NetaBins+m_NptBins);
 
    min->SetFunction(f);
 
    int index = 0;
-   double stepSize = 1e-5;
+   double stepSize = 1e-4;
    for (int eta = 1; eta <= m_NetaBins; eta++){
     std::ostringstream name;
     name << "eta" << eta;
@@ -141,7 +145,7 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
 }
 
 //-------------------------------------------------
-// Log Likelihood    1Dx1D   ----------------------
+// Log Likelihood    1Dx1D   approximation
 //-------------------------------------------------
 double NumericalMinimizer::LogLikelihood1D(const double *xx )
 {
@@ -163,7 +167,35 @@ double NumericalMinimizer::LogLikelihood1D(const double *xx )
     if (m_etaBins[eta1] >= 1.37 && m_etaBins[eta1] < 1.52) continue;
     etaNorm += (m_etaBins[eta1+1]-m_etaBins[eta1])*xx[eta1];
   }
-  return value + 1e9*pow((etaNorm-1),2);
+  return value + m_constraint*pow((etaNorm-1),2);
+}
+
+//-------------------------------------------------
+// Log Likelihood    1Dx1D   full formula
+//-------------------------------------------------
+double NumericalMinimizer::LogLikelihood1Dfull(const double *xx )
+{
+  double value = 1e2;
+  for(int pt1 = 1; pt1 <= m_NptBins; pt1++) {
+    for(int eta1 = 1; eta1 <= m_NetaBins; eta1++) {
+      for(int pt2 = 1; pt2 <= m_NptBins; pt2++) {
+        for(int eta2 = 1; eta2 <= m_NetaBins; eta2++){
+          // totBin = ( (ptbin1-1)*(len(eta_bins)-1) + etabin1-1 )*(len(eta_bins)-1)*len(pt_bins) + ( (ptbin2-1)*(len(eta_bins)-1) + etabin2 )
+          int totBin = ( (pt1-1)*m_NetaBins + eta1 - 1 )*m_NptBins*m_NetaBins + ( (pt2-1)*m_NetaBins + eta2 ) + 1;
+          value += -m_hSSCenter->GetBinContent(totBin) * log( xx[eta1-1]*xx[m_NetaBins+pt1-1]*(1-xx[eta2-1]*xx[m_NetaBins+pt2-1]) + 
+                                                              xx[eta2-1]*xx[m_NetaBins+pt2-1]*(1-xx[eta1-1]*xx[m_NetaBins+pt1-1]) ) 
+          + m_hOSCenter->GetBinContent(totBin)*( xx[eta1-1]*xx[m_NetaBins+pt1-1]*(1-xx[eta2-1]*xx[m_NetaBins+pt2-1]) + 
+                                                 xx[eta2-1]*xx[m_NetaBins+pt2-1]*(1-xx[eta1-1]*xx[m_NetaBins+pt1-1]) );
+        }
+      }
+    }
+  }
+  double etaNorm = 0;
+  for(int eta1 = 0; eta1 < m_NetaBins; eta1++) {
+    if (m_etaBins[eta1] >= 1.37 && m_etaBins[eta1] < 1.52) continue;
+    etaNorm += (m_etaBins[eta1+1]-m_etaBins[eta1])*xx[eta1];
+  }
+  return value + m_constraint*pow((etaNorm-1),2);
 }
 
 void charge_flip_measurement(){
@@ -210,7 +242,7 @@ void charge_flip_measurement(){
   std::cout << " data charge-flip measurement " << std::endl;
   NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData);
   std::cout << " MC charge-flip measurement " << std::endl;
-  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC);
+  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,1e7);
 
   std::cout << " start drawing " << std::endl;
   NM2.m_flipRateEta->SetLineColor(kRed);
@@ -232,7 +264,7 @@ void charge_flip_measurement(){
   drawComparison2(c1,NM2.m_flipRateEta,NM1.m_flipRateEta,"f(#eta)","#eta",1e-2,10,0,2.47);
   ATLASLabel(0.20,0.83,"internal",1);
   myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
-  myText(0.60,0.75,1,"P_{CHF}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
+  myText(0.60,0.75,1,"P_{CHF}^{full}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
   gROOT->ProcessLine("pad_1->SetLogy();");
   //c1->SetLogy();
@@ -253,7 +285,7 @@ void charge_flip_measurement(){
   drawComparison2(c2,NM2.m_flipRatePt,NM1.m_flipRatePt,"#sigma(p_{T})","p_{T} [GeV]",0,0.2,30,400,true);
   ATLASLabel(0.20,0.83,"internal",1);
   myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
-  myText(0.60,0.75,1,"P_{CHF}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
+  myText(0.60,0.75,1,"P_{CHF}^{full}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
   //c2->SetLogy();
   /*c2->SetLogx();

@@ -118,32 +118,44 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLHOS')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLH')
     
     ## weights configuration
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
-            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+    loop += ssdilep.algs.EvWeights.OneOrTwoBjetsSF(
+            key='OneOrTwoBjetsSF',
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
+            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            chargeFlipSF=False,
+            )
+
+    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
+            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            chargeFlipSF=True,
+            )
+
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
             key='ExactlyTwoLooseEleFFTL',
             typeFF="TL",
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
             sys = sys_FF,
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
             key='ExactlyTwoLooseEleFFLT',
             typeFF="LT",
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
             sys = sys_FF,
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFF(
+    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
             key='ExactlyTwoLooseEleFFLL',
             typeFF="LL",
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
@@ -164,49 +176,103 @@ def analyze(config):
     ## make plots
     ##-------------------------------------------------------------------------
 
-    ## MyTestRegion
+    ## OS REGION
     ## ---------------------------------------
 
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR',
+            region   = 'opposite-sign-ttbar-CR',
             plot_all = False,
             cut_flow = [
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
                ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
                ['Mass130GeVMediumLLHisolLoose',None],
                ],
             )
 
     
-    ## Fake Estimation
+    ## OS Fake Estimation
     ## ---------------------------------------
 
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR-TL',
+            region   = 'opposite-sign-ttbar-CR-TL',
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHTL',['ExactlyTwoLooseEleFFTL']],
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoLooseEleLooseLLHTLOS',['ExactlyTwoLooseEleFFTL']],
                ['Mass130GeVLooseLLH',None],
                ],
             )
 
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR-LT',
+            region   = 'opposite-sign-ttbar-CR-LT',
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHLT',['ExactlyTwoLooseEleFFLT']],
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoLooseEleLooseLLHLTOS',['ExactlyTwoLooseEleFFLT']],
                ['Mass130GeVLooseLLH',None],
                ],
             )
 
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR-LL',
+            region   = 'opposite-sign-ttbar-CR-LL',
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHLL',['ExactlyTwoLooseEleFFLL']],
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoLooseEleLooseLLHLLOS',['ExactlyTwoLooseEleFFLL']],
                ['Mass130GeVLooseLLH',None],
+               ],
+            )
+
+    ## SS REGION
+    ## ---------------------------------------
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-ttbar-CR',
+            plot_all = False,
+            cut_flow = [
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
+               ['Mass130GeV200LooseLLH',None],
+               ],
+            )
+
+    
+    ## SS Fake Estimation
+    ## ---------------------------------------
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-ttbar-CR-TL',
+            plot_all = False,
+            loose_el = True,
+            cut_flow = [
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoLooseEleLooseLLHTLSS',['ExactlyTwoLooseEleFFTL']],
+               ['Mass130GeV200LooseLLH',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-ttbar-CR-LT',
+            plot_all = False,
+            loose_el = True,
+            cut_flow = [
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoLooseEleLooseLLHLTSS',['ExactlyTwoLooseEleFFLT']],
+               ['Mass130GeV200LooseLLH',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'same-sign-ttbar-CR-LL',
+            plot_all = False,
+            loose_el = True,
+            cut_flow = [
+               ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
+               ['ExactlyTwoLooseEleLooseLLHLLSS',['ExactlyTwoLooseEleFFLL']],
+               ['Mass130GeV200LooseLLH',None],
                ],
             )
 

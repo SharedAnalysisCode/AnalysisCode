@@ -44,11 +44,11 @@ def analyze(config):
     config.setdefault('sys',None)
     systematic = config['sys']
 
-    sys_somesys    = None
+    sys_FF    = None
 
     if   systematic == None: pass
-    elif systematic == 'SOMESYS_UP':      sys_somesys    = 'up'
-    elif systematic == 'SOMESYS_DN':      sys_somesys    = 'dn'
+    elif systematic == 'FF_UP':      sys_FF    = 'UP'
+    elif systematic == 'FF_DN':      sys_FF    = 'DN'
     else: 
         assert False, "Invalid systematic %s!"%(systematic)
 
@@ -182,14 +182,14 @@ def analyze(config):
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowSSchfSF',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
-               ['ZMassWindowMediumLLHisolLooseSS',None],
-               ],
-            )
+    # loop += ssdilep.algs.algs.PlotAlgZee(
+    #         region   = 'ZWindowSSchfSF',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
+    #            ['ZMassWindowMediumLLHisolLooseSS',None],
+    #            ],
+    #         )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
             region   = 'ZWindowAS-Sideband',
@@ -209,14 +209,14 @@ def analyze(config):
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowSSchfSF-Sideband',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
-               ['ZMassWindowMediumLLHisolLooseSSSideband',None],
-               ],
-            )
+    # loop += ssdilep.algs.algs.PlotAlgZee(
+    #         region   = 'ZWindowSSchfSF-Sideband',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
+    #            ['ZMassWindowMediumLLHisolLooseSSSideband',None],
+    #            ],
+    #         )
 
     ## TruthStudies
     ## --------------------------------------- 
