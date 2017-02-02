@@ -495,8 +495,7 @@ class FakeEstimatorGeneral(BaseEstimator):
         # ---------
         # L REGION
         # ---------
-        region_l_den = region.replace("-CR","-CR-fakes")
-        region_l_den = region.replace("-VR","-VR-fakes")
+        region_l_den = region.replace("-CR","-CR-fakes").replace("-VR","-VR-fakes")
 
         h_l_den = self.data_sample.hist(histname=histname,
                                 region=region_l_den,
@@ -510,8 +509,12 @@ class FakeEstimatorGeneral(BaseEstimator):
             print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
             continue
           h_l_den.Add(hmc_l,-1)
-        if "CR-fakes" in region: return h_l_den
-        if "VR-fakes" in region: return h_l_den
+        if "CR-fakes" in region: 
+            return h_l_den
+            print "CR FAKES IN REGION"
+        elif "VR-fakes" in region:
+            return h_l_den
+            print "VR FAKES IN REGION"
         
         
         h = h_l_den.Clone("fakes_hist")
