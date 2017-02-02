@@ -511,10 +511,8 @@ class FakeEstimatorGeneral(BaseEstimator):
           h_l_den.Add(hmc_l,-1)
         if "CR-fakes" in region: 
             return h_l_den
-            print "CR FAKES IN REGION"
         elif "VR-fakes" in region:
             return h_l_den
-            print "VR FAKES IN REGION"
         
         
         h = h_l_den.Clone("fakes_hist")
