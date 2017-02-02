@@ -118,43 +118,30 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLHOS')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyThreeLooseEleLooseLLH')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyThreeLooseEleLooseLLH1SS')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyThreeLooseEleLooseLLHOSZmass')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyThreeLooseEleLooseLLHSS90M200')
     
     ## weights configuration
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
-            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+    loop += ssdilep.algs.EvWeights.ThreeElectron2e17TrigWeight(
+            key='ThreeElectron2e17TrigWeight',
+            )
+
+    loop += ssdilep.algs.EvWeights.AllTightEleSF(
+            key='AllTightEleSF',
             config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
             chargeFlipSF=True,
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
-            key='ExactlyTwoTightEleSF_MediumLLH_isolLooseNOSF',
-            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
-            chargeFlipSF=False,
-            )
-
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
-            key='ExactlyTwoLooseEleFFTL',
-            typeFF="TL",
+    loop += ssdilep.algs.EvWeights.GenericFakeFactor(
+            key='GenericFakeFactor',
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
-            sys = sys_FF,
-            )
-
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
-            key='ExactlyTwoLooseEleFFLT',
-            typeFF="LT",
-            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
-            sys = sys_FF,
-            )
-
-    loop += ssdilep.algs.EvWeights.ExactlyTwoLooseEleFakeFactor(
-            key='ExactlyTwoLooseEleFFLL',
-            typeFF="LL",
-            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
             sys = sys_FF,
             )
     
@@ -172,49 +159,25 @@ def analyze(config):
     ## make plots
     ##-------------------------------------------------------------------------
 
-    ## MyTestRegion
+    ## diboson TTT REGION
     ## ---------------------------------------
-
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR',
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'diboson-CR',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['Mass130GeVMediumLLHisolLoose',None],
+               ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
 
     
-    ## Fake Estimation
-    ## ---------------------------------------
-
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR-TL',
+    # diboson Fake Estimation
+    # ---------------------------------------
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'diboson-CR-fakes',
             plot_all = False,
             loose_el = True,
             cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHTL',['ExactlyTwoLooseEleFFTL']],
-               ['Mass130GeVLooseLLH',None],
-               ],
-            )
-
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR-LT',
-            plot_all = False,
-            loose_el = True,
-            cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHLT',['ExactlyTwoLooseEleFFLT']],
-               ['Mass130GeVLooseLLH',None],
-               ],
-            )
-
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'opposite-sign-CR-LL',
-            plot_all = False,
-            loose_el = True,
-            cut_flow = [
-               ['ExactlyTwoLooseEleLooseLLHLL',['ExactlyTwoLooseEleFFLL']],
-               ['Mass130GeVLooseLLH',None],
+               ['FailExactlyThreeTightEleMediumLLHisolLoose',["GenericFakeFactor","ThreeElectron2e17TrigWeight"]],
                ],
             )
 

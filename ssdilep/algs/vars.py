@@ -272,6 +272,23 @@ class Particle(pyframe.core.ParticleProxy):
       else :
         return 2
 
+    #========================================================================#
+    #                        Type of the electron  (new / test)              #
+    #________________________________________________________________________#
+    #
+    #                firstEgTT  firstEgTO
+    # 1 prompt             2     12/13/43
+    # 2 heavy fake         N/A      25/26
+    # 0 not prompt         else
+    #_________________________________________________________________________
+    def electronTypeNew(self):
+      if   self.firstEgMotherTruthType==2 and self.firstEgMotherTruthOrigin in [12,13,43] :
+        return 1
+      elif self.firstEgMotherTruthOrigin in [25,26] :
+        return 2
+      else :
+        return 0
+
 class ParticlesBuilder(pyframe.core.Algorithm):
     #__________________________________________________________________________
     def __init__(self, name="ParticlesBuilder", key=""):

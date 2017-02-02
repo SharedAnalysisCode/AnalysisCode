@@ -16,16 +16,17 @@ cutflow_weighted_ZWindowSS  = Var(name = 'cutflow_weighted_ZWindowSS',log=False)
 cutflow_ZWindowOS           = Var(name = 'cutflow_ZWindowOS',log=False)
 cutflow_weighted_ZWindowOS  = Var(name = 'cutflow_weighted_ZWindowOS',log=False)
 
-cutflow_presel = Var(name = 'cutflow_presel', log=False)
+cutflow_presel = Var(name = 'cutflow_presel', log=False, path="")
 
 ## Non-equidistant bins
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
-print bins_pt
 bins_pt_2 = generateLogBins(20,30,1000)
 bins_mt = generateLogBins(50,50,2000)
 bins_invM = generateLogBins(50,130,2000)
 bins_invM_2 = generateLogBins(15,130,200)
+bins_invM_3 = generateLogBins(8,130,200)
+bins_invM_4 = generateLogBins(6,90,200)
 bins_Zpeak = [50,70,74,77,80,82,83,84,85,86,87,88,89,90,91,92,93,94,95,97,99,102,105,110,130]
 bins_Zpeak2 = [50,80,100,130]
 bins_met = generateLogBins(15,1,1000)
@@ -43,7 +44,7 @@ averageIntPerXing = Var(name = 'averageIntPerXing',
               )
 
 actualIntPerXing = Var(name = 'actualIntPerXing',
-              path  = 'event',
+            path  = 'event',
               xmin  = 0,
               xmax  = 45,
               log   = False,
@@ -68,6 +69,36 @@ njets = Var(name = 'njets',
               xmax  = 6,
               log   = False,
             )
+
+nbjets = Var(name = 'nbjets',
+              path  = 'event',
+              xmin  = 0,
+              xmax  = 6,
+              log   = False,
+            )
+
+invMassOS1 = Var(name='invMassOS1',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 350,
+              rebin  = 20,
+              #rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = False
+              )
+
+invMassOS2 = Var(name='invMassOS2',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 350,
+              rebin  = 20,
+              #rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = False
+              )
+
 invMass = Var(name='invMass',
               path   = 'event',
               xmin   = 130,
@@ -86,6 +117,27 @@ invMass_2 = Var(name='invMass',
               rebin  = 1,
               rebinVar  = bins_invM_2,
               #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = False,
+              )
+
+invMass_3 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 120,
+              xmax   = 210,
+              rebin  = 1,
+              rebinVar  = bins_invM_3,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = False,
+              )
+
+invMass_4 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 80,
+              xmax   = 210,
+              rebin  = 1,
+              rebinVar  = bins_invM_4,
               log    = False,
               logx   = False,
               )
@@ -121,7 +173,7 @@ ZbosonPt = Var(name='ZbosonPt',
 ZbosonPt_2 = Var(name='ZbosonPt',
               path   = 'event',
               xmin   = 30.,
-              xmax   = 1000.,
+              xmax   = 500.,
               rebin  = 1,
               rebinVar  = bins_pt_2,
               log    = False,
@@ -139,7 +191,7 @@ ZbosonEta_2 = Var(name='ZbosonEta',
                 path   = 'event',
                 xmin   = -6,
                 xmax   = 6,
-                rebin  = 4,
+                rebin  = 12,
                 log    = False,
                 )
 
@@ -289,10 +341,10 @@ el_lead_pt = Var(name = 'el_lead_pt',
 el_lead_pt_2 = Var(name = 'el_lead_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 1000.,
+              xmax   = 500.,
               rebin  = 1,
               rebinVar  = bins_pt_2,
-              log    = True,
+              log    = False,
               logx   = True,
               )
 
@@ -319,7 +371,7 @@ el_sublead_pt = Var(name = 'el_sublead_pt',
 el_sublead_pt_2 = Var(name = 'el_sublead_pt',
               path   = 'electrons',
               xmin   = 30.,
-              xmax   = 1000.,
+              xmax   = 500.,
               rebin  = 1,
               rebinVar  = bins_pt_2,
               log    = False,
@@ -338,7 +390,7 @@ el_lead_eta_2 = Var(name = 'el_lead_eta',
               path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
-              rebin   = 4,
+              rebin   = 5,
               log     = False,
               )
 
@@ -389,7 +441,7 @@ el_sublead_eta_2 = Var(name = 'el_sublead_eta',
               path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
-              rebin   = 4,
+              rebin   = 5,
               log     = False,
               )
 
@@ -405,7 +457,7 @@ el_lead_phi_2 = Var(name = 'el_lead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
-              rebin   = 4,
+              rebin   = 8,
               log     = False,
               )
 
@@ -429,7 +481,7 @@ el_sublead_phi_2 = Var(name = 'el_sublead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
-              rebin   = 4,
+              rebin   = 8,
               log     = False,
               )
 
@@ -568,7 +620,11 @@ vars_list.append(averageIntPerXing)
 vars_list.append(actualIntPerXing)
 vars_list.append(NPV)
 vars_list.append(nelectrons)
+vars_list.append(njets)
+vars_list.append(nbjets)
 vars_list.append(invMass)
+vars_list.append(invMassOS2)
+vars_list.append(invMassOS1)
 vars_list.append(met_trk_et)
 vars_list.append(met_clus_et)
 vars_list.append(el_lead_pt)
@@ -621,7 +677,10 @@ vars_dict["el_sublead_phi_2"] = el_sublead_phi_2.__dict__
 vars_dict["invMassPeak_2"] = invMassPeak_2.__dict__
 vars_dict["ZbosonPt_2"] = ZbosonPt_2.__dict__
 vars_dict["invMass_2"] = invMass_2.__dict__
+vars_dict["invMass_3"] = invMass_3.__dict__
 vars_dict["ZbosonEta_2"] = ZbosonEta_2.__dict__
+vars_dict["invMass_4"] = invMass_4.__dict__
+vars_dict["cutflow_presel"] = cutflow_presel.__dict__
 
 ## EOF
 

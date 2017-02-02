@@ -30,12 +30,14 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-RUN = "SSVRele36_3"
-#RUN = "ZPeak36_6"
-#RUN = "TTBAR36_2"
-#RUN = "CRelectron36"
-#RUN = "FFelectron36_3"
-# RUN = "WJets36_2"
+# RUN = "SSVRele36_6"
+# RUN = "ZPeak36_10"
+# RUN = "TTBAR36_4"
+# RUN = "CRelectron36_2"
+# RUN = "FFelectron36_3"
+# RUN = "WJets36_3"
+# RUN = "Diboson36_12"
+RUN = "ThreeEleVR36_2"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -43,11 +45,13 @@ OUTFILE="ntuple.root"         # file output by pyframe job
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
-#SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
-#SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
 DO_NOM = True                        # submit the nominal job
@@ -146,7 +150,7 @@ def submit(tag,job_sys,samps,config={}):
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
-    maxevents = 2000000
+    maxevents = 500000
     for s in samps:
 
         ## input
@@ -156,7 +160,7 @@ def submit(tag,job_sys,samps,config={}):
         stype  = s.type
  
         nlines = 1
-        if os.stat(sinput).st_size>10e8:
+        if os.stat(sinput).st_size>2.5e8:
             print sinput
             tempFile = ROOT.TFile.Open(sinput)
             tempFile.cd("physics")

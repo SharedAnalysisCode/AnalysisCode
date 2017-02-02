@@ -27,6 +27,7 @@ import pyframe
 import rootutils
 
 import mcutils
+import itertools
 
 GeV = 1000.0
 
@@ -246,7 +247,7 @@ class ExactlyOneTightEleSF(pyframe.core.Algorithm):
     ExactlyOneTightEleSF
     """
     #__________________________________________________________________________
-    def __init__(self, name="ExactlyTwoTightEleSF",
+    def __init__(self, name="ExactlyOneTightEleSF",
             key            = None,
             ):
 
@@ -276,6 +277,74 @@ class ExactlyOneTightEleSF(pyframe.core.Algorithm):
             sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
             sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
             #sf *= getattr(ele,"TrigMCEff_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
+
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
+#------------------------------------------------------------------------------
+class AllTightEleSF(pyframe.core.Algorithm):
+    """
+    AllTightEleSF
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="AllTightEleSF",
+            key            = None,
+            chargeFlipSF   = False,
+            config_file    = None,
+            ):
+
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.chargeFlipSF      = chargeFlipSF
+        self.config_file       = config_file
+
+        assert config_file, "Must provide a charge-flip config file!"
+        assert key, "Must provide key for storing ele reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      self.isoLevels = [
+          "isolLoose",
+          "isolTight",
+          ]
+      self.IDLevels = [
+          "LooseAndBLayerLLH",
+          "MediumLLH",
+          "TightLLH",
+          ]
+
+
+      f = ROOT.TFile.Open(self.config_file)
+      assert f, "Failed to open charge-flip config file: %s"%(self.config_file)
+
+      h_etaFunc = f.Get("etaFunc")
+      assert h_etaFunc, "Failed to get 'h_etaFunc' from %s"%(self.config_file)
+      h_ptFunc = f.Get("ptFunc")
+      assert h_ptFunc, "Failed to get 'h_ptFunc' from %s"%(self.config_file)
+
+      self.h_etaFunc = h_etaFunc.Clone()
+      self.h_ptFunc  = h_ptFunc.Clone()
+      self.h_etaFunc.SetDirectory(0)
+      self.h_ptFunc.SetDirectory(0)
+      f.Close()
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+        sf=1.0
+        if "mc" in self.sampletype: 
+          electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
+          for ele in electrons:
+            sf *= getattr(ele,"RecoEff_SF").at(0)
+            sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+
+            if self.chargeFlipSF:
+              if ele.electronType() in [2,3]:
+                ptBin = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
+                if ptBin==self.h_ptFunc.GetNbinsX()+1:
+                  ptBin -= 1
+                sf *= self.h_ptFunc. GetBinContent( ptBin ) *\
+                      self.h_etaFunc.GetBinContent( self.h_etaFunc.FindBin( abs(ele.tlv.Eta()) ) )
 
         if self.key: 
           self.store[self.key] = sf
@@ -356,7 +425,7 @@ class ExactlyOneTightEleSF(pyframe.core.Algorithm):
     ExactlyOneTightEleSF
     """
     #__________________________________________________________________________
-    def __init__(self, name="ExactlyTwoTightEleSF",
+    def __init__(self, name="ExactlyOneTightEleSF",
             key            = None,
             ):
 
@@ -492,6 +561,181 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
         if self.key: 
           self.store[self.key] = sf
         return True
+
+class GenericFakeFactor(pyframe.core.Algorithm):
+    """
+    GenericFakeFactor
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="GenericFakeFactor",
+            key            = None,
+            sys            = None,
+            config_file    = None,
+            config_fileCHF = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.sys               = sys
+        self.config_file       = config_file
+        self.config_fileCHF    = config_fileCHF
+
+        assert key, "Must provide key for storing mu reco sf"
+        assert config_file, "Must provide config file!"
+        assert config_fileCHF, "Must provide config file!"
+    #_________________________________________________________________________
+    def initialize(self):
+
+      f = ROOT.TFile.Open(self.config_file)
+      assert f, "Failed to open fake-factor config file: %s"%(self.config_file)
+      
+      if self.sys=="UP":
+        h_ff = f.Get("FFup")
+      elif self.sys=="DN":
+        h_ff = f.Get("FFdn")
+      else:
+        h_ff = f.Get("FF")
+      assert h_ff, "Failed to get 'h_ff' from %s"%(self.config_file)
+
+      self.h_ff = h_ff.Clone()
+      self.h_ff.SetDirectory(0)
+      f.Close()
+
+      fchf = ROOT.TFile.Open(self.config_fileCHF)
+      assert fchf, "Failed to open charge-flip config file: %s"%(self.config_file)
+
+      h_etaFunc = fchf.Get("etaFunc")
+      assert h_etaFunc, "Failed to get 'h_etaFunc' from %s"%(self.config_file)
+      h_ptFunc = fchf.Get("ptFunc")
+      assert h_ptFunc, "Failed to get 'h_ptFunc' from %s"%(self.config_file)
+
+      self.h_etaFunc = h_etaFunc.Clone()
+      self.h_ptFunc  = h_ptFunc.Clone()
+      self.h_etaFunc.SetDirectory(0)
+      self.h_ptFunc.SetDirectory(0)
+
+      self.isoLevels = [
+      "isolLoose",
+      "isolTight",
+      ]
+      self.IDLevels = [
+      "LooseAndBLayerLLH",
+      "MediumLLH",
+      "TightLLH",
+      ]
+    #_________________________________________________________________________
+    def execute(self, weight):
+
+      sf = -1.0
+      electrons = self.store['electrons_loose_LooseLLH']
+
+      for ele in electrons:
+        if (ele.isIsolated_Loose and ele.LHMedium) :
+          if "mc" in self.sampletype : 
+            sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(0)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(ele,"RecoEff_SF").at(0)
+            if ele.electronType() in [2,3]:
+              ptBin = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
+              if ptBin==self.h_ptFunc.GetNbinsX()+1:
+                ptBin -= 1
+              sf *= self.h_ptFunc. GetBinContent( ptBin ) *\
+                    self.h_etaFunc.GetBinContent( self.h_etaFunc.FindBin( abs(ele.tlv.Eta()) ) )
+          else :
+            pass
+        else :
+          sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.caloCluster_eta ) ) )
+          if "mc" in self.sampletype :
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(ele,"RecoEff_SF").at(0)
+          else :
+            pass
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
+
+class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
+    """
+    ThreeElectron2e17TrigWeight
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="ThreeElectron2e17TrigWeight",
+            key            = None,
+            sys            = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.sys               = sys
+
+        assert key, "Must provide key for storing mu reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+
+      self.isoLevels = [
+      "",
+      "_isolLoose",
+      "_isolTight",
+      ]
+      self.IDLevels = [
+      "LooseAndBLayerLLH",
+      "MediumLLH",
+      "TightLLH",
+      ]
+    #_________________________________________________________________________
+    def execute(self, weight):
+
+      sf = 1.0
+      electrons = self.store['electrons_loose_LooseLLH']
+
+      if len(electrons)!=3 or "mc" not in self.sampletype:
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
+      P2passD  = 0
+      P2passMC = 0
+      P3passD  = 1
+      P3passMC = 1
+      for pair in itertools.combinations(electrons,2) :
+        combinationProbD  = 1 # e1*SF1 * e2*SF2 * (1-e3*SF3)
+        combinationProbMC = 1 # e1     * e2     * (1-e3    )
+        for eleFail in electrons:
+          if eleFail not in pair:
+            for elePass in pair:
+              if elePass.LHMedium and elePass.isIsolated_Loose:
+                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)*\
+                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+              else:
+                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)*\
+                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+            if eleFail.LHMedium and eleFail.isIsolated_Loose:
+              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)*\
+                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0) )
+              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+            else:
+              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)*\
+                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0) )
+              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+            break
+        P2passD  += combinationProbD   # a*b*(1-c) + a*c*(1-b) + b*c*(1-d) 
+        P2passMC += combinationProbMC  # a*b*(1-c) + a*c*(1-b) + b*c*(1-d)
+      for ele in electrons:
+        if ele.LHMedium and ele.isIsolated_Loose:
+          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)*\
+                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)
+          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+        else:
+          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)*\
+                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)
+          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+
+      sf = (P2passD+P3passD)/(P2passMC+P3passMC)
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
 
 class ExactlyTwoLooseEleFakeFactor(pyframe.core.Algorithm):
     """

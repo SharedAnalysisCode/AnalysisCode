@@ -25,10 +25,12 @@ public:
   TH1F* m_hOSSideband;
   TH1F* m_hSSSideband;
 
-  double m_ptBins[12] = {30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.,400.};
+  // double m_ptBins[12] = {30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.,400.};
+  double m_ptBins[12] = {30., 34., 38., 43., 48., 55., 62., 70., 100., 140., 200.,400.};
   //double m_etaBins[10] = {0.0, 0.75, 1.1, 1.37, 1.52, 1.7, 1.9, 2.1, 2.3, 2.5};
   //double m_etaBins[18] = {0.0, 0.25, 0.50, 0.75, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
   double m_etaBins[16] = {0.0, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
+  // double m_etaBins[16] = {0.0, 0.50, 1.0, 1.20, 1.42, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
 
   const double m_constraint = 1e9;
 
@@ -200,10 +202,10 @@ double NumericalMinimizer::LogLikelihood1Dfull(const double *xx )
 
 void charge_flip_measurement(){
 
-  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowAS_Powheg.root";
-  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
-  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS_Powheg.root";
-  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/Plots/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
   
   /*
   std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS_Powheg.root";
@@ -242,7 +244,7 @@ void charge_flip_measurement(){
   std::cout << " data charge-flip measurement " << std::endl;
   NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData);
   std::cout << " MC charge-flip measurement " << std::endl;
-  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,1e7);
+  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,1e8);
 
   std::cout << " start drawing " << std::endl;
   NM2.m_flipRateEta->SetLineColor(kRed);

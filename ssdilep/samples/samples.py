@@ -63,7 +63,7 @@ GRL += [
         "311287","311321","311365","311402","311473","311481",
         ]
 
-#GRL += ['307716','307710','307656']
+#GRL += ["302919","299055","279932","279928",]
 
 ds_name = '00%s.physics_Main'
 
@@ -262,7 +262,7 @@ Sherpa_CT10_VV_qqee_4000M5000 = Sample( name = "Sherpa_CT10_VV_qqee_4000M5000", 
 Sherpa_CT10_VV_qqee_5000M     = Sample( name = "Sherpa_CT10_VV_qqee_5000M",      xsec = 0.0000000000048468*1000 )
 
 VV_ee = Sample( name =   'VV_ee',
-                  tlatex = 'diboson',
+                  tlatex = 'DB mass-binned',
                   fill_color = ROOT.kGreen-10,
                   line_color =  ROOT.kGreen-8,
                   marker_color =  ROOT.kGreen-8,
@@ -326,7 +326,7 @@ ZqqZll          = Sample( name = "Sherpa_CT10_ZqqZll_SHv21_improved",         xs
 ZqqZvv          = Sample( name = "Sherpa_CT10_ZqqZvv_SHv21_improved",         xsec = 4.63359232 )
 
 diboson_sherpa = Sample( name =   'diboson_sherpa',
-                  tlatex = 'diboson',
+                  tlatex = 'DB inclusive',
                   fill_color = ROOT.kGreen-10,
                   line_color =  ROOT.kGreen-8,
                   marker_color =  ROOT.kGreen-8,
@@ -336,7 +336,7 @@ diboson_sherpa = Sample( name =   'diboson_sherpa',
                                 lllvOFMinus,  
                                 lllvSFPlus,   
                                 lllvOFPlus,   
-                                llvv,          # histograms fail
+                                llvv,
                                 #llvvjj_ss_EW4,
                                 #llvvjj_ss_EW6,
                                 #lllvjj_EW6,   
@@ -688,10 +688,10 @@ ZmumuPowheg     = Sample( name         = "ZmumuPowheg",
 
 
 ZtautauPowheg   = Sample( name         = "ZtautauPowheg", 
-                          tlatex       = 'Z #rightarrow #tau#tau+jets',
-                          fill_color   = ROOT.kAzure-4,
-                          line_color   = ROOT.kAzure-5,
-                          marker_color = ROOT.kAzure-5,
+                          tlatex       = 'Z #rightarrow #tau#tau',
+                          fill_color   = ROOT.kMagenta-10,
+                          line_color   = ROOT.kMagenta-8,
+                          marker_color = ROOT.kMagenta-8,
                           daughters = [
                                ZtautauPP,     
                               ],
@@ -846,7 +846,7 @@ AZNLOCTEQ6L1_DYee_5000M           = Sample( name =  "PowhegPythia8EvtGen_AZNLOCT
 
 
 AZNLOCTEQ6L1_DYee = Sample( name =   'Zee',
-                  tlatex = 'Powheg Z #rightarrow ee',
+                  tlatex = 'Z #rightarrow ee',
                   fill_color = ROOT.kWhite,
                   line_color =  ROOT.kBlack,
                   marker_color =  ROOT.kBlack,
@@ -1035,7 +1035,30 @@ ttX = Sample( name =   'ttX',
                                #tttautau_Np1,
                                ttH125, 
                               ],
-                ) 
+                )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Higgs samples 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep        = Sample( name =  "PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep",  xsec =  0.011823253   )
+PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep       = Sample( name =  "PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep",  xsec =  0.001008961   )
+PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep_noTau  = Sample( name =  "PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep_noTau",   xsec = 0.005254779  )
+PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep_noTau = Sample( name =  "PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep_noTau",  xsec = 0.000448427  )
+Pythia8EvtGen_A14NNPDF23LO_WH125_ZZ4l                      = Sample( name =  "Pythia8EvtGen_A14NNPDF23LO_WH125_ZZ4l",   xsec =  1.38e-07   )
+Pythia8EvtGen_A14NNPDF23LO_ZH125_ZZ4l                      = Sample( name =  "Pythia8EvtGen_A14NNPDF23LO_ZH125_ZZ4l",   xsec =  5.405e-06  )
+
+Higgs = Sample( name =   'Higgs',
+                  tlatex = 'Higgs',
+                  fill_color = ROOT.kOrange-4,
+                  line_color =  ROOT.kOrange-5,
+                  marker_color =  ROOT.kOrange-5,
+                  daughters = [
+                               PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep,                
+                               PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep,        
+                               Pythia8EvtGen_A14NNPDF23LO_WH125_ZZ4l,        
+                               Pythia8EvtGen_A14NNPDF23LO_ZH125_ZZ4l,    
+                              ],
+                )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # single-top
@@ -1069,8 +1092,8 @@ singletop = Sample( name =   'singletop',
                                  PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
                                  PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
                                  PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
-                                 #PowhegPythiaEvtGen_P2012_Wt_inclusive_top,
-                                 #PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop,      
+                                 # PowhegPythiaEvtGen_P2012_Wt_inclusive_top,
+                                 # PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop,      
                                 ],
                 ) 
 
@@ -1094,7 +1117,7 @@ ttbar = Sample( name =  'ttbar_dilep',
                     daughters = [
                                  #ttbar_hdamp172p5_nonallhad,
                                  #ttbar_hdamp172p5_allhad,   
-                                 #ttbar_nonallhad,           
+                                 # ttbar_nonallhad,           
                                  ttbar_hdamp172p5_dil,           
                                 ],
                 ) 
@@ -1248,19 +1271,23 @@ all_mc = []
 # all_mc += ZeePowheg.daughters
 # all_mc += singletop.daughters
 # all_mc += ttbar.daughters
+# all_mc += ZtautauPowheg.daughters
 
 ### EXOT12 dilep
-all_mc += VV_ee.daughters
-all_mc += AZNLOCTEQ6L1_DYee.daughters
-all_mc += singletop.daughters
-all_mc += ttbar.daughters
-all_mc += ttX.daughters
-
-### EXOT12 ZPeak
-# all_mc += diboson_sherpa.daughters
-# all_mc += Zee221.daughters
+#all_mc += VV_ee.daughters
+# all_mc += AZNLOCTEQ6L1_DYee.daughters
 # all_mc += singletop.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttX.daughters
+# all_mc += Higgs.daughters
+# all_mc += ZtautauPowheg.daughters
+
+### EXOT12 ZPeak
+all_mc += diboson_sherpa.daughters
+# all_mc += Zee221.daughters
+# all_mc += singletop.daughters
+# all_mc += ttbar.daughters
+all_mc += ttX.daughters
+all_mc += Higgs.daughters
 # all_mc += WenuPowheg.daughters
 

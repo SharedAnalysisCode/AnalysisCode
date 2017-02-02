@@ -340,8 +340,9 @@ def plot_hist(
     if not do_ratio_plot:
       legXMin -= 0.005
       legXMax -= 0.058
-    leg = ROOT.TLegend(legXMin,legYMin+0.05,legXMax,legYMax+0.05)
+    leg = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9,legXMax+0.08,legYMax+0.05)
     leg.SetBorderSize(0)
+    leg.SetNColumns(2)
     leg.SetFillColor(0)
     leg.SetFillStyle(0)
     leg.SetTextSize(0.045)
@@ -512,7 +513,7 @@ def plot_hist(
          g_tot.Draw("E2")
          g_stat.Draw("SAME,E2")
          leg.AddEntry(g_stat,"#font[42]{"+str("MC Stat.")+"}",'F')
-         leg.AddEntry(g_tot, "#font[42]{"+str("#oplus Sys. Unc.")+"}",'F')
+         leg.AddEntry(g_tot, "#font[42]{"+str("Sys. Unc.")+"}",'F')
 
       else: 
         g_stat.Draw("E2")

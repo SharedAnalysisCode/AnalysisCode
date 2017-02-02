@@ -131,13 +131,13 @@ def analyze(config):
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
-            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
             chargeFlipSF=False,
             )
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF',
-            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-12-01-2017.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
             chargeFlipSF=True,
             )
 
