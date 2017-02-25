@@ -114,9 +114,9 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
  ROOT::Math::Minimizer* min =
  ROOT::Math::Factory::CreateMinimizer(minName, algoName);
 
-   min->SetMaxFunctionCalls(1e7); // for Minuit/Minuit2
-   min->SetMaxIterations(1e5);  // for GSL
-   min->SetTolerance(1e-4);
+   min->SetMaxFunctionCalls(1e9); // for Minuit/Minuit2
+   min->SetMaxIterations(1e7);  // for GSL
+   min->SetTolerance(1e-5);
    min->SetPrintLevel(1);
 
    auto func = &NumericalMinimizer::LogLikelihood1Dfull;
@@ -125,7 +125,7 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
    min->SetFunction(f);
 
    int index = 0;
-   double stepSize = 1e-4;
+   double stepSize = 1e-5;
    for (int eta = 1; eta <= m_NetaBins; eta++){
     std::ostringstream name;
     name << "eta" << eta;
@@ -151,7 +151,7 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
 //-------------------------------------------------
 double NumericalMinimizer::LogLikelihood1D(const double *xx )
 {
-  double value = 1e2;
+  double value = 0;
   for(int pt1 = 1; pt1 <= m_NptBins; pt1++) {
     for(int eta1 = 1; eta1 <= m_NetaBins; eta1++) {
       for(int pt2 = 1; pt2 <= m_NptBins; pt2++) {
@@ -177,7 +177,7 @@ double NumericalMinimizer::LogLikelihood1D(const double *xx )
 //-------------------------------------------------
 double NumericalMinimizer::LogLikelihood1Dfull(const double *xx )
 {
-  double value = 1e2;
+  double value = 0;
   for(int pt1 = 1; pt1 <= m_NptBins; pt1++) {
     for(int eta1 = 1; eta1 <= m_NetaBins; eta1++) {
       for(int pt2 = 1; pt2 <= m_NptBins; pt2++) {
@@ -242,9 +242,9 @@ void charge_flip_measurement(){
   //hOSSidebandData->Add(hSSSidebandData);
 
   std::cout << " data charge-flip measurement " << std::endl;
-  NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData);
+  NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1e9);
   std::cout << " MC charge-flip measurement " << std::endl;
-  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,1e8);
+  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,5e9);
 
   std::cout << " start drawing " << std::endl;
   NM2.m_flipRateEta->SetLineColor(kRed);
@@ -263,7 +263,9 @@ void charge_flip_measurement(){
 
   TCanvas* c1 = new TCanvas("c1","c1",600,600);
   c1->cd();
-  drawComparison2(c1,NM2.m_flipRateEta,NM1.m_flipRateEta,"f(#eta)","#eta",1e-2,10,0,2.47);
+  std::vector<TH1D*> c1h1vec;
+  c1h1vec.push_back(NM2.m_flipRateEta);
+  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","#eta",1e-2,10,0,2.47);
   ATLASLabel(0.20,0.83,"internal",1);
   myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   myText(0.60,0.75,1,"P_{CHF}^{full}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
@@ -284,7 +286,9 @@ void charge_flip_measurement(){
   c2->cd();
   histo_overUnderFlow(NM2.m_flipRatePt);
   histo_overUnderFlow(NM1.m_flipRatePt);
-  drawComparison2(c2,NM2.m_flipRatePt,NM1.m_flipRatePt,"#sigma(p_{T})","p_{T} [GeV]",0,0.2,30,400,true);
+  std::vector<TH1D*> c2h1vec;
+  c2h1vec.push_back(NM2.m_flipRatePt);
+  drawComparison2(c2,&c2h1vec,NM1.m_flipRatePt,"#sigma(p_{T})","p_{T} [GeV]",0,0.2,30,400,true);
   ATLASLabel(0.20,0.83,"internal",1);
   myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   myText(0.60,0.75,1,"P_{CHF}^{full}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
@@ -316,14 +320,86 @@ void charge_flip_measurement(){
   //ptFit->Draw("same");
 
   TFile *outfile = new TFile("chargeFlipRate.root","RECREATE");
+  NM1.m_flipRateEta->SetName("dataEtaRate");
+  NM1.m_flipRateEta->Write();
+  NM1.m_flipRatePt->SetName("dataPtRate");
+  NM1.m_flipRatePt->Write();
+  NM2.m_flipRateEta->SetName("MCEtaRate");
+  NM2.m_flipRateEta->Write();
+  NM2.m_flipRatePt->SetName("MCPtRate");
+  NM2.m_flipRatePt->Write();
   etaRatio->SetName("etaFunc");
   etaRatio->Write();
   ptRatio->SetName("ptFunc");
   ptRatio->Write();
   //ptFit->Write();
 
+  ROOT::Math::Minimizer* m_min1 = NM1.m_min;
+  ROOT::Math::Minimizer* m_min2 = NM2.m_min;
+  int nbinxcorr = NM1.m_flipRateEta->GetNbinsX()+NM1.m_flipRatePt->GetNbinsX();
+  TH2F* corrMatrix1 = new TH2F("corrM1","corrM1",nbinxcorr,0,nbinxcorr,nbinxcorr,0,nbinxcorr);
+  TH2F* corrMatrix2 = new TH2F("corrM2","corrM2",nbinxcorr,0,nbinxcorr,nbinxcorr,0,nbinxcorr);
+  for (unsigned int i = 1; i <= nbinxcorr; i++){
+    for (unsigned int j = 1; j <= nbinxcorr; j++){
+      corrMatrix1->SetBinContent(i,j, m_min1->Correlation(i-1,j-1) );
+      corrMatrix2->SetBinContent(i,j, m_min2->Correlation(i-1,j-1) );
+    }
+  }
+  for (unsigned int i = 1; i <= NM1.m_flipRateEta->GetNbinsX(); i++){
+    corrMatrix1->GetXaxis()->SetBinLabel(i,Form("eta%d",i));
+    corrMatrix1->GetYaxis()->SetBinLabel(i,Form("eta%d",i));
+    corrMatrix2->GetXaxis()->SetBinLabel(i,Form("eta%d",i));
+    corrMatrix2->GetYaxis()->SetBinLabel(i,Form("eta%d",i));
+  }
+  for (unsigned int i = NM1.m_flipRateEta->GetNbinsX()+1; i <= nbinxcorr; i++){
+    corrMatrix1->GetXaxis()->SetBinLabel(i,Form("pt%d",i-NM1.m_flipRateEta->GetNbinsX()));
+    corrMatrix1->GetYaxis()->SetBinLabel(i,Form("pt%d",i-NM1.m_flipRateEta->GetNbinsX()));
+    corrMatrix2->GetXaxis()->SetBinLabel(i,Form("pt%d",i-NM1.m_flipRateEta->GetNbinsX()));
+    corrMatrix2->GetYaxis()->SetBinLabel(i,Form("pt%d",i-NM1.m_flipRateEta->GetNbinsX()));
+  }
+  corrMatrix1->Scale(100.);
+  corrMatrix1->GetXaxis()->LabelsOption("v");
+  corrMatrix2->Scale(100.);
+  corrMatrix2->GetXaxis()->LabelsOption("v");
+
+  gStyle->SetPaintTextFormat("3.0f");
+
+
+  TCanvas c3("c3","c3",800,600);
+  c3.SetRightMargin(0.2);
+  c3.SetLeftMargin(0.12);
+  corrMatrix1->Draw("colz text");
+  corrMatrix1->GetYaxis()->SetTitle("parameter");
+  corrMatrix1->GetYaxis()->SetTitleOffset(1.0);
+  corrMatrix1->GetXaxis()->SetTitle("parameter");
+  corrMatrix1->GetXaxis()->SetNoExponent();
+  corrMatrix1->GetXaxis()->SetMoreLogLabels();
+  corrMatrix1->GetZaxis()->SetTitle("Correlation [%]");
+  corrMatrix1->GetZaxis()->SetTitleOffset(1.5);
+  ATLASLabel(0.18,0.90,"internal",0);
+  myText(0.18,0.85,0,"data flip-rate fit");
+
+
+  TCanvas c4("c4","c4",800,600);
+  c4.SetRightMargin(0.2);
+  c4.SetLeftMargin(0.12);
+  corrMatrix2->Draw("colz text");
+  corrMatrix2->GetYaxis()->SetTitle("parameter");
+  corrMatrix2->GetYaxis()->SetTitleOffset(1.0);
+  corrMatrix2->GetXaxis()->SetTitle("parameter");
+  corrMatrix2->GetXaxis()->SetNoExponent();
+  corrMatrix2->GetXaxis()->SetMoreLogLabels();
+  corrMatrix2->GetZaxis()->SetTitle("Correlation [%]");
+  corrMatrix2->GetZaxis()->SetTitleOffset(1.5);
+  ATLASLabel(0.18,0.90,"internal",0);
+  myText(0.18,0.85,0,"MC flip-rate fit");
+
+
   c1->Print("chargeFlipEta.eps");
   c2->Print("chargeFlipPt.eps");
+
+  c3.Print("chargeFlipCorrMatrixData.eps");
+  c4.Print("chargeFlipCorrMatrixMC.eps");
 
   outfile->Close();
 

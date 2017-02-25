@@ -126,6 +126,19 @@ def analyze(config):
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
 
+    loop += ssdilep.algs.EvWeights.AllTightEleSF(
+            key='AllTightEleSF',
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
+            chargeFlipSF=True,
+            )
+
+    loop += ssdilep.algs.EvWeights.GenericFakeFactor(
+            key='GenericFakeFactor',
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
+            sys = sys_FF,
+            )
+
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
             config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-24-01-2017.root'),
@@ -185,16 +198,25 @@ def analyze(config):
             )
 
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'same-sign-CR-noCHF',
+            region   = 'general-same-sign-CR',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLooseNOSF']],
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF']],
                ],
             )
 
     
     ## Fake Estimation
     ## ---------------------------------------
+
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'general-same-sign-CR-fakes',
+            plot_all = False,
+            loose_el = True,
+            cut_flow = [
+               ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor']],
+               ],
+            )
 
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'same-sign-CR-TL',

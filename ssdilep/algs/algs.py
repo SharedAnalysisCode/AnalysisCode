@@ -1370,6 +1370,30 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_Mass130GeV300LooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if tempMass > 130*GeV and tempMass < 300*GeV :
+            return True;
+        return False
+
+    def cut_Mass300GeV1200LooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if tempMass > 300*GeV and tempMass < 1200*GeV :
+            return True;
+        return False
+
+    def cut_Mass1200GeVLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if tempMass > 1200*GeV :
+            return True;
+        return False
+
     def cut_Mass130GeV200LooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2 :
@@ -1402,6 +1426,14 @@ class CutAlg(pyframe.core.Algorithm):
         if len(electrons)!=2 : return False
         elif electrons[0].electronType() == 1 and electrons[1].electronType() == 3 : return True
         elif electrons[1].electronType() == 1 and electrons[0].electronType() == 3 : return True
+        else : return False
+
+    #----- 2 charge flip
+    def cut_ExactlyTwoTightEleMediumLLHisolLooseBothCHF(self):
+        if not self.sampletype == "mc" : return False
+        electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electrons)!=2 : return False
+        elif electrons[0].electronType() in [2,3] and electrons[1].electronType() in [2,3] : return True
         else : return False
 
     #----- one prompt + brem
@@ -1457,6 +1489,16 @@ class CutAlg(pyframe.core.Algorithm):
           if not jet.isClean:
             return False
         return True
+
+    def cut_NoFakesInMC(self):
+      electrons = self.store['electrons']
+      if ("mc" in self.sampletype) and self.chain.mcChannelNumber in [361108,341471,341488,301887,301890,301891,301892,301899,301900,301901,301535]:
+        return True
+      for ele in electrons:
+        if ("mc" in self.sampletype) and  ele.electronType() not in [1,2,3] :
+          if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
+            return False
+      return True 
 
     #__________________________________________________________________________
     def cut_PASS(self):
@@ -2050,7 +2092,7 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
-        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
+        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         ## met plots
@@ -2146,8 +2188,8 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           # charge-flip histograms
           ptbin1 = digitize( ele1.tlv.Pt()/GeV, pt_bins )
           ptbin2 = digitize( ele2.tlv.Pt()/GeV, pt_bins )
-          etabin1 = digitize( abs(ele1.eta), eta_bins )
-          etabin2 = digitize( abs(ele2.eta), eta_bins )
+          etabin1 = digitize( abs(ele1.caloCluster_eta), eta_bins )
+          etabin2 = digitize( abs(ele2.caloCluster_eta), eta_bins )
           assert ptbin1!=0 and ptbin2!=0 and etabin1!=0 and etabin2!=0, "bins shouldn't be 0"
           # encode pt1, pt2, eta1, eta2 into 1D bins given pt_bins and eta_bins
           totBin = ( (ptbin1-1)*(len(eta_bins)-1) + etabin1-1 )*(len(eta_bins)-1)*len(pt_bins) + ( (ptbin2-1)*(len(eta_bins)-1) + etabin2 )
@@ -2155,11 +2197,11 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           ### true charge-flip
           if self.sampletype == "mc":
             for ele in electrons:
-              self.h_el_pt_eta_all.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight)
+              self.h_el_pt_eta_all.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
               if(ele.electronType()==2):
-                self.h_el_pt_eta_chf2.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight)
+                self.h_el_pt_eta_chf2.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
               if(ele.electronType()==3):
-                self.h_el_pt_eta_chf4.Fill(ele.tlv.Pt()/GeV, abs(ele.eta), weight)
+                self.h_el_pt_eta_chf4.Fill(ele.tlv.Pt()/GeV, abs(ele.caloCluster_eta), weight)
 
 
     #__________________________________________________________________________
@@ -2860,6 +2902,12 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(e sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
         self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
         self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        #third
+        self.h_el_third_pt = self.hist('h_el_third_pt', "ROOT.TH1F('$', ';p_{T}(e third) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_third_eta = self.hist('h_el_third_eta', "ROOT.TH1F('$', ';#eta(e third);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_third_phi = self.hist('h_el_third_phi', "ROOT.TH1F('$', ';#phi(e third);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_third_trkd0sig = self.hist('h_el_third_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e third);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_third_trkz0sintheta = self.hist('h_el_third_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e third) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
 
         # ---------------
         # Fill histograms
@@ -2869,6 +2917,7 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           NSSPairs = 0
           ele1 = 0
           ele2 = 0
+          ele3 = 0
           OS1ele1 = 0
           OS1ele2 = 0
           OS2ele1 = 0
@@ -2882,6 +2931,9 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
               if pair[0].tlv.Pt() > pair[1].tlv.Pt():
                 ele1 = pair[0]
                 ele2 = pair[1]
+              for third_ele in electrons:
+                if third_ele not in pair:
+                  ele3 = third_ele
             elif OS1ele1 == 0 :
               OS1ele1 = pair[0]
               OS1ele2 = pair[1]
@@ -2894,6 +2946,7 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           assert NSSPairs == 1, "expected exactly one same-sign pair"
           assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
           assert (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()) > (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()), "wrong OS1,OS2 assignement"
+          assert ele3!=ele2 and ele3!=ele1, "third ele not properly defined"
 
           ## event plots 
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
@@ -2939,6 +2992,12 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
           self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
           self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
+
+          self.h_el_third_pt.Fill(ele3.tlv.Pt()/GeV, weight)
+          self.h_el_third_eta.Fill(ele3.eta, weight)
+          self.h_el_third_phi.Fill(ele3.tlv.Phi(), weight)
+          self.h_el_third_trkd0sig.Fill(ele3.trkd0sig, weight)
+          self.h_el_third_trkz0sintheta.Fill(ele3.trkz0sintheta, weight)
 
 
     #__________________________________________________________________________
@@ -3343,10 +3402,10 @@ class VarsAlg(pyframe.core.Algorithm):
         # loose electrons (no iso // LooseLLH)
         electrons_loose_LooseLLH = []
         for ele in electrons:
-          if ("mc" in self.sampletype) and self.chain.mcChannelNumber in [361108,341471,341488]:
+          if ("mc" in self.sampletype) and self.chain.mcChannelNumber in [361108,341471,341488,301887,301890,301891,301892,301899,301900,301901,301535]:
             pass
-          # elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3,4]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
-          elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronTypeNew() not in [1]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
+          elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
+          # elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronTypeNew() not in [1]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
             continue
           if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_loose_LooseLLH += [ele]
@@ -3355,10 +3414,10 @@ class VarsAlg(pyframe.core.Algorithm):
         # tight electrons (isoLoose // MediumLLH)
         electrons_tight_MediumLLH_isolLoose = []
         for ele in electrons:
-          if ("mc" in self.sampletype) and self.chain.mcChannelNumber in [361108,341471,341488]:
+          if ("mc" in self.sampletype) and self.chain.mcChannelNumber in [361108,341471,341488,301887,301890,301891,301892,301899,301900,301901,301535]:
             pass
-          # elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3,4]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
-          elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronTypeNew() not in [1]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
+          elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
+          # elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronTypeNew() not in [1]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
             continue
           if ( ele.pt>30*GeV and ele.isIsolated_Loose and ele.LHMedium and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_tight_MediumLLH_isolLoose += [ele]

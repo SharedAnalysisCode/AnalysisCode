@@ -100,6 +100,7 @@ elif options.samples == "OSCR":
   samples.VV_ee,
   samples.singletop,
   samples.ttX,
+  samples.Higgs,
   ]
 elif options.samples == "SSVR":
   mc_backgrounds = [
@@ -107,23 +108,33 @@ elif options.samples == "SSVR":
   samples.ttbar,
   samples.VV_ee,
   samples.singletop,
-  samples.ZtautauPowheg,
+  # samples.ZtautauPowheg,
   samples.ttX,
   ]
 elif options.samples == "diboson":
   mc_backgrounds = [
   # samples.Zee221,
   # samples.ttbar,
-  samples.diboson_sherpa,
+  # samples.diboson_sherpa,
+  samples.diboson_sherpa221_llll,
+  samples.diboson_sherpa221_lllv,
+  samples.diboson_sherpa221_ggllll,
+  samples.diboson_sherpa221_lllvjj,
+  samples.diboson_sherpa221_lllljj,
+  # samples.vgamma,
   # samples.VV_ee,
   # samples.singletop,
   samples.ttX,
   samples.Higgs,
   # samples.WenuPowheg,
   ]
-elif options.samples == "chargeflip":
+elif options.samples in ["chargeflip","chargeflipTruth"]:
   mc_backgrounds = [
   samples.Zee221,
+  ]
+elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
+  mc_backgrounds = [
+  samples.AZNLOCTEQ6L1_DYee,
   ]
 
 
@@ -238,6 +249,7 @@ elif options.samples == "OSCR":
   samples.singletop,
   fakes_mumu,
   samples.ttX,
+  samples.Higgs,
   ]
 elif options.samples == "SSVR":
   mumu_backgrounds = [
@@ -252,7 +264,13 @@ elif options.samples == "diboson":
   mumu_backgrounds = [
   # samples.Zee221,
   # samples.ttbar,
-  samples.diboson_sherpa,
+  # samples.diboson_sherpa,
+  samples.diboson_sherpa221_lllv,
+  samples.diboson_sherpa221_llll,
+  samples.diboson_sherpa221_ggllll,
+  samples.diboson_sherpa221_lllvjj,
+  samples.diboson_sherpa221_lllljj,
+  # samples.vgamma,
   # samples.VV_ee,
   fakes_mumu,
   # samples.singletop,
@@ -260,10 +278,15 @@ elif options.samples == "diboson":
   samples.Higgs,
   # samples.WenuPowheg,
   ]
-elif options.samples == "chargeflip":
+elif options.samples in ["chargeflip","chargeflipTruth"]:
   mumu_backgrounds = [
   samples.Zee221,
   ]
+elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
+  mumu_backgrounds = [
+  samples.AZNLOCTEQ6L1_DYee,
+  ]
+
 
 signal =[]
 
@@ -271,7 +294,7 @@ if options.makeplot == "True":
  funcs.plot_hist(
     backgrounds   = mumu_backgrounds,
     signal        = signal, 
-    data          = data,
+    data          = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg"] else None,
     region        = options.region,
     label         = options.label if options.label else mumu_vdict[options.vname]['label'],
     histname      = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
@@ -292,7 +315,7 @@ else:
  funcs.write_hist(
          backgrounds = mumu_backgrounds,
          #signal      = mumu_backgrounds, # This can be a list
-         data        = data,
+         data        = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg"] else None,
          region      = options.region,
          icut        = int(options.icut),
          histname    = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),

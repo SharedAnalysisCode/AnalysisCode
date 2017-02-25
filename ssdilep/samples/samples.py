@@ -349,7 +349,132 @@ diboson_sherpa = Sample( name =   'diboson_sherpa',
                                 ZqqZll,       
                                 #ZqqZvv,
                               ],
-                ) 
+                )
+
+diboson_sherpa_llll = Sample( name =   'diboson_sherpa_llll',
+                  tlatex = 'DB (llll)',
+                  fill_color = ROOT.kSpring-8,
+                  line_color =  ROOT.kSpring-6,
+                  marker_color =  ROOT.kSpring-6,
+                  daughters = [
+                                llll,
+                              ],
+                )
+
+diboson_sherpa_lllv = Sample( name =   'diboson_sherpa_lllv',
+                  tlatex = 'DB (lll#nu)',
+                  fill_color = ROOT.kGreen-10,
+                  line_color =  ROOT.kGreen-8,
+                  marker_color =  ROOT.kGreen-8,
+                  daughters = [
+                                lllvSFMinus,  
+                                lllvOFMinus,  
+                                lllvSFPlus,   
+                                lllvOFPlus, 
+                              ],
+                )
+
+#-----------------------------------------------------------------------------
+# Complete diboson background (inclusive)
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonSherpa
+#-----------------------------------------------------------------------------
+
+Sherpa_221_NNPDF30NNLO_llll     = Sample( name = "Sherpa_221_NNPDF30NNLO_llll",     xsec =    1.2557  )
+Sherpa_221_NNPDF30NNLO_lllv     = Sample( name = "Sherpa_221_NNPDF30NNLO_lllv",     xsec =    4.5877  )
+Sherpa_221_NNPDF30NNLO_llvv     = Sample( name = "Sherpa_221_NNPDF30NNLO_llvv",     xsec =    12.465  )
+Sherpa_221_NNPDF30NNLO_lvvv     = Sample( name = "Sherpa_221_NNPDF30NNLO_lvvv",     xsec =    3.2274  )
+Sherpa_221_NNPDF30NNLO_vvvv     = Sample( name = "Sherpa_221_NNPDF30NNLO_vvvv",     xsec =    0.60154 )
+Sherpa_221_NNPDF30NNLO_WlvZqq   = Sample( name = "Sherpa_221_NNPDF30NNLO_WlvZqq",   xsec =    11.413  )
+Sherpa_221_NNPDF30NNLO_WplvWmqq = Sample( name = "Sherpa_221_NNPDF30NNLO_WplvWmqq", xsec =    112.74  )
+Sherpa_221_NNPDF30NNLO_WpqqWmlv = Sample( name = "Sherpa_221_NNPDF30NNLO_WpqqWmlv", xsec =    24.717  )
+Sherpa_221_NNPDF30NNLO_WqqZll   = Sample( name = "Sherpa_221_NNPDF30NNLO_WqqZll",   xsec =    3.437  )
+Sherpa_221_NNPDF30NNLO_WqqZvv   = Sample( name = "Sherpa_221_NNPDF30NNLO_WqqZvv",   xsec =    6.7973 )
+Sherpa_221_NNPDF30NNLO_ZqqZll   = Sample( name = "Sherpa_221_NNPDF30NNLO_ZqqZll",   xsec =    2.17275043   )
+Sherpa_221_NNPDF30NNLO_ZqqZvv   = Sample( name = "Sherpa_221_NNPDF30NNLO_ZqqZvv",   xsec =    4.35418464   )
+Sherpa_CT10_ggllll              = Sample( name = "Sherpa_CT10_ggllll",              xsec =    0.01887613  )
+Sherpa_CT10_ggllvv              = Sample( name = "Sherpa_CT10_ggllvv",              xsec =    0.7773402 )
+Sherpa_CT10_lllljj_EW6          = Sample( name = "Sherpa_CT10_lllljj_EW6",          xsec =    0.031496  )
+Sherpa_CT10_lllvjj_EW6          = Sample( name = "Sherpa_CT10_lllvjj_EW6",          xsec =    0.042287  )
+Sherpa_CT10_llvvjj_ss_EW4       = Sample( name = "Sherpa_CT10_llvvjj_ss_EW4",       xsec =    0.02347527  )
+Sherpa_CT10_llvvjj_ss_EW6       = Sample( name = "Sherpa_CT10_llvvjj_ss_EW6",       xsec =    0.03913364  )
+
+diboson_sherpa221 = Sample( name =   'diboson_sherpa221',
+                  tlatex = 'DB inclusive',
+                  fill_color = ROOT.kGreen-10,
+                  line_color =  ROOT.kGreen-8,
+                  marker_color =  ROOT.kGreen-8,
+                  daughters = [
+                                Sherpa_221_NNPDF30NNLO_llll,
+                                Sherpa_221_NNPDF30NNLO_lllv,
+                                Sherpa_221_NNPDF30NNLO_llvv,
+                                Sherpa_221_NNPDF30NNLO_lvvv,
+                                Sherpa_221_NNPDF30NNLO_vvvv,
+                                Sherpa_221_NNPDF30NNLO_WlvZqq,
+                                Sherpa_221_NNPDF30NNLO_WplvWmqq,
+                                Sherpa_221_NNPDF30NNLO_WpqqWmlv,
+                                Sherpa_221_NNPDF30NNLO_WqqZll,
+                                Sherpa_221_NNPDF30NNLO_WqqZvv,
+                                Sherpa_221_NNPDF30NNLO_ZqqZll,
+                                Sherpa_221_NNPDF30NNLO_ZqqZvv,
+                                Sherpa_CT10_ggllll,
+                                Sherpa_CT10_ggllvv,
+                                Sherpa_CT10_lllljj_EW6,
+                                Sherpa_CT10_lllvjj_EW6,
+                                Sherpa_CT10_llvvjj_ss_EW4,
+                                Sherpa_CT10_llvvjj_ss_EW6,
+                              ],
+                )
+diboson_sherpa221_lllv = Sample( name =   'diboson_sherpa_lllv',
+                  tlatex = 'DB (lll#nu)',
+                  fill_color = ROOT.kGreen-10,
+                  line_color =  ROOT.kGreen-8,
+                  marker_color =  ROOT.kGreen-8,
+                  daughters = [
+                                Sherpa_221_NNPDF30NNLO_lllv,  
+                              ],
+                )
+
+diboson_sherpa221_llll = Sample( name =   'diboson_sherpa_llll',
+                  tlatex = 'DB (llll)',
+                  fill_color = ROOT.kGreen-9,
+                  line_color =  ROOT.kGreen-6,
+                  marker_color =  ROOT.kGreen-6,
+                  daughters = [
+                                Sherpa_221_NNPDF30NNLO_llll,
+                              ],
+                )
+
+diboson_sherpa221_ggllll = Sample( name =   'diboson_sherpa_ggllll',
+                  tlatex = 'DB (ggllll)',
+                  fill_color = ROOT.kBlue-10,
+                  line_color =  ROOT.kBlue-8,
+                  marker_color =  ROOT.kBlue-8,
+                  daughters = [
+                                Sherpa_CT10_ggllll,
+                              ],
+                )
+
+diboson_sherpa221_lllljj = Sample( name =   'diboson_sherpa_lllljj',
+                  tlatex = 'DB (lllljj)',
+                  fill_color = ROOT.kBlue-9,
+                  line_color =  ROOT.kBlue-6,
+                  marker_color =  ROOT.kBlue-6,
+                  daughters = [
+                                Sherpa_CT10_lllljj_EW6,
+                              ],
+                )
+
+
+diboson_sherpa221_lllvjj = Sample( name =   'diboson_sherpa_lllvjj',
+                  tlatex = 'DB (lll#nujj)',
+                  fill_color = ROOT.kBlue-7,
+                  line_color =  ROOT.kBlue-2,
+                  marker_color =  ROOT.kBlue-2,
+                  daughters = [
+                                Sherpa_CT10_lllvjj_EW6,  
+                              ],
+                )
 
 #-----------------------------------------------------------------------------
 # VV (PowHeg)
@@ -1165,6 +1290,40 @@ ttbar_slices = Sample( name =  'ttbar_slices',
                 ) 
 
 #-----------------------------------------------------------------------------
+# vgamma
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDiphoton 
+#-----------------------------------------------------------------------------
+
+
+Sherpa_CT10_enugammaPt10_35  = Sample( name =  "Sherpa_CT10_enugammaPt10_35",  xsec = 200.75    )
+Sherpa_CT10_enugammaPt35_70  = Sample( name =  "Sherpa_CT10_enugammaPt35_70",  xsec = 15.348    )
+Sherpa_CT10_enugammaPt70_140 = Sample( name =  "Sherpa_CT10_enugammaPt70_140",  xsec = 1.5282   )
+Sherpa_CT10_enugammaPt140    = Sample( name =  "Sherpa_CT10_enugammaPt140",  xsec = 0.24155    )
+Sherpa_CT10_eegammaPt10_35   = Sample( name =  "Sherpa_CT10_eegammaPt10_35",  xsec =  52.706     )
+Sherpa_CT10_eegammaPt35_70   = Sample( name =  "Sherpa_CT10_eegammaPt35_70",  xsec =  5.242    )
+Sherpa_CT10_eegammaPt70_140  = Sample( name =  "Sherpa_CT10_eegammaPt70_140",  xsec = 0.38455    )
+Sherpa_CT10_eegammaPt140     = Sample( name =  "Sherpa_CT10_eegammaPt140",  xsec = 0.047209   )
+
+
+vgamma = Sample ( name = 'vgamma',
+                  tlatex = 'V#gamma',
+                  fill_color = ROOT.kCyan+1,
+                  line_color =  ROOT.kCyan+2,
+                  marker_color =  ROOT.kCyan+2,
+                  daughters = [
+                      Sherpa_CT10_enugammaPt10_35,
+                      Sherpa_CT10_enugammaPt35_70,
+                      Sherpa_CT10_enugammaPt70_140,
+                      Sherpa_CT10_enugammaPt140,
+                      Sherpa_CT10_eegammaPt10_35,
+                      Sherpa_CT10_eegammaPt35_70,
+                      Sherpa_CT10_eegammaPt70_140,
+                      Sherpa_CT10_eegammaPt140,
+                      ]
+                )
+
+#-----------------------------------------------------------------------------
 # Doubly charged Higss 
 # Notes:
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryHiggsBSMOthers 
@@ -1274,20 +1433,21 @@ all_mc = []
 # all_mc += ZtautauPowheg.daughters
 
 ### EXOT12 dilep
-#all_mc += VV_ee.daughters
+# all_mc += VV_ee.daughters
 # all_mc += AZNLOCTEQ6L1_DYee.daughters
 # all_mc += singletop.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttX.daughters
 # all_mc += Higgs.daughters
-# all_mc += ZtautauPowheg.daughters
 
 ### EXOT12 ZPeak
-all_mc += diboson_sherpa.daughters
+# all_mc += diboson_sherpa.daughters
+all_mc += diboson_sherpa221.daughters
 # all_mc += Zee221.daughters
 # all_mc += singletop.daughters
 # all_mc += ttbar.daughters
 all_mc += ttX.daughters
 all_mc += Higgs.daughters
+# all_mc += vgamma.daughters
 # all_mc += WenuPowheg.daughters
 

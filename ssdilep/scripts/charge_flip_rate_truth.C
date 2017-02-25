@@ -15,27 +15,27 @@
 
 void charge_flip_rate_truth(int rebin =1){
   
-  double m_ptBins[12] = {30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200., 400.};
+  double m_ptBins[12] = {30., 34., 38., 43., 48., 55., 62., 70., 100., 140., 200., 1/0.};
 
-  TFile* flipRates = new TFile("chargeFlipRates_h_ZWindowOS_nominal_Zee.root");
-  TH1F* flipRatePt = (TH1F*) flipRates->Get("flipRatePth_ZWindowOS_nominal_Zee");
-  TH1F* flipRateEta = (TH1F*) flipRates->Get("flipRateEtah_ZWindowOS_nominal_Zee");
+  TFile* flipRates = new TFile("chargeFlipRates_h_ZWindowAS_nominal_Zee221.root");
+  TH1F* flipRatePt = (TH1F*) flipRates->Get("flipRatePth_ZWindowAS_nominal_Zee221");
+  TH1F* flipRateEta = (TH1F*) flipRates->Get("flipRateEtah_ZWindowAS_nominal_Zee221");
 
-  TFile* AllElePow   = new TFile("/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_el_pt_eta_all_BeyondZAS_PowhegTrueCHF.root");
-  TFile* CHF2ElePow   = new TFile("/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_el_pt_eta_chf2_BeyondZAS_PowhegTrueCHF.root");
-  TFile* CHF4ElePow   = new TFile("/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_el_pt_eta_chf4_BeyondZAS_PowhegTrueCHF.root");
+  TFile* AllElePow   = new TFile("/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_el_pt_eta_all_BeyondZAS_PowhegTrueCHF.root");
+  TFile* CHF2ElePow   = new TFile("/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_el_pt_eta_chf2_BeyondZAS_PowhegTrueCHF.root");
+  TFile* CHF4ElePow   = new TFile("/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_el_pt_eta_chf4_BeyondZAS_PowhegTrueCHF.root");
 
-  TFile* AllEle   = new TFile("/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_el_pt_eta_all_ZWindowAS_SherpaTrueCHF.root");
-  TFile* CHF2Ele   = new TFile("/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_el_pt_eta_chf2_ZWindowAS_SherpaTrueCHF.root");
-  TFile* CHF4Ele   = new TFile("/ceph/grid/home/atlas/miham/AnalysisCode/run/Plots/hists_el_pt_eta_chf4_ZWindowAS_SherpaTrueCHF.root");
+  TFile* AllEle   = new TFile("/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_el_pt_eta_all_ZWindowAS_SherpaTrueCHF.root");
+  TFile* CHF2Ele   = new TFile("/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_el_pt_eta_chf2_ZWindowAS_SherpaTrueCHF.root");
+  TFile* CHF4Ele   = new TFile("/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_el_pt_eta_chf4_ZWindowAS_SherpaTrueCHF.root");
 
   TH2F* hAllElePow = (TH2F*) AllElePow->Get("h_BeyondZAS_nominal_Zee");
   TH2F* hCHF2ElePow = (TH2F*) CHF2ElePow->Get("h_BeyondZAS_nominal_Zee");
   TH2F* hCHF4ElePow = (TH2F*) CHF4ElePow->Get("h_BeyondZAS_nominal_Zee"); 
 
-  TH2F* hAllEle = (TH2F*) AllEle->Get("h_ZWindowAS_nominal_Zee");
-  TH2F* hCHF2Ele = (TH2F*) CHF2Ele->Get("h_ZWindowAS_nominal_Zee");
-  TH2F* hCHF4Ele = (TH2F*) CHF4Ele->Get("h_ZWindowAS_nominal_Zee");
+  TH2F* hAllEle = (TH2F*) AllEle->Get("h_ZWindowAS_nominal_Zee221");
+  TH2F* hCHF2Ele = (TH2F*) CHF2Ele->Get("h_ZWindowAS_nominal_Zee221");
+  TH2F* hCHF4Ele = (TH2F*) CHF4Ele->Get("h_ZWindowAS_nominal_Zee221");
 
   // partial charge-flip rates
   hCHF2Zpeak = (TH2F*) hCHF2Ele->Clone();
@@ -96,7 +96,7 @@ void charge_flip_rate_truth(int rebin =1){
   std::vector<TH1D*> CHF4Slices;
   std::vector<TH1D*> CHFSlices;
 
-  int NX = hAllEle->GetNbinsX();
+  int NX = flipRatePt->GetNbinsX();
 
   TH1D* projAll = hAllEle->ProjectionY("projAll",1,NX+1);
   TH1D* projCHF2 = hCHF2Ele->ProjectionY("projCHF2",1,NX+1);
@@ -109,13 +109,14 @@ void charge_flip_rate_truth(int rebin =1){
   projCHF->Divide(projAll);
 
   for(int i=1; i<=NX; i=i+rebin){
+    std::cout << "slice: " << i << " to " << std::min(i+rebin-1,NX) << std::endl;
     std::ostringstream name;
     name << "proj" << i;
-    TH1D* projAll = hAllEle->ProjectionY(name.str().c_str(), i,i+rebin-1);
+    TH1D* projAll = hAllEle->ProjectionY(name.str().c_str(), i,std::min(i+rebin-1,NX));
     name << "chf2";
-    TH1D* projCHF2 = hCHF2Ele->ProjectionY(name.str().c_str(), i,i+rebin-1);
+    TH1D* projCHF2 = hCHF2Ele->ProjectionY(name.str().c_str(), i,std::min(i+rebin-1,NX));
     name << "chf4";
-    TH1D* projCHF4 = hCHF4Ele->ProjectionY(name.str().c_str(), i,i+rebin-1);
+    TH1D* projCHF4 = hCHF4Ele->ProjectionY(name.str().c_str(), i,std::min(i+rebin-1,NX));
 
     TH1D* projCHF = (TH1D*) projCHF2->Clone();
     projCHF->Add(projCHF4);
@@ -129,11 +130,11 @@ void charge_flip_rate_truth(int rebin =1){
     CHFSlices .push_back(projCHF );
   }
 
-  TLegend* leg = new TLegend(0.20,0.4,0.4,0.82);
+  TLegend* leg = new TLegend(0.20,0.35,0.4,0.75);
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
-  leg->SetTextSize(0.037);
+  leg->SetTextSize(0.042);
   leg->AddEntry(flipRateEta,"#font[42]{f(#eta) LH fit}","lpe0");
   std::ostringstream leg0; leg0 << "#font[42]{normalized p_{T} [" << m_ptBins[0] << ", " << m_ptBins[1+rebin-1]<< "] slice}";
   leg->AddEntry(CHFSlices.at(0),leg0.str().c_str(),"lpe0");
@@ -192,7 +193,7 @@ void charge_flip_rate_truth(int rebin =1){
     CHFSlices.at(i)->Draw("same");
     CHFSlices.at(i)->SetLineColor(kBlue+4-i);
     CHFSlices.at(i)->SetMarkerColor(kBlue+4-i);
-    std::ostringstream legName; legName << "#font[42]{normalized p_{T} [" << m_ptBins[rebin*i+rebin-1] << ", " << m_ptBins[rebin*i+1+rebin-1]<< "] slice}";
+    std::ostringstream legName; legName << "#font[42]{normalized p_{T} [" << m_ptBins[rebin*i] << ", " << m_ptBins[std::min(rebin*(i+1),NX)]<< "] slice}";
     leg->AddEntry(CHFSlices.at(i),legName.str().c_str(),"lpe0");
   }
   flipRateEta->Draw("same");
@@ -212,6 +213,29 @@ void charge_flip_rate_truth(int rebin =1){
   c3.SetLogy();
   std::ostringstream name32; name32 << "chfslicesZpeak_LOG" << rebin << ".eps";
   c3.Print(name32.str().c_str());
+
+  TCanvas c3a("c3a","c3a",600,600);
+  double yratiomin;
+  double yratiomax;
+  if (rebin < 2){
+    yratiomin = 0.5;
+    yratiomax = 2;
+  }
+  else if (rebin < 4){
+    yratiomin = 0.5;
+    yratiomax = 2;
+  }
+  else {
+    yratiomin = 0.5;
+    yratiomax = 2;    
+  }
+  drawComparison2(&c3a,&CHFSlices,(TH1D*)flipRateEta,"f(#eta)","abs(#eta)",0,2.5,0,2.5,false,yratiomin,yratiomax,true,0,true,"PE0",true);
+  ATLASLabel(0.18,0.83,"internal",1);
+  myText(0.18,0.78,1,"#sqrt{s} = 13 TeV, Sherpa Zee");
+  leg->Draw();
+  gROOT->ProcessLine("pad_1->cd();");
+  flipRateEta->Draw("same EP0");
+  c3a.Print( (std::string("improved") + name32.str()).c_str() );
 
   TCanvas c4("c4","c4",600,600);
   c4.SetLogy();

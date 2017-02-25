@@ -30,14 +30,14 @@ INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
-# RUN = "SSVRele36_6"
-# RUN = "ZPeak36_10"
+# RUN = "SSVRele36_7"
+# RUN = "ZPeak36_16"
 # RUN = "TTBAR36_4"
-# RUN = "CRelectron36_2"
+# RUN = "CRelectron36_7"
 # RUN = "FFelectron36_3"
 # RUN = "WJets36_3"
-# RUN = "Diboson36_12"
-RUN = "ThreeEleVR36_2"
+RUN = "Diboson36_14"
+# RUN = "ThreeEleVR36_5"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -45,10 +45,10 @@ OUTFILE="ntuple.root"         # file output by pyframe job
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
 #SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
-#SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script

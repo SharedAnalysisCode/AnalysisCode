@@ -344,7 +344,7 @@ class AllTightEleSF(pyframe.core.Algorithm):
                 if ptBin==self.h_ptFunc.GetNbinsX()+1:
                   ptBin -= 1
                 sf *= self.h_ptFunc. GetBinContent( ptBin ) *\
-                      self.h_etaFunc.GetBinContent( self.h_etaFunc.FindBin( abs(ele.tlv.Eta()) ) )
+                      self.h_etaFunc.GetBinContent( self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) ) )
 
         if self.key: 
           self.store[self.key] = sf
@@ -639,7 +639,7 @@ class GenericFakeFactor(pyframe.core.Algorithm):
               if ptBin==self.h_ptFunc.GetNbinsX()+1:
                 ptBin -= 1
               sf *= self.h_ptFunc. GetBinContent( ptBin ) *\
-                    self.h_etaFunc.GetBinContent( self.h_etaFunc.FindBin( abs(ele.tlv.Eta()) ) )
+                    self.h_etaFunc.GetBinContent( self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) ) )
           else :
             pass
         else :
