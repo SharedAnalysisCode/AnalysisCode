@@ -33,6 +33,8 @@ bins_Zpeak2 = [50,80,100,130]
 bins_met = generateLogBins(15,1,1000)
 bins_met_2 = generateLogBins(50,25,2000)
 
+eta_cf_bins = [-2.5, -2.4, -2.3, -2.2, -2.1, -2.0, -1.9, -1.8, -1.7, -1.6, -1.52, -1.37, -1.20, -1.1, -1.0, -0.9, -0.7, -0.45, 0.0, 0.45, 0.7, 0.9, 1.0, 1.1, 1.2, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
+pt_cf_bins  = [30., 34., 38., 43., 48., 55., 62., 69., 78.0, 88.0, 100., 115., 140., 200., 2000.]
 
 
 ## Event variables
@@ -168,7 +170,7 @@ invMassPeak_2 = Var(name='invMass',
               path   = 'event',
               xmin   = 71.5,
               xmax   = 110,
-              rebin  = 2,
+              rebin  = 10,
               #rebinVar  = bins_invM,
               #rebinVar  = bins_Zpeak2,
               log    = True,
@@ -213,6 +215,18 @@ chargeFlipHist = Var(name='chargeFlipHist',
                 xmax   = 10000,
                 rebin  = 1,
                 log    = False,
+                )
+
+el_lead_pt_eta = Var(name='el_lead_pt_eta',
+                path   = 'electrons',
+                )
+
+el_sublead_pt_eta = Var(name='el_sublead_pt_eta',
+                path   = 'electrons',
+                )
+
+el_pt_eta = Var(name='el_pt_eta',
+                path   = 'electrons',
                 )
 
 el_pt_eta_all = Var(name='el_pt_eta_all',
@@ -370,6 +384,56 @@ el_pt = Var(name = 'el_pt',
               logx   = True,
               )
 
+el_random_pt = Var(name = 'el_random_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = bins_pt,
+              log    = True,
+              logx   = True,
+              )
+
+el_pt_cf = Var(name = 'el_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = pt_cf_bins,
+              log    = True,
+              logx   = True,
+              )
+
+el_lead_pt_cf = Var(name = 'el_lead_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = pt_cf_bins,
+              log    = True,
+              logx   = True,
+              )
+
+el_sublead_pt_cf = Var(name = 'el_sublead_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = pt_cf_bins,
+              log    = True,
+              logx   = True,
+              )
+
+ZbosonPt_cf = Var(name='ZbosonPt',
+              path   = 'event',
+              xmin   = 10,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = pt_cf_bins,
+              log    = True,
+              logx   = True,
+              )
+
 el_sublead_pt = Var(name = 'el_sublead_pt',
               path   = 'electrons',
               xmin   = 30.,
@@ -412,7 +476,7 @@ el_lead_eta_2 = Var(name = 'el_lead_eta',
               path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
-              rebin   = 5,
+              rebin   = 2,
               log     = False,
               )
 
@@ -421,6 +485,33 @@ el_eta = Var(name = 'el_eta',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
+              log     = False,
+              )
+
+el_eta_cf = Var(name = 'el_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              rebin  = 1,
+              rebinVar  = eta_cf_bins,
+              log     = False,
+              )
+
+el_lead_eta_cf = Var(name = 'el_lead_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              rebin  = 1,
+              rebinVar  = eta_cf_bins,
+              log     = False,
+              )
+
+el_sublead_eta_cf = Var(name = 'el_sublead_eta',
+              path    = 'electrons',
+              xmin    = -2.47,
+              xmax    = 2.47,
+              rebin  = 1,
+              rebinVar  = eta_cf_bins,
               log     = False,
               )
 
@@ -463,7 +554,7 @@ el_sublead_eta_2 = Var(name = 'el_sublead_eta',
               path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
-              rebin   = 5,
+              rebin   = 2,
               log     = False,
               )
 
@@ -487,7 +578,7 @@ el_lead_phi_2 = Var(name = 'el_lead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
-              rebin   = 8,
+              rebin   = 2,
               log     = False,
               )
 
@@ -511,7 +602,7 @@ el_sublead_phi_2 = Var(name = 'el_sublead_phi',
               path    = 'electrons',
               xmin    = -3.2,
               xmax    = 3.2,
-              rebin   = 8,
+              rebin   = 2,
               log     = False,
               )
 
@@ -681,9 +772,13 @@ vars_list.append(el_lead_trkz0sintheta)
 vars_list.append(ZbosonPt)
 vars_list.append(ZbosonEta)
 vars_list.append(chargeFlipHist)
+vars_list.append(el_random_pt)
 vars_list.append(el_pt_eta_all)
 vars_list.append(el_pt_eta_chf2)
 vars_list.append(el_pt_eta_chf4)
+vars_list.append(el_pt_eta)
+vars_list.append(el_lead_pt_eta)
+vars_list.append(el_sublead_pt_eta)
 vars_list.append(el_sl_2D_pt_eta)
 vars_list.append(el_t_2D_pt_eta)
 vars_list.append(el_l_2D_pt_eta)
@@ -723,6 +818,13 @@ vars_dict["ZbosonEta_2"] = ZbosonEta_2.__dict__
 vars_dict["invMass_4"] = invMass_4.__dict__
 vars_dict["invMassLong"] = invMassLong.__dict__
 vars_dict["cutflow_presel"] = cutflow_presel.__dict__
+vars_dict["el_pt_cf"] = el_pt_cf.__dict__
+vars_dict["el_sublead_pt_cf"] = el_sublead_pt_cf.__dict__
+vars_dict["el_lead_pt_cf"] = el_lead_pt_cf.__dict__
+vars_dict["ZbosonPt_cf"] = ZbosonPt_cf.__dict__
+vars_dict["el_eta_cf"] = el_eta_cf.__dict__
+vars_dict["el_lead_eta_cf"] = el_lead_eta_cf.__dict__
+vars_dict["el_sublead_eta_cf"] = el_sublead_eta_cf.__dict__
 
 ## EOF
 

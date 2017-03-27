@@ -545,6 +545,64 @@ class FakeEstimatorGeneral(BaseEstimator):
         for s in self.mc_samples:
           s.estimator.flush_hists()
 
+#------------------------------------------------------------
+class ChargeFlipEsimator(BaseEstimator):
+    '''
+    Estimator for merging different regions
+    '''
+    #____________________________________________________________
+    def __init__(self,data_sample,mc_samples,**kw):
+        BaseEstimator.__init__(self,**kw)
+        self.data_sample = data_sample
+        self.mc_samples = mc_samples
+    #____________________________________________________________
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+        
+        # ---------
+        # L REGION
+        # ---------
+        region_l_den = region.replace("SS","OStoSS")
+
+        h_l_den = self.data_sample.hist(histname=histname,
+                                region=region_l_den,
+                                icut=icut,
+                                sys=sys,
+                                mode=mode,
+                                ).Clone()
+
+        if "SS" in region: 
+            return h_l_den
+        
+        h = h_l_den.Clone("chargeFlip_hist")
+
+        return h
+
+    #__________________________________________________________________________
+    def add_systematics(self, sys):
+        if not isinstance(sys,list): sys = [sys]
+        self.allowed_systematics += sys
+        self.data_sample.estimator.add_systematics(sys)
+        for s in self.mc_samples:
+          s.estimator.add_systematics(sys)
+
+    #__________________________________________________________________________
+    def is_affected_by_systematic(self, sys):
+        """
+        Override BaseEstimator implemenation.
+        Check all daughter systematics
+        """
+        if sys in self.allowed_systematics: return True
+        for s in self.mc_samples + [self.data_sample]: 
+            if s.estimator.is_affected_by_systematic(sys): return True
+        return False
+
+    #__________________________________________________________________________
+    def flush_hists(self):
+        BaseEstimator.flush_hists(self)
+        self.data_sample.estimator.flush_hists()
+        for s in self.mc_samples:
+          s.estimator.flush_hists()
+
 
 #------------------------------------------------------------
 class MergeEstimator(BaseEstimator):

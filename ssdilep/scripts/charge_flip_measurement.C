@@ -25,12 +25,10 @@ public:
   TH1F* m_hOSSideband;
   TH1F* m_hSSSideband;
 
-  // double m_ptBins[12] = {30., 40., 50., 60., 70., 80., 90., 100., 125., 150., 200.,400.};
-  double m_ptBins[12] = {30., 34., 38., 43., 48., 55., 62., 70., 100., 140., 200.,400.};
-  //double m_etaBins[10] = {0.0, 0.75, 1.1, 1.37, 1.52, 1.7, 1.9, 2.1, 2.3, 2.5};
-  //double m_etaBins[18] = {0.0, 0.25, 0.50, 0.75, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
-  double m_etaBins[16] = {0.0, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
-  // double m_etaBins[16] = {0.0, 0.50, 1.0, 1.20, 1.42, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
+  // double m_ptBins[14] = {30., 34., 38., 43., 48., 55., 62., 69., 78.0, 88.0, 100., 140., 200., 400.};
+  // double m_etaBins[17] = {0.0, 0.3, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
+  double m_ptBins[15] = {30., 34., 38., 43., 48., 55., 62., 69., 78.0, 88.0, 100., 115., 140., 200., 400.};
+  double m_etaBins[19] = {0.0, 0.45, 0.7, 0.9, 1.0, 1.1, 1.2, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
 
   const double m_constraint = 1e9;
 
@@ -98,6 +96,8 @@ m_constraint(aa)
     m_flipRatePt->SetBinError(pt+1,pars.StepSize());
   }
 
+  m_flipRatePt->GetXaxis()->SetRangeUser(m_ptBins[0],m_ptBins[m_NptBins+1]);
+
   m_outFile = new TFile( (std::string("chargeFlipRates_")+hOSCenter->GetTitle()+std::string(".root")).c_str(), "RECREATE" );
   m_flipRatePt->Write();
   m_flipRateEta->Write();
@@ -115,8 +115,8 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
  ROOT::Math::Factory::CreateMinimizer(minName, algoName);
 
    min->SetMaxFunctionCalls(1e9); // for Minuit/Minuit2
-   min->SetMaxIterations(1e7);  // for GSL
-   min->SetTolerance(1e-5);
+   min->SetMaxIterations(1e8);  // for GSL
+   min->SetTolerance(1e-6);
    min->SetPrintLevel(1);
 
    auto func = &NumericalMinimizer::LogLikelihood1Dfull;
@@ -125,7 +125,7 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
    min->SetFunction(f);
 
    int index = 0;
-   double stepSize = 1e-5;
+   double stepSize = 1e-6;
    for (int eta = 1; eta <= m_NetaBins; eta++){
     std::ostringstream name;
     name << "eta" << eta;
@@ -202,17 +202,28 @@ double NumericalMinimizer::LogLikelihood1Dfull(const double *xx )
 
 void charge_flip_measurement(){
 
+  // 27. feb 2017 with
+  // pt_bins  = [30., 34., 38., 43., 48., 55., 62., 69., 78.0, 88.0, 100., 140., 200.] # last pt bin is open
+  // eta_bins = [0.0, 0.30, 0.50, 1.0, 1.20, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
+  // std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_27_Feb/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  // std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_27_Feb/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  // std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_27_Feb/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  // std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_27_Feb/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+
+  // 01. mar 2017 with
+  // double m_ptBins[15] = {30., 34., 38., 43., 48., 55., 62., 69., 78.0, 88.0, 100., 115., 140., 200., 400.};
+  // double m_etaBins[19] = {0.0, 0.45, 0.7, 0.9, 1.0, 1.1, 1.2, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5};
+  //    min->SetTolerance(1e-6); double stepSize = 1e-6; ,1e6); ,1e6);
+  // std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  // std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  // std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  // std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+
   std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowAS_Powheg.root";
   std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
   std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowSS_Powheg.root";
   std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
   
-  /*
-  std::string OSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS_Powheg.root";
-  std::string OSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowOS-Sideband_Powheg.root";
-  std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowSS_Powheg.root";
-  std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/Plots.15.Nov/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
-  */
   
 
   TFile* OSCenterFile   = new TFile(OSCenterInputFile.c_str());
@@ -242,9 +253,11 @@ void charge_flip_measurement(){
   //hOSSidebandData->Add(hSSSidebandData);
 
   std::cout << " data charge-flip measurement " << std::endl;
-  NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1e9);
+  // NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1e9);
+  NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1e6);
   std::cout << " MC charge-flip measurement " << std::endl;
-  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,5e9);
+  // NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,5e9);
+  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,0,0,1e6);
 
   std::cout << " start drawing " << std::endl;
   NM2.m_flipRateEta->SetLineColor(kRed);
@@ -265,12 +278,12 @@ void charge_flip_measurement(){
   c1->cd();
   std::vector<TH1D*> c1h1vec;
   c1h1vec.push_back(NM2.m_flipRateEta);
-  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","#eta",1e-2,10,0,2.47);
+  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","#eta",0,2.5,0,2.47);
   ATLASLabel(0.20,0.83,"internal",1);
   myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   myText(0.60,0.75,1,"P_{CHF}^{full}(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
-  gROOT->ProcessLine("pad_1->SetLogy();");
+  //gROOT->ProcessLine("pad_1->SetLogy();");
   //c1->SetLogy();
   /*NM1.m_flipRateEta->Draw();
   NM1.m_flipRateEta->GetXaxis()->SetTitle("#eta");

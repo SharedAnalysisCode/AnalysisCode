@@ -63,7 +63,9 @@ GRL += [
         "311287","311321","311365","311402","311473","311481",
         ]
 
-#GRL += ["302919","299055","279932","279928",]
+# GRL += ["284285","302300","306448","307656"]
+# GRL += ["305920","306269","306278"]
+
 
 ds_name = '00%s.physics_Main'
 
@@ -142,6 +144,18 @@ fakes    = Sample( name         = "fakes",
                    daughters    = list_runs,
                    type         = "datadriven",
                    )
+
+chargeFlip    = Sample( name         = "chargeFlip",
+                        tlatex       = "chargeFlip",
+                        fill_color   = ROOT.kRed-10,
+                        line_color   = ROOT.kRed-8,
+                        line_style   = 1,
+                        marker_color = ROOT.kRed-8,
+                        marker_style = 20,
+                        #daughters    = [fakes_TL,fakes_LT,fakes_TT],
+                        daughters    = list_runs,
+                        type         = "datadriven",
+                      )
 
 
 
@@ -1140,6 +1154,9 @@ tttautau_Np0                          = Sample( name =  "tttautau_Np0",   xsec =
 tttautau_Np1                          = Sample( name =  "tttautau_Np1",   xsec =  0.014636   )
 ttH125                                = Sample( name =  "aMcAtNloPythia8EvtGen_A14_NNPDF23_NNPDF30ME_ttH125_dilep",   xsec =  0.05343    )
 
+MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0 = Sample( name =  "MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0",   xsec = 0.0217236    )
+MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1 = Sample( name =  "MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1",   xsec = 0.0367548    )
+
 ttX = Sample( name =   'ttX',
                   tlatex = 't#bar{t}X',
                   fill_color = ROOT.kViolet-9,
@@ -1152,8 +1169,8 @@ ttX = Sample( name =   'ttX',
                                #ttZnnqq_Np0,    
                                #ttZnnqq_Np1,    
                                #ttZnnqq_Np2,    
-                               ttee_Np0,       
-                               ttee_Np1,       
+                               MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0,       
+                               MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1,       
                                #ttmumu_Np0,     
                                #ttmumu_Np1,     
                                #tttautau_Np0,   
@@ -1222,6 +1239,21 @@ singletop = Sample( name =   'singletop',
                                 ],
                 ) 
 
+singletop_inc = Sample( name =   'singletop',
+                    tlatex = 'single-top',
+                    fill_color = ROOT.kYellow-10,
+                    line_color =  ROOT.kYellow-8,
+                    marker_color =  ROOT.kYellow-8,
+                    daughters = [
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
+                                 # PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
+                                 # PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+                                 PowhegPythiaEvtGen_P2012_Wt_inclusive_top,
+                                 PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop,      
+                                ],
+                ) 
+
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1229,10 +1261,10 @@ singletop = Sample( name =   'singletop',
 # Notes:
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryTTbar 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-ttbar_hdamp172p5_nonallhad            = Sample( name =  "ttbar_hdamp172p5_nonallhad", xsec = 451.645679998 )
-ttbar_hdamp172p5_allhad               = Sample( name =  "ttbar_hdamp172p5_allhad",    xsec = 380.11432     )
-ttbar_nonallhad                       = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec = 0.69611*0.54341*1000 )
-ttbar_hdamp172p5_dil                  = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil",       xsec = 0.073329*1000 )
+PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad            = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec = 451.645679998 )
+PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad               = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad",    xsec = 380.11432     )
+PowhegPythiaEvtGen_P2012_ttbar_nonallhad                       = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec = 0.69611*0.54341*1000 )
+PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil                  = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil",       xsec = 0.073329*1000 )
 
 ttbar = Sample( name =  'ttbar_dilep',
                     tlatex = 't#bar{t}',
@@ -1240,10 +1272,23 @@ ttbar = Sample( name =  'ttbar_dilep',
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
                     daughters = [
-                                 #ttbar_hdamp172p5_nonallhad,
-                                 #ttbar_hdamp172p5_allhad,   
-                                 # ttbar_nonallhad,           
-                                 ttbar_hdamp172p5_dil,           
+                                 PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad,
+                                 #PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad,   
+                                 #PowhegPythiaEvtGen_P2012_ttbar_nonallhad,           
+                                 #PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil,           
+                                ],
+                ) 
+
+ttbar_inc = Sample( name =  'ttbar_dilep',
+                    tlatex = 't#bar{t}',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [
+                                 PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad,
+                                 #PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad,   
+                                 #PowhegPythiaEvtGen_P2012_ttbar_nonallhad,           
+                                 #PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil,           
                                 ],
                 ) 
 
@@ -1425,12 +1470,13 @@ all_mc = []
 ## EOF
 
 ### EXOT0 fake rate measurement configuration
-# all_mc += diboson_sherpa.daughters
-# all_mc += WenuPowheg.daughters
-# all_mc += ZeePowheg.daughters
-# all_mc += singletop.daughters
-# all_mc += ttbar.daughters
-# all_mc += ZtautauPowheg.daughters
+all_mc += diboson_sherpa221.daughters
+all_mc += WenuPowheg.daughters
+all_mc += WtaunuPowheg.daughters
+all_mc += ZeePowheg.daughters
+all_mc += ZtautauPowheg.daughters
+all_mc += singletop_inc.daughters
+all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
 # all_mc += VV_ee.daughters
@@ -1442,12 +1488,10 @@ all_mc = []
 
 ### EXOT12 ZPeak
 # all_mc += diboson_sherpa.daughters
-all_mc += diboson_sherpa221.daughters
+# all_mc += diboson_sherpa221.daughters
 # all_mc += Zee221.daughters
 # all_mc += singletop.daughters
 # all_mc += ttbar.daughters
-all_mc += ttX.daughters
-all_mc += Higgs.daughters
-# all_mc += vgamma.daughters
+# all_mc += ttX.daughters
 # all_mc += WenuPowheg.daughters
 

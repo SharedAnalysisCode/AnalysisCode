@@ -2,7 +2,8 @@
 
 # Strings are passed to the scrieta but this is redundant!
 
-python ../ssdilep/scripts/merge.py --var="invMass" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=False --fakest="FakeFactor"
+python ../ssdilep/scripts/merge.py --var="nelectrons" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=False --fakest="FakeFactor"
+# python ../ssdilep/scripts/merge.py --var="invMass" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=False --fakest="FakeFactor"
 # python ../ssdilep/scripts/merge.py --var="ZbosonPt" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"
 # python ../ssdilep/scripts/merge.py --var="ZbosonEta" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"
 # python ../ssdilep/scripts/merge.py --var="nelectrons" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"
@@ -17,7 +18,8 @@ python ../ssdilep/scripts/merge.py --var="invMass" --reg="opposite-sign-ttbar-CR
 # python ../ssdilep/scripts/merge.py --var="el_sublead_phi" --reg="opposite-sign-ttbar-CR" --lab="TTCR (OSCR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbar" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"
 
 
-python ../ssdilep/scripts/merge.py --var="invMass_3" --reg="same-sign-ttbar-CR" --lab="TTVR (SSVR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbarss" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=False --fakest="FakeFactor"
+python ../ssdilep/scripts/merge.py --var="nelectrons" --reg="same-sign-ttbar-CR" --lab="TTVR (SSVR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbarss" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=False --fakest="FakeFactor"
+# python ../ssdilep/scripts/merge.py --var="invMass_3" --reg="same-sign-ttbar-CR" --lab="TTVR (SSVR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbarss" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=False --fakest="FakeFactor"
 # python ../ssdilep/scripts/merge.py --var="ZbosonPt_2" --reg="same-sign-ttbar-CR" --lab="TTVR (SSVR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbarss" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"
 # python ../ssdilep/scripts/merge.py --var="ZbosonEta_2" --reg="same-sign-ttbar-CR" --lab="TTVR (SSVR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbarss" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"
 # python ../ssdilep/scripts/merge.py --var="nelectrons" --reg="same-sign-ttbar-CR" --lab="TTVR (SSVR + 1/2 b-jet)" --tag="TTBAR" --samples="ttbarss" --icut="2" --input="/afs/f9.ijs.si/home/miham/TTBAR36_4" --output="./TTBAR" --makeplot=True --fakest="FakeFactor"

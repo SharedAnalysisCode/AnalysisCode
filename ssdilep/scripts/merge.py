@@ -84,6 +84,9 @@ if options.samples == "wjet":
   samples.singletop,
   samples.diboson_sherpa,
   ]
+elif options.samples == "chargeFlipData":
+  mc_backgrounds = [
+  ]
 elif options.samples in ["ttbar","ttbarss"]:
   mc_backgrounds = [
   samples.ttbar,
@@ -110,6 +113,16 @@ elif options.samples == "SSVR":
   samples.singletop,
   # samples.ZtautauPowheg,
   samples.ttX,
+  ]
+elif options.samples == "ZPeak":
+  mc_backgrounds = [
+  samples.Zee221,
+  samples.ttbar,
+  samples.diboson_sherpa221,
+  samples.singletop,
+  samples.ttX,
+  samples.WenuPowheg,
+  # samples.Higgs,
   ]
 elif options.samples == "diboson":
   mc_backgrounds = [
@@ -139,6 +152,7 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 
 
 fakes_mumu = samples.fakes.copy()
+chargeFlip = samples.chargeFlip.copy()
 #fakes_mumu=[]
 ## signals
 mumu_signals = []
@@ -176,6 +190,13 @@ elif options.fakest == "FakeFactorGeneral":
       data_sample = data,
       mc_samples = mc_backgrounds )
 
+elif options.fakest == "ChargeFlip":
+  chargeFlip.estimator = histmgr.ChargeFlipEsimator(
+      hm=hm, 
+      sample=chargeFlip,
+      data_sample = data,
+      mc_samples = mc_backgrounds
+      )
 elif options.fakest == "Subtraction":
   fakes_mumu.estimator = histmgr.DataBkgSubEstimator(
       hm=hm,
@@ -202,7 +223,13 @@ mc_sys = [
 #    s.estimator.add_systematics(mc_sys)
 
 if (DO_SYS):
-  fakes_mumu.estimator.add_systematics(FF)
+  # fakes_mumu.estimator.add_systematics(FF)
+  if options.fakest == "ChargeFlip":
+    chargeFlip.estimator.add_systematics(CF)
+  if options.samples == "chargeflip":
+    samples.Zee221.estimator.add_systematics(CF)
+  if options.samples == "ZPeak":
+    samples.Zee221.estimator.add_systematics(CF)
 
 mumu_vdict  = vars_ee.vars_dict
 #fakes_vdict = vars_fakes.vars_dict
@@ -221,6 +248,12 @@ if options.samples == "wjet":
   samples.singletop,
   samples.diboson_sherpa,
   ]
+elif options.samples == "chargeFlipData":
+  if options.fakest == "ChargeFlip":
+    mumu_backgrounds = [
+    chargeFlip,
+    ]
+  else: mumu_backgrounds = []
 elif options.samples == "ttbar":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee,
@@ -250,6 +283,15 @@ elif options.samples == "OSCR":
   fakes_mumu,
   samples.ttX,
   samples.Higgs,
+  ]
+elif options.samples == "ZPeak":
+  mumu_backgrounds = [
+  samples.Zee221,
+  samples.ttbar,
+  samples.diboson_sherpa221,
+  samples.singletop,
+  samples.ttX,
+  samples.WenuPowheg,
   ]
 elif options.samples == "SSVR":
   mumu_backgrounds = [
@@ -321,7 +363,7 @@ else:
          histname    = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
          rebin       = mumu_vdict[options.vname]['rebin'],
          rebinVar    = mumu_vdict[options.vname]['rebinVar'],
-         sys_dict    = None,
+         sys_dict    = sys_dict if DO_SYS else None,
          outname     = plotsfile
          )
  ## EOF

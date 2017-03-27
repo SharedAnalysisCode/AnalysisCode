@@ -276,8 +276,8 @@ def plot_hist(
         g_stat.SetFillColor(ROOT.kGray)
         g_stat.SetLineColor(ROOT.kGray)
         g_tot  = make_band_graph_from_hist(total_hists[3],total_hists[4])
-        g_tot.SetFillColor(ROOT.kOrange-3)
-        g_tot.SetLineColor(ROOT.kOrange-3)
+        g_tot.SetFillColor(ROOT.kOrange-9)
+        g_tot.SetLineColor(ROOT.kOrange-9)
 
     else:
         h_total_stat = make_stat_hist(h_total)

@@ -15,14 +15,20 @@ from   ssdilep.samples import samples
 MAIN   = os.getenv('MAIN') # upper folder
 USER   = os.getenv('USER')
 
+#arcproxy -S gen.vo.sling.si
+#arcproxy -S atlas:/atlas/si
+
 ## global config
 # inputs
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/presc/merged' # input NTUP path
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/menu_singlemu/merged' # input NTUP path
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/HIGG3D3_p2666_p2667_v1_presc/merged' # input NTUP path
 #NTUP='/ceph/grid/home/atlas/miham/ntuples/v2ntuples18ifb/mergedEXOT19and0' # input NTUP path
-NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT12' # input NTUP path
+# NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT12' # input NTUP path
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT19and0' # input NTUP path
+
+# NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
+NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
 INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) )
@@ -31,13 +37,8 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
 # RUN = "SSVRele36_7"
-# RUN = "ZPeak36_16"
-# RUN = "TTBAR36_4"
-# RUN = "CRelectron36_7"
-# RUN = "FFelectron36_3"
-# RUN = "WJets36_3"
-RUN = "Diboson36_14"
-# RUN = "ThreeEleVR36_5"
+# RUN = "ZPeak_v3_002"a
+RUN = "FFele_v3_003"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -45,9 +46,9 @@ OUTFILE="ntuple.root"         # file output by pyframe job
 # running
 QUEUE="long"                        # length of pbs queue (short, long, extralong )
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
-#SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
@@ -100,8 +101,8 @@ def main():
         ]    
     
     plot_sys = [
-        ['FF_UP',        nominal],
-        ['FF_DN',        nominal],
+        ['CF_UP',        nominal],
+        ['CF_DN',        nominal],
         ]    
     
     ## ensure output path exists
@@ -146,11 +147,11 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
+    cfg = os.path.join(JOBDIR,'ConfigHist.ff.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
-    maxevents = 500000
+    maxevents = 1000000
     for s in samps:
 
         ## input
@@ -160,7 +161,7 @@ def submit(tag,job_sys,samps,config={}):
         stype  = s.type
  
         nlines = 1
-        if os.stat(sinput).st_size>2.5e8:
+        if os.stat(sinput).st_size>5e8:
             print sinput
             tempFile = ROOT.TFile.Open(sinput)
             tempFile.cd("physics")

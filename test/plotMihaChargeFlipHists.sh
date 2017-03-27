@@ -1,0 +1,4 @@
+python ../ssdilep/scripts/merge.py --var="chargeFlipHist" --reg="ZWindowSS" --lab="" --tag="Powheg" --samples="chargeflip" --icut="1" --input="/afs/f9.ijs.si/home/miham/ZPeak36_30" --output="./ZPeak36" --makeplot=False --fakest=""
+python ../ssdilep/scripts/merge.py --var="chargeFlipHist" --reg="ZWindowAS" --lab="" --tag="Powheg" --samples="chargeflip" --icut="1" --input="/afs/f9.ijs.si/home/miham/ZPeak36_30" --output="./ZPeak36" --makeplot=False --fakest=""
+python ../ssdilep/scripts/merge.py --var="chargeFlipHist" --reg="ZWindowSS-Sideband" --lab="" --tag="Powheg" --samples="chargeflip" --icut="1" --input="/afs/f9.ijs.si/home/miham/ZPeak36_30" --output="./ZPeak36" --makeplot=False --fakest=""
+python ../ssdilep/scripts/merge.py --var="chargeFlipHist" --reg="ZWindowAS-Sideband" --lab="" --tag="Powheg" --samples="chargeflip" --icut="1" --input="/afs/f9.ijs.si/home/miham/ZPeak36_30" --output="./ZPeak36" --makeplot=False --fakest=""

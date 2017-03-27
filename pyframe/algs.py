@@ -65,7 +65,9 @@ class ListBuilder(pyframe.core.Algorithm):
         for prefix, key in zip(self.prefixes, self.keys):
             #parts = pyframe.core.buildParticleProxies(self.chain, getattr(self.chain, prefix+'n'), prefix)
             nparts = "" 
-            if "jet" in prefix: nparts = "njets"      # added!!!
+            if "jet" in prefix:    # added!!!
+              if hasattr(self.chain,"njets"): nparts = "njets"
+              if hasattr(self.chain,"njet"):  nparts = "njet"
             else: nparts = "n"+prefix.replace("_","") # added!!!
             parts = pyframe.core.buildParticleProxies(self.chain, getattr(self.chain, nparts), prefix) # changed!!!
             self.store[key] = parts

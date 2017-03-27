@@ -49,4 +49,9 @@ FF = sys_dict['FF'] = Systematic(
         var_dn='FF_DN'
         )
 
+CF = sys_dict['CF'] = Systematic(
+        'CF',
+        var_up='CF_UP',
+        var_dn='CF_DN'
+        )
 ## EOF
