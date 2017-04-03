@@ -480,6 +480,65 @@ class FakeEstimator1D(BaseEstimator):
           s.estimator.flush_hists()
 
 #------------------------------------------------------------
+class EstimatorDCH(BaseEstimator):
+    '''
+    Standard Estimator class for DCH
+    '''
+    #____________________________________________________________
+    def __init__(self,**kw):
+        BaseEstimator.__init__(self,**kw)
+
+        ## xsec / Ntotal, seperately for each systematic
+        ## (set on first call to hist)
+        self.mc_lumi_frac = {}
+   
+
+    #____________________________________________________________
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+        """
+        implemenation of nominal hist getter
+        """
+        h = self.hm.hist(histname=histname,
+                         samplename=self.sample.name,
+                         region=region+"-signal-eeee",
+                         icut=icut+1,
+                         sys=sys,
+                         mode=mode,
+                         )
+        if h and self.sample.type == 'mc': 
+            lumi_frac = self.get_mc_lumi_frac(sys,mode)
+            h.Scale(self.hm.target_lumi * lumi_frac)
+
+        return h    
+    #____________________________________________________________
+    def get_mc_lumi_frac(self,sys,mode):
+        '''
+        Gets the effective luminosity fraction of the mc sample. 
+        This is done seperately for each sys, since the total 
+        number of events can potentially be different for different 
+        sys samples. Once retrieved, the value is stored for 
+        further access. 
+        '''
+        if sys: 
+            assert mode in ['up','dn'], "mode must be either 'up' or 'dn'"
+        
+        sysname = 'nominal'
+        if sys:
+            if mode == 'up': sysname = '%s_up'%(sys.name)
+            else:            sysname = '%s_dn'%(sys.name)
+
+        if not self.mc_lumi_frac.has_key(sysname): 
+            xsec    = self.sample.xsec 
+            feff    = self.sample.feff
+            kfactor = self.sample.kfactor
+            Ntotal  = self.hm.get_nevents(self.sample.name,sys,mode)
+            # there seems to be no need for feff and kfactor
+            self.mc_lumi_frac[sys] = (xsec * feff * kfactor) / Ntotal if Ntotal else 0.0
+            #self.mc_lumi_frac[sys] = xsec / Ntotal if Ntotal else 0.0
+        return self.mc_lumi_frac[sys]
+
+
+#------------------------------------------------------------
 class FakeEstimatorGeneral(BaseEstimator):
     '''
     Estimator for merging different regions
@@ -495,8 +554,8 @@ class FakeEstimatorGeneral(BaseEstimator):
         # ---------
         # L REGION
         # ---------
-        region_l_den = region.replace("-CR","-CR-fakes").replace("-VR","-VR-fakes")
-
+        region_l_den = region.replace("-CR","-CR-fakes").replace("-VR","-VR-fakes").replace("-SR","-SR-fakes")
+        print region_l_den
         h_l_den = self.data_sample.hist(histname=histname,
                                 region=region_l_den,
                                 icut=icut,
@@ -512,6 +571,8 @@ class FakeEstimatorGeneral(BaseEstimator):
         if "CR-fakes" in region: 
             return h_l_den
         elif "VR-fakes" in region:
+            return h_l_den
+        elif "SR-fakes" in region:
             return h_l_den
         
         

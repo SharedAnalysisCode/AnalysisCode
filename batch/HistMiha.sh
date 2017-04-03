@@ -132,6 +132,11 @@ echo cp ${OUTFILE} ${OUTPATH}/${SAMPLE}.root
 cp ${OUTFILE} ${OUTPATH}/${SAMPLE}.root
 chmod a+wr ${OUTPATH}/${SAMPLE}.root
 
+if [[ ! -f "${OUTPATH}/${SAMPLE}.root" ]]; then
+    echo "Out File not found!"
+    exit 1
+fi
+
 echo "cd ${TMPDIR}"
 cd ${TMPDIR}
 

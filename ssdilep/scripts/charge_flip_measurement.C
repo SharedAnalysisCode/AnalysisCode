@@ -115,7 +115,7 @@ ROOT::Math::Minimizer* NumericalMinimizer::NumericalMinimization1D(const char * 
  ROOT::Math::Factory::CreateMinimizer(minName, algoName);
 
    min->SetMaxFunctionCalls(1e9); // for Minuit/Minuit2
-   min->SetMaxIterations(1e8);  // for GSL
+   min->SetMaxIterations(1e9);  // for GSL
    min->SetTolerance(1e-6);
    min->SetPrintLevel(1);
 
@@ -219,10 +219,10 @@ void charge_flip_measurement(){
   // std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowSS_Powheg.root";
   // std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
 
-  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowAS_Powheg.root";
-  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
-  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowSS_Powheg.root";
-  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak36/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
   
   
 
@@ -254,10 +254,10 @@ void charge_flip_measurement(){
 
   std::cout << " data charge-flip measurement " << std::endl;
   // NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1e9);
-  NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1e6);
+  NumericalMinimizer NM1(hOSCenterData,hSSCenterData,hOSSidebandData,hSSSidebandData,1.1*1e6);
   std::cout << " MC charge-flip measurement " << std::endl;
   // NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,hOSSidebandMC,hSSSidebandMC,5e9);
-  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,0,0,1e6);
+  NumericalMinimizer NM2(hOSCenterMC,hSSCenterMC,0,0,1.1*1e6);
 
   std::cout << " start drawing " << std::endl;
   NM2.m_flipRateEta->SetLineColor(kRed);

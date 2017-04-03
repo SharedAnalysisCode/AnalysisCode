@@ -28,6 +28,10 @@ class Var(object):
             logx  = None,
             do_ratio_plot  = True,
             label  = None,
+            xlabel  = None,
+            blind  = None,
+            signal  = None,
+            rebinToEq  = None,
             ):
         self.name = name
         if not title: title = name
@@ -45,6 +49,10 @@ class Var(object):
         self.logx  = logx
         self.do_ratio_plot  = do_ratio_plot
         self.label  = label
+        self.xlabel  = xlabel
+        self.blind  = blind
+        self.signal  = signal
+        self.rebinToEq  = rebinToEq
 
 
 

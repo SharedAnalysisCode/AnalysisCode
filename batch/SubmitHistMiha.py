@@ -27,8 +27,8 @@ USER   = os.getenv('USER')
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT12' # input NTUP path
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT19and0' # input NTUP path
 
-# NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
-NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
+NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
+# NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
 INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) )
@@ -37,8 +37,10 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 
 # outputs
 # RUN = "SSVRele36_7"
-# RUN = "ZPeak_v3_002"a
-RUN = "FFele_v3_003"
+# RUN = "ZPeak_v3_003"
+RUN = "AllR_v3_003"
+# RUN = "WJets_v3_004"
+# RUN = "FFele_v3_004"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -48,17 +50,21 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
 DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
+
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
+CF_SYS = False
+FF_SYS = False
 
 
 def main():
@@ -89,9 +95,8 @@ def main():
     all_data = samples.all_data
 
     # all_mc = []
-    # all_data = []
+    all_data = []
 
-    #nominal = all_data + all_mc 
     nominal = all_mc 
     nominal += all_data
     
@@ -100,10 +105,19 @@ def main():
         ['SYS1_DN',                  all_mc],
         ]    
     
-    plot_sys = [
-        ['CF_UP',        nominal],
-        ['CF_DN',        nominal],
-        ]    
+    plot_sys = []
+
+    if CF_SYS:
+        plot_sys += [
+            ['CF_UP',        nominal],
+            ['CF_DN',        nominal],
+            ]  
+    if FF_SYS:
+        plot_sys += [
+            ['FF_UP',        nominal],
+            ['FF_DN',        nominal],
+            ]  
+
     
     ## ensure output path exists
     #prepare_path(OUTPATH)
@@ -147,7 +161,7 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.ff.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
+    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []

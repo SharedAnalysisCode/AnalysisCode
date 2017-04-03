@@ -24,50 +24,62 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   else if (var=="mcdn") var2 = "nominal";
 
   
-  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFelectron36_3/hists_el_t_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
-  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFelectron36_3/hists_el_l_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
-  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFelectron36_3/hists_el_sl_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_004/hists_el_t_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_004/hists_el_l_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_004/hists_el_sl_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
 
   TH2F* nominal_t_wenu = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WenuPowheg").c_str());
+  TH2F* nominal_t_Wtaunu = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WtaunuPowheg").c_str());
   TH2F* nominal_t_zee = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ZeePowheg").c_str());
+  TH2F* nominal_t_Ztautau = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ZtautauPowheg").c_str());
   TH2F* nominal_t_ttbar = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ttbar_dilep").c_str());
-  TH2F* nominal_t_diboson = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_diboson_sherpa").c_str());
+  TH2F* nominal_t_diboson = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_dibosonSherpa").c_str());
   TH2F* nominal_t_singletop = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_singletop").c_str());
   TH2F* nominal_t_MC = (TH2F*) nominal_t_wenu->Clone("twenu");
   TH2F* nominal_t_data = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_data").c_str());
   TH2F* nominal_t_data_minus = (TH2F*) nominal_t_data->Clone("tdata");
 
   TH2F* nominal_l_wenu = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WenuPowheg").c_str());
+  TH2F* nominal_l_Wtaunu = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WtaunuPowheg").c_str());
   TH2F* nominal_l_zee = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ZeePowheg").c_str());
+  TH2F* nominal_l_Ztautau = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ZtautauPowheg").c_str());
   TH2F* nominal_l_ttbar = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ttbar_dilep").c_str());
-  TH2F* nominal_l_diboson = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_diboson_sherpa").c_str());
+  TH2F* nominal_l_diboson = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_dibosonSherpa").c_str());
   TH2F* nominal_l_singletop = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_singletop").c_str());
   TH2F* nominal_l_MC = (TH2F*) nominal_l_wenu->Clone("lwenu");
   TH2F* nominal_l_data = (TH2F*) nominal_l->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_data").c_str());
   TH2F* nominal_l_data_minus = (TH2F*) nominal_l_data->Clone("ldata");
 
   TH2F* nominal_sl_wenu = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WenuPowheg").c_str());
+  TH2F* nominal_sl_Wtaunu = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WtaunuPowheg").c_str());
   TH2F* nominal_sl_zee = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ZeePowheg").c_str());
+  TH2F* nominal_sl_Ztautau = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ZtautauPowheg").c_str());
   TH2F* nominal_sl_ttbar = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_ttbar_dilep").c_str());
-  TH2F* nominal_sl_diboson = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_diboson_sherpa").c_str());
+  TH2F* nominal_sl_diboson = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_dibosonSherpa").c_str());
   TH2F* nominal_sl_singletop = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_singletop").c_str());
   TH2F* nominal_sl_MC = (TH2F*) nominal_sl_wenu->Clone("slwenu");
   TH2F* nominal_sl_data = (TH2F*) nominal_sl->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_data").c_str());
   TH2F* nominal_sl_data_minus = (TH2F*) nominal_sl_data->Clone("sldata");
 
   nominal_t_MC->Add(nominal_t_zee);
+  nominal_t_MC->Add(nominal_t_Ztautau);
+  nominal_t_MC->Add(nominal_t_Wtaunu);
   nominal_t_MC->Add(nominal_t_ttbar);
   nominal_t_MC->Add(nominal_t_diboson);
   nominal_t_MC->Add(nominal_t_singletop);
   nominal_t_data_minus->Add(nominal_t_MC,-1.*mcscale);
 
   nominal_l_MC->Add(nominal_l_zee);
+  nominal_l_MC->Add(nominal_l_Ztautau);
+  nominal_l_MC->Add(nominal_l_Wtaunu);
   nominal_l_MC->Add(nominal_l_ttbar);
   nominal_l_MC->Add(nominal_l_diboson);
   nominal_l_MC->Add(nominal_l_singletop);
   nominal_l_data_minus->Add(nominal_t_MC,-1.*mcscale);
 
   nominal_sl_MC->Add(nominal_sl_zee);
+  nominal_sl_MC->Add(nominal_sl_Ztautau);
+  nominal_sl_MC->Add(nominal_sl_Wtaunu);
   nominal_sl_MC->Add(nominal_sl_ttbar);
   nominal_sl_MC->Add(nominal_sl_diboson);
   nominal_sl_MC->Add(nominal_sl_singletop);
@@ -166,6 +178,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.Draw();
   ATLASLabel(0.18,0.89,"Internal",1);
   myText(0.18,0.84,1,"fake rate ( T/L )");
+  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
 
   TCanvas c3("c3","c3",600,600);
   c3.SetLogx();
@@ -180,6 +193,8 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.Draw();
   ATLASLabel(0.18,0.89,"Internal",1);
   myText(0.18,0.84,1,"fake factor ( f/(1-f) )");
+  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+
 
   TCanvas c4("c4","c4",600,600);
   c4.SetLogx();
@@ -195,6 +210,8 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.Draw();
   ATLASLabel(0.18,0.89,"Internal",1);
   myText(0.18,0.84,1,"fake factor ( T/SL )");
+  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+
 
   c1.Print(("fakeRate2D-"+var+".eps").c_str());
   c2.Print(("fakeRate-"+var+".eps").c_str());
@@ -332,7 +349,8 @@ void fake_rate_measurement(){
   proj1asj->Draw("same P E X0");
   proj1nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
-  myText(0.18,0.79,1,"0.0 < |#eta| < 1.37");
+  myText(0.18,0.80,1,"0.0 < |#eta| < 1.37");
+  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   leg.Draw();
   pad_2->SetLogx();
   pad_2->cd();
@@ -451,7 +469,8 @@ void fake_rate_measurement(){
   proj3asj->Draw("same P E X0");
   proj3nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
-  myText(0.18,0.79,1,"1.52 < |#eta| < 2.01");
+  myText(0.18,0.80,1,"1.52 < |#eta| < 2.01");
+  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
   leg.Draw();
   pad_2->SetLogx();
   pad_2->cd();
@@ -571,7 +590,8 @@ void fake_rate_measurement(){
   proj4asj->Draw("same P E X0");
   proj4nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
-  myText(0.18,0.79,1,"2.01 < |#eta| < 2.47");
+  myText(0.18,0.80,1,"2.01 < |#eta| < 2.47");
+  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");  
   leg.Draw();
   pad_2->SetLogx();
   pad_2->cd();

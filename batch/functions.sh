@@ -3,7 +3,7 @@ function mergeOutput {
     if [ -f  $line.root ]; then
       #continue
       echo "file ${line}.root already exists, removing it"
-      # rm $line.root
+      rm $line.root
     fi
     array=($(ls|grep $line))
     for t in "${array[@]:1}"; do

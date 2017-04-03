@@ -118,7 +118,7 @@ def analyze(config):
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DCHAllElectron')
+    # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DCHAllElectron')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwoLooseEleLooseLLH')
@@ -288,6 +288,7 @@ def analyze(config):
             region   = 'two-ele-SR',
             plot_all = False,
             cut_flow = [
+               ['DCHFilter',None],
                ['ExactlyTwoLooseEleLooseLLH',None],
                ['ExactlyTwoLooseEleLooseLLHSS',None],
                ['Mass200GeVLooseLLH',None],
@@ -298,17 +299,31 @@ def analyze(config):
             region   = 'two-ele-SR-fakes',
             plot_all = False,
             cut_flow = [
+               ['DCHFilter',None],
                ['ExactlyTwoLooseEleLooseLLH',None],
                ['ExactlyTwoLooseEleLooseLLHSS',None],
                ['Mass200GeVLooseLLH',None],
                ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','TwoElectron2e17TrigWeight']],
                ],
             )
+    for channel in ["eeee","eemm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgCRele(
+                region   = 'two-ele-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['ExactlyTwoLooseEleLooseLLH',None],
+                   ['ExactlyTwoLooseEleLooseLLHSS',None],
+                   ['Mass200GeVLooseLLH',None],
+                   ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
+                   ],
+                )
     ## ------ three ele
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'three-ele-SR',
             plot_all = False,
             cut_flow = [
+               ['DCHFilter',None],
                ['ExactlyThreeLooseEleLooseLLH',None],
                ['ExactlyThreeLooseEleLooseLLHSS200M',None],
                ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
@@ -319,12 +334,25 @@ def analyze(config):
             region   = 'three-ele-SR-fakes',
             plot_all = False,
             cut_flow = [
+               ['DCHFilter',None],
                ['ExactlyThreeLooseEleLooseLLH',None],
                ['ExactlyThreeLooseEleLooseLLHSS200M',None],
                ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
                ['FailExactlyThreeTightEleMediumLLHisolLoose',["GenericFakeFactor","ThreeElectron2e17TrigWeight"]],
                ],
             )
+    for channel in ["eeee","eemm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'three-ele-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['ExactlyThreeLooseEleLooseLLH',None],
+                   ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+                   ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
+                   ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
+                   ],
+                )
     
     loop += pyframe.algs.HistCopyAlg()
 

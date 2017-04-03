@@ -1133,6 +1133,32 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_AtLeastTwoLooseEleLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)>1: 
+          return True
+        return False
+
+    def cut_TwoOrThreeElectronsOneSS200GeV(self):
+        electronsL = self.store['electrons_loose_LooseLLH']
+        electronsT = self.store['electrons_tight_MediumLLH_isolLoose']
+        if len(electronsL)==2 and len(electronsT)==2:
+          for pair in itertools.combinations(electronsL,2):
+            if pair[0].trkcharge == pair[1].trkcharge : 
+              if (pair[0].tlv + pair[1].tlv).M() > 200*GeV:
+                return True
+        elif len(electronsL)==3 and len(electronsT)==3:
+          NSS = 0
+          SS200 = False
+          for pair in itertools.combinations(electronsL,2):
+            if pair[0].trkcharge == pair[1].trkcharge :
+              NSS += 1
+              if (pair[0].tlv + pair[1].tlv).M() > 200*GeV:
+                SS200 = True
+          if NSS==1 and SS200:
+            return True
+        return False
+
     def cut_LooseEleVetoCrack(self):
         electrons = self.store['electrons_loose_LooseLLH']
         for ele in electrons:
@@ -1209,6 +1235,20 @@ class CutAlg(pyframe.core.Algorithm):
             SSPair += 1
             SSPairMass = (pair[0].tlv + pair[1].tlv).M()
         if SSPair == 1 and (90*GeV < SSPairMass < 200*GeV):
+          return True
+        return False
+
+    def cut_ExactlyThreeLooseEleLooseLLHSS200M(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if not len(electrons)==3: 
+          return False
+        SSPair = 0
+        SSPairMass = 0
+        for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            SSPairMass = (pair[0].tlv + pair[1].tlv).M()
+        if SSPair == 1 and SSPairMass > 200*GeV:
           return True
         return False
 
@@ -1439,7 +1479,15 @@ class CutAlg(pyframe.core.Algorithm):
         if len(electrons)==2 :
           tempMass = (electrons[0].tlv + electrons[1].tlv).M()
           if tempMass > 130*GeV and tempMass < 200*GeV :
-            return True;
+            return True
+        return False
+
+    def cut_Mass200GeVLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if tempMass > 200*GeV:
+            return True
         return False
 
     #----- exactly two prompt
@@ -1532,13 +1580,93 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_NoFakesInMC(self):
       electrons = self.store['electrons']
-      if ("mc" in self.sampletype) and self.chain.mcChannelNumber in [361108,341471,341488,301887,301890,301891,301892,301899,301900,301901,301535]:
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber in range(306538,306560):
         return True
       for ele in electrons:
-        if ("mc" in self.sampletype) and  ele.electronType() not in [1,2,3] :
+        if ele.electronType() not in [1,2,3] :
           if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             return False
-      return True 
+      return True
+
+    def cut_DCHAllElectron(self):
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return True
+      pdgId_branchHL = []
+      pdgId_branchHR = []
+      for pdgId in self.chain.HLpp_Daughters: pdgId_branchHL += [pdgId]
+      for pdgId in self.chain.HLmm_Daughters: pdgId_branchHL += [pdgId]
+      for pdgId in self.chain.HRpp_Daughters: pdgId_branchHR += [pdgId]
+      for pdgId in self.chain.HRmm_Daughters: pdgId_branchHR += [pdgId]
+      assert len(pdgId_branchHL)==4 or len(pdgId_branchHR)==4, "less than 4 leptons.. something wrong"
+      LallEle = True
+      RallEle = True
+      for pdgId in pdgId_branchHL:
+        if abs(pdgId)!=11:
+          LallEle = False
+      for pdgId in pdgId_branchHR:
+        if abs(pdgId)!=11:
+          RallEle = False
+      if RallEle or LallEle:
+        return True
+      return False
+
+    def cut_DCHFilter(self):
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return True
+      return False
+
+    def cut_DCHFiltereeee(self):
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return False
+      pdgId_branchHL = []
+      pdgId_branchHR = []
+      for pdgId in self.chain.HLpp_Daughters: pdgId_branchHL += [pdgId]
+      for pdgId in self.chain.HLmm_Daughters: pdgId_branchHL += [pdgId]
+      for pdgId in self.chain.HRpp_Daughters: pdgId_branchHR += [pdgId]
+      for pdgId in self.chain.HRmm_Daughters: pdgId_branchHR += [pdgId]
+      assert len(pdgId_branchHL)==4 or len(pdgId_branchHR)==4, "less than 4 leptons.. something wrong"
+      if sum( [ abs(n) for n in pdgId_branchHL ] ) == 44 or sum( [ abs(n) for n in pdgId_branchHR ] ) == 44:
+        return True
+      return False
+
+    def cut_DCHFiltermmmm(self):
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return False
+      pdgId_branchHL = []
+      pdgId_branchHR = []
+      for pdgId in self.chain.HLpp_Daughters: pdgId_branchHL += [pdgId]
+      for pdgId in self.chain.HLmm_Daughters: pdgId_branchHL += [pdgId]
+      for pdgId in self.chain.HRpp_Daughters: pdgId_branchHR += [pdgId]
+      for pdgId in self.chain.HRmm_Daughters: pdgId_branchHR += [pdgId]
+      assert len(pdgId_branchHL)==4 or len(pdgId_branchHR)==4, "less than 4 leptons.. something wrong"
+      if sum( [ abs(n) for n in pdgId_branchHL ] ) == 52 or sum( [ abs(n) for n in pdgId_branchHR ] ) == 52:
+        return True
+      return False
+
+    def cut_DCHFiltereemm(self):
+      if ("mc" not in self.sampletype):
+        return False
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return True
+      if [abs(l) for l in self.chain.HLpp_Daughters]==[11,11] and [ abs(l) for l in self.chain.HLmm_Daughters]==[13,13] :
+        return True
+      elif [abs(l) for l in self.chain.HLpp_Daughters]==[13,13] and [abs(l) for l in self.chain.HLmm_Daughters]==[11,11] :
+        return True
+      elif [abs(l) for l in self.chain.HRpp_Daughters]==[11,11] and [abs(l) for l in self.chain.HRmm_Daughters]==[13,13] :
+        return True
+      elif [abs(l) for l in self.chain.HRpp_Daughters]==[13,13] and [abs(l) for l in self.chain.HRmm_Daughters]==[11,11] :
+        return True
+      return False
 
     #__________________________________________________________________________
     def cut_PASS(self):
@@ -2625,9 +2753,9 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
     #_________________________________________________________________________
     def initialize(self):
         pyframe.algs.CutFlowAlg.initialize(self)
-        self.trigger_strings   = ["HLT_e24_lhvloose_nod0_L1EM20VH","HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
-        self.trigger_bounds    = [31.                             ,65.                             ,125.                   ,145.                   ,99999999.]
-        self.trigger_prescaled = [138.43197                       ,112.3913                        ,25.5606                ,6.69107                ,1.0      ]
+        self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
+        self.trigger_bounds    = [65.                             ,125.                   ,145.                   ,99999999.]
+        self.trigger_prescaled = [112.3913                        ,25.5606                ,6.69107                ,1.0      ]
     #_________________________________________________________________________
     def execute(self, weight):
    
@@ -2842,7 +2970,6 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
                  obj_keys = [], # make cutflow hist for just this objects
                  cut_flow = None,
                  plot_all = True,
-                 loose_el = False,
                  ):
         pyframe.algs.CutFlowAlg.__init__(self,key=region,obj_keys=obj_keys)
         CutAlg.__init__(self,name,isfilter=False)
@@ -2850,7 +2977,6 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.region   = region
         self.plot_all = plot_all
         self.obj_keys = obj_keys
-        self.loose_el = loose_el
     
     #_________________________________________________________________________
     def initialize(self):
@@ -2912,10 +3038,7 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         
         # should probably make this configurable
         ## get event candidate
-        if not self.loose_el:
-          electrons  = self.store['electrons_tight_MediumLLH_isolLoose']
-        elif self.loose_el:
-          electrons  = self.store['electrons_loose_LooseLLH']
+        electrons  = self.store['electrons_loose_LooseLLH']
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
@@ -3140,7 +3263,6 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
                  obj_keys = [],
                  cut_flow = None,
                  plot_all = True,
-                 loose_el = False,
                  ):
         pyframe.algs.CutFlowAlg.__init__(self,key=region,obj_keys=obj_keys)
         CutAlg.__init__(self,name,isfilter=False)
@@ -3148,7 +3270,6 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.region   = region
         self.plot_all = plot_all
         self.obj_keys = obj_keys
-        self.loose_el = loose_el
     
     #_________________________________________________________________________
     def initialize(self):
@@ -3210,10 +3331,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         
         # should probably make this configurable
         ## get event candidate
-        if not self.loose_el:
-          electrons  = self.store['electrons_tight_MediumLLH_isolLoose']
-        elif self.loose_el:
-          electrons  = self.store['electrons_loose_LooseLLH']
+        electrons  = self.store['electrons_loose_LooseLLH']
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
@@ -3466,24 +3584,22 @@ class VarsAlg(pyframe.core.Algorithm):
         # loose electrons (no iso // LooseLLH)
         electrons_loose_LooseLLH = []
         for ele in electrons:
-          if ("mc" in self.sampletype):
-            pass
+          if ("mc" in self.sampletype) and self.chain.mcChannelNumber in range(306538,306560):
+            pass #do not truth match the electron
           elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
-          # elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronTypeNew() not in [1]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
             continue
-          if ( ele.pt>=30*GeV and ele.LHLoose and ele.trkd0sig<=5.0 and abs(ele.trkz0sintheta)<=0.5 ) :
+          if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_loose_LooseLLH += [ele]
         self.store['electrons_loose_LooseLLH'] = electrons_loose_LooseLLH
 
         # tight electrons (isoLoose // MediumLLH)
         electrons_tight_MediumLLH_isolLoose = []
         for ele in electrons:
-          if ("mc" in self.sampletype):
-            pass
+          if ("mc" in self.sampletype) and self.chain.mcChannelNumber in range(306538,306560):
+            pass #do not truth match the electron
           elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronType() not in [1,2,3]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
-          # elif self.require_prompt and ("mc" in self.sampletype) and ((not self.use_simple_truth and ele.electronTypeNew() not in [1]) or (self.use_simple_truth and ele.electronTypeSimple() not in [1])):
             continue
-          if ( ele.pt>=30*GeV and ele.isIsolated_Loose and ele.LHMedium and ele.trkd0sig<=5.0 and abs(ele.trkz0sintheta)<=0.5 ) :
+          if ( ele.pt>30*GeV and ele.isIsolated_Loose and ele.LHMedium and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
             electrons_tight_MediumLLH_isolLoose += [ele]
         self.store['electrons_tight_MediumLLH_isolLoose'] = electrons_tight_MediumLLH_isolLoose
 

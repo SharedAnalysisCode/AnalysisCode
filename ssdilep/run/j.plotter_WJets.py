@@ -112,7 +112,7 @@ def analyze(config):
     loop += ssdilep.algs.EvWeights.LPXKfactor(cutflow='presel',key='lpx_kfactor')
     loop += ssdilep.algs.EvWeights.Pileup(cutflow='presel',key='weight_pileup')
     #loop += ssdilep.algs.EvWeights.TrigPresc(cutflow='presel',key='trigger_prescale')
-    loop += ssdilep.algs.EvWeights.DataUnPresc(cutflow='presel',key='data_unprescale') 
+    # loop += ssdilep.algs.EvWeights.DataUnPresc(cutflow='presel',key='data_unprescale')
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
@@ -120,6 +120,7 @@ def analyze(config):
     #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
     #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyOneLooseEleLooseLLH')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='METhigher25')
@@ -137,7 +138,7 @@ def analyze(config):
 
     loop += ssdilep.algs.EvWeights.ExactlyOneLooseEleFakeFactor(
             key='ExactlyOneLooseEleFF',
-            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-09-01-2017.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-01-04-2017.root'),
             sys = sys_FF,
             )
 

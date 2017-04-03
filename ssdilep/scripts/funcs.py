@@ -232,6 +232,7 @@ def plot_hist(
     save_eps      = False,
     plotsfile     = None,
     sig_rescale   = None,
+    xlabel        = None,
     ):
     
     '''
@@ -242,13 +243,14 @@ def plot_hist(
     '''
     print 'making plot: ', histname, ' in region', region
     print 'rebinVar', rebinVar
+    print xlabel
     
     #assert signal, "ERROR: no signal provided for plot_hist"
     assert backgrounds, "ERROR: no background provided for plot_hist"
     
-    samples = backgrounds + signal
-    
-    if data: samples += [data] 
+    samples = list(backgrounds)
+    if signal: samples += signal
+    if data:   samples += [data]
 
     ## generate nominal hists
     hists = get_hists(
@@ -326,7 +328,10 @@ def plot_hist(
       if not b in hists.keys(): continue
       h_stack.Add(hists[b])
    
-    nLegend = len(signal+backgrounds) + 2
+    if signal:
+        nLegend = len(signal+backgrounds) + 2
+    else:
+       nLegend = len(backgrounds) + 2
     x_legend = 0.63
     x_leg_shift = 0
     y_leg_shift = -0.1 
@@ -346,6 +351,8 @@ def plot_hist(
     leg.SetFillColor(0)
     leg.SetFillStyle(0)
     leg.SetTextSize(0.045)
+    if not do_ratio_plot:
+        leg.SetTextSize(0.035)
     if data: leg.AddEntry(h_data,"#font[42]{"+str(data.tlatex)+"}",'P')
     if signal:
      for s in signal:
@@ -367,7 +374,7 @@ def plot_hist(
     else: c = ROOT.TCanvas(cname,cname,600,600)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-1 if log else 0.0
+    ymin = 1.e-2 if log else 0.0
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue
@@ -502,6 +509,7 @@ def plot_hist(
       yaxis2.SetNdivisions(510)
       xaxis2.SetNdivisions(510)
 
+
       if logx: 
         pad2.SetLogx(logx) 
         xaxis2.SetMoreLogLabels()
@@ -547,6 +555,12 @@ def plot_hist(
       pad2.RedrawAxis()
       pad2.RedrawAxis("g")
 
+    if xlabel:
+        if not do_ratio_plot:
+            xaxis1.SetTitle(xlabel)
+        else:
+            xaxis2.SetTitle(xlabel)        
+
     print 'saving plot...'
     if save_eps:
      eps_file = plotsfile.replace(".root",".eps")
@@ -560,7 +574,7 @@ def plot_hist(
 #____________________________________________________________
 def write_hist(
         backgrounds = None,
-        signal     = None,
+        signal      = None,
         data        = None,
         region      = None,
         icut        = None,
@@ -569,6 +583,8 @@ def write_hist(
         rebinVar    = [],
         sys_dict    = None,
         outname     = None,
+        rebinToEq   = None,
+        regName     = None,
         ):
     """
     write hists for backgrounds, signals and data to file.
@@ -576,16 +592,17 @@ def write_hist(
     also write smtot hists for summed background.
     No folder structure is provided
     """
-    samples = backgrounds
-    if signal: samples += [signal]
+    samples = list(backgrounds)
+    if signal: samples += signal
     if data: samples += [data]
     ## generate nominal hists
     hists = get_hists(
         region=region,
         icut=icut,
         histname=histname,
-        samples=samples, 
+        samples=samples,
         rebin=rebin,
+        rebinVar=rebinVar,
         sys_dict=sys_dict,
         )
 
@@ -593,30 +610,110 @@ def write_hist(
     fname = outname
     fout = ROOT.TFile.Open(fname,'RECREATE')
     for s,h in hists.items():
-        hname = 'h_%s_nominal_%s' % (region,s.name)
-        h.SetNameTitle(hname,hname)
-        if rebin and len(rebinVar)==0 and h:
-          h.Rebin(rebin)
-          print "rebin ",rebin
-        elif len(rebinVar)>1 and h:
-          print "Performing variable bin rebining with on " + histname
-          runArray = array('d',rebinVar)
-          h = h.Rebin( len(rebinVar)-1, histname+"Var", runArray )
-        fout.WriteTObject(h,hname)
+        print s.name
+        if "Pythia8EvtGen_A14NNPDF23LO_DCH" in s.name:
+            print h
+            print h.GetSum()
+        hname = ""
+        hnameNorm = ""
+        if rebinToEq:
+            hname = 'h%sNom_%s_obs_mee' % (s.name,region if not regName else regName)
+            hnameNorm = 'h%sNom_%sNorm' % (s.name,region if not regName else regName)
+            h.SetNameTitle(hname+"temp",hname+"temp")
+        else:
+            hname = 'h_%s_nominal_%s' % (region,s.name)
+            h.SetNameTitle(hname,hname)
+        hEquiDistant = None
+        hNorm = None
+        if rebinToEq:
+            nbins = h.GetNbinsX()
+            hEquiDistant = ROOT.TH1F(hname,hname,nbins,0,nbins)
+            hEquiDistant.Sumw2(1)
+            hNorm = ROOT.TH1F(hnameNorm+"temp",hnameNorm+"temp",nbins,0,nbins)
+            hNorm.Sumw2(1)
+            for i in range(0,nbins+2):
+                hEquiDistant.SetBinContent(i,h.GetBinContent(i))
+                hEquiDistant.SetBinError(i,h.GetBinError(i))
+                hNorm.SetBinContent(i,h.GetBinContent(i))
+                hNorm.SetBinError(i,h.GetBinError(i))
+            hNorm.Rebin(nbins)
+
+            fout.WriteTObject(hEquiDistant,hname)
+            hNormOut = ROOT.TH1F(hnameNorm,hnameNorm,1,0.5,1.5)
+            hNormOut.SetBinContent(1,hNorm.GetBinContent(1))
+            hNormOut.SetBinError(1,hNorm.GetBinError(1))
+            fout.WriteTObject(hNormOut,hnameNorm)
+        else:
+            fout.WriteTObject(h,hname)
         ## systematics
         if hasattr(h,'sys_hists'):
+         print "sys hists"
          if sys_dict:
+            newHup = None
+            newHdn = None
             for sys,hsys in h.sys_hists.items():
                 
                 s_name = sys.name
 
-                hname_sys_up = hname.replace('nominal','%s_%s' % (s_name,'UP'))
-                hname_sys_dn = hname.replace('nominal','%s_%s' % (s_name,'DN'))
+                hname = ""
+                hnameNorm = ""
+                if rebinToEq:
+                    hname_sys_up = 'h%s%s_%s_obs_mee' % (s.name,s_name+"High",region if not regName else regName)
+                    hname_sys_dn = 'h%s%s_%s_obs_mee' % (s.name,s_name+"Low",region if not regName else regName)
+                    hname_sys_upNorm = 'h%s%s_%sNorm' % (s.name,s_name+"High",region if not regName else regName)
+                    hname_sys_dnNorm = 'h%s%s_%sNorm' % (s.name,s_name+"Low",region if not regName else regName)
+                    if hsys[0]: hsys[0].SetNameTitle(hname_sys_up+"temp",hname_sys_up+"temp")
+                    if hsys[1]: hsys[1].SetNameTitle(hname_sys_dn+"temp",hname_sys_dn+"temp")
 
-                if hsys[0]: hsys[0].SetNameTitle(hname_sys_up,hname_sys_up)
-                if hsys[1]: hsys[1].SetNameTitle(hname_sys_dn,hname_sys_dn)
-                fout.WriteTObject(hsys[0],hname_sys_up)
-                fout.WriteTObject(hsys[1],hname_sys_dn)
+                else:
+                    hname_sys_up = hname.replace('nominal','%s_%s' % (s_name,'UP'))
+                    hname_sys_dn = hname.replace('nominal','%s_%s' % (s_name,'DN'))
+                    if hsys[0]: hsys[0].SetNameTitle(hname_sys_up,hname_sys_up)
+                    if hsys[1]: hsys[1].SetNameTitle(hname_sys_dn,hname_sys_dn)
+                    fout.WriteTObject(hsys[0],hname_sys_up)
+                    fout.WriteTObject(hsys[1],hname_sys_dn)
+
+                hupEquiDistant = None
+                hdnEquiDistant = None
+                hupNorm = None
+                hdnNorm = None
+
+                if hsys[0] and hsys[1] and rebinToEq:
+                    nbins = h.GetNbinsX()
+                    hupEquiDistant = ROOT.TH1F(hname_sys_up,hname_sys_up,nbins,0,nbins)
+                    hdnEquiDistant = ROOT.TH1F(hname_sys_dn,hname_sys_dn,nbins,0,nbins)
+                    hupNorm = ROOT.TH1F(hname_sys_upNorm+"temp",hname_sys_upNorm+"temp",nbins,0,nbins)
+                    hdnNorm = ROOT.TH1F(hname_sys_dnNorm+"temp",hname_sys_dnNorm+"temp",nbins,0,nbins)
+                    hupEquiDistant.Sumw2(1)
+                    hdnEquiDistant.Sumw2(1)
+                    hupNorm.Sumw2(1)
+                    hdnNorm.Sumw2(1)
+                    for i in range(0,nbins+2):
+                        hupEquiDistant.SetBinContent(i,hsys[0].GetBinContent(i))
+                        hupEquiDistant.SetBinError(i,hsys[0].GetBinError(i))
+                        hdnEquiDistant.SetBinContent(i,hsys[1].GetBinContent(i))
+                        hdnEquiDistant.SetBinError(i,hsys[1].GetBinError(i))
+                        hupNorm.SetBinContent(i,hsys[0].GetBinContent(i))
+                        hupNorm.SetBinError(i,hsys[0].GetBinError(i))
+                        hdnNorm.SetBinContent(i,hsys[1].GetBinContent(i))
+                        hdnNorm.SetBinError(i,hsys[1].GetBinError(i))
+                    hupNorm.Rebin(nbins)
+                    hdnNorm.Rebin(nbins)
+
+                if rebinToEq:
+                    fout.WriteTObject(hupEquiDistant,hname_sys_up)
+                    fout.WriteTObject(hdnEquiDistant,hname_sys_dn)
+                    hupNormOut = ROOT.TH1F(hname_sys_upNorm,hname_sys_upNorm,1,0.5,1.5)
+                    if(hsys[0]):
+                        hupNormOut.SetBinContent(1,hupNorm.GetBinContent(1))
+                        hupNormOut.SetBinError(1,hupNorm.GetBinError(1))
+                    hdnNormOut = ROOT.TH1F(hname_sys_dnNorm,hname_sys_dnNorm,1,0.5,1.5)
+                    if(hsys[1]):
+                        hdnNormOut.SetBinContent(1,hdnNorm.GetBinContent(1))
+                        hdnNormOut.SetBinError(1,hdnNorm.GetBinError(1))
+                    fout.WriteTObject(hupNormOut,hname_sys_upNorm)
+                    fout.WriteTObject(hdnNormOut,hname_sys_dnNorm)
+
 
     ## create total background hists
     #h_total = histutils.add_hists([ hists[s] for s in backgrounds ])
