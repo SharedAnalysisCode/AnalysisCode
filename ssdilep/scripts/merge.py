@@ -6,12 +6,14 @@ import funcs
 import os
 
 from ssdilep.samples import samples
+from ssdilep.samples import sample
 from ssdilep.plots   import vars_mumu
 from ssdilep.plots   import vars_ee
 #from ssdilep.plots   import vars_fakes
 from systematics     import *
 
 from optparse import OptionParser
+import copy
 
 DO_SYS = True
 
@@ -48,6 +50,8 @@ parser.add_option('-S', '--signal', dest='signal',
                   help='signal',metavar='SIGNAL',default=None)
 parser.add_option('-R', '--rebinToEq', dest='rebinToEq',
                   help='rebinToEq',metavar='REBINTOEQ',default=None)
+parser.add_option('-V', '--varName', dest='varName',
+                  help='varName',metavar='VARNAME',default=None)
 
 (options, args) = parser.parse_args()
 
@@ -56,7 +60,7 @@ parser.add_option('-R', '--rebinToEq', dest='rebinToEq',
 #-----------------
 #lumi =  3158.13
 #lumi =  18232.76
-lumi =  36470.16
+lumi =  36074.56
 #lumi =  18232.8
 #lumi = 5000
 
@@ -114,7 +118,7 @@ elif options.samples in ["ttbar","ttbarss"]:
   samples.singletop,
   samples.ttX,
   samples.AZNLOCTEQ6L1_DYee,
-  # samples.ZtautauPowheg,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "OSCR":
   mc_backgrounds = [
@@ -124,7 +128,7 @@ elif options.samples == "OSCR":
   samples.diboson_sherpa221,
   samples.singletop,
   samples.ttX,
-  # samples.ZtautauPowheg,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples in ["SSVR","SSVRBLIND"]:
   mc_backgrounds = [
@@ -133,7 +137,7 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.VV_ee,
   samples.diboson_sherpa221,
   samples.singletop,
-  # samples.AZNLOCTEQ6L1_DYtautau,
+  samples.AZNLOCTEQ6L1_DYtautau,
   samples.ttX,
   ]
 elif options.samples == "ZPeak":
@@ -168,10 +172,11 @@ elif options.samples == "diboson":
 elif options.samples == "dibosonFit":
   mc_backgrounds = [
   samples.diboson_sherpa221,
-  samples.singletop,
   samples.ttX,
-  # samples.AZNLOCTEQ6L1_DYtautau,
+  samples.singletop,
   samples.ttbar,
+  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mc_backgrounds = [
@@ -191,45 +196,91 @@ mumu_signals = []
 #mumu_signals.append(samples.all_DCH)
 #mumu_signals.append(samples.DCH800)
 
-signal = [
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH300,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH350,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH400,
-  # # samples.Pythia8EvtGen_A14NNPDF23LO_DCH450,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH500,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH550,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH600,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH650,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH700,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH750,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH800,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH850,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH900,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH950,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH1000,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH1050,
-  # samples.Pythia8EvtGen_A14NNPDF23LO_DCH1100,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH1150,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH1200,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH1250,
-  samples.Pythia8EvtGen_A14NNPDF23LO_DCH1300,
-  ]
+signal_ee100mm0 = []
+signal_ee50mm50 = []
+
+xsecL = [16.704, 9.22647, 4.9001, 2.74046, 1.7631, 1.14646, 0.72042, 0.466521, 0.32154, 0.222586, 0.15288, 0.106694, 0.076403, 0.0549749, 0.039656, 0.028836, 0.021202, 0.0156522, 0.011632, 0.0087236, 0.0065092]
+masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
+
+intiger = 9
+for mass,xsec in zip(masses,xsecL):
+  if mass==450 or mass==1100: continue
+  # if mass not in [600]: continue
+  name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
+  globals()[name+"ee100mm0"] = sample.Sample(
+    name = name,
+    tlatex = "DCH%d Br(ee)=1.0" % (mass),
+    line_color = ROOT.kOrange-intiger+2,
+    marker_color = ROOT.kOrange-intiger,
+    fill_color = ROOT.kOrange-intiger,
+    line_width  = 3,
+    line_style = 1,
+    fill_style = 3004,
+    xsec       = xsec/1000.,
+    )
+  signal_ee100mm0 += [globals()[name+"ee100mm0"]]
+  globals()[name+"ee50mm50"] = sample.Sample(
+    name = name,
+    tlatex = "DCH%d Br(ee)=Br(#mu#mu)=0.5" % (mass),
+    line_color = ROOT.kRed-intiger+2,
+    marker_color = ROOT.kRed-intiger,
+    fill_color = ROOT.kRed-intiger,
+    line_width  = 3,
+    line_style = 1,
+    fill_style = 3004,
+    xsec       = xsec/1000.,
+    )
+  signal_ee50mm50 += [globals()[name+"ee50mm50"]]
+  intiger -= 1
+
+# signal = [
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH300,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH350,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH400,
+#   # # samples.Pythia8EvtGen_A14NNPDF23LO_DCH450,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH500,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH550,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH600,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH650,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH700,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH750,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH800,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH850,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH900,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH950,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1000,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1050,
+#   # samples.Pythia8EvtGen_A14NNPDF23LO_DCH1100,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1150,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1200,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1250,
+#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1300,
+#   ]
+
 
 #--------------
 # Estimators
 #--------------
 #for s in mc_backgrounds + mumu_signals + [data]: 
-#for s in mc_backgrounds: 
+#for s in mc_backgrounds:
+
 
 for s in mc_backgrounds: 
     histmgr.load_base_estimator(hm,s)
 
+for s in signal_ee100mm0:
+  s.estimator = histmgr.EstimatorDCH( hm=hm, ee=1.0, mm=0.0, sample=s )
+  s.nameSuffix = "ee100mm0"
+
+for s in signal_ee50mm50:
+  s.estimator = histmgr.EstimatorDCH( hm=hm, ee=0.5, mm=0.5, sample=s )
+  s.nameSuffix = "ee50mm50"
+
+signal = signal_ee100mm0 + signal_ee50mm50
+
 for s in [data]: 
     histmgr.load_base_estimator(hm,s)
 
-for s in signal:
-  print s
-  s.estimator = histmgr.EstimatorDCH( hm=hm, sample=s )
 
 if options.fakest == "FakeFactor":
   fakes_mumu.estimator = histmgr.FakeEstimator(
@@ -343,8 +394,8 @@ elif options.samples == "ttbar":
   fakes_mumu,
   samples.diboson_sherpa221,
   # samples.VV_ee,
-  # samples.ZtautauPowheg,
   samples.ttX,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "ttbarss":
   mumu_backgrounds = [
@@ -354,8 +405,8 @@ elif options.samples == "ttbarss":
   samples.singletop,
   samples.diboson_sherpa221,
   # samples.VV_ee,
-  # samples.ZtautauPowheg,
   samples.ttX,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "OSCR":
   mumu_backgrounds = [
@@ -366,7 +417,7 @@ elif options.samples == "OSCR":
   samples.singletop,
   fakes_mumu,
   samples.ttX,
-  # samples.ZtautauPowheg,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "ZPeak":
   mumu_backgrounds = [
@@ -387,7 +438,7 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.VV_ee,
   samples.diboson_sherpa221,
   samples.singletop,
-  # samples.AZNLOCTEQ6L1_DYtautau,
+  samples.AZNLOCTEQ6L1_DYtautau,
   samples.ttX,
   ]
 elif options.samples == "diboson":
@@ -412,10 +463,11 @@ elif options.samples == "dibosonFit":
   mumu_backgrounds = [
   samples.diboson_sherpa221,
   fakes_mumu,
-  samples.singletop,
   samples.ttX,
-  # samples.AZNLOCTEQ6L1_DYtautau,
+  samples.singletop,
   samples.ttbar,
+  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mumu_backgrounds = [
@@ -474,7 +526,8 @@ else:
          sys_dict    = sys_dict if DO_SYS else None,
          outname     = plotsfile,
          regName     = options.tag,
-         rebinToEq   = True if options.rebinToEq=="True" else False
+         rebinToEq   = True if options.rebinToEq=="True" else False,
+         varName     = str(options.varName)
          )
  ## EOF
 

@@ -161,6 +161,7 @@ def analyze(config):
     #         region   = 'diboson-CR',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyThreeLooseEleLooseLLHSS90M200',None],
     #            ['ExactlyThreeLooseEleLooseLLHOSZmass',None],
     #            ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
@@ -170,6 +171,7 @@ def analyze(config):
     #         region   = 'diboson-CR-fakes',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyThreeLooseEleLooseLLHSS90M200',None],
     #            ['ExactlyThreeLooseEleLooseLLHOSZmass',None],
     #            ['FailExactlyThreeTightEleMediumLLHisolLoose',["GenericFakeFactor","ThreeElectron2e17TrigWeight"]],
@@ -181,6 +183,7 @@ def analyze(config):
     #         region   = 'threeElectron-VR',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyThreeLooseEleLooseLLHSS90M200',None],
     #            ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
     #            ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
@@ -190,6 +193,7 @@ def analyze(config):
     #         region   = 'threeElectron-VR-fakes',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyThreeLooseEleLooseLLHSS90M200',None],
     #            ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
     #            ['FailExactlyThreeTightEleMediumLLHisolLoose',["GenericFakeFactor","ThreeElectron2e17TrigWeight"]],
@@ -203,6 +207,7 @@ def analyze(config):
     #         region   = 'opposite-sign-CR',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHOS',None],
     #            ['Mass130GeVLooseLLH',None],
     #            ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
@@ -212,6 +217,7 @@ def analyze(config):
     #         region   = 'opposite-sign-CR-fakes',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHOS',None],
     #            ['Mass130GeVLooseLLH',None],
     #            ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','TwoElectron2e17TrigWeight']],
@@ -222,6 +228,7 @@ def analyze(config):
     #         region   = 'same-sign-CR',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHSS',None],
     #            ['Mass130GeV200LooseLLH',None],
     #            ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
@@ -231,6 +238,7 @@ def analyze(config):
     #         region   = 'same-sign-CR-fakes',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHSS',None],
     #            ['Mass130GeV200LooseLLH',None],
     #            ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','TwoElectron2e17TrigWeight']],
@@ -244,6 +252,7 @@ def analyze(config):
     #         region   = 'opposite-sign-ttbar-CR',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHOS',None],
     #            ['Mass130GeVLooseLLH',None],
     #            ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
@@ -254,6 +263,7 @@ def analyze(config):
     #         region   = 'opposite-sign-ttbar-CR-fakes',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHOS',None],
     #            ['Mass130GeVLooseLLH',None],
     #            ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
@@ -265,6 +275,7 @@ def analyze(config):
     #         region   = 'same-sign-ttbar-CR',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHSS',None],
     #            ['Mass130GeV200LooseLLH',None],
     #            ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
@@ -275,50 +286,51 @@ def analyze(config):
     #         region   = 'same-sign-ttbar-CR-fakes',
     #         plot_all = False,
     #         cut_flow = [
+    #            ['DCHFilter',None],
     #            ['ExactlyTwoLooseEleLooseLLHSS',None],
     #            ['Mass130GeV200LooseLLH',None],
     #            ['OneOrTwoBjets',['OneOrTwoBjetsSF']],
     #            ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','TwoElectron2e17TrigWeight']],
     #            ],
     #         )
-    ## SIGNAL REGION
-    ## ---------------------------------------
-    ## ------ two ele
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'two-ele-SR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['ExactlyTwoLooseEleLooseLLH',None],
-               ['ExactlyTwoLooseEleLooseLLHSS',None],
-               ['Mass200GeVLooseLLH',None],
-               ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'two-ele-SR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['ExactlyTwoLooseEleLooseLLH',None],
-               ['ExactlyTwoLooseEleLooseLLHSS',None],
-               ['Mass200GeVLooseLLH',None],
-               ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','TwoElectron2e17TrigWeight']],
-               ],
-            )
-    for channel in ["eeee","eemm","mmmm"]:
-        loop += ssdilep.algs.algs.PlotAlgCRele(
-                region   = 'two-ele-SR-signal-'+channel,
-                plot_all = False,
-                cut_flow = [
-                   ['DCHFilter'+channel,None],
-                   ['ExactlyTwoLooseEleLooseLLH',None],
-                   ['ExactlyTwoLooseEleLooseLLHSS',None],
-                   ['Mass200GeVLooseLLH',None],
-                   ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
-                   ],
-                )
-    ## ------ three ele
+    # ## SIGNAL REGION
+    # ## ---------------------------------------
+    # ## ------ two ele
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'two-ele-SR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['ExactlyTwoLooseEleLooseLLH',None],
+    #            ['ExactlyTwoLooseEleLooseLLHSS',None],
+    #            ['Mass200GeVLooseLLH',None],
+    #            ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'two-ele-SR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['ExactlyTwoLooseEleLooseLLH',None],
+    #            ['ExactlyTwoLooseEleLooseLLHSS',None],
+    #            ['Mass200GeVLooseLLH',None],
+    #            ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','TwoElectron2e17TrigWeight']],
+    #            ],
+    #         )
+    # for channel in ["eeee","eemm","mmmm"]:
+    #     loop += ssdilep.algs.algs.PlotAlgCRele(
+    #             region   = 'two-ele-SR-signal-'+channel,
+    #             plot_all = False,
+    #             cut_flow = [
+    #                ['DCHFilter'+channel,None],
+    #                ['ExactlyTwoLooseEleLooseLLH',None],
+    #                ['ExactlyTwoLooseEleLooseLLHSS',None],
+    #                ['Mass200GeVLooseLLH',None],
+    #                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','TwoElectron2e17TrigWeight']],
+    #                ],
+    #             )
+    # ------ three ele
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'three-ele-SR',
             plot_all = False,

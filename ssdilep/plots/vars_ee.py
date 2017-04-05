@@ -22,11 +22,14 @@ cutflow_presel = Var(name = 'cutflow_presel', log=False, path="")
 ## ---------------------------------------
 bins_pt = generateLogBins(35,30,2000)
 bins_pt_2 = generateLogBins(20,30,1000)
+bins_pt_SR = generateLogBins(20,30,2000)
 bins_mt = generateLogBins(50,50,2000)
+bins_HT = generateLogBins(30,90,4000)
 bins_invM = generateLogBins(50,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
-bins_invMassSR2EL = generateLogBins(40,200,2000)
-bins_invMassSR3EL = generateLogBins(10,200,2000)
+bins_invMassSR2EL = generateLogBins(50,200,2000)
+# bins_invMassSR3EL = generateLogBins(20,300,4000)
+bins_invMassSR3EL = generateLogBins(15,200,2000)
 bins_invM_2 = generateLogBins(15,130,200)
 bins_invM_3 = generateLogBins(8,130,200)
 bins_invM_4 = generateLogBins(6,90,200)
@@ -81,6 +84,17 @@ nbjets = Var(name = 'nbjets',
               xmax  = 6,
               log   = False,
             )
+
+HT = Var(name='HT',
+              path   = 'event',
+              xmin   = 90,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_HT,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = True
+              )
 
 invMassOS1 = Var(name='invMassOS1',
               path   = 'event',
@@ -487,6 +501,16 @@ el_third_pt_2 = Var(name = 'el_third_pt',
               logx   = True,
               )
 
+el_third_pt_SR = Var(name = 'el_third_pt',
+              path   = 'electrons',
+              xmin   = 30.,
+              xmax   = 2000.,
+              rebin  = 1,
+              rebinVar  = bins_pt_SR,
+              log    = False,
+              logx   = True,
+              )
+
 el_lead_eta = Var(name = 'el_lead_eta',
               path    = 'electrons',
               xmin    = -2.47,
@@ -850,6 +874,8 @@ vars_dict["ZbosonPt_cf"] = ZbosonPt_cf.__dict__
 vars_dict["el_eta_cf"] = el_eta_cf.__dict__
 vars_dict["el_lead_eta_cf"] = el_lead_eta_cf.__dict__
 vars_dict["el_sublead_eta_cf"] = el_sublead_eta_cf.__dict__
+vars_dict["el_third_pt_SR"] = el_third_pt_SR.__dict__
+vars_dict["HT"] = HT.__dict__
 
 ## EOF
 

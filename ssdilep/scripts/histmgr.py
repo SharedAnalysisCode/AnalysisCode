@@ -485,12 +485,15 @@ class EstimatorDCH(BaseEstimator):
     Standard Estimator class for DCH
     '''
     #____________________________________________________________
-    def __init__(self,**kw):
+    def __init__(self,ee,mm,**kw):
         BaseEstimator.__init__(self,**kw)
 
         ## xsec / Ntotal, seperately for each systematic
         ## (set on first call to hist)
         self.mc_lumi_frac = {}
+        self.ee = ee
+        self.mm = mm
+        assert ee+mm == 1, "sum of brs not equal to one!"
    
 
     #____________________________________________________________
@@ -498,18 +501,52 @@ class EstimatorDCH(BaseEstimator):
         """
         implemenation of nominal hist getter
         """
-        h = self.hm.hist(histname=histname,
+
+        Feeee = self.ee*self.ee
+        Feemm = 2*self.ee*self.mm
+        Fmmmm = self.mm*self.mm
+
+        heeee = self.hm.hist(histname=histname,
                          samplename=self.sample.name,
                          region=region+"-signal-eeee",
-                         icut=icut+1,
+                         icut=icut,
                          sys=sys,
                          mode=mode,
                          )
-        if h and self.sample.type == 'mc': 
+        if heeee and self.sample.type == 'mc': 
             lumi_frac = self.get_mc_lumi_frac(sys,mode)
-            h.Scale(self.hm.target_lumi * lumi_frac)
+            heeee.Scale(self.hm.target_lumi * lumi_frac * 16 * Feeee)
 
-        return h    
+        heemm = self.hm.hist(histname=histname,
+                         samplename=self.sample.name,
+                         region=region+"-signal-eemm",
+                         icut=icut,
+                         sys=sys,
+                         mode=mode,
+                         )
+        if heemm and self.sample.type == 'mc': 
+            lumi_frac = self.get_mc_lumi_frac(sys,mode)
+            heemm.Scale(self.hm.target_lumi * lumi_frac * 8 * Feemm)
+
+        hmmmm = self.hm.hist(histname=histname,
+                         samplename=self.sample.name,
+                         region=region+"-signal-mmmm",
+                         icut=icut,
+                         sys=sys,
+                         mode=mode,
+                         )
+        if hmmmm and self.sample.type == 'mc': 
+            lumi_frac = self.get_mc_lumi_frac(sys,mode)
+            hmmmm.Scale(self.hm.target_lumi * lumi_frac * 16 * Fmmmm)
+
+        h = None
+        if heeee:
+            h = heeee.Clone()
+            h.Add(heemm)
+            h.Add(hmmmm)
+
+        return h
+        
     #____________________________________________________________
     def get_mc_lumi_frac(self,sys,mode):
         '''
@@ -556,6 +593,7 @@ class FakeEstimatorGeneral(BaseEstimator):
         # ---------
         region_l_den = region.replace("-CR","-CR-fakes").replace("-VR","-VR-fakes").replace("-SR","-SR-fakes")
         print region_l_den
+        print self.data_sample.name
         h_l_den = self.data_sample.hist(histname=histname,
                                 region=region_l_den,
                                 icut=icut,
@@ -732,7 +770,8 @@ def load_base_estimator(hm,input_sample):
              #load estimators
              if input_sample.type in ["data","mc"]: 
                  input_sample.estimator = Estimator(hm=hm,sample=input_sample)
-                 print 'sample %s, assigned Estimator' % (input_sample.name)
+                 # if "physics_Main" not in input_sample.name:
+                 #    print 'sample %s, assigned Estimator' % (input_sample.name)
 
 
 #____________________________________________________________

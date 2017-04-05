@@ -32,6 +32,7 @@ class Var(object):
             blind  = None,
             signal  = None,
             rebinToEq  = None,
+            varName  = None,
             ):
         self.name = name
         if not title: title = name
@@ -53,6 +54,7 @@ class Var(object):
         self.blind  = blind
         self.signal  = signal
         self.rebinToEq  = rebinToEq
+        self.varName  = varName
 
 
 

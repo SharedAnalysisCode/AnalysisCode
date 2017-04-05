@@ -38,7 +38,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # outputs
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
-RUN = "AllR_v3_003"
+RUN = "AllR_v3_005"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_004"
 
@@ -62,9 +62,9 @@ DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
-CF_SYS = False
-FF_SYS = False
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
+CF_SYS = True
+FF_SYS = True
 
 
 def main():
@@ -95,7 +95,7 @@ def main():
     all_data = samples.all_data
 
     # all_mc = []
-    all_data = []
+    # all_data = []
 
     nominal = all_mc 
     nominal += all_data

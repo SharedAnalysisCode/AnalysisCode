@@ -3059,6 +3059,7 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
+        self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_invMassOS1 = self.hist('h_invMassOS1', "ROOT.TH1F('$', ';Leading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_invMassOS2 = self.hist('h_invMassOS2', "ROOT.TH1F('$', ';Subleading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
@@ -3145,6 +3146,7 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_invMassOS2.Fill( (OS2ele1.tlv+OS2ele2.tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (ele1.tlv+ele2.tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (ele1.tlv+ele2.tlv).Eta(), weight)
+          self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt())/GeV, weight )
 
           nbjets = 0
           for jet in jets:

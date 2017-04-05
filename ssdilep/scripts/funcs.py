@@ -354,15 +354,23 @@ def plot_hist(
     if not do_ratio_plot:
         leg.SetTextSize(0.035)
     if data: leg.AddEntry(h_data,"#font[42]{"+str(data.tlatex)+"}",'P')
+    for b in backgrounds: 
+      if not b in hists.keys(): continue
+      leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
+
+    leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/2.5-0.07,legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
+    leg2.SetBorderSize(0)
+    leg2.SetFillColor(0)
+    leg2.SetFillStyle(0)
+    leg2.SetTextSize(0.045)
+    if not do_ratio_plot:
+        leg2.SetTextSize(0.035)
     if signal:
      for s in signal:
        sig_tag = s.tlatex
        if sig_rescale: sig_tag = "%d #times "%int(sig_rescale) + sig_tag
        if not s in hists.keys(): continue
-       leg.AddEntry(hists[s],"#font[42]{"+str(sig_tag)+"}",'F')
-    for b in backgrounds: 
-      if not b in hists.keys(): continue
-      leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
+       leg2.AddEntry(hists[s],"#font[42]{"+str(sig_tag)+"}",'F')
 
 
     ## create canvas
@@ -456,6 +464,7 @@ def plot_hist(
     pad1.SetLogy(log)
     if logx!=None : pad1.SetLogx(logx)
     leg.Draw()
+    if signal: leg2.Draw()
     pad1.RedrawAxis()
 
     tlatex = ROOT.TLatex()
@@ -585,6 +594,7 @@ def write_hist(
         outname     = None,
         rebinToEq   = None,
         regName     = None,
+        varName     = None,
         ):
     """
     write hists for backgrounds, signals and data to file.
@@ -611,13 +621,14 @@ def write_hist(
     fout = ROOT.TFile.Open(fname,'RECREATE')
     for s,h in hists.items():
         print s.name
-        if "Pythia8EvtGen_A14NNPDF23LO_DCH" in s.name:
-            print h
-            print h.GetSum()
+        print "hist name: ", h.GetName()
+        print h.GetSum()
+        if hasattr(s,"nameSuffix"):
+            s.name += s.nameSuffix
         hname = ""
         hnameNorm = ""
         if rebinToEq:
-            hname = 'h%sNom_%s_obs_mee' % (s.name,region if not regName else regName)
+            hname = 'h%sNom_%s_%s' % (s.name,region if not regName else regName, varName)
             hnameNorm = 'h%sNom_%sNorm' % (s.name,region if not regName else regName)
             h.SetNameTitle(hname+"temp",hname+"temp")
         else:
@@ -658,8 +669,8 @@ def write_hist(
                 hname = ""
                 hnameNorm = ""
                 if rebinToEq:
-                    hname_sys_up = 'h%s%s_%s_obs_mee' % (s.name,s_name+"High",region if not regName else regName)
-                    hname_sys_dn = 'h%s%s_%s_obs_mee' % (s.name,s_name+"Low",region if not regName else regName)
+                    hname_sys_up = 'h%s%s_%s_%s' % (s.name,s_name+"High",region if not regName else regName, varName)
+                    hname_sys_dn = 'h%s%s_%s_%s' % (s.name,s_name+"Low",region if not regName else regName, varName)
                     hname_sys_upNorm = 'h%s%s_%sNorm' % (s.name,s_name+"High",region if not regName else regName)
                     hname_sys_dnNorm = 'h%s%s_%sNorm' % (s.name,s_name+"Low",region if not regName else regName)
                     if hsys[0]: hsys[0].SetNameTitle(hname_sys_up+"temp",hname_sys_up+"temp")

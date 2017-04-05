@@ -1462,27 +1462,27 @@ for m in DCH_masses:
             fill_style = 3004,
             )
 
-Pythia8EvtGen_A14NNPDF23LO_DCH300.xsec   = 16.704*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH350.xsec   = 9.22647*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH400.xsec   = 4.9001*16./1000.
-# Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec   = 2.74046*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH500.xsec   = 1.7631*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH550.xsec   = 1.14646*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH600.xsec   = 0.72042*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH650.xsec   = 0.466521*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH700.xsec   = 0.32154*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH750.xsec   = 0.222586*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH800.xsec   = 0.15288*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH850.xsec   = 0.106694*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH900.xsec   = 0.076403*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH950.xsec   = 0.0549749*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1000.xsec  = 0.039656*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1050.xsec  = 0.028836*16./1000.
-# Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec  = 0.021202*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1150.xsec  = 0.0156522*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1200.xsec  = 0.011632*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1250.xsec  = 0.0087236*16./1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1300.xsec  = 0.0065092*16./1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH300.xsec   = 16.704/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH350.xsec   = 9.22647/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH400.xsec   = 4.9001/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec   = 2.74046/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH500.xsec   = 1.7631/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH550.xsec   = 1.14646/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH600.xsec   = 0.72042/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH650.xsec   = 0.466521/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH700.xsec   = 0.32154/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH750.xsec   = 0.222586/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH800.xsec   = 0.15288/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH850.xsec   = 0.106694/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH900.xsec   = 0.076403/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH950.xsec   = 0.0549749/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1000.xsec  = 0.039656/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1050.xsec  = 0.028836/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec  = 0.021202/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1150.xsec  = 0.0156522/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1200.xsec  = 0.011632/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1250.xsec  = 0.0087236/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1300.xsec  = 0.0065092/1000.
 
 
 list_DCH =[globals()[DCH_name%(m)] for m in DCH_masses]
@@ -1550,12 +1550,12 @@ all_mc = []
 
 ### EXOT12 dilep
 # all_mc += VV_ee.daughters
-# all_mc += diboson_sherpa221.daughters
-# all_mc += AZNLOCTEQ6L1_DYee.daughters
-# all_mc += singletop.daughters
-# all_mc += ttbar.daughters
-# all_mc += ttX.daughters
-# all_mc += AZNLOCTEQ6L1_DYtautau.daughters
+all_mc += diboson_sherpa221.daughters
+all_mc += AZNLOCTEQ6L1_DYee.daughters
+all_mc += singletop.daughters
+all_mc += ttbar.daughters
+all_mc += ttX.daughters
+all_mc += AZNLOCTEQ6L1_DYtautau.daughters
 all_mc += all_DCH.daughters
 
 ### EXOT12 ZPeak
