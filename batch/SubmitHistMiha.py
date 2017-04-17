@@ -38,7 +38,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # outputs
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
-RUN = "AllR_v3_005"
+RUN = "AllR_v3_009"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_004"
 
@@ -161,12 +161,29 @@ def submit(tag,job_sys,samps,config={}):
     global TESTMODE
 
     ## construct config file
-    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
+    cfg = os.path.join(JOBDIR,'ConfigHist.' + str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) + "." + str(tag) + "." + str(os.path.basename(SCRIPT)[0:-3]) )
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
     maxevents = 1000000
     for s in samps:
+        if len(config) > 0:
+            ## skip signal and alt samples
+            if s in samples.diboson_powheg_alt.daughters:
+                # print "skipping sys job on alt sample ", s.name
+                continue
+            elif s in samples.ttbar_alt.daughters:
+                # print "skipping sys job on alt sample ", s.name
+                continue
+            elif s in samples.all_DCH.daughters:
+                if config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP']:
+                    print "skipping CF sys job sample ", s.name
+                    continue
+            elif s in samples.all_data:
+                if config['sys'] in ['CF_UP','CF_DN']:
+                    print "skipping CF sys job sample ", s.name
+                    continue
+
 
         ## input
         sinput = input_file(s,job_sys)

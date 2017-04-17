@@ -1166,6 +1166,28 @@ class CutAlg(pyframe.core.Algorithm):
             return False
         return True
 
+    def cut_NoStrictlyLooseEleTwoOrThreeTight(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        ntight = 0
+        for ele in electrons:
+          if not (ele.isIsolated_Loose and ele.LHMedium):
+            return False
+          else:
+            ntight += 1
+        if ntight in [2,3]:
+          return True
+        return False
+
+    def cut_NotNoStrictlyLooseEleTwoOrThreeTight(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        ntight = 0
+        for ele in electrons:
+          if (ele.isIsolated_Loose and ele.LHMedium):
+            ntight += 1
+        if len(electrons) in [2,3] and ntight < len(electrons):
+          return True
+        return False
+
     def cut_ExactlyThreeLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==3: 
@@ -1212,6 +1234,16 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_LooseEleLooseLLHOSZVeto(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        OSPairZmass = 0
+        OS2PairMass = 0
+        for pair in itertools.combinations(electrons,2):
+          if pair[0].trkcharge != pair[1].trkcharge : 
+            if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) <= 10*GeV:
+              return False
+        return True
+
     def cut_ExactlyThreeLooseEleLooseLLH1SS(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if not len(electrons)==3: 
@@ -1242,6 +1274,18 @@ class CutAlg(pyframe.core.Algorithm):
         electrons = self.store['electrons_loose_LooseLLH']
         if not len(electrons)==3: 
           return False
+        SSPair = 0
+        SSPairMass = 0
+        for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            SSPairMass = (pair[0].tlv + pair[1].tlv).M()
+        if SSPair == 1 and SSPairMass > 200*GeV:
+          return True
+        return False
+
+    def cut_LooseEleLooseLLHSS200M(self):
+        electrons = self.store['electrons_loose_LooseLLH']
         SSPair = 0
         SSPairMass = 0
         for pair in itertools.combinations(electrons,2):
@@ -1567,6 +1611,18 @@ class CutAlg(pyframe.core.Algorithm):
           if jet.isFix77:
             nbjets += 1
         if nbjets in [1,2]:
+          return True
+        else:
+          return False
+
+    #----- b-veto
+    def cut_bjetveto(self):
+        nbjets = 0
+        jets = self.store['jets']
+        for jet in jets:
+          if jet.isFix77:
+            nbjets += 1
+        if nbjets == 0:
           return True
         else:
           return False
@@ -3064,6 +3120,7 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_invMassOS2 = self.hist('h_invMassOS2', "ROOT.TH1F('$', ';Subleading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
+        self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ee);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -3101,7 +3158,8 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         # Fill histograms
         # ---------------
         if passed:
-          assert len(electrons)==3, "should have exactly three electrons at this point"
+          assert len(electrons) in [2,3], "should have exactly three electrons at this point"
+          NEL = len(electrons)
           NSSPairs = 0
           ele1 = 0
           ele2 = 0
@@ -3128,12 +3186,13 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
             else:
               OS2ele1 = pair[0]
               OS2ele2 = pair[1]
-          if (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()) >= (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()):
+          if NEL==3 and (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()) >= (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()):
             OS1ele1, OS2ele1 = OS2ele1, OS1ele1
             OS1ele2, OS2ele2 = OS2ele2, OS1ele2
           assert NSSPairs == 1, "expected exactly one same-sign pair"
           assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
-          assert (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()) > (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()), "wrong OS1,OS2 assignement"
+          if NEL==3 :
+            assert (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()) > (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()), "wrong OS1,OS2 assignement"
           assert ele3!=ele2 and ele3!=ele1, "third ele not properly defined"
 
           ## event plots 
@@ -3142,11 +3201,16 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_NPV.Fill(self.chain.NPV, weight)
           self.h_nelectrons.Fill(len(electrons), weight)
           self.h_invMass.Fill( (ele1.tlv+ele2.tlv).M()/GeV, weight)
-          self.h_invMassOS1.Fill( (OS1ele1.tlv+OS1ele2.tlv).M()/GeV, weight)
-          self.h_invMassOS2.Fill( (OS2ele1.tlv+OS2ele2.tlv).M()/GeV, weight)
+          if NEL == 3:
+            self.h_invMassOS1.Fill( (OS1ele1.tlv+OS1ele2.tlv).M()/GeV, weight)
+            self.h_invMassOS2.Fill( (OS2ele1.tlv+OS2ele2.tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (ele1.tlv+ele2.tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (ele1.tlv+ele2.tlv).Eta(), weight)
-          self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt())/GeV, weight )
+          self.h_DR.Fill( ele1.tlv.DeltaR(ele2.tlv), weight)
+          if NEL == 3:
+            self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt())/GeV, weight )
+          else:
+            self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt())/GeV, weight )
 
           nbjets = 0
           for jet in jets:
@@ -3182,11 +3246,12 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
           self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
 
-          self.h_el_third_pt.Fill(ele3.tlv.Pt()/GeV, weight)
-          self.h_el_third_eta.Fill(ele3.eta, weight)
-          self.h_el_third_phi.Fill(ele3.tlv.Phi(), weight)
-          self.h_el_third_trkd0sig.Fill(ele3.trkd0sig, weight)
-          self.h_el_third_trkz0sintheta.Fill(ele3.trkz0sintheta, weight)
+          if NEL == 3:
+            self.h_el_third_pt.Fill(ele3.tlv.Pt()/GeV, weight)
+            self.h_el_third_eta.Fill(ele3.eta, weight)
+            self.h_el_third_phi.Fill(ele3.tlv.Phi(), weight)
+            self.h_el_third_trkd0sig.Fill(ele3.trkd0sig, weight)
+            self.h_el_third_trkz0sintheta.Fill(ele3.trkz0sintheta, weight)
 
 
     #__________________________________________________________________________
@@ -3356,6 +3421,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
+        self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ee);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -3396,6 +3462,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
+          self.h_DR.Fill( electrons[0].tlv.DeltaR(electrons[1].tlv), weight)
 
           nbjets = 0
           for jet in jets:

@@ -643,10 +643,19 @@ def write_hist(
             hNorm = ROOT.TH1F(hnameNorm+"temp",hnameNorm+"temp",nbins,0,nbins)
             hNorm.Sumw2(1)
             for i in range(0,nbins+2):
-                hEquiDistant.SetBinContent(i,h.GetBinContent(i))
-                hEquiDistant.SetBinError(i,h.GetBinError(i))
-                hNorm.SetBinContent(i,h.GetBinContent(i))
-                hNorm.SetBinError(i,h.GetBinError(i))
+                binVal = 0
+                binErr = 0
+                if (nbins+2 > i > 0) and h.GetBinContent(i) < 0:
+                    print "fixing negative weight"
+                    binVal = (h.GetBinContent(i-1)+h.GetBinContent(i+1))/2.
+                    binErr = (h.GetBinError(i-1)+h.GetBinError(i+1))/2.
+                else:
+                    binVal = h.GetBinContent(i)
+                    binErr = h.GetBinError(i)
+                hEquiDistant.SetBinContent(i,binVal)
+                hEquiDistant.SetBinError(i,binErr)
+                hNorm.SetBinContent(i,binVal)
+                hNorm.SetBinError(i,binErr)
             hNorm.Rebin(nbins)
 
             fout.WriteTObject(hEquiDistant,hname)
@@ -700,14 +709,30 @@ def write_hist(
                     hupNorm.Sumw2(1)
                     hdnNorm.Sumw2(1)
                     for i in range(0,nbins+2):
-                        hupEquiDistant.SetBinContent(i,hsys[0].GetBinContent(i))
-                        hupEquiDistant.SetBinError(i,hsys[0].GetBinError(i))
-                        hdnEquiDistant.SetBinContent(i,hsys[1].GetBinContent(i))
-                        hdnEquiDistant.SetBinError(i,hsys[1].GetBinError(i))
-                        hupNorm.SetBinContent(i,hsys[0].GetBinContent(i))
-                        hupNorm.SetBinError(i,hsys[0].GetBinError(i))
-                        hdnNorm.SetBinContent(i,hsys[1].GetBinContent(i))
-                        hdnNorm.SetBinError(i,hsys[1].GetBinError(i))
+                        binValU = 0
+                        binErrU = 0
+                        binValD = 0
+                        binErrD = 0
+                        if (nbins+2 > i > 0) and hsys[0].GetBinContent(i) < 0:
+                            binValU = (hsys[0].GetBinContent(i-1)+hsys[0].GetBinContent(i+1))/2.
+                            binErrU = (hsys[0].GetBinError(i-1)+hsys[0].GetBinError(i+1))/2.
+                        else:
+                            binValU = hsys[0].GetBinContent(i)
+                            binErrU = hsys[0].GetBinError(i)
+                        if (nbins+2 > i > 0) and hsys[1].GetBinContent(i) < 0:
+                            binValD = (hsys[1].GetBinContent(i-1)+hsys[1].GetBinContent(i+1))/2.
+                            binErrD = (hsys[1].GetBinError(i-1)+hsys[1].GetBinError(i+1))/2.
+                        else:
+                            binValD = hsys[1].GetBinContent(i)
+                            binErrD = hsys[1].GetBinError(i)
+                        hupEquiDistant.SetBinContent(i,binValU)
+                        hupEquiDistant.SetBinError(i,binErrU)
+                        hdnEquiDistant.SetBinContent(i,binValD)
+                        hdnEquiDistant.SetBinError(i,binErrD)
+                        hupNorm.SetBinContent(i,binValU)
+                        hupNorm.SetBinError(i,binErrU)
+                        hdnNorm.SetBinContent(i,binValD)
+                        hdnNorm.SetBinError(i,binErrD)
                     hupNorm.Rebin(nbins)
                     hdnNorm.Rebin(nbins)
 

@@ -52,6 +52,8 @@ parser.add_option('-R', '--rebinToEq', dest='rebinToEq',
                   help='rebinToEq',metavar='REBINTOEQ',default=None)
 parser.add_option('-V', '--varName', dest='varName',
                   help='varName',metavar='VARNAME',default=None)
+parser.add_option('-L', '--logy', dest='logy',
+                  help='logy',metavar='LOGY',default=None)
 
 (options, args) = parser.parse_args()
 
@@ -202,15 +204,15 @@ signal_ee50mm50 = []
 xsecL = [16.704, 9.22647, 4.9001, 2.74046, 1.7631, 1.14646, 0.72042, 0.466521, 0.32154, 0.222586, 0.15288, 0.106694, 0.076403, 0.0549749, 0.039656, 0.028836, 0.021202, 0.0156522, 0.011632, 0.0087236, 0.0065092]
 masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
 
-intiger = 9
+intiger = 3
 for mass,xsec in zip(masses,xsecL):
   if mass==450 or mass==1100: continue
-  # if mass not in [600]: continue
+  if mass not in [500]: continue
   name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
   globals()[name+"ee100mm0"] = sample.Sample(
     name = name,
     tlatex = "DCH%d Br(ee)=1.0" % (mass),
-    line_color = ROOT.kOrange-intiger+2,
+    line_color = ROOT.kOrange-intiger,
     marker_color = ROOT.kOrange-intiger,
     fill_color = ROOT.kOrange-intiger,
     line_width  = 3,
@@ -222,7 +224,7 @@ for mass,xsec in zip(masses,xsecL):
   globals()[name+"ee50mm50"] = sample.Sample(
     name = name,
     tlatex = "DCH%d Br(ee)=Br(#mu#mu)=0.5" % (mass),
-    line_color = ROOT.kRed-intiger+2,
+    line_color = ROOT.kRed-intiger,
     marker_color = ROOT.kRed-intiger,
     fill_color = ROOT.kRed-intiger,
     line_width  = 3,
@@ -417,7 +419,7 @@ elif options.samples == "OSCR":
   samples.singletop,
   fakes_mumu,
   samples.ttX,
-  samples.AZNLOCTEQ6L1_DYtautau,
+  # samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "ZPeak":
   mumu_backgrounds = [
@@ -502,7 +504,7 @@ if options.makeplot == "True":
     xmax          = mumu_vdict[options.vname]['xmax'],
     rebin         = mumu_vdict[options.vname]['rebin'],
     rebinVar      = mumu_vdict[options.vname]['rebinVar'],
-    log           = mumu_vdict[options.vname]['log'],
+    log           = True if options.logy=="True" else mumu_vdict[options.vname]['log'],
     logx          = mumu_vdict[options.vname]['logx'],
     xlabel        = options.xlabel,
     icut          = int(options.icut),
@@ -510,7 +512,7 @@ if options.makeplot == "True":
     do_ratio_plot = mumu_vdict[options.vname]['do_ratio_plot'],
     save_eps      = True,
     plotsfile     = plotsfile,
-    blind         = True if options.blind=="True" else False
+    blind         = int(options.blind),
     )
 
 else:

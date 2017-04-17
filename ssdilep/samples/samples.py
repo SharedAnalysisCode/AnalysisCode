@@ -491,6 +491,27 @@ diboson_sherpa221_lllvjj = Sample( name =   'diboson_sherpa_lllvjj',
                 )
 
 #-----------------------------------------------------------------------------
+# Powheg diboson (sys)
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonPowheg
+#-----------------------------------------------------------------------------
+
+
+PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4 = Sample( name = "PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4",       xsec =     4.5108   )
+PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4 = Sample( name = "PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4",       xsec =     1.2673   )
+
+diboson_powheg_alt = Sample( name =   'diboson_powheg',
+                  tlatex = 'DB powheg',
+                  fill_color   = ROOT.kGreen-6,
+                  line_color   = ROOT.kGreen-2,
+                  marker_color = ROOT.kGreen-2,
+                  daughters = [
+                                PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4,
+                                PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4,
+                              ],
+                )
+
+#-----------------------------------------------------------------------------
 # VV (PowHeg)
 # Notes:
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonPowheg
@@ -1060,6 +1081,53 @@ AZNLOCTEQ6L1_DYtautau = Sample( name =   'Ztautau',
                               ],
                 )
 
+AZNLOCTEQ6L1_DYee_DYtautau = Sample( name =   'DYZ',
+                  tlatex = 'Drell-Yan Z',
+                  fill_color = ROOT.kWhite,
+                  line_color =  ROOT.kBlack,
+                  marker_color =  ROOT.kBlack,
+                  daughters = [
+                              AZNLOCTEQ6L1_DYee_120M180,        
+                              AZNLOCTEQ6L1_DYee_180M250,        
+                              AZNLOCTEQ6L1_DYee_250M400,        
+                              AZNLOCTEQ6L1_DYee_400M600,        
+                              AZNLOCTEQ6L1_DYee_600M800,        
+                              AZNLOCTEQ6L1_DYee_800M1000,        
+                              AZNLOCTEQ6L1_DYee_1000M1250,        
+                              AZNLOCTEQ6L1_DYee_1250M1500,        
+                              AZNLOCTEQ6L1_DYee_1500M1750,        
+                              AZNLOCTEQ6L1_DYee_1750M2000,        
+                              AZNLOCTEQ6L1_DYee_2000M2250,        
+                              AZNLOCTEQ6L1_DYee_2250M2500,        
+                              AZNLOCTEQ6L1_DYee_2500M2750,        
+                              AZNLOCTEQ6L1_DYee_2750M3000,        
+                              AZNLOCTEQ6L1_DYee_3000M3500,        
+                              AZNLOCTEQ6L1_DYee_3500M4000,        
+                              AZNLOCTEQ6L1_DYee_4000M4500,        
+                              AZNLOCTEQ6L1_DYee_4500M5000,        
+                              AZNLOCTEQ6L1_DYee_5000M,
+                              AZNLOCTEQ6L1_DYtautau_120M180,        
+                              AZNLOCTEQ6L1_DYtautau_180M250,        
+                              AZNLOCTEQ6L1_DYtautau_250M400,        
+                              AZNLOCTEQ6L1_DYtautau_400M600,        
+                              AZNLOCTEQ6L1_DYtautau_600M800,        
+                              AZNLOCTEQ6L1_DYtautau_800M1000,        
+                              AZNLOCTEQ6L1_DYtautau_1000M1250,        
+                              AZNLOCTEQ6L1_DYtautau_1250M1500,        
+                              AZNLOCTEQ6L1_DYtautau_1500M1750,        
+                              AZNLOCTEQ6L1_DYtautau_1750M2000,        
+                              AZNLOCTEQ6L1_DYtautau_2000M2250,        
+                              AZNLOCTEQ6L1_DYtautau_2250M2500,        
+                              AZNLOCTEQ6L1_DYtautau_2500M2750,        
+                              AZNLOCTEQ6L1_DYtautau_2750M3000,        
+                              AZNLOCTEQ6L1_DYtautau_3000M3500,        
+                              AZNLOCTEQ6L1_DYtautau_3500M4000,        
+                              AZNLOCTEQ6L1_DYtautau_4000M4500,        
+                              AZNLOCTEQ6L1_DYtautau_4500M5000,        
+                              AZNLOCTEQ6L1_DYtautau_5000M,             
+                              ],
+                )
+
 #-------
 # Zmumu
 #-------
@@ -1312,6 +1380,7 @@ PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad            = Sample( name = 
 PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad               = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad",    xsec = 380.11432     )
 PowhegPythiaEvtGen_P2012_ttbar_nonallhad                       = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec = 0.69611*0.54341*1000 )
 PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil                  = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil",       xsec = 0.073329*1000 )
+Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO                     = Sample( name =  "Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO",          xsec = 87.531048  )
 
 ttbar = Sample( name =  'ttbar_dilep',
                     tlatex = 't#bar{t}',
@@ -1338,6 +1407,16 @@ ttbar_inc = Sample( name =  'ttbar_dilep',
                                  #PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil,           
                                 ],
                 ) 
+
+ttbar_alt = Sample( name =  'ttbar_dilep_Sherpa',
+                    tlatex = 't#bar{t}',
+                    fill_color = ROOT.kBlue-8,
+                    line_color =  ROOT.kBlue-5,
+                    marker_color =  ROOT.kBlue-5,
+                    daughters = [
+                                 Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO,
+                                ],
+                )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ttbar sliced samples
@@ -1429,7 +1508,7 @@ DCH_masses = [
     300,
     350,
     400,
-    # 450,
+    450,
     500,
     550,
     600,
@@ -1442,7 +1521,7 @@ DCH_masses = [
     950,
     1000,
     1050,
-    # 1100,
+    1100,
     1150,
     1200,
     1250,
@@ -1465,7 +1544,7 @@ for m in DCH_masses:
 Pythia8EvtGen_A14NNPDF23LO_DCH300.xsec   = 16.704/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH350.xsec   = 9.22647/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH400.xsec   = 4.9001/1000.
-# Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec   = 2.74046/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec   = 2.74046/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH500.xsec   = 1.7631/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH550.xsec   = 1.14646/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH600.xsec   = 0.72042/1000.
@@ -1478,7 +1557,7 @@ Pythia8EvtGen_A14NNPDF23LO_DCH900.xsec   = 0.076403/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH950.xsec   = 0.0549749/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH1000.xsec  = 0.039656/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH1050.xsec  = 0.028836/1000.
-# Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec  = 0.021202/1000.
+Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec  = 0.021202/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH1150.xsec  = 0.0156522/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH1200.xsec  = 0.011632/1000.
 Pythia8EvtGen_A14NNPDF23LO_DCH1250.xsec  = 0.0087236/1000.
@@ -1551,11 +1630,12 @@ all_mc = []
 ### EXOT12 dilep
 # all_mc += VV_ee.daughters
 all_mc += diboson_sherpa221.daughters
-all_mc += AZNLOCTEQ6L1_DYee.daughters
+all_mc += diboson_powheg_alt.daughters
+all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
 all_mc += singletop.daughters
 all_mc += ttbar.daughters
+all_mc += ttbar_alt.daughters
 all_mc += ttX.daughters
-all_mc += AZNLOCTEQ6L1_DYtautau.daughters
 all_mc += all_DCH.daughters
 
 ### EXOT12 ZPeak

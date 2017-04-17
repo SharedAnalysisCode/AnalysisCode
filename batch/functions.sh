@@ -21,3 +21,18 @@ function mergeOutput {
     hadd $line.root `ls | grep $line | xargs`
   done
 }
+
+function mergeAllFolders {
+  for line in `ls`; do
+    cd $line;
+    mergeOutput;
+    cd ..;
+  done
+}
+
+function  fixFolders {
+  for line in `diff nominal/ $1 | grep -i "only in nominal"| grep -v "part" | sed "s/Only in nominal\/\: //g"`; do
+    echo "ln -s `readlink -f nominal/$line` $1$line;"
+    ln -s `readlink -f nominal/$line` $1$line;
+  done;
+}

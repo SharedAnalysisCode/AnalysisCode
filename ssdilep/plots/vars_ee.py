@@ -27,9 +27,11 @@ bins_mt = generateLogBins(50,50,2000)
 bins_HT = generateLogBins(30,90,4000)
 bins_invM = generateLogBins(50,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
-bins_invMassSR2EL = generateLogBins(50,200,2000)
+bins_invMassSR2EL = generateLogBins(50,200,890)
+bins_invMassSR2ELall = generateLogBins(60,200,3000)
 # bins_invMassSR3EL = generateLogBins(20,300,4000)
-bins_invMassSR3EL = generateLogBins(15,200,2000)
+bins_invMassSR3EL = generateLogBins(14,200,1000)
+bins_invMassSR3ELall = generateLogBins(14,200,1000)
 bins_invM_2 = generateLogBins(15,130,200)
 bins_invM_3 = generateLogBins(8,130,200)
 bins_invM_4 = generateLogBins(6,90,200)
@@ -143,9 +145,19 @@ invMassLong = Var(name='invMass',
 invMassSR2EL = Var(name='invMass',
               path   = 'event',
               xmin   = 200,
-              xmax   = 2000,
+              xmax   = 890,
               rebin  = 1,
               rebinVar  = bins_invMassSR2EL,
+              log    = True,
+              logx   = True
+              )
+
+invMassSR2ELall = Var(name='invMass',
+              path   = 'event',
+              xmin   = 200,
+              xmax   = 3000,
+              rebin  = 1,
+              rebinVar  = bins_invMassSR2ELall,
               log    = True,
               logx   = True
               )
@@ -153,9 +165,19 @@ invMassSR2EL = Var(name='invMass',
 invMassSR3EL = Var(name='invMass',
               path   = 'event',
               xmin   = 200,
-              xmax   = 2000,
+              xmax   = 1000,
               rebin  = 1,
               rebinVar  = bins_invMassSR3EL,
+              log    = False,
+              logx   = True
+              )
+
+invMassSR3ELall = Var(name='invMass',
+              path   = 'event',
+              xmin   = 200,
+              xmax   = 1000,
+              rebin  = 1,
+              rebinVar  = bins_invMassSR3ELall,
               log    = False,
               logx   = True
               )
@@ -862,6 +884,8 @@ vars_dict["ZbosonPt_2"] = ZbosonPt_2.__dict__
 vars_dict["invMass_2"] = invMass_2.__dict__
 vars_dict["invMassSR2EL"] = invMassSR2EL.__dict__
 vars_dict["invMassSR3EL"] = invMassSR3EL.__dict__
+vars_dict["invMassSR2ELall"] = invMassSR2ELall.__dict__
+vars_dict["invMassSR3ELall"] = invMassSR3ELall.__dict__
 vars_dict["invMass_3"] = invMass_3.__dict__
 vars_dict["ZbosonEta_2"] = ZbosonEta_2.__dict__
 vars_dict["invMass_4"] = invMass_4.__dict__

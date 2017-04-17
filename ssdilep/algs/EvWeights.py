@@ -898,6 +898,18 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
       sf = 1.0
       electrons = self.store['electrons_loose_LooseLLH']
 
+      # two electron case
+      if len(electrons) == 2:
+        for ele in electrons:
+          if ele.electronType() in [1,2,3,4]:
+            if ele.LHMedium and ele.isIsolated_Loose:
+              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)
+            else:
+              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
       if len(electrons)!=3 or "mc" not in self.sampletype:
         if self.key: 
           self.store[self.key] = sf
