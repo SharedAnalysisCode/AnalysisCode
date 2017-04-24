@@ -24,18 +24,7 @@ GeV = 1000.0
 def analyze(config):
   
     ##-------------------------------------------------------------------------
-    ## setup
-    ##-------------------------------------------------------------------------
-    config['tree']       = 'physics/nominal'
-    config['do_var_log'] = True
-    main_path = os.getenv('MAIN')
-    
-    ## build chain
-    chain = ROOT.TChain(config['tree'])
-    for fn in config['input']: chain.Add(fn)
-
-    ##-------------------------------------------------------------------------
-    ## systematics 
+    ## eval systematics
     ##-------------------------------------------------------------------------
     """
     pass systematics on the command line like this:
@@ -44,17 +33,71 @@ def analyze(config):
     config.setdefault('sys',None)
     systematic = config['sys']
 
-    sys_FF    = None
-    sys_CF    = None
+    sys_FF = None
+    sys_CF = None
+    sys_trig = None
+    sys_id = None
+    sys_iso = None
+    sys_reco = None
+    sys_kfactor = None
+    sys_beam = None
+    sys_choice = None
+    sys_pdf = None
+    sys_pi = None
+    sys_scale_z = None
 
-    if   systematic == None: pass
-    elif systematic == 'FF_UP':      sys_FF    = 'UP'
-    elif systematic == 'FF_DN':      sys_FF    = 'DN'
-    elif systematic == 'CF_UP':      sys_CF    = 'UP'
-    elif systematic == 'CF_DN':      sys_CF    = 'DN'
-    else: 
-        assert False, "Invalid systematic %s!"%(systematic)
+    ## tree systematics
+    treeSys = ""
+    if systematic == 'EG_RESOLUTION_ALL_UP': treeSys = "EG_RESOLUTION_ALL__1up"
+    elif systematic == 'EG_RESOLUTION_ALL_DN': treeSys = "EG_RESOLUTION_ALL__1down"
+    elif systematic == 'EG_SCALE_ALLCORR_UP': treeSys = "EG_SCALE_ALLCORR__1up"
+    elif systematic == 'EG_SCALE_ALLCORR_DN': treeSys = "EG_SCALE_ALLCORR__1down"
+    elif systematic == 'EG_SCALE_E4SCINTILLATOR_UP': treeSys = "EG_SCALE_E4SCINTILLATOR__1up"
+    elif systematic == 'EG_SCALE_E4SCINTILLATOR_DN': treeSys = "EG_SCALE_E4SCINTILLATOR__1down"
+    # elif systematic == 'EG_SCALE_LARCALIB_EXTRA2015PRE_UP': treeSys = "EG_SCALE_LARCALIB_EXTRA2015PRE__1up"
+    # elif systematic == 'EG_SCALE_LARCALIB_EXTRA2015PRE_DN': treeSys = "EG_SCALE_LARCALIB_EXTRA2015PRE__1down"
+    # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2015PRE_UP': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2015PRE__1up"
+    # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2015PRE_DN': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2015PRE__1down"
+    # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2016PRE_UP': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2016PRE__1up"
+    # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2016PRE_DN': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2016PRE__1down"
+    else:
+        treeSys = "nominal"
+        if systematic == None: pass
+        elif systematic == 'FF_UP':      sys_FF    = 'UP'
+        elif systematic == 'FF_DN':      sys_FF    = 'DN'
+        elif systematic == 'CF_UP':      sys_CF    = 'UP'
+        elif systematic == 'CF_DN':      sys_CF    = 'DN'
+        elif systematic == 'TRIG_UP':    sys_trig  = 'UP'
+        elif systematic == 'TRIG_DN':    sys_trig  = 'DN'
+        elif systematic == 'ID_UP':      sys_id    = 'UP'
+        elif systematic == 'ID_DN':      sys_id    = 'DN'
+        elif systematic == 'ISO_UP':     sys_iso   = 'UP'
+        elif systematic == 'ISO_DN':     sys_iso   = 'DN'
+        elif systematic == 'RECO_UP':    sys_reco  = 'UP'
+        elif systematic == 'RECO_DN':    sys_reco  = 'DN'    
+        elif systematic == 'BEAM_UP':    sys_beam  = 'UP'
+        elif systematic == 'BEAM_DN':    sys_beam  = 'DN'    
+        elif systematic == 'CHOICE_UP':  sys_choice  = 'UP'
+        elif systematic == 'CHOICE_DN':  sys_choice  = 'DN'    
+        elif systematic == 'PDF_UP':     sys_pdf  = 'UP'
+        elif systematic == 'PDF_DN':     sys_pdf  = 'DN'    
+        elif systematic == 'PI_UP':      sys_pi  = 'UP'
+        elif systematic == 'PI_DN':      sys_pi  = 'DN'
+        elif systematic == 'SCALE_Z_UP': sys_scale_z  = 'UP'
+        elif systematic == 'SCALE_Z_DN': sys_scale_z  = 'DN'
 
+    assert treeSys!="", "Invalid systematic %s!"%(systematic)
+
+    ##-------------------------------------------------------------------------
+    ## setup
+    ##-------------------------------------------------------------------------
+    config['tree']       = 'physics/' + treeSys
+    config['do_var_log'] = True
+    main_path = os.getenv('MAIN')
+    
+    ## build chain
+    chain = ROOT.TChain(config['tree'])
+    for fn in config['input']: chain.Add(fn)
 
     ##-------------------------------------------------------------------------
     ## event loop
@@ -112,7 +155,17 @@ def analyze(config):
     ## weights
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.EvWeights.MCEventWeight(cutflow='presel',key='weight_mc_event')
-    loop += ssdilep.algs.EvWeights.LPXKfactor(cutflow='presel',key='lpx_kfactor')
+    loop += ssdilep.algs.EvWeights.LPXKfactor(
+            cutflow='presel',
+            key='lpx_kfactor',
+            sys_beam = sys_beam,
+            sys_choice = sys_choice,
+            sys_pdf = sys_pdf,
+            sys_pi = sys_pi,
+            sys_scale_z = sys_scale_z,
+            doAssert = True,
+            nominalTree = True if treeSys == "nominal" else False
+            )
     loop += ssdilep.algs.EvWeights.Pileup(cutflow='presel',key='weight_pileup')
    
     ## cuts
@@ -138,6 +191,7 @@ def analyze(config):
 
     loop += ssdilep.algs.EvWeights.ThreeElectron2e17TrigWeight(
             key='ThreeElectron2e17TrigWeight',
+            sys_trig = sys_trig,
             )
 
     loop += ssdilep.algs.EvWeights.AllTightEleSF(
@@ -145,6 +199,9 @@ def analyze(config):
             config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
             chargeFlipSF=True,
             sys_CF = sys_CF,
+            sys_id = sys_id,
+            sys_iso = sys_iso,
+            sys_reco = sys_reco,
             )
 
     loop += ssdilep.algs.EvWeights.GenericFakeFactor(
@@ -152,6 +209,9 @@ def analyze(config):
             config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-27-03-2017.root'),
             config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
             sys = sys_FF,
+            sys_id = sys_id,
+            sys_iso = sys_iso,
+            sys_reco = sys_reco,
             )
 
     # TTT REGION
@@ -200,9 +260,9 @@ def analyze(config):
                ],
             )
 
-    ## TT REGION
-    ## ---------------------------------------
-    ## ------ OSCR
+    # TT REGION
+    # ---------------------------------------
+    # ------ OSCR
     # loop += ssdilep.algs.algs.PlotAlgCRele(
     #         region   = 'opposite-sign-CR',
     #         plot_all = False,
@@ -223,7 +283,7 @@ def analyze(config):
     #            ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','ThreeElectron2e17TrigWeight']],
     #            ],
     #         )
-    # ------ OSCR b-veto
+    #------ OSCR b-veto
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'opposite-sign-bveto-CR',
             plot_all = False,
@@ -268,9 +328,9 @@ def analyze(config):
                ],
             )
 
-    ## TT REGION 2 bjet
-    ## ---------------------------------------
-    ## ------ OSCR ttbar
+    # TT REGION 2 bjet
+    # ---------------------------------------
+    # ------ OSCR2b
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'opposite-sign-ttbar-CR',
             plot_all = False,
@@ -293,7 +353,7 @@ def analyze(config):
                ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','ThreeElectron2e17TrigWeight']],
                ],
             )
-    ## ------ SSVR ttbar
+    ## ------ SSVR2b
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'same-sign-ttbar-CR',
             plot_all = False,
@@ -316,74 +376,159 @@ def analyze(config):
                ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','ThreeElectron2e17TrigWeight']],
                ],
             )
-    ## SIGNAL REGION
-    ## ---------------------------------------
-    ## ------ two ele
+    # SIGNAL REGION
+    # ---------------------------------------
+    # ------ two ele
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'two-ele-SR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['ExactlyTwoLooseEleLooseLLH',None],
+    #            ['ExactlyTwoLooseEleLooseLLHSS',None],
+    #            ['Mass200GeVLooseLLH',None],
+    #            ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'two-ele-SR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['ExactlyTwoLooseEleLooseLLH',None],
+    #            ['ExactlyTwoLooseEleLooseLLHSS',None],
+    #            ['Mass200GeVLooseLLH',None],
+    #            ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','ThreeElectron2e17TrigWeight']],
+    #            ],
+    #         )
+    # for channel in ["eeee","eemm","mmmm"]:
+    #     loop += ssdilep.algs.algs.PlotAlgCRele(
+    #             region   = 'two-ele-SR-signal-'+channel,
+    #             plot_all = False,
+    #             cut_flow = [
+    #                ['DCHFilter'+channel,None],
+    #                ['ExactlyTwoLooseEleLooseLLH',None],
+    #                ['ExactlyTwoLooseEleLooseLLHSS',None],
+    #                ['Mass200GeVLooseLLH',None],
+    #                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
+    #                ],
+    #             )
+    # ------ two ele optimized
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'two-ele-SR',
+            region   = 'two-ele-optimized-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
                ['ExactlyTwoLooseEleLooseLLH',None],
                ['ExactlyTwoLooseEleLooseLLHSS',None],
                ['Mass200GeVLooseLLH',None],
+               ['SameSignLooseElePtZ100',None],
+               ['SameSignLooseEleDR4',None],
                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'two-ele-SR-fakes',
+            region   = 'two-ele-optimized-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
                ['ExactlyTwoLooseEleLooseLLH',None],
                ['ExactlyTwoLooseEleLooseLLHSS',None],
                ['Mass200GeVLooseLLH',None],
+               ['SameSignLooseElePtZ100',None],
+               ['SameSignLooseEleDR4',None],
                ['NotExactlyTwoTightEleMediumLLHisolLoose',['GenericFakeFactor','ThreeElectron2e17TrigWeight']],
                ],
             )
     for channel in ["eeee","eemm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgCRele(
-                region   = 'two-ele-SR-signal-'+channel,
+                region   = 'two-ele-optimized-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
                    ['ExactlyTwoLooseEleLooseLLH',None],
                    ['ExactlyTwoLooseEleLooseLLHSS',None],
                    ['Mass200GeVLooseLLH',None],
+                   ['SameSignLooseElePtZ100',None],
+                   ['SameSignLooseEleDR4',None],
                    ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                    ],
                 )
     # ------ three ele
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = 'three-ele-SR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['ExactlyThreeLooseEleLooseLLH',None],
+    #            ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+    #            ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
+    #            ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = 'three-ele-SR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['ExactlyThreeLooseEleLooseLLH',None],
+    #            ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+    #            ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
+    #            ['FailExactlyThreeTightEleMediumLLHisolLoose',["GenericFakeFactor","ThreeElectron2e17TrigWeight"]],
+    #            ],
+    #         )
+    # for channel in ["eeee","eemm","mmmm"]:
+    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #             region   = 'three-ele-SR-signal-'+channel,
+    #             plot_all = False,
+    #             cut_flow = [
+    #                ['DCHFilter'+channel,None],
+    #                ['ExactlyThreeLooseEleLooseLLH',None],
+    #                ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+    #                ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
+    #                ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
+    #                ],
+    #             )
+    # ------ three ele optimized
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-ele-SR',
+            region   = 'three-ele-optimized-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
                ['ExactlyThreeLooseEleLooseLLH',None],
                ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+               ['SameSignLooseElePtZ100',None],
+               ['SameSignLooseEleDR4',None],
+               ['LooseEleHT300',None],
                ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
                ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-ele-SR-fakes',
+            region   = 'three-ele-optimized-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
                ['ExactlyThreeLooseEleLooseLLH',None],
                ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+               ['SameSignLooseElePtZ100',None],
+               ['SameSignLooseEleDR4',None],
+               ['LooseEleHT300',None],
                ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
                ['FailExactlyThreeTightEleMediumLLHisolLoose',["GenericFakeFactor","ThreeElectron2e17TrigWeight"]],
                ],
             )
     for channel in ["eeee","eemm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'three-ele-SR-signal-'+channel,
+                region   = 'three-ele-optimized-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
                    ['ExactlyThreeLooseEleLooseLLH',None],
                    ['ExactlyThreeLooseEleLooseLLHSS200M',None],
+                   ['SameSignLooseElePtZ100',None],
+                   ['SameSignLooseEleDR4',None],
+                   ['LooseEleHT300',None],
                    ['ExactlyThreeLooseEleLooseLLHOSZVeto',None],
                    ['ExactlyThreeTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                    ],

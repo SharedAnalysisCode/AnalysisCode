@@ -38,7 +38,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # outputs
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
-RUN = "AllR_v3_009"
+RUN = "AllR_v3_010"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_004"
 

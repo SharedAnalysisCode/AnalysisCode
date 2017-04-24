@@ -119,22 +119,21 @@ elif options.samples in ["ttbar","ttbarss"]:
   samples.diboson_sherpa221,
   samples.singletop,
   samples.ttX,
-  samples.AZNLOCTEQ6L1_DYee,
-  samples.AZNLOCTEQ6L1_DYtautau,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples == "OSCR":
   mc_backgrounds = [
-  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.ttbar,
   # samples.VV_ee,
   samples.diboson_sherpa221,
   samples.singletop,
   samples.ttX,
-  samples.AZNLOCTEQ6L1_DYtautau,
+  # samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples in ["SSVR","SSVRBLIND"]:
   mc_backgrounds = [
-  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.ttbar,
   # samples.VV_ee,
   samples.diboson_sherpa221,
@@ -188,6 +187,15 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee,
   ]
+elif options.samples == "allSamples":
+  mc_backgrounds = [
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  samples.ttbar,
+  samples.diboson_sherpa221,
+  samples.dibosonSysSample,
+  samples.singletop,
+  samples.ttX,
+  ]
 
 
 fakes_mumu = samples.fakes.copy()
@@ -201,13 +209,13 @@ mumu_signals = []
 signal_ee100mm0 = []
 signal_ee50mm50 = []
 
-xsecL = [16.704, 9.22647, 4.9001, 2.74046, 1.7631, 1.14646, 0.72042, 0.466521, 0.32154, 0.222586, 0.15288, 0.106694, 0.076403, 0.0549749, 0.039656, 0.028836, 0.021202, 0.0156522, 0.011632, 0.0087236, 0.0065092]
+xsecL = [82.677, 34.825, 16.704, 8.7528, 4.9001, 2.882, 1.7631, 1.10919, 0.72042, 0.476508, 0.32154, 0.21991, 0.15288, 0.107411, 0.076403, 0.0547825, 0.039656, 0.0288885, 0.021202, 0.0156347, 0.011632, 0.00874109, 0.0065092]
 masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
 
 intiger = 3
 for mass,xsec in zip(masses,xsecL):
-  if mass==450 or mass==1100: continue
-  if mass not in [500]: continue
+  # if mass==450 or mass==1100: continue
+  # if mass not in [600]: continue
   name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
   globals()[name+"ee100mm0"] = sample.Sample(
     name = name,
@@ -328,10 +336,6 @@ else:
 # Systematics       
 #-----------------
 # just an example ...
-mc_sys = [
-    SYS1, 
-    SYS2,
-    ]
 
 ## set mc systematics
 #for s in mc_backgrounds + mumu_signals:
@@ -390,29 +394,27 @@ elif options.samples == "chargeFlipData":
   else: mumu_backgrounds = []
 elif options.samples == "ttbar":
   mumu_backgrounds = [
-  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.ttbar,
   samples.singletop,
   fakes_mumu,
   samples.diboson_sherpa221,
   # samples.VV_ee,
   samples.ttX,
-  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "ttbarss":
   mumu_backgrounds = [
-  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.ttbar,
   fakes_mumu,
   samples.singletop,
   samples.diboson_sherpa221,
   # samples.VV_ee,
   samples.ttX,
-  samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "OSCR":
   mumu_backgrounds = [
-  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.ttbar,
   # samples.VV_ee,
   samples.diboson_sherpa221,
@@ -434,13 +436,12 @@ elif options.samples == "ZPeak":
   ]
 elif options.samples in ["SSVR","SSVRBLIND"]:
   mumu_backgrounds = [
-  samples.AZNLOCTEQ6L1_DYee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   fakes_mumu,
   samples.ttbar,
   # samples.VV_ee,
   samples.diboson_sherpa221,
   samples.singletop,
-  samples.AZNLOCTEQ6L1_DYtautau,
   samples.ttX,
   ]
 elif options.samples == "diboson":
@@ -479,11 +480,24 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee,
   ]
+elif options.samples == "allSamples":
+  mumu_backgrounds = [
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  samples.ttbar,
+  samples.diboson_sherpa221,
+  samples.dibosonSysSample,
+  samples.singletop,
+  samples.ttX,
+  fakes_mumu,
+  ]
 
 
 if (DO_SYS):
   fakes_mumu.estimator.add_systematics(FF)
   for sample in mumu_backgrounds:
+    if sample in [samples.dibosonSysSample]:
+      print "skip sys MC samples in other systematics"
+      continue
     sample.estimator.add_systematics(CF)
     sample.estimator.add_systematics(FF)
   for sample in signal:
@@ -491,6 +505,12 @@ if (DO_SYS):
     sample.estimator.add_systematics(FF)
 
 print options.blind
+
+tempLogy = None
+if options.logy=="True":
+  tempLogy = True
+elif options.logy=="False":
+  tempLogy = False
 
 if options.makeplot == "True":
  funcs.plot_hist(
@@ -504,7 +524,7 @@ if options.makeplot == "True":
     xmax          = mumu_vdict[options.vname]['xmax'],
     rebin         = mumu_vdict[options.vname]['rebin'],
     rebinVar      = mumu_vdict[options.vname]['rebinVar'],
-    log           = True if options.logy=="True" else mumu_vdict[options.vname]['log'],
+    log           = tempLogy if tempLogy!=None else mumu_vdict[options.vname]['log'],
     logx          = mumu_vdict[options.vname]['logx'],
     xlabel        = options.xlabel,
     icut          = int(options.icut),
@@ -512,7 +532,7 @@ if options.makeplot == "True":
     do_ratio_plot = mumu_vdict[options.vname]['do_ratio_plot'],
     save_eps      = True,
     plotsfile     = plotsfile,
-    blind         = int(options.blind),
+    blind         = int(options.blind) if options.blind else None,
     )
 
 else:

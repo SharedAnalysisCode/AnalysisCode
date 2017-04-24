@@ -39,16 +39,80 @@ class LPXKfactor(pyframe.core.Algorithm):
     if 'key' is specified the MC weight will be put in the store
     """
     #__________________________________________________________________________
-    def __init__(self, cutflow=None,key=None):
+    def __init__(self, 
+                 cutflow=None,
+                 key=None,
+                 sys_beam=None,
+                 sys_choice=None,
+                 sys_pdf=None,
+                 sys_pi=None,
+                 sys_scale_z=None,
+                 doAssert=True,
+                 nominalTree=True
+                 ):
         pyframe.core.Algorithm.__init__(self, name="MCEventWeight", isfilter=True)
+
         self.cutflow = cutflow
         self.key = key
+        self.sys_beam = sys_beam
+        self.sys_choice = sys_choice
+        self.sys_pdf = sys_pdf
+        self.sys_pi = sys_pi
+        self.sys_scale_z = sys_scale_z
+        self.doAssert = doAssert
+        self.nominalTree = nominalTree
+
+        self.kfactorSys = 0
+        if self.sys_beam == "DN":
+          self.kfactorSys = 3
+        elif self.sys_beam == "UP":
+          self.kfactorSys = 4
+
+        elif self.sys_choice == "DN":
+          self.kfactorSys = 5
+        elif self.sys_choice == "UP":
+          self.kfactorSys = 6
+
+        elif self.sys_pdf == "DN":
+          self.kfactorSys = 16
+        elif self.sys_pdf == "UP":
+          self.kfactorSys = 17
+
+        elif self.sys_pi == "DN":
+          self.kfactorSys = 18
+        elif self.sys_pi == "UP":
+          self.kfactorSys = 19
+
+        elif self.sys_scale_z == "DN":
+          self.kfactorSys = 23
+        elif self.sys_scale_z == "UP":
+          self.kfactorSys = 24
+
+
     #__________________________________________________________________________
     def execute(self, weight):
         if "mc" in self.sampletype: 
-            lpxk = self.chain.LPXKfactorVec.at(0)
+          if self.nominalTree:
+            lpxk = self.chain.LPXKfactorVec.at(self.kfactorSys)
             if self.key: self.store[self.key] = lpxk
             self.set_weight(lpxk*weight)
+
+            if self.doAssert:
+              assert self.chain.LPXKfactorVecNames.at(3)=="LPX_KFACTOR_BEAM_ENERGY__1down", "LPX_KFACTOR_BEAM_ENERGY__1down"
+              assert self.chain.LPXKfactorVecNames.at(4)=="LPX_KFACTOR_BEAM_ENERGY__1up", "LPX_KFACTOR_BEAM_ENERGY__1up"
+              assert self.chain.LPXKfactorVecNames.at(5)=="LPX_KFACTOR_CHOICE_HERAPDF20", "LPX_KFACTOR_CHOICE_HERAPDF20"
+              assert self.chain.LPXKfactorVecNames.at(6)=="LPX_KFACTOR_CHOICE_NNPDF30", "LPX_KFACTOR_CHOICE_NNPDF30"
+              assert self.chain.LPXKfactorVecNames.at(16)=="LPX_KFACTOR_PDF__1down", "LPX_KFACTOR_PDF__1down"
+              assert self.chain.LPXKfactorVecNames.at(17)=="LPX_KFACTOR_PDF__1up", "LPX_KFACTOR_PDF__1up"
+              assert self.chain.LPXKfactorVecNames.at(18)=="LPX_KFACTOR_PI__1down", "LPX_KFACTOR_PI__1down"
+              assert self.chain.LPXKfactorVecNames.at(19)=="LPX_KFACTOR_PI__1up", "LPX_KFACTOR_PI__1up"
+              assert self.chain.LPXKfactorVecNames.at(23)=="LPX_KFACTOR_SCALE_Z__1down", "LPX_KFACTOR_SCALE_Z__1down"
+              assert self.chain.LPXKfactorVecNames.at(24)=="LPX_KFACTOR_SCALE_Z__1up", "LPX_KFACTOR_SCALE_Z__1up"
+          else:
+            lpxk = self.chain.LPXKfactor
+            if self.key: self.store[self.key] = lpxk
+            self.set_weight(lpxk*weight)            
+
         return True
 
 #------------------------------------------------------------------------------
@@ -294,6 +358,9 @@ class AllTightEleSF(pyframe.core.Algorithm):
             chargeFlipSF   = False,
             config_file    = None,
             sys_CF         = None,
+            sys_id         = None,
+            sys_iso        = None,
+            sys_reco       = None,
             ):
 
         pyframe.core.Algorithm.__init__(self, name=name)
@@ -301,6 +368,9 @@ class AllTightEleSF(pyframe.core.Algorithm):
         self.chargeFlipSF      = chargeFlipSF
         self.config_file       = config_file
         self.sys_CF            = sys_CF
+        self.sys_id            = sys_id
+        self.sys_iso           = sys_iso
+        self.sys_reco          = sys_reco
 
         assert config_file, "Must provide a charge-flip config file!"
         assert key, "Must provide key for storing ele reco sf"
@@ -350,6 +420,24 @@ class AllTightEleSF(pyframe.core.Algorithm):
       self.h_ptRateData.SetDirectory(0)
       f.Close()
 
+      self.id_sys = 0
+      if self.sys_id == "UP":
+        self.id_sys = 2
+      elif self.sys_id == "DN":
+        self.id_sys = 1
+
+      self.iso_sys = 0
+      if self.sys_iso == "UP":
+        self.iso_sys = 2
+      elif self.sys_iso == "DN":
+        self.iso_sys = 1
+
+      self.reco_sys = 0
+      if self.sys_reco == "UP":
+        self.reco_sys = 2
+      elif self.sys_reco == "DN":
+        self.reco_sys = 1
+
     #_________________________________________________________________________
     def execute(self, weight):
         sf=1.0
@@ -357,9 +445,9 @@ class AllTightEleSF(pyframe.core.Algorithm):
           electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
           for ele in electrons:
             if (ele.electronType() in [1,2,3,4]) or (self.chain.mcChannelNumber in range(306538,306560)):
-              sf *= getattr(ele,"RecoEff_SF").at(0)
-              sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+              sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
+              sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
+              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
@@ -380,10 +468,10 @@ class AllTightEleSF(pyframe.core.Algorithm):
                   probMC   = self.h_ptRateMC.GetBinContent( ptBin )   * self.h_etaRateMC.GetBinContent( etaBin )
                   probData = self.h_ptRateData.GetBinContent( ptBin ) * self.h_etaRateData.GetBinContent( etaBin )
                 elif self.sys_CF == "UP":
-                  probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  +self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  +self.h_etaRateMC.GetBinError( etaBin ))
+                  probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  -self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  -self.h_etaRateMC.GetBinError( etaBin ))
                   probData = (self.h_ptRateData.GetBinContent( ptBin )+self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )+self.h_etaRateData.GetBinError( etaBin ))
                 elif self.sys_CF == "DN":
-                  probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  -self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  -self.h_etaRateMC.GetBinError( etaBin ))
+                  probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  +self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  +self.h_etaRateMC.GetBinError( etaBin ))
                   probData = (self.h_ptRateData.GetBinContent( ptBin )-self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )-self.h_etaRateData.GetBinError( etaBin ))
                 sf *= ( 1 - probData )/( 1 - probMC )
 
@@ -753,12 +841,18 @@ class GenericFakeFactor(pyframe.core.Algorithm):
             sys            = None,
             config_file    = None,
             config_fileCHF = None,
+            sys_id         = None,
+            sys_iso        = None,
+            sys_reco       = None,
             ):
         pyframe.core.Algorithm.__init__(self, name=name)
         self.key               = key
         self.sys               = sys
         self.config_file       = config_file
         self.config_fileCHF    = config_fileCHF
+        self.sys_id            = sys_id
+        self.sys_iso           = sys_iso
+        self.sys_reco          = sys_reco
 
         assert key, "Must provide key for storing mu reco sf"
         assert config_file, "Must provide config file!"
@@ -824,6 +918,25 @@ class GenericFakeFactor(pyframe.core.Algorithm):
       "MediumLLH",
       "TightLLH",
       ]
+
+      self.id_sys = 0
+      if self.sys_id == "UP":
+        self.id_sys = 2
+      elif self.sys_id == "DN":
+        self.id_sys = 1
+
+      self.iso_sys = 0
+      if self.sys_iso == "UP":
+        self.iso_sys = 2
+      elif self.sys_iso == "DN":
+        self.iso_sys = 1
+
+      self.reco_sys = 0
+      if self.sys_reco == "UP":
+        self.reco_sys = 2
+      elif self.sys_reco == "DN":
+        self.reco_sys = 1
+
     #_________________________________________________________________________
     def execute(self, weight):
 
@@ -838,9 +951,9 @@ class GenericFakeFactor(pyframe.core.Algorithm):
       for ele in electrons:
         if (ele.isIsolated_Loose and ele.LHMedium) :
           if "mc" in self.sampletype : 
-            sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
-            sf *= getattr(ele,"RecoEff_SF").at(0)
+            sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+            sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
             ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
             etaBin = self.h_etaFunc.FindBin( abs( ele.tlv.Eta() ) )
             if ptBin==self.h_ptFunc.GetNbinsX()+1:
@@ -856,8 +969,8 @@ class GenericFakeFactor(pyframe.core.Algorithm):
         else :
           sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.tlv.Eta() ) ) )
           if "mc" in self.sampletype :
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
-            sf *= getattr(ele,"RecoEff_SF").at(0)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys)
+            sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
           else :
             pass
 
@@ -872,11 +985,11 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
     #__________________________________________________________________________
     def __init__(self, name="ThreeElectron2e17TrigWeight",
             key            = None,
-            sys            = None,
+            sys_trig       = None,
             ):
         pyframe.core.Algorithm.__init__(self, name=name)
         self.key               = key
-        self.sys               = sys
+        self.sys_trig          = sys_trig
 
         assert key, "Must provide key for storing mu reco sf"
     #_________________________________________________________________________
@@ -892,6 +1005,13 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
       "MediumLLH",
       "TightLLH",
       ]
+
+      self.trig_sys = 0
+      if self.sys_trig == "UP":
+        self.trig_sys = 2
+      elif self.sys_trig == "DN":
+        self.trig_sys = 1
+
     #_________________________________________________________________________
     def execute(self, weight):
 
@@ -903,9 +1023,9 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
         for ele in electrons:
           if ele.electronType() in [1,2,3,4]:
             if ele.LHMedium and ele.isIsolated_Loose:
-              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)
+              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
             else:
-              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)
+              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
         if self.key: 
           self.store[self.key] = sf
         return True
@@ -926,33 +1046,33 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
           if eleFail not in pair:
             for elePass in pair:
               if elePass.LHMedium and elePass.isIsolated_Loose:
-                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)*\
-                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
-                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
+                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
               else:
-                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)*\
-                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
-                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
+                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
             if eleFail.LHMedium and eleFail.isIsolated_Loose:
-              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)*\
-                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0) )
-              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
+                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys) )
+              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
             else:
-              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)*\
-                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0) )
-              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
+                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys) )
+              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
             break
         P2passD  += combinationProbD   # a*b*(1-c) + a*c*(1-b) + b*c*(1-d) 
         P2passMC += combinationProbMC  # a*b*(1-c) + a*c*(1-b) + b*c*(1-d)
       for ele in electrons:
         if ele.LHMedium and ele.isIsolated_Loose:
-          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)*\
-                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(0)
-          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(0)
+          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
+                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
         else:
-          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)*\
-                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(0)
-          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(0)
+          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
+                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
 
       sf = (P2passD+P3passD)/(P2passMC+P3passMC)
 

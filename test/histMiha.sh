@@ -2,7 +2,8 @@
 
 ## Batch
 
-INPATH="/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed/nominal"
+# INPATH="/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed/nominal"
+INPATH="/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys/nominal"
 # INPATH="/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed/nominal"
 INSCRIPT="../ssdilep/run"
 # SCRIPT="j.plotter_WJets.py"
@@ -19,10 +20,11 @@ SCRIPT="j.plotter_ele_allR.py"
 # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYee_120M180.root --sampletype="mc" --config="min_entry:0,max_entry:-1"   #--config="sys:FF_DN" 
 # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil.root --sampletype="mc" --config="min_entry:0,max_entry:-1"   #--config="sys:FF_DN" 
  # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Sherpa_221_NNPDF30NNLO_llll.root --sampletype="mc" --config="min_entry:0,max_entry:50000"   #--config="sys:FF_DN" 
- # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Sherpa_221_NNPDF30NNLO_lllv.root --sampletype="mc" --config="min_entry:0,max_entry:1000"   #--config="sys:FF_DN" 
+ python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYee_120M180.root --sampletype="mc" --config="min_entry:0,max_entry:5000,sys:CF_UP"
+ # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Sherpa_221_NNPDF30NNLO_lllv.root --sampletype="mc" --config="min_entry:0,max_entry:50000"
  # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/PowhegPythia8EvtGen_AZNLOCTEQ6L1_Wplustaunu.root --sampletype="mc" --config="min_entry:0,max_entry:5000"   #--config="sys:FF_DN" 
  # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Sherpa_221_NNPDF30NNLO_Zee_MAXHTPTV0_70_CVetoBVeto.root --sampletype="mc" --config="min_entry:0,max_entry:50000"   #--config="sys:FF_DN" 
- python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Pythia8EvtGen_A14NNPDF23LO_DCH700.root --sampletype="mc" --config="min_entry:0,max_entry:10000"   #--config="sys:FF_DN" 
+ # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Pythia8EvtGen_A14NNPDF23LO_DCH700.root --sampletype="mc" --config="min_entry:0,max_entry:10000,sys:EG_SCALE_LARTEMPERATURE_EXTRA2016PRE_DN"   #--config="sys:FF_DN" 
 # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/00306269.physics_Main.root --sampletype="data"  --config="min_entry:0,max_entry:-1,sys:CF_DN"
 # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/00284285.physics_Main.root --sampletype="data"  --config="min_entry:0,max_entry:-1"
  # python ${INSCRIPT}/${SCRIPT} --input ${INPATH}/Sherpa_CT10_llll.root --sampletype="mc" --config="min_entry:0,max_entry:20000,sys:CF_DN"   #--config="sys:FF_DN" 

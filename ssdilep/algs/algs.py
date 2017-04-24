@@ -1394,6 +1394,41 @@ class CutAlg(pyframe.core.Algorithm):
         if len(electrons)==2: 
           if electrons[0].trkcharge*electrons[1].trkcharge == 1: return True
         return False
+
+    def cut_SameSignLooseElePtZ100(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        SSPair = 0
+        SSPairPass = 0
+        for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            if (pair[0].tlv+pair[1].tlv).Pt() > 100*GeV:
+              SSPairPass += 1
+        if SSPair == 1 and SSPairPass == 1:
+          return True
+        return False
+
+    def cut_SameSignLooseEleDR4(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        SSPair = 0
+        SSPairPass = 0
+        for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            if pair[0].tlv.DeltaR(pair[1].tlv) < 4.0:
+              SSPairPass += 1
+        if SSPair == 1 and SSPairPass == 1:
+          return True
+        return False
+
+    def cut_LooseEleHT300(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        HT = 0
+        for ele in electrons:
+          HT += ele.tlv.Pt()
+        if HT > 300*GeV:
+          return True
+        return False
  
     def cut_ExactlyTwoTightEleMediumLLHisolLooseOS(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']

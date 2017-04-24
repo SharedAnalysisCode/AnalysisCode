@@ -23,14 +23,16 @@ cutflow_presel = Var(name = 'cutflow_presel', log=False, path="")
 bins_pt = generateLogBins(35,30,2000)
 bins_pt_2 = generateLogBins(20,30,1000)
 bins_pt_SR = generateLogBins(20,30,2000)
+bins_Zpt_SR = [0] + generateLogBins(20,10,3000)
+bins_Zpt_SR_2 = [0,1,2,3,4,5,6,7,8,9] + generateLogBins(50,10,3000)
 bins_mt = generateLogBins(50,50,2000)
 bins_HT = generateLogBins(30,90,4000)
 bins_invM = generateLogBins(50,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
-bins_invMassSR2EL = generateLogBins(50,200,890)
+bins_invMassSR2EL = generateLogBins(40,200,890)
 bins_invMassSR2ELall = generateLogBins(60,200,3000)
 # bins_invMassSR3EL = generateLogBins(20,300,4000)
-bins_invMassSR3EL = generateLogBins(14,200,1000)
+bins_invMassSR3EL = generateLogBins(6,200,1000)
 bins_invMassSR3ELall = generateLogBins(14,200,1000)
 bins_invM_2 = generateLogBins(15,130,200)
 bins_invM_3 = generateLogBins(8,130,200)
@@ -96,6 +98,30 @@ HT = Var(name='HT',
               #rebinVar  = bins_Zpeak2,
               log    = False,
               logx   = True
+              )
+
+DR = Var(name='DR',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 6,
+              rebin  = 1,
+              log    = True,
+              )
+
+DR2 = Var(name='DR',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 6,
+              rebin  = 2,
+              log    = True,
+              )
+
+DR4 = Var(name='DR',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 6,
+              rebin  = 4,
+              log    = True,
               )
 
 invMassOS1 = Var(name='invMassOS1',
@@ -248,6 +274,24 @@ ZbosonPt_2 = Var(name='ZbosonPt',
               xmax   = 500.,
               rebin  = 1,
               rebinVar  = bins_pt_2,
+              log    = False,
+              logx   = True,
+               )
+ZbosonPt_SR = Var(name='ZbosonPt',
+              path   = 'event',
+              xmin   = 0.,
+              xmax   = 3000.,
+              rebin  = 1,
+              rebinVar  = bins_Zpt_SR,
+              log    = False,
+              logx   = True,
+               )
+ZbosonPt_SR_2 = Var(name='ZbosonPt',
+              path   = 'event',
+              xmin   = 0.,
+              xmax   = 3000.,
+              rebin  = 1,
+              rebinVar  = bins_Zpt_SR_2,
               log    = False,
               logx   = True,
                )
@@ -862,6 +906,7 @@ vars_list.append(el_pt)
 vars_list.append(el_eta)
 vars_list.append(met_trk_mt)
 vars_list.append(el_phi)
+vars_list.append(DR)
 
 vars_dict = {}
 for var in vars_list: vars_dict[var.name] = var.__dict__
@@ -900,6 +945,10 @@ vars_dict["el_lead_eta_cf"] = el_lead_eta_cf.__dict__
 vars_dict["el_sublead_eta_cf"] = el_sublead_eta_cf.__dict__
 vars_dict["el_third_pt_SR"] = el_third_pt_SR.__dict__
 vars_dict["HT"] = HT.__dict__
+vars_dict["DR2"] = DR2.__dict__
+vars_dict["DR4"] = DR4.__dict__
+vars_dict["ZbosonPt_SR"] = ZbosonPt_SR.__dict__
+vars_dict["ZbosonPt_SR_2"] = ZbosonPt_SR_2.__dict__
 
 ## EOF
 

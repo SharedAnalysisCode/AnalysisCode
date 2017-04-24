@@ -422,15 +422,8 @@ diboson_sherpa221 = Sample( name =   'dibosonSherpa',
                                 Sherpa_221_NNPDF30NNLO_llll,
                                 Sherpa_221_NNPDF30NNLO_lllv,
                                 Sherpa_221_NNPDF30NNLO_llvv,
-                                Sherpa_221_NNPDF30NNLO_lvvv,
-                                Sherpa_221_NNPDF30NNLO_vvvv,
-                                Sherpa_221_NNPDF30NNLO_WlvZqq,
-                                Sherpa_221_NNPDF30NNLO_WplvWmqq,
-                                Sherpa_221_NNPDF30NNLO_WpqqWmlv,
                                 Sherpa_221_NNPDF30NNLO_WqqZll,
-                                Sherpa_221_NNPDF30NNLO_WqqZvv,
                                 Sherpa_221_NNPDF30NNLO_ZqqZll,
-                                Sherpa_221_NNPDF30NNLO_ZqqZvv,
                                 Sherpa_CT10_ggllll,
                                 Sherpa_CT10_ggllvv,
                                 Sherpa_CT10_lllljj_EW6,
@@ -508,6 +501,26 @@ diboson_powheg_alt = Sample( name =   'diboson_powheg',
                   daughters = [
                                 PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4,
                                 PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4,
+                              ],
+                )
+
+dibosonSysSample = Sample( name =   'dibosonSysSample',
+                  tlatex = 'DB powheg',
+                  fill_color   = ROOT.kGreen-6,
+                  line_color   = ROOT.kGreen-2,
+                  marker_color = ROOT.kGreen-2,
+                  daughters = [
+                                PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4,
+                                PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4,
+                                Sherpa_221_NNPDF30NNLO_llvv,
+                                Sherpa_221_NNPDF30NNLO_WqqZll,
+                                Sherpa_221_NNPDF30NNLO_ZqqZll,
+                                Sherpa_CT10_ggllll,
+                                Sherpa_CT10_ggllvv,
+                                Sherpa_CT10_lllljj_EW6,
+                                Sherpa_CT10_lllvjj_EW6,
+                                Sherpa_CT10_llvvjj_ss_EW4,
+                                Sherpa_CT10_llvvjj_ss_EW6,
                               ],
                 )
 
@@ -1082,7 +1095,7 @@ AZNLOCTEQ6L1_DYtautau = Sample( name =   'Ztautau',
                 )
 
 AZNLOCTEQ6L1_DYee_DYtautau = Sample( name =   'DYZ',
-                  tlatex = 'Drell-Yan Z',
+                  tlatex = 'Drell-Yan Z/#gamma*',
                   fill_color = ROOT.kWhite,
                   line_color =  ROOT.kBlack,
                   marker_color =  ROOT.kBlack,
@@ -1541,28 +1554,53 @@ for m in DCH_masses:
             fill_style = 3004,
             )
 
-Pythia8EvtGen_A14NNPDF23LO_DCH300.xsec   = 16.704/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH350.xsec   = 9.22647/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH400.xsec   = 4.9001/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec   = 2.74046/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH500.xsec   = 1.7631/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH550.xsec   = 1.14646/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH600.xsec   = 0.72042/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH650.xsec   = 0.466521/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH700.xsec   = 0.32154/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH750.xsec   = 0.222586/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH800.xsec   = 0.15288/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH850.xsec   = 0.106694/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH900.xsec   = 0.076403/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH950.xsec   = 0.0549749/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1000.xsec  = 0.039656/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1050.xsec  = 0.028836/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec  = 0.021202/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1150.xsec  = 0.0156522/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1200.xsec  = 0.011632/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1250.xsec  = 0.0087236/1000.
-Pythia8EvtGen_A14NNPDF23LO_DCH1300.xsec  = 0.0065092/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH200.xsec   = 82.677/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH250.xsec   = 34.825/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH300.xsec   = 16.704/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH350.xsec   = 9.22647/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH400.xsec   = 4.9001/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec   = 2.74046/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH500.xsec   = 1.7631/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH550.xsec   = 1.14646/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH600.xsec   = 0.72042/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH650.xsec   = 0.466521/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH700.xsec   = 0.32154/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH750.xsec   = 0.222586/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH800.xsec   = 0.15288/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH850.xsec   = 0.106694/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH900.xsec   = 0.076403/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH950.xsec   = 0.0549749/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1000.xsec  = 0.039656/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1050.xsec  = 0.028836/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec  = 0.021202/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1150.xsec  = 0.0156522/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1200.xsec  = 0.011632/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1250.xsec  = 0.0087236/1000.
+# Pythia8EvtGen_A14NNPDF23LO_DCH1300.xsec  = 0.0065092/1000.
 
+Pythia8EvtGen_A14NNPDF23LO_DCH200.xsec = 0.082677
+Pythia8EvtGen_A14NNPDF23LO_DCH250.xsec = 0.034825
+Pythia8EvtGen_A14NNPDF23LO_DCH300.xsec = 0.016704
+Pythia8EvtGen_A14NNPDF23LO_DCH350.xsec = 0.0087528
+Pythia8EvtGen_A14NNPDF23LO_DCH400.xsec = 0.0049001
+Pythia8EvtGen_A14NNPDF23LO_DCH450.xsec = 0.002882
+Pythia8EvtGen_A14NNPDF23LO_DCH500.xsec = 0.0017631
+Pythia8EvtGen_A14NNPDF23LO_DCH550.xsec = 0.00110919
+Pythia8EvtGen_A14NNPDF23LO_DCH600.xsec = 0.00072042
+Pythia8EvtGen_A14NNPDF23LO_DCH650.xsec = 0.000476508
+Pythia8EvtGen_A14NNPDF23LO_DCH700.xsec = 0.00032154
+Pythia8EvtGen_A14NNPDF23LO_DCH750.xsec = 0.00021991
+Pythia8EvtGen_A14NNPDF23LO_DCH800.xsec = 0.00015288
+Pythia8EvtGen_A14NNPDF23LO_DCH850.xsec = 0.000107411
+Pythia8EvtGen_A14NNPDF23LO_DCH900.xsec = 7.6403e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH950.xsec = 5.47825e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH1000.xsec = 3.9656e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH1050.xsec = 2.88885e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH1100.xsec = 2.1202e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH1150.xsec = 1.56347e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH1200.xsec = 1.1632e-05
+Pythia8EvtGen_A14NNPDF23LO_DCH1250.xsec = 8.74109e-06
+Pythia8EvtGen_A14NNPDF23LO_DCH1300.xsec = 6.5092e-06
 
 list_DCH =[globals()[DCH_name%(m)] for m in DCH_masses]
 
