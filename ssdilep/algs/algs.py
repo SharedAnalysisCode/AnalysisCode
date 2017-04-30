@@ -1421,6 +1421,19 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_SameSignLooseEleDR35(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        SSPair = 0
+        SSPairPass = 0
+        for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            if pair[0].tlv.DeltaR(pair[1].tlv) < 3.5:
+              SSPairPass += 1
+        if SSPair == 1 and SSPairPass == 1:
+          return True
+        return False
+
     def cut_LooseEleHT300(self):
         electrons = self.store['electrons_loose_LooseLLH']
         HT = 0
@@ -3151,18 +3164,21 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_invMassOS1 = self.hist('h_invMassOS1', "ROOT.TH1F('$', ';Leading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_invMassOS2 = self.hist('h_invMassOS2', "ROOT.TH1F('$', ';Subleading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ee);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
+        self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 10000, 0.0, 10000.0)", dir=MET)
+
 
         ##Electron plots
         self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
@@ -3230,6 +3246,14 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
             assert (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()) > (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()), "wrong OS1,OS2 assignement"
           assert ele3!=ele2 and ele3!=ele1, "third ele not properly defined"
 
+          ele1T = ROOT.TLorentzVector()
+          ele1T.SetPtEtaPhiM( ele1.tlv.Pt(), 0., ele1.tlv.Phi(), ele1.tlv.M() )
+          ele2T = ROOT.TLorentzVector()
+          ele2T.SetPtEtaPhiM( ele2.tlv.Pt(), 0., ele2.tlv.Phi(), ele2.tlv.M() )
+          ele3T = ROOT.TLorentzVector()
+          if NEL==3:
+            ele3T.SetPtEtaPhiM( ele3.tlv.Pt(), 0., ele3.tlv.Phi(), ele3.tlv.M() )
+
           ## event plots 
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
@@ -3244,8 +3268,12 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_DR.Fill( ele1.tlv.DeltaR(ele2.tlv), weight)
           if NEL == 3:
             self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt())/GeV, weight )
+            self.h_HTmet.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
+            self.h_mTtot.Fill( (ele1T+ele2T+ele3T+met_trk.tlv).M()/GeV, weight )
           else:
             self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt())/GeV, weight )
+            self.h_HTmet.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
+            self.h_mTtot.Fill( (ele1T+ele2T+met_trk.tlv).M()/GeV, weight )
 
           nbjets = 0
           for jet in jets:
@@ -3457,6 +3485,9 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ee);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
+        self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
+        self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -3489,6 +3520,10 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         # ---------------
         if passed:
           assert len(electrons)==2, "should have exactly two tight electrons at this point"
+          ele1T = ROOT.TLorentzVector()
+          ele1T.SetPtEtaPhiM( electrons[0].tlv.Pt(), 0., electrons[0].tlv.Phi(), electrons[0].tlv.M() )
+          ele2T = ROOT.TLorentzVector()
+          ele2T.SetPtEtaPhiM( electrons[1].tlv.Pt(), 0., electrons[1].tlv.Phi(), electrons[1].tlv.M() )
           ## event plots 
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
@@ -3498,6 +3533,9 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
           self.h_DR.Fill( electrons[0].tlv.DeltaR(electrons[1].tlv), weight)
+          self.h_mTtot.Fill( (ele1T+ele2T+met_trk.tlv).M()/GeV, weight )
+          self.h_HT.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt())/GeV, weight )
+          self.h_HTmet.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
 
           nbjets = 0
           for jet in jets:

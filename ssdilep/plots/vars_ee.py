@@ -26,13 +26,14 @@ bins_pt_SR = generateLogBins(20,30,2000)
 bins_Zpt_SR = [0] + generateLogBins(20,10,3000)
 bins_Zpt_SR_2 = [0,1,2,3,4,5,6,7,8,9] + generateLogBins(50,10,3000)
 bins_mt = generateLogBins(50,50,2000)
-bins_HT = generateLogBins(30,90,4000)
+bins_HT = generateLogBins(50,60,4000)
 bins_invM = generateLogBins(50,130,2000)
+bins_invM_fit = generateLogBins(30,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
-bins_invMassSR2EL = generateLogBins(40,200,890)
+bins_invMassSR2EL = generateLogBins(10,200,900)
 bins_invMassSR2ELall = generateLogBins(60,200,3000)
 # bins_invMassSR3EL = generateLogBins(20,300,4000)
-bins_invMassSR3EL = generateLogBins(6,200,1000)
+bins_invMassSR3EL = generateLogBins(5,200,1000)
 bins_invMassSR3ELall = generateLogBins(14,200,1000)
 bins_invM_2 = generateLogBins(15,130,200)
 bins_invM_3 = generateLogBins(8,130,200)
@@ -91,10 +92,32 @@ nbjets = Var(name = 'nbjets',
 
 HT = Var(name='HT',
               path   = 'event',
-              xmin   = 90,
+              xmin   = 60,
               xmax   = 4000,
               rebin  = 1,
               rebinVar  = bins_HT,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = True
+              )
+
+HTmet = Var(name='HTmet',
+              path   = 'event',
+              xmin   = 60,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_HT,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = True
+              )
+
+mTtot = Var(name='mTtot',
+              path   = 'event',
+              xmin   = 30,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = [30,40,50] + bins_HT,
               #rebinVar  = bins_Zpeak2,
               log    = False,
               logx   = True
@@ -157,6 +180,17 @@ invMass = Var(name='invMass',
               logx   = True
               )
 
+invMass_fit = Var(name='invMass',
+              path   = 'event',
+              xmin   = 130,
+              xmax   = 2000,
+              rebin  = 1,
+              rebinVar  = bins_invM_fit,
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              logx   = True
+              )
+
 invMassLong = Var(name='invMass',
               path   = 'event',
               xmin   = 130,
@@ -171,7 +205,7 @@ invMassLong = Var(name='invMass',
 invMassSR2EL = Var(name='invMass',
               path   = 'event',
               xmin   = 200,
-              xmax   = 890,
+              xmax   = 900,
               rebin  = 1,
               rebinVar  = bins_invMassSR2EL,
               log    = True,
@@ -945,10 +979,13 @@ vars_dict["el_lead_eta_cf"] = el_lead_eta_cf.__dict__
 vars_dict["el_sublead_eta_cf"] = el_sublead_eta_cf.__dict__
 vars_dict["el_third_pt_SR"] = el_third_pt_SR.__dict__
 vars_dict["HT"] = HT.__dict__
+vars_dict["HTmet"] = HTmet.__dict__
+vars_dict["mTtot"] = mTtot.__dict__
 vars_dict["DR2"] = DR2.__dict__
 vars_dict["DR4"] = DR4.__dict__
 vars_dict["ZbosonPt_SR"] = ZbosonPt_SR.__dict__
 vars_dict["ZbosonPt_SR_2"] = ZbosonPt_SR_2.__dict__
+vars_dict["invMass_fit"] = invMass_fit.__dict__
 
 ## EOF
 

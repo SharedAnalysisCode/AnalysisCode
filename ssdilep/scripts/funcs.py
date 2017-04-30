@@ -328,10 +328,8 @@ def plot_hist(
       if not b in hists.keys(): continue
       h_stack.Add(hists[b])
    
-    if signal:
-        nLegend = len(signal+backgrounds) + 2
-    else:
-       nLegend = len(backgrounds) + 2
+
+    nLegend = len(backgrounds) + 2
     x_legend = 0.63
     x_leg_shift = 0
     y_leg_shift = -0.1 
@@ -358,7 +356,8 @@ def plot_hist(
       if not b in hists.keys(): continue
       leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
 
-    leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/2.5-0.07,legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
+
+    leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9-0.03*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
     leg2.SetBorderSize(0)
     leg2.SetFillColor(0)
     leg2.SetFillStyle(0)
@@ -647,8 +646,8 @@ def write_hist(
                 binErr = 0
                 if (nbins+2 > i > 0) and h.GetBinContent(i) < 0:
                     print "fixing negative weight"
-                    binVal = (h.GetBinContent(i-1)+h.GetBinContent(i+1))/2.
-                    binErr = (h.GetBinError(i-1)+h.GetBinError(i+1))/2.
+                    binVal = 0.
+                    binErr = h.GetBinError(i)
                 else:
                     binVal = h.GetBinContent(i)
                     binErr = h.GetBinError(i)

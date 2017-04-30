@@ -27,7 +27,8 @@ USER   = os.getenv('USER')
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT12' # input NTUP path
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT19and0' # input NTUP path
 
-NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
+# NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
+NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
@@ -38,7 +39,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # outputs
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
-RUN = "AllR_v3_010"
+RUN = "AllR_v3_017"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_004"
 
@@ -58,13 +59,29 @@ SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
-DO_NOM = True                        # submit the nominal job
+DO_NOM = False                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
-CF_SYS = True
-FF_SYS = True
+
+CF_SYS = False
+FF_SYS = False
+
+BEAM_SYS = False
+CHOICE_SYS = False
+PDF_SYS = False
+PI_SYS = False
+SCALE_Z_SYS = False
+
+EG_RESOLUTION_ALL_SYS = False
+EG_SCALE_ALLCORR_SYS = False
+EG_SCALE_E4SCINTILLATOR_SYS = False
+
+TRIG_SYS = True
+ID_SYS = False
+ISO_SYS = False
+RECO_SYS = False
 
 
 def main():
@@ -106,7 +123,6 @@ def main():
         ]    
     
     plot_sys = []
-
     if CF_SYS:
         plot_sys += [
             ['CF_UP',        nominal],
@@ -117,8 +133,67 @@ def main():
             ['FF_UP',        nominal],
             ['FF_DN',        nominal],
             ]  
+    if BEAM_SYS:
+        plot_sys += [
+            ['BEAM_UP',        nominal],
+            ['BEAM_DN',        nominal],
+            ]  
+    if CHOICE_SYS:
+        plot_sys += [
+            ['CHOICE_UP',        nominal],
+            ['CHOICE_DN',        nominal],
+            ]  
+    if PDF_SYS:
+        plot_sys += [
+            ['PDF_UP',        nominal],
+            ['PDF_DN',        nominal],
+            ]  
+    if PI_SYS:
+        plot_sys += [
+            ['PI_UP',        nominal],
+            ['PI_DN',        nominal],
+            ]  
+    if SCALE_Z_SYS:
+        plot_sys += [
+            ['SCALE_Z_UP',        nominal],
+            ['SCALE_Z_DN',        nominal],
+            ]  
+    if EG_RESOLUTION_ALL_SYS:
+        plot_sys += [
+            ['EG_RESOLUTION_ALL_UP',        nominal],
+            ['EG_RESOLUTION_ALL_DN',        nominal],
+            ]  
+    if EG_SCALE_ALLCORR_SYS:
+        plot_sys += [
+            ['EG_SCALE_ALLCORR_UP',        nominal],
+            ['EG_SCALE_ALLCORR_DN',        nominal],
+            ]  
+    if EG_SCALE_E4SCINTILLATOR_SYS:
+        plot_sys += [
+            ['EG_SCALE_E4SCINTILLATOR_UP',        nominal],
+            ['EG_SCALE_E4SCINTILLATOR_DN',        nominal],
+            ]  
+    if TRIG_SYS:
+        plot_sys += [
+            ['TRIG_UP',        nominal],
+            ['TRIG_DN',        nominal],
+            ]  
+    if ID_SYS:
+        plot_sys += [
+            ['ID_UP',        nominal],
+            ['ID_DN',        nominal],
+            ]  
+    if ISO_SYS:
+        plot_sys += [
+            ['ISO_UP',        nominal],
+            ['ISO_DN',        nominal],
+            ]  
+    if RECO_SYS:
+        plot_sys += [
+            ['RECO_UP',        nominal],
+            ['RECO_DN',        nominal],
+            ]  
 
-    
     ## ensure output path exists
     #prepare_path(OUTPATH)
     
@@ -170,19 +245,17 @@ def submit(tag,job_sys,samps,config={}):
         if len(config) > 0:
             ## skip signal and alt samples
             if s in samples.diboson_powheg_alt.daughters:
-                # print "skipping sys job on alt sample ", s.name
                 continue
             elif s in samples.ttbar_alt.daughters:
-                # print "skipping sys job on alt sample ", s.name
                 continue
-            elif s in samples.all_DCH.daughters:
-                if config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP']:
-                    print "skipping CF sys job sample ", s.name
-                    continue
-            elif s in samples.all_data:
-                if config['sys'] in ['CF_UP','CF_DN']:
-                    print "skipping CF sys job sample ", s.name
-                    continue
+            elif s in [samples.Pythia8EvtGen_A14NNPDF23LO_DCH450, samples.Pythia8EvtGen_A14NNPDF23LO_DCH1100]:
+                continue
+            elif s in samples.all_DCH.daughters and config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP']:
+                continue
+            elif s in samples.all_data and config['sys'] not in ['FF_UP','FF_DN']:
+                continue
+            elif s not in samples.AZNLOCTEQ6L1_DYee_DYtautau.daughters and config['sys'] in ["BEAM_UP","CHOICE_UP","PDF_UP","BEAM_UP","PI_UP","SCALE_Z_UP","BEAM_DN","CHOICE_DN","PDF_DN","BEAM_DN","PI_DN","SCALE_Z_DN"]:
+                continue
 
 
         ## input

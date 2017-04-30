@@ -138,7 +138,6 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.VV_ee,
   samples.diboson_sherpa221,
   samples.singletop,
-  samples.AZNLOCTEQ6L1_DYtautau,
   samples.ttX,
   ]
 elif options.samples == "ZPeak":
@@ -176,8 +175,7 @@ elif options.samples == "dibosonFit":
   samples.ttX,
   samples.singletop,
   samples.ttbar,
-  samples.AZNLOCTEQ6L1_DYee,
-  samples.AZNLOCTEQ6L1_DYtautau,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mc_backgrounds = [
@@ -215,7 +213,7 @@ masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 
 intiger = 3
 for mass,xsec in zip(masses,xsecL):
   # if mass==450 or mass==1100: continue
-  # if mass not in [600]: continue
+  # if mass not in [250,500,700]: continue
   name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
   globals()[name+"ee100mm0"] = sample.Sample(
     name = name,
@@ -287,6 +285,8 @@ for s in signal_ee50mm50:
   s.nameSuffix = "ee50mm50"
 
 signal = signal_ee100mm0 + signal_ee50mm50
+# signal = signal_ee100mm0 
+# signal = signal_ee50mm50
 
 for s in [data]: 
     histmgr.load_base_estimator(hm,s)
@@ -469,8 +469,7 @@ elif options.samples == "dibosonFit":
   samples.ttX,
   samples.singletop,
   samples.ttbar,
-  samples.AZNLOCTEQ6L1_DYee,
-  samples.AZNLOCTEQ6L1_DYtautau,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mumu_backgrounds = [
@@ -491,6 +490,7 @@ elif options.samples == "allSamples":
   fakes_mumu,
   ]
 
+sys_list = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, FF, CF, TRIG, ID, ISO, RECO]
 
 if (DO_SYS):
   fakes_mumu.estimator.add_systematics(FF)
@@ -498,11 +498,11 @@ if (DO_SYS):
     if sample in [samples.dibosonSysSample]:
       print "skip sys MC samples in other systematics"
       continue
-    sample.estimator.add_systematics(CF)
-    sample.estimator.add_systematics(FF)
+    for sys in sys_list:
+      sample.estimator.add_systematics(sys)
   for sample in signal:
-    sample.estimator.add_systematics(CF)
-    sample.estimator.add_systematics(FF)
+    for sys in sys_list:
+      sample.estimator.add_systematics(sys)
 
 print options.blind
 
