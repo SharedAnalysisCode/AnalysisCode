@@ -2652,6 +2652,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         electrons  = self.store['electrons_loose_LooseLLH']
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
+        jets       = self.store['jets']
         
         EVT    = os.path.join(region, 'event')
         ELECTRONS = os.path.join(region, 'electrons')
@@ -2665,6 +2666,8 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
+        self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
+        self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -2709,6 +2712,12 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
           self.h_NPV.Fill(self.chain.NPV, weight)
           self.h_nelectrons.Fill(len(electrons), weight)
+          nbjets = 0
+          for jet in jets:
+            if jet.isFix77:
+              nbjets += 1
+          self.h_njets.Fill(len(jets), weight)
+          self.h_nbjets.Fill(nbjets, weight)
           ## met plots
           self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
           self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)

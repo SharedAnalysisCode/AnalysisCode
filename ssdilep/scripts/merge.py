@@ -15,7 +15,7 @@ from systematics     import *
 from optparse import OptionParser
 import copy
 
-DO_SYS = True
+DO_SYS = False
 
 
 #-----------------

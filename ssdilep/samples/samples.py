@@ -1657,24 +1657,23 @@ all_mc = []
 ## EOF
 
 ### EXOT0 fake rate measurement configuration
-# all_mc += diboson_sherpa221.daughters
-# all_mc += WenuPowheg.daughters
-# all_mc += WtaunuPowheg.daughters
-# all_mc += ZeePowheg.daughters
-# all_mc += ZtautauPowheg.daughters
-# all_mc += singletop_inc.daughters
-# all_mc += ttbar_inc.daughters
+all_mc += diboson_sherpa221.daughters
+all_mc += WenuPowheg.daughters
+all_mc += WtaunuPowheg.daughters
+all_mc += ZeePowheg.daughters
+all_mc += ZtautauPowheg.daughters
+all_mc += singletop_inc.daughters
+all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-# all_mc += VV_ee.daughters
-all_mc += diboson_sherpa221.daughters
-all_mc += diboson_powheg_alt.daughters
-all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
-all_mc += singletop.daughters
-all_mc += ttbar.daughters
-all_mc += ttbar_alt.daughters
-all_mc += ttX.daughters
-all_mc += all_DCH.daughters
+# all_mc += diboson_sherpa221.daughters
+# all_mc += diboson_powheg_alt.daughters
+# all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+# all_mc += singletop.daughters
+# all_mc += ttbar.daughters
+# all_mc += ttbar_alt.daughters
+# all_mc += ttX.daughters
+# all_mc += all_DCH.daughters
 
 ### EXOT12 ZPeak
 # all_mc += diboson_sherpa221.daughters

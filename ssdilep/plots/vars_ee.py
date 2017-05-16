@@ -377,15 +377,15 @@ el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
                 path   = 'electrons',
                 )
 
-el_t_2D_pt_eta = Var(name='el_t_2D_pt_eta',
+el_t_2D_pt_Ceta = Var(name='el_t_2D_pt_Ceta',
                 path   = 'electrons',
                 )
 
-el_l_2D_pt_eta = Var(name='el_l_2D_pt_eta',
+el_l_2D_pt_Ceta = Var(name='el_l_2D_pt_Ceta',
                 path   = 'electrons',
                 )
 
-el_sl_2D_pt_eta = Var(name='el_sl_2D_pt_eta',
+el_sl_2D_pt_Ceta = Var(name='el_sl_2D_pt_Ceta',
                 path   = 'electrons',
                 )
 
@@ -926,9 +926,9 @@ vars_list.append(el_pt_eta_chf4)
 vars_list.append(el_pt_eta)
 vars_list.append(el_lead_pt_eta)
 vars_list.append(el_sublead_pt_eta)
-vars_list.append(el_sl_2D_pt_eta)
-vars_list.append(el_t_2D_pt_eta)
-vars_list.append(el_l_2D_pt_eta)
+vars_list.append(el_sl_2D_pt_Ceta)
+vars_list.append(el_t_2D_pt_Ceta)
+vars_list.append(el_l_2D_pt_Ceta)
 vars_list.append(el_l_pt)
 vars_list.append(el_t_pt)
 vars_list.append(el_sl_pt)

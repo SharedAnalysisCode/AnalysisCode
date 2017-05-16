@@ -356,20 +356,20 @@ def plot_hist(
       if not b in hists.keys(): continue
       leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
 
-
-    leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9-0.03*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
-    leg2.SetBorderSize(0)
-    leg2.SetFillColor(0)
-    leg2.SetFillStyle(0)
-    leg2.SetTextSize(0.045)
-    if not do_ratio_plot:
-        leg2.SetTextSize(0.035)
     if signal:
-     for s in signal:
-       sig_tag = s.tlatex
-       if sig_rescale: sig_tag = "%d #times "%int(sig_rescale) + sig_tag
-       if not s in hists.keys(): continue
-       leg2.AddEntry(hists[s],"#font[42]{"+str(sig_tag)+"}",'F')
+      leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9-0.03*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
+      leg2.SetBorderSize(0)
+      leg2.SetFillColor(0)
+      leg2.SetFillStyle(0)
+      leg2.SetTextSize(0.045)
+      if not do_ratio_plot:
+          leg2.SetTextSize(0.035)
+      if signal:
+       for s in signal:
+         sig_tag = s.tlatex
+         if sig_rescale: sig_tag = "%d #times "%int(sig_rescale) + sig_tag
+         if not s in hists.keys(): continue
+         leg2.AddEntry(hists[s],"#font[42]{"+str(sig_tag)+"}",'F')
 
 
     ## create canvas

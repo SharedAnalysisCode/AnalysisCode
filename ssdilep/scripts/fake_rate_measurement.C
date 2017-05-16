@@ -24,9 +24,9 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   else if (var=="mcdn") var2 = "nominal";
 
   
-  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_004/hists_el_t_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
-  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_004/hists_el_l_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
-  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_004/hists_el_sl_2D_pt_eta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_006/hists_el_t_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_006/hists_el_l_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_006/hists_el_sl_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
 
   TH2F* nominal_t_wenu = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WenuPowheg").c_str());
   TH2F* nominal_t_Wtaunu = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WtaunuPowheg").c_str());
@@ -178,7 +178,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.Draw();
   ATLASLabel(0.18,0.89,"Internal",1);
   myText(0.18,0.84,1,"fake rate ( T/L )");
-  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
 
   TCanvas c3("c3","c3",600,600);
   c3.SetLogx();
@@ -193,7 +193,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.Draw();
   ATLASLabel(0.18,0.89,"Internal",1);
   myText(0.18,0.84,1,"fake factor ( f/(1-f) )");
-  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
 
 
   TCanvas c4("c4","c4",600,600);
@@ -210,7 +210,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.Draw();
   ATLASLabel(0.18,0.89,"Internal",1);
   myText(0.18,0.84,1,"fake factor ( T/SL )");
-  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  myText(0.18,0.79,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
 
 
   c1.Print(("fakeRate2D-"+var+".eps").c_str());
@@ -350,7 +350,7 @@ void fake_rate_measurement(){
   proj1nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
   myText(0.18,0.80,1,"0.0 < |#eta| < 1.37");
-  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
   leg.Draw();
   pad_2->SetLogx();
   pad_2->cd();
@@ -470,7 +470,7 @@ void fake_rate_measurement(){
   proj3nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
   myText(0.18,0.80,1,"1.52 < |#eta| < 2.01");
-  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
   leg.Draw();
   pad_2->SetLogx();
   pad_2->cd();
@@ -591,7 +591,7 @@ void fake_rate_measurement(){
   proj4nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
   myText(0.18,0.80,1,"2.01 < |#eta| < 2.47");
-  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");  
+  myText(0.18,0.75,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");  
   leg.Draw();
   pad_2->SetLogx();
   pad_2->cd();
