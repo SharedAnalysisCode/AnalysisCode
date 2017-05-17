@@ -451,7 +451,7 @@ class AllTightEleSF(pyframe.core.Algorithm):
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
-              etaBin = self.h_etaFunc.FindBin( abs(ele.tlv.Eta() ) )
+              etaBin = self.h_etaFunc.FindBin( abs(ele.caloCluster_eta ) )
               if ptBin==self.h_ptFunc.GetNbinsX()+1:
                 ptBin -= 1 
               if ele.electronType() in [2,3]:
@@ -546,8 +546,8 @@ class ExactlyTwoTightEleOStoSS(pyframe.core.Algorithm):
 
         ptBin1  = self.h_ptRate.FindBin( electrons[0].tlv.Pt()/GeV )
         ptBin2  = self.h_ptRate.FindBin( electrons[1].tlv.Pt()/GeV )
-        etaBin1 = self.h_etaRate.FindBin( abs(electrons[0].tlv.Eta() ) )
-        etaBin2 = self.h_etaRate.FindBin( abs(electrons[1].tlv.Eta() ) )
+        etaBin1 = self.h_etaRate.FindBin( abs(electrons[0].caloCluster_eta ) )
+        etaBin2 = self.h_etaRate.FindBin( abs(electrons[1].caloCluster_eta ) )
         prob1 = 0
         prob2 = 0
         if ptBin1==self.h_ptRate.GetNbinsX()+1:
@@ -676,8 +676,8 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
             self.store[self.key] = sf
           return True
 
-        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].eta ) ) )
-        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].eta ) ) )
+        f1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].caloCluster_eta ) ) )
+        f2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].caloCluster_eta ) ) )
         if f1*f2==0:
           sf=0
           if self.key: 
@@ -803,7 +803,7 @@ class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
-              etaBin = self.h_etaFunc.FindBin( abs(ele.tlv.Eta() ) )
+              etaBin = self.h_etaFunc.FindBin( abs(ele.caloCluster_eta ) )
               if ptBin==self.h_ptFunc.GetNbinsX()+1:
                 ptBin -= 1 
               if ele.electronType() in [2,3]:
@@ -955,7 +955,7 @@ class GenericFakeFactor(pyframe.core.Algorithm):
             sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
             sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
             ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
-            etaBin = self.h_etaFunc.FindBin( abs( ele.tlv.Eta() ) )
+            etaBin = self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) )
             if ptBin==self.h_ptFunc.GetNbinsX()+1:
               ptBin -= 1 
             if ele.electronType() in [2,3]:
@@ -967,7 +967,7 @@ class GenericFakeFactor(pyframe.core.Algorithm):
           else :
             pass
         else :
-          sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.tlv.Eta() ) ) )
+          sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.caloCluster_eta ) ) )
           if "mc" in self.sampletype :
             sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys)
             sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
@@ -1185,8 +1185,8 @@ class ExactlyTwoLooseEleFakeFactor(pyframe.core.Algorithm):
             self.store[self.key] = sf
           return True
 
-        F1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].eta ) ) )
-        F2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].eta ) ) )
+        F1 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].caloCluster_eta ) ) )
+        F2 = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[1].tlv.Pt()/GeV, abs( electrons[1].caloCluster_eta ) ) )
         if F1*F2==0:
           sf=0
           if self.key: 
@@ -1282,7 +1282,7 @@ class ExactlyOneLooseEleFakeFactor(pyframe.core.Algorithm):
             self.store[self.key] = sf
           return True
 
-        F = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].eta ) ) )
+        F = self.h_ff.GetBinContent( self.h_ff.FindBin( electrons[0].tlv.Pt()/GeV, abs( electrons[0].caloCluster_eta ) ) )
         if F==0:
           sf=0
           if self.key: 

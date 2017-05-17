@@ -1431,6 +1431,16 @@ ttbar_alt = Sample( name =  'ttbar_dilep_Sherpa',
                                 ],
                 )
 
+ttbar_new = Sample( name =  'ttbar_new',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-8,
+                    line_color =  ROOT.kBlue-5,
+                    marker_color =  ROOT.kBlue-5,
+                    daughters = [
+                                 Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO,
+                                ],
+                )
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ttbar sliced samples
 # Notes:
@@ -1472,6 +1482,95 @@ ttbar_slices = Sample( name =  'ttbar_slices',
                                  #ttbar_hdamp172p5_nonallhad,      #just use this one!
                                 ],
                 ) 
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ttbar Py8 samples
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryTTbar 
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep             = Sample( name =  "PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep",  xsec =  9.232743943             )
+PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_nonallhad         = Sample( name =  "PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_nonallhad",  xsec =  31.60191948         )
+PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil             = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil",  xsec =  9.233103993             )
+PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad       = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad",  xsec =  25.78121944       )
+PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF    = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF",  xsec =  730.18         )
+PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad  = Sample( name =  "PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad",  xsec =  452.3360408  )
+PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad   = Sample( name =  "PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad",  xsec =  452.2944528   )
+aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad   = Sample( name =  "aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad",  xsec =  455.097484    )
+
+ttbar_Py8 = Sample( name =  'ttbar_Py8',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil,           
+                                ],
+                )
+
+ttbar_Py8_alt = Sample( name =  'ttbar_Py8_alt',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad,           
+                                 PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad,           
+                                 PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep,           
+                                 aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad,           
+                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF,          
+                                ],
+                )
+
+ttbar_Py8_up = Sample( name =  'ttbar_Py8_up',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad,           
+                                ],
+                )
+
+ttbar_Py8_do = Sample( name =  'ttbar_Py8_do',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad,           
+                                ],
+                )
+
+ttbar_Herwig = Sample( name =  'ttbar_Herwig',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep,           
+                                ],
+                )
+
+ttbar_Py8_aMcAtNlo = Sample( name =  'ttbar_Py8_aMcAtNlo',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad,           
+                                ],
+                )
+
+ttbar_Py8_CF = Sample( name =  'ttbar_Py8_CF',
+                    tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF,           
+                                ],
+                )
 
 #-----------------------------------------------------------------------------
 # vgamma
@@ -1657,23 +1756,26 @@ all_mc = []
 ## EOF
 
 ### EXOT0 fake rate measurement configuration
-all_mc += diboson_sherpa221.daughters
-all_mc += WenuPowheg.daughters
-all_mc += WtaunuPowheg.daughters
-all_mc += ZeePowheg.daughters
-all_mc += ZtautauPowheg.daughters
-all_mc += singletop_inc.daughters
-all_mc += ttbar_inc.daughters
+# all_mc += diboson_sherpa221.daughters
+# all_mc += WenuPowheg.daughters
+# all_mc += WtaunuPowheg.daughters
+# all_mc += ZeePowheg.daughters
+# all_mc += ZtautauPowheg.daughters
+# all_mc += singletop_inc.daughters
+# all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-# all_mc += diboson_sherpa221.daughters
-# all_mc += diboson_powheg_alt.daughters
-# all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
-# all_mc += singletop.daughters
+all_mc += diboson_sherpa221.daughters
+all_mc += diboson_powheg_alt.daughters
+all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+all_mc += singletop.daughters
+all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters
-# all_mc += ttX.daughters
-# all_mc += all_DCH.daughters
+all_mc += ttbar_Py8.daughters
+all_mc += ttbar_Py8_alt.daughters
+# signal
+all_mc += all_DCH.daughters
 
 ### EXOT12 ZPeak
 # all_mc += diboson_sherpa221.daughters
