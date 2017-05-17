@@ -71,6 +71,7 @@ user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301046.PowhegPythia8EvtGen_AZNLOCTEQ6L1_
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301047.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_1250M1500
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301048.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_1500M1750
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301049.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_1750M2000
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.003.301050.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_2000M2250
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301051.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_2250M2500
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301052.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_2500M2750
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301053.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_2750M3000
@@ -78,7 +79,6 @@ user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301054.PowhegPythia8EvtGen_AZNLOCTEQ6L1_
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301056.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_4000M4500
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301057.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_4500M5000
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.301058.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_5000M
-user.mmuskinj.SSDiLep.EX12MC.v3.sys.003.301050.PowhegPythia8EvtGen_AZNLOCTEQ6L1_DYtautau_2000M2250
 
 
 ##### diboson nominal
@@ -119,13 +119,13 @@ user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410015.PowhegPythiaEvtGen_P2012_Wt_dilep
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410016.PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop
 
 ##### ttX
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.343365.aMcAtNloPythia8EvtGen_A14_NNPDF23_NNPDF30ME_ttH125_dilep
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.343366.aMcAtNloPythia8EvtGen_A14_NNPDF23_NNPDF30ME_ttH125_semilep
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410066.MadGraphPythia8EvtGen_A14NNPDF23LO_ttW_Np0
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410067.MadGraphPythia8EvtGen_A14NNPDF23LO_ttW_Np1
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410068.MadGraphPythia8EvtGen_A14NNPDF23LO_ttW_Np2
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410069.MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410070.MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1
-user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.343365.aMcAtNloPythia8EvtGen_A14_NNPDF23_NNPDF30ME_ttH125_dilep
-user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.343366.aMcAtNloPythia8EvtGen_A14_NNPDF23_NNPDF30ME_ttH125_semilep
 
 ##### not needed
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361106.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee
