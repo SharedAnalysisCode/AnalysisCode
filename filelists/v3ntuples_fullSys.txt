@@ -127,6 +127,12 @@ user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410068.MadGraphPythia8EvtGen_A14NNPDF23L
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410069.MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.410070.MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1
 
+#### Higgs
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.341471.PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.341488.PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.341518.PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep_noTau
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.341947.Pythia8EvtGen_A14NNPDF23LO_ZH125_ZZ4l
+
 ##### not needed
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361106.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361107.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu
