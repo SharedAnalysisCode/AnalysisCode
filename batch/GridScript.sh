@@ -43,3 +43,4 @@ fi
 
 
 echo hadd out.root ntuple.root $2 $3
+hadd out.root ntuple.root $2 $3
