@@ -136,4 +136,4 @@ user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.341947.Pythia8EvtGen_A14NNPDF23LO_ZH125_
 ##### not needed
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361106.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee
 user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361107.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zmumu
-user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361108.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau
+user.mmuskinj.SSDiLep.EX12MC.v3.sys.002.361108.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Ztautau_tree.root
