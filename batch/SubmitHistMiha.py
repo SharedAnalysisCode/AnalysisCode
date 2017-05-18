@@ -39,7 +39,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # outputs
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
-RUN = "AllR_v3_020"
+RUN = "AllR_v3_021"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -59,29 +59,29 @@ SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
-DO_NOM = False                        # submit the nominal job
+DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
-CF_SYS = False
-FF_SYS = False
+CF_SYS = True
+FF_SYS = True
 
 BEAM_SYS = True
-CHOICE_SYS = False
-PDF_SYS = False
-PI_SYS = False
-SCALE_Z_SYS = False
+CHOICE_SYS = True
+PDF_SYS = True
+PI_SYS = True
+SCALE_Z_SYS = True
 
-EG_RESOLUTION_ALL_SYS = False
-EG_SCALE_ALLCORR_SYS = False
-EG_SCALE_E4SCINTILLATOR_SYS = False
+EG_RESOLUTION_ALL_SYS = True
+EG_SCALE_ALLCORR_SYS = True
+EG_SCALE_E4SCINTILLATOR_SYS = True
 
-TRIG_SYS = False
-ID_SYS = False
-ISO_SYS = False
-RECO_SYS = False
+TRIG_SYS = True
+ID_SYS = True
+ISO_SYS = True
+RECO_SYS = True
 
 
 def main():

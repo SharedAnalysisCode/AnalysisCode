@@ -50,7 +50,7 @@ class LPXKfactor(pyframe.core.Algorithm):
                  doAssert=True,
                  nominalTree=True
                  ):
-        pyframe.core.Algorithm.__init__(self, name="MCEventWeight", isfilter=True)
+        pyframe.core.Algorithm.__init__(self, name="LPXKfactor", isfilter=True)
 
         self.cutflow = cutflow
         self.key = key
@@ -191,6 +191,8 @@ class MCEventWeight(pyframe.core.Algorithm):
     def execute(self, weight):
         if "mc" in self.sampletype: 
             wmc = self.chain.mcEventWeight
+            if abs(wmc) > 80. :
+              wmc = 1.
             if self.key: self.store[self.key] = wmc
             self.set_weight(wmc*weight)
         return True

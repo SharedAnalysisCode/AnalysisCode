@@ -29,41 +29,41 @@ green = ROOT.kGreen+1
 #-------------------------------------------------------------------------------
 GRL = []
 
-# GRL += [
-#         #2015
-#         "276262","276329","276336","276416","276511","276689","276778","276790",
-#         "276952","276954","278880","278912","278968","279169","279259","279279",
-#         "279284","279345","279515","279598","279685","279813","279867","279928",
-#         "279932","279984","280231","280273","280319","280368","280423","280464",
-#         "280500","280520","280614","280673","280753","280853","280862","280950",
-#         "280977","281070","281074","281075","281317","281385","281411","282625",
-#         "282631","282712","282784","282992","283074","283155","283270","283429",
-#         "283608","283780","284006","284154","284213","284285","284420","284427",
-#         "284484",
+GRL += [
+        #2015
+        "276262","276329","276336","276416","276511","276689","276778","276790",
+        "276952","276954","278880","278912","278968","279169","279259","279279",
+        "279284","279345","279515","279598","279685","279813","279867","279928",
+        "279932","279984","280231","280273","280319","280368","280423","280464",
+        "280500","280520","280614","280673","280753","280853","280862","280950",
+        "280977","281070","281074","281075","281317","281385","281411","282625",
+        "282631","282712","282784","282992","283074","283155","283270","283429",
+        "283608","283780","284006","284154","284213","284285","284420","284427",
+        "284484",
 
-#         #2016
-#         "297730","298595","298609","298633","298687","298690","298771","298773",
-#         "298862","298967","299055","299144","299147","299184","299243","299584",
-#         "300279","300345","300415","300418","300487","300540","300571","300600",
-#         "300655","300687","300784","300800","300863","300908","301912","301918",
-#         "301932","301973","302053","302137","302265","302269","302300","302347",
-#         "302380","302391","302393","302737","302831","302872","302919","302925",
-#         "302956","303007","303079","303201","303208","303264","303266","303291",
-#         "303304","303338","303421","303499","303560","303638","303832","303846",
-#         "303892","303943","304006","304008","304128","304178","304198","304211",
-#         "304243","304308","304337","304409","304431","304494","305380","305543",
-#         "305571","305618","305671","305674","305723","305727","305735","305777",
-#         "305811","305920","306269","306278","306310","306384","306419","306442",
-#         "306448","306451","307126","307195","307259","307306","307354","307358",
-#         "307394","307454","307514","307539","307569","307601","307619","307656",
-#         "307710","307716","307732","307861","307935","308047","308084","309375",
-#         "309390","309440","309516","309640","309674","309759","310015","310247",
-#         "310249","310341","310370","310405","310468","310473","310634","310691",
-#         "310738","310809","310863","310872","310969","311071","311170","311244",
-#         "311287","311321","311365","311402","311473","311481",
-#         ]
+        #2016
+        "297730","298595","298609","298633","298687","298690","298771","298773",
+        "298862","298967","299055","299144","299147","299184","299243","299584",
+        "300279","300345","300415","300418","300487","300540","300571","300600",
+        "300655","300687","300784","300800","300863","300908","301912","301918",
+        "301932","301973","302053","302137","302265","302269","302300","302347",
+        "302380","302391","302393","302737","302831","302872","302919","302925",
+        "302956","303007","303079","303201","303208","303264","303266","303291",
+        "303304","303338","303421","303499","303560","303638","303832","303846",
+        "303892","303943","304006","304008","304128","304178","304198","304211",
+        "304243","304308","304337","304409","304431","304494","305380","305543",
+        "305571","305618","305671","305674","305723","305727","305735","305777",
+        "305811","305920","306269","306278","306310","306384","306419","306442",
+        "306448","306451","307126","307195","307259","307306","307354","307358",
+        "307394","307454","307514","307539","307569","307601","307619","307656",
+        "307710","307716","307732","307861","307935","308047","308084","309375",
+        "309390","309440","309516","309640","309674","309759","310015","310247",
+        "310249","310341","310370","310405","310468","310473","310634","310691",
+        "310738","310809","310863","310872","310969","311071","311170","311244",
+        "311287","311321","311365","311402","311473","311481",
+        ]
 
-GRL += ["284285","302300","306448","307656"]
+# GRL += ["284285","302300","306448","307656"]
 # GRL += ["298773","306419","311170","310691"]
 
 
@@ -342,7 +342,7 @@ ZqqZll          = Sample( name = "Sherpa_CT10_ZqqZll_SHv21_improved",         xs
 ZqqZvv          = Sample( name = "Sherpa_CT10_ZqqZvv_SHv21_improved",         xsec = 4.63359232 )
 
 diboson_sherpa = Sample( name =   'diboson_sherpa',
-                  tlatex = 'DB inclusive',
+                  tlatex = 'diboson',
                   fill_color = ROOT.kGreen-10,
                   line_color =  ROOT.kGreen-8,
                   marker_color =  ROOT.kGreen-8,
@@ -415,14 +415,25 @@ Sherpa_CT10_lllvjj_EW6          = Sample( name = "Sherpa_CT10_lllvjj_EW6",      
 Sherpa_CT10_llvvjj_ss_EW4       = Sample( name = "Sherpa_CT10_llvvjj_ss_EW4",       xsec =    0.02347527  )
 Sherpa_CT10_llvvjj_ss_EW6       = Sample( name = "Sherpa_CT10_llvvjj_ss_EW6",       xsec =    0.03913364  )
 
+#-----------------------------------------------------------------------------
+# Powheg diboson (sys)
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonPowheg
+#-----------------------------------------------------------------------------
+
+
+PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4 = Sample( name = "PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4",       xsec =     4.5108   )
+PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4 = Sample( name = "PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4",       xsec =     1.2673   )
+
 diboson_sherpa221 = Sample( name =   'dibosonSherpa',
-                  tlatex = 'DB inclusive',
+                  tlatex = 'diboson',
                   fill_color   = ROOT.kGreen-6,
                   line_color   = ROOT.kGreen-2,
                   marker_color = ROOT.kGreen-2,
                   daughters = [
                                 Sherpa_221_NNPDF30NNLO_llll,
-                                Sherpa_221_NNPDF30NNLO_lllv,
+                                # Sherpa_221_NNPDF30NNLO_lllv,
+                                PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4,
                                 Sherpa_221_NNPDF30NNLO_llvv,
                                 Sherpa_221_NNPDF30NNLO_WqqZll,
                                 Sherpa_221_NNPDF30NNLO_ZqqZll,
@@ -484,16 +495,6 @@ diboson_sherpa221_lllvjj = Sample( name =   'diboson_sherpa_lllvjj',
                                 Sherpa_CT10_lllvjj_EW6,  
                               ],
                 )
-
-#-----------------------------------------------------------------------------
-# Powheg diboson (sys)
-# Notes:
-#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryDibosonPowheg
-#-----------------------------------------------------------------------------
-
-
-PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4 = Sample( name = "PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4",       xsec =     4.5108   )
-PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4 = Sample( name = "PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_ZZllll_mll4",       xsec =     1.2673   )
 
 diboson_powheg_alt = Sample( name =   'diboson_powheg',
                   tlatex = 'DB powheg',
@@ -1097,7 +1098,7 @@ AZNLOCTEQ6L1_DYtautau = Sample( name =   'Ztautau',
                 )
 
 AZNLOCTEQ6L1_DYee_DYtautau = Sample( name =   'DYZ',
-                  tlatex = 'Drell-Yan Z/#gamma*',
+                  tlatex = 'D-Y Z/#gamma*',
                   fill_color = ROOT.kWhite,
                   line_color =  ROOT.kBlack,
                   marker_color =  ROOT.kBlack,
@@ -1491,24 +1492,14 @@ ttbar_slices = Sample( name =  'ttbar_slices',
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryTTbar 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep             = Sample( name =  "PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep",  xsec =  9.232743943             )
+PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep             = Sample( name =  "PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_dilep",  xsec =  87.625548               )
 PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_nonallhad         = Sample( name =  "PowhegHerwig7EvtGen_H7UE_tt_hdamp258p75_nonallhad",  xsec =  31.60191948         )
-PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil             = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil",  xsec =  9.233103993             )
+PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil             = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil",  xsec =  87.625548               )
 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad       = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad",  xsec =  25.78121944       )
 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF    = Sample( name =  "PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF",  xsec =  730.18         )
 PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad  = Sample( name =  "PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad",  xsec =  452.3360408  )
 PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad   = Sample( name =  "PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad",  xsec =  452.2944528   )
 aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad   = Sample( name =  "aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad",  xsec =  455.097484    )
-
-ttbar_Py8 = Sample( name =  'ttbar_Py8',
-                    tlatex = 't#bar{t} Py8',
-                    fill_color = ROOT.kBlue-10,
-                    line_color =  ROOT.kBlue-8,
-                    marker_color =  ROOT.kBlue-8,
-                    daughters = [        
-                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil,           
-                                ],
-                )
 
 ttbar_Py8_alt = Sample( name =  'ttbar_Py8_alt',
                     tlatex = 't#bar{t} Py8',
@@ -1524,8 +1515,32 @@ ttbar_Py8_alt = Sample( name =  'ttbar_Py8_alt',
                                 ],
                 )
 
-ttbar_Py8_up = Sample( name =  'ttbar_Py8_up',
+top_physics = Sample( name =  'top_physics',
+                    tlatex = 't#bar{t} + single-t',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil,
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
+                                 PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
+                                 PowhegPythiaEvtGen_P2012_Wt_dilepton_top,     
+                                ],
+                )
+
+ttbar_Py8 = Sample( name =  'ttbar_Py8',
                     tlatex = 't#bar{t} Py8',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil,           
+                                ],
+                )
+
+ttbar_Py8_up = Sample( name =  'ttbar_Py8_up',
+                    tlatex = 't#bar{t} Py8 up',
                     fill_color = ROOT.kBlue-10,
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
@@ -1535,7 +1550,7 @@ ttbar_Py8_up = Sample( name =  'ttbar_Py8_up',
                 )
 
 ttbar_Py8_do = Sample( name =  'ttbar_Py8_do',
-                    tlatex = 't#bar{t} Py8',
+                    tlatex = 't#bar{t} Py8 do',
                     fill_color = ROOT.kBlue-10,
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
@@ -1545,7 +1560,7 @@ ttbar_Py8_do = Sample( name =  'ttbar_Py8_do',
                 )
 
 ttbar_Herwig = Sample( name =  'ttbar_Herwig',
-                    tlatex = 't#bar{t} Py8',
+                    tlatex = 't#bar{t} Herwin',
                     fill_color = ROOT.kBlue-10,
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
@@ -1555,7 +1570,7 @@ ttbar_Herwig = Sample( name =  'ttbar_Herwig',
                 )
 
 ttbar_Py8_aMcAtNlo = Sample( name =  'ttbar_Py8_aMcAtNlo',
-                    tlatex = 't#bar{t} Py8',
+                    tlatex = 't#bar{t} aMcAtNlo',
                     fill_color = ROOT.kBlue-10,
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
@@ -1565,7 +1580,7 @@ ttbar_Py8_aMcAtNlo = Sample( name =  'ttbar_Py8_aMcAtNlo',
                 )
 
 ttbar_Py8_CF = Sample( name =  'ttbar_Py8_CF',
-                    tlatex = 't#bar{t} Py8',
+                    tlatex = 't#bar{t} Py8_CF',
                     fill_color = ROOT.kBlue-10,
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
@@ -1767,14 +1782,14 @@ all_mc = []
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-# all_mc += diboson_sherpa221.daughters
+all_mc += diboson_sherpa221.daughters
 # all_mc += diboson_powheg_alt.daughters
 # all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
 # all_mc += singletop.daughters
 # all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters
-all_mc += ttbar_Py8.daughters
+# all_mc += ttbar_Py8.daughters
 # all_mc += ttbar_Py8_alt.daughters
 # # signal
 # all_mc += all_DCH.daughters

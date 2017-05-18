@@ -15,7 +15,7 @@ from systematics     import *
 from optparse import OptionParser
 import copy
 
-DO_SYS = False
+DO_SYS = True
 
 
 #-----------------
@@ -89,11 +89,18 @@ data = samples.data
 mc_backgrounds = []
 ## backgrounds 
 
+
+# ttbar_Py8_up
+# ttbar_Py8_do
+# ttbar_Py8
+# ttbar_Py8_aMcAtNlo
+# ttbar_Py8_CF
+
 if options.samples == "wjet":
   mc_backgrounds = [
   samples.WenuPowheg,
   samples.ZeePowheg,
-  samples.ttbar_inc,
+  samples.ttbar_Py8,
   samples.singletop_inc,
   samples.diboson_sherpa221,
   samples.WtaunuPowheg,
@@ -105,7 +112,7 @@ elif options.samples == "FFele":
   samples.WtaunuPowheg,
   samples.ZeePowheg,
   samples.ZtautauPowheg,
-  samples.ttbar_inc,
+  samples.ttbar_Py8,
   samples.singletop_inc,
   samples.diboson_sherpa221,
   ]
@@ -114,7 +121,7 @@ elif options.samples == "chargeFlipData":
   ]
 elif options.samples in ["ttbar","ttbarss"]:
   mc_backgrounds = [
-  samples.ttbar,
+  samples.ttbar_Py8,
   # samples.VV_ee,
   samples.diboson_sherpa221,
   samples.singletop,
@@ -124,27 +131,27 @@ elif options.samples in ["ttbar","ttbarss"]:
 elif options.samples == "OSCR":
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
+  samples.top_physics,
   # samples.VV_ee,
   samples.diboson_sherpa221,
-  samples.singletop,
+  # samples.singletop,
   samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples in ["SSVR","SSVRBLIND"]:
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
+  samples.top_physics,
   # samples.VV_ee,
   samples.diboson_sherpa221,
-  samples.singletop,
+  # samples.singletop,
   samples.ttX,
   ]
 elif options.samples == "ZPeak":
   mc_backgrounds = [
   samples.Zee221,
   samples.diboson_sherpa221,
-  samples.ttbar_inc,
+  samples.ttbar_Py8,
   samples.singletop_inc,
   samples.ttX,
   samples.WenuPowheg,
@@ -155,7 +162,7 @@ elif options.samples == "ZPeak":
 elif options.samples == "diboson":
   mc_backgrounds = [
   # samples.Zee221,
-  # samples.ttbar,
+  # samples.ttbar_Py8,
   # samples.diboson_sherpa,
   samples.diboson_sherpa221_llll,
   samples.diboson_sherpa221_lllv,
@@ -167,14 +174,14 @@ elif options.samples == "diboson":
   # samples.singletop,
   samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
-  samples.ttbar,
+  samples.top_physics,
   ]
 elif options.samples == "dibosonFit":
   mc_backgrounds = [
   samples.diboson_sherpa221,
   samples.ttX,
-  samples.singletop,
-  samples.ttbar,
+  # samples.singletop,
+  samples.top_physics,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
@@ -188,7 +195,7 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 elif options.samples == "allSamples":
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
+  samples.ttbar_Py8,
   samples.diboson_sherpa221,
   samples.dibosonSysSample,
   samples.singletop,
@@ -213,14 +220,14 @@ masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 
 intiger = 3
 for mass,xsec in zip(masses,xsecL):
   # if mass==450 or mass==1100: continue
-  # if mass not in [250,500,700]: continue
+  if mass not in [450,600]: continue
   name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
   globals()[name+"ee100mm0"] = sample.Sample(
     name = name,
     tlatex = "DCH%d Br(ee)=1.0" % (mass),
-    line_color = ROOT.kOrange-intiger,
-    marker_color = ROOT.kOrange-intiger,
-    fill_color = ROOT.kOrange-intiger,
+    line_color = ROOT.kRed-intiger,
+    marker_color = ROOT.kRed-intiger,
+    fill_color = ROOT.kRed-intiger,
     line_width  = 3,
     line_style = 1,
     fill_style = 3004,
@@ -230,9 +237,9 @@ for mass,xsec in zip(masses,xsecL):
   globals()[name+"ee50mm50"] = sample.Sample(
     name = name,
     tlatex = "DCH%d Br(ee)=Br(#mu#mu)=0.5" % (mass),
-    line_color = ROOT.kRed-intiger,
-    marker_color = ROOT.kRed-intiger,
-    fill_color = ROOT.kRed-intiger,
+    line_color = ROOT.kOrange-intiger,
+    marker_color = ROOT.kOrange-intiger,
+    fill_color = ROOT.kOrange-intiger,
     line_width  = 3,
     line_style = 1,
     fill_style = 3004,
@@ -284,8 +291,8 @@ for s in signal_ee50mm50:
   s.estimator = histmgr.EstimatorDCH( hm=hm, ee=0.5, mm=0.5, sample=s )
   s.nameSuffix = "ee50mm50"
 
-signal = signal_ee100mm0 + signal_ee50mm50
-# signal = signal_ee100mm0 
+# signal = signal_ee100mm0 + signal_ee50mm50
+signal = signal_ee100mm0 
 # signal = signal_ee50mm50
 
 for s in [data]: 
@@ -350,7 +357,7 @@ if (DO_SYS):
   if options.samples == "ZPeak":
     samples.Zee221.estimator.add_systematics(CF)
     samples.diboson_sherpa221.estimator.add_systematics(CF)
-    samples.ttbar_inc.estimator.add_systematics(CF)
+    samples.ttbar_Py8.estimator.add_systematics(CF)
     samples.singletop_inc.estimator.add_systematics(CF)
     samples.ttX.estimator.add_systematics(CF)
     samples.WenuPowheg.estimator.add_systematics(CF)
@@ -370,7 +377,7 @@ if options.samples == "wjet":
   samples.WenuPowheg,
   fakes_mumu,
   samples.ZeePowheg,
-  samples.ttbar_inc,
+  samples.ttbar_Py8,
   samples.diboson_sherpa221,
   samples.singletop_inc,
   samples.WtaunuPowheg,
@@ -383,7 +390,7 @@ elif options.samples == "FFele":
   samples.diboson_sherpa221,
   samples.WtaunuPowheg,
   samples.ZtautauPowheg,
-  samples.ttbar_inc,
+  samples.ttbar_Py8,
   samples.singletop_inc,
   ]
 elif options.samples == "chargeFlipData":
@@ -395,7 +402,7 @@ elif options.samples == "chargeFlipData":
 elif options.samples == "ttbar":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
+  samples.ttbar_Py8,
   samples.singletop,
   fakes_mumu,
   samples.diboson_sherpa221,
@@ -405,7 +412,7 @@ elif options.samples == "ttbar":
 elif options.samples == "ttbarss":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
+  samples.ttbar_Py8,
   fakes_mumu,
   samples.singletop,
   samples.diboson_sherpa221,
@@ -415,10 +422,10 @@ elif options.samples == "ttbarss":
 elif options.samples == "OSCR":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
   # samples.VV_ee,
+  samples.top_physics,
   samples.diboson_sherpa221,
-  samples.singletop,
+  # samples.singletop,
   fakes_mumu,
   samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
@@ -427,7 +434,7 @@ elif options.samples == "ZPeak":
   mumu_backgrounds = [
   samples.Zee221,
   samples.diboson_sherpa221,
-  samples.ttbar_inc,
+  samples.ttbar_Py8,
   samples.singletop_inc,
   samples.ttX,
   samples.WenuPowheg,
@@ -438,10 +445,10 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   fakes_mumu,
-  samples.ttbar,
   # samples.VV_ee,
   samples.diboson_sherpa221,
-  samples.singletop,
+  samples.top_physics,
+  # samples.singletop,
   samples.ttX,
   ]
 elif options.samples == "diboson":
@@ -459,7 +466,7 @@ elif options.samples == "diboson":
   # samples.singletop,
   samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
-  samples.ttbar,
+  samples.top_physics,
   # samples.WenuPowheg,
   ]
 elif options.samples == "dibosonFit":
@@ -467,8 +474,8 @@ elif options.samples == "dibosonFit":
   samples.diboson_sherpa221,
   fakes_mumu,
   samples.ttX,
-  samples.singletop,
-  samples.ttbar,
+  # samples.singletop,
+  samples.top_physics,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
@@ -482,7 +489,7 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 elif options.samples == "allSamples":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar,
+  samples.ttbar_Py8,
   samples.diboson_sherpa221,
   samples.dibosonSysSample,
   samples.singletop,

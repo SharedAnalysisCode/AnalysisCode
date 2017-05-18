@@ -357,7 +357,7 @@ def plot_hist(
       leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
 
     if signal:
-      leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9-0.03*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
+      leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9-0.035*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
       leg2.SetBorderSize(0)
       leg2.SetFillColor(0)
       leg2.SetFillStyle(0)
@@ -381,7 +381,7 @@ def plot_hist(
     else: c = ROOT.TCanvas(cname,cname,600,600)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-2 if log else 0.0
+    ymin = 1.e-2 if log else 0.000001
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue
