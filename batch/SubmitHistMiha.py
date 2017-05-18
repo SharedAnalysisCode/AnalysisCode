@@ -66,9 +66,9 @@ TESTMODE = False                     # submit only 1 sub-job (for testing)
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
 CF_SYS = False
-FF_SYS = True
+FF_SYS = False
 
-BEAM_SYS = False
+BEAM_SYS = True
 CHOICE_SYS = False
 PDF_SYS = False
 PI_SYS = False

@@ -21,13 +21,13 @@ from   ssdilep.samples import samples
 SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
-JOBNAME = "test1"
+JOBNAME = "test3"
 
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 
-DO_NOM = False                        # submit the nominal job
+DO_NOM = True                        # submit the nominal job
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
@@ -227,7 +227,7 @@ def submit(tag,job_sys,samps,config={}):
     cmd+= ' --secondaryDSs IN2:1:' + dataset+'_metadata.root' + ',IN3:1:' + dataset+'_cutflow.root'
     cmd+= ' --nFilesPerJob 1'
     cmd+= ' --extFile ssdilep/data/chargeFlipRates-28-03-2017.root,ssdilep/data/fakeFactor-16-05-2017.root'
-    cmd+= ' --excludeFile run/'
+    cmd+= ' --excludeFile "./run/*,./run*"'
     cmd+= ' --mergeOutput'
     cmd+= ' --rootVer=6.04/14 --cmtConfig=x86_64-slc6-gcc49-opt'
     cmd+= ' --outputs out.root'
