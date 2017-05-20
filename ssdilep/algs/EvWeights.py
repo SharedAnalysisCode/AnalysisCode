@@ -191,8 +191,8 @@ class MCEventWeight(pyframe.core.Algorithm):
     def execute(self, weight):
         if "mc" in self.sampletype: 
             wmc = self.chain.mcEventWeight
-            if abs(wmc) > 80. :
-              wmc = 1.
+            # if abs(wmc) > 30. :
+            #   wmc = 1.
             if self.key: self.store[self.key] = wmc
             self.set_weight(wmc*weight)
         return True

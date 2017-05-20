@@ -408,7 +408,7 @@ Sherpa_221_NNPDF30NNLO_WqqZll   = Sample( name = "Sherpa_221_NNPDF30NNLO_WqqZll"
 Sherpa_221_NNPDF30NNLO_WqqZvv   = Sample( name = "Sherpa_221_NNPDF30NNLO_WqqZvv",   xsec =    6.7973 )
 Sherpa_221_NNPDF30NNLO_ZqqZll   = Sample( name = "Sherpa_221_NNPDF30NNLO_ZqqZll",   xsec =    2.17275043   )
 Sherpa_221_NNPDF30NNLO_ZqqZvv   = Sample( name = "Sherpa_221_NNPDF30NNLO_ZqqZvv",   xsec =    4.35418464   )
-Sherpa_CT10_ggllll              = Sample( name = "Sherpa_CT10_ggllll",              xsec =    0.01887613  )
+Sherpa_CT10_ggllll              = Sample( name = "Sherpa_CT10_ggllll",              xsec =    0.032089421  )
 Sherpa_CT10_ggllvv              = Sample( name = "Sherpa_CT10_ggllvv",              xsec =    0.7773402 )
 Sherpa_CT10_lllljj_EW6          = Sample( name = "Sherpa_CT10_lllljj_EW6",          xsec =    0.031496  )
 Sherpa_CT10_lllvjj_EW6          = Sample( name = "Sherpa_CT10_lllvjj_EW6",          xsec =    0.042287  )
@@ -432,8 +432,8 @@ diboson_sherpa221 = Sample( name =   'dibosonSherpa',
                   marker_color = ROOT.kGreen-2,
                   daughters = [
                                 Sherpa_221_NNPDF30NNLO_llll,
-                                # Sherpa_221_NNPDF30NNLO_lllv,
-                                PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4,
+                                Sherpa_221_NNPDF30NNLO_lllv,
+                                # PowhegPy8EG_CT10nloME_AZNLOCTEQ6L1_WZlvll_mll4,
                                 Sherpa_221_NNPDF30NNLO_llvv,
                                 Sherpa_221_NNPDF30NNLO_WqqZll,
                                 Sherpa_221_NNPDF30NNLO_ZqqZll,
@@ -467,9 +467,9 @@ diboson_sherpa221_llll = Sample( name =   'diboson_sherpa_llll',
 
 diboson_sherpa221_ggllll = Sample( name =   'diboson_sherpa_ggllll',
                   tlatex = 'DB (ggllll)',
-                  fill_color = ROOT.kBlue-10,
-                  line_color =  ROOT.kBlue-8,
-                  marker_color =  ROOT.kBlue-8,
+                  fill_color = ROOT.kRed-4,
+                  line_color =  ROOT.kRed-2,
+                  marker_color =  ROOT.kRed-2,
                   daughters = [
                                 Sherpa_CT10_ggllll,
                               ],
@@ -1267,6 +1267,27 @@ Ztautau = Sample( name =   'Ztautau',
 #-----------------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# single-top
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummarySingleTop
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#SingleTopSchan_noAllHad_top           = Sample( name =  "SingleTopSchan_noAllHad_top",       xsec =  2.0517 )
+#SingleTopSchan_noAllHad_antitop       = Sample( name =  "SingleTopSchan_noAllHad_antitop",   xsec =  1.2615 )
+#singletop_tchan_lept_top              = Sample( name =  "singletop_tchan_lept_top",          xsec =  43.739 )
+#singletop_tchan_lept_antitop          = Sample( name =  "singletop_tchan_lept_antitop",      xsec =  25.778 )
+#Wt_inclusive_top                      = Sample( name =  "Wt_inclusive_top",                  xsec =  34.009 ) 
+#Wt_inclusive_antitop                  = Sample( name =  "Wt_inclusive_antitop",              xsec =  33.989 )
+
+
+PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop  = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop", xsec =  0.025778*1000   )
+PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top      = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top",     xsec =  0.043739*1000   )
+PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop           = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop",          xsec =  0.0035814*1000  )
+PowhegPythiaEvtGen_P2012_Wt_dilepton_top               = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_top",              xsec =  0.0035835*1000  )
+
+PowhegPythiaEvtGen_P2012_Wt_inclusive_top              = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_top",            xsec =  0.034009*1000   ) 
+PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop          = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop",        xsec =  0.033989*1000   )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ttX 
 # Notes:
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryTTbarX
@@ -1310,6 +1331,32 @@ ttX = Sample( name =   'ttX',
                               ],
                 )
 
+ttX_singletop = Sample( name =   'ttX_singletop',
+                  tlatex = 't#bar{t}X + single-t',
+                  fill_color = ROOT.kViolet-9,
+                  line_color =  ROOT.kViolet-7,
+                  marker_color =  ROOT.kViolet-7,
+                  daughters = [
+                               ttW_Np0,                
+                               ttW_Np1,        
+                               ttW_Np2,        
+                               #ttZnnqq_Np0,    
+                               #ttZnnqq_Np1,    
+                               #ttZnnqq_Np2,    
+                               MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0,       
+                               MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1,       
+                               #ttmumu_Np0,     
+                               #ttmumu_Np1,     
+                               #tttautau_Np0,   
+                               #tttautau_Np1,
+                               ttH125,
+                               PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
+                               PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
+                               PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
+                               PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+                              ],
+                )
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Higgs samples 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1332,27 +1379,6 @@ Higgs = Sample( name =   'Higgs',
                                Pythia8EvtGen_A14NNPDF23LO_ZH125_ZZ4l,    
                               ],
                 )
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# single-top
-# Notes:
-#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummarySingleTop
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#SingleTopSchan_noAllHad_top           = Sample( name =  "SingleTopSchan_noAllHad_top",       xsec =  2.0517 )
-#SingleTopSchan_noAllHad_antitop       = Sample( name =  "SingleTopSchan_noAllHad_antitop",   xsec =  1.2615 )
-#singletop_tchan_lept_top              = Sample( name =  "singletop_tchan_lept_top",          xsec =  43.739 )
-#singletop_tchan_lept_antitop          = Sample( name =  "singletop_tchan_lept_antitop",      xsec =  25.778 )
-#Wt_inclusive_top                      = Sample( name =  "Wt_inclusive_top",                  xsec =  34.009 ) 
-#Wt_inclusive_antitop                  = Sample( name =  "Wt_inclusive_antitop",              xsec =  33.989 )
-
-
-PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop  = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop", xsec =  0.025778*1000   )
-PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top      = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top",     xsec =  0.043739*1000   )
-PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop           = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop",          xsec =  0.0035814*1000  )
-PowhegPythiaEvtGen_P2012_Wt_dilepton_top               = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_top",              xsec =  0.0035835*1000  )
-
-PowhegPythiaEvtGen_P2012_Wt_inclusive_top              = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_top",            xsec =  0.034009*1000   ) 
-PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop          = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop",        xsec =  0.033989*1000   )
 
 
 singletop = Sample( name =   'singletop',
@@ -1525,7 +1551,13 @@ top_physics = Sample( name =  'top_physics',
                                  PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
                                  PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
                                  PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
-                                 PowhegPythiaEvtGen_P2012_Wt_dilepton_top,     
+                                 PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+                                 ttW_Np0,                
+                                 ttW_Np1,        
+                                 ttW_Np2,        
+                                 MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0,       
+                                 MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1,       
+                                 ttH125, 
                                 ],
                 )
 
@@ -1740,7 +1772,7 @@ single_DCH = [Pythia8EvtGen_A14NNPDF23LO_DCH300]
 all_data = []
 all_data += data.daughters
 
-all_mc = []
+all_mc = [Pythia8EvtGen_A14NNPDF23LO_DCH400]
 #all_mc += mytestSample.daughters
 # all_mc += diboson_sherpa.daughters
 #all_mc += VV_ee.daughters
@@ -1782,7 +1814,7 @@ all_mc = []
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-all_mc += diboson_sherpa221.daughters
+# all_mc += diboson_sherpa221.daughters
 # all_mc += diboson_powheg_alt.daughters
 # all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
 # all_mc += singletop.daughters

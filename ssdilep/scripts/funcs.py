@@ -713,14 +713,14 @@ def write_hist(
                         binValD = 0
                         binErrD = 0
                         if (nbins+2 > i > 0) and hsys[0].GetBinContent(i) < 0:
-                            binValU = (hsys[0].GetBinContent(i-1)+hsys[0].GetBinContent(i+1))/2.
-                            binErrU = (hsys[0].GetBinError(i-1)+hsys[0].GetBinError(i+1))/2.
+                            binValU = 0.
+                            binErrU = hsys[0].GetBinError(i)
                         else:
                             binValU = hsys[0].GetBinContent(i)
                             binErrU = hsys[0].GetBinError(i)
                         if (nbins+2 > i > 0) and hsys[1].GetBinContent(i) < 0:
-                            binValD = (hsys[1].GetBinContent(i-1)+hsys[1].GetBinContent(i+1))/2.
-                            binErrD = (hsys[1].GetBinError(i-1)+hsys[1].GetBinError(i+1))/2.
+                            binValD = 0.
+                            binErrD = hsys[1].GetBinError(i)
                         else:
                             binValD = hsys[1].GetBinContent(i)
                             binErrD = hsys[1].GetBinError(i)

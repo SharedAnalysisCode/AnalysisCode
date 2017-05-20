@@ -4,6 +4,7 @@ import ROOT
 import histmgr
 import funcs
 import os
+import re
 
 from ssdilep.samples import samples
 from ssdilep.samples import sample
@@ -195,11 +196,18 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 elif options.samples == "allSamples":
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar_Py8,
   samples.diboson_sherpa221,
   samples.dibosonSysSample,
-  samples.singletop,
-  samples.ttX,
+  samples.top_physics,
+  # samples.ttbar_Py8,
+  # samples.singletop,
+  # samples.ttX,
+  # samples.ttX_singletop,
+  # samples.ttbar_Py8_up,
+  # samples.ttbar_Py8_do,
+  # samples.ttbar_Herwig,
+  # samples.ttbar_Py8_aMcAtNlo,
+  # samples.ttbar_Py8_CF,
   ]
 
 
@@ -214,39 +222,45 @@ mumu_signals = []
 signal_ee100mm0 = []
 signal_ee50mm50 = []
 
+signal_samples = []
+
 xsecL = [82.677, 34.825, 16.704, 8.7528, 4.9001, 2.882, 1.7631, 1.10919, 0.72042, 0.476508, 0.32154, 0.21991, 0.15288, 0.107411, 0.076403, 0.0547825, 0.039656, 0.0288885, 0.021202, 0.0156347, 0.011632, 0.00874109, 0.0065092]
 masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
 
-intiger = 3
-for mass,xsec in zip(masses,xsecL):
-  # if mass==450 or mass==1100: continue
-  if mass not in [450,600]: continue
-  name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
-  globals()[name+"ee100mm0"] = sample.Sample(
-    name = name,
-    tlatex = "DCH%d Br(ee)=1.0" % (mass),
-    line_color = ROOT.kRed-intiger,
-    marker_color = ROOT.kRed-intiger,
-    fill_color = ROOT.kRed-intiger,
-    line_width  = 3,
-    line_style = 1,
-    fill_style = 3004,
-    xsec       = xsec/1000.,
-    )
-  signal_ee100mm0 += [globals()[name+"ee100mm0"]]
-  globals()[name+"ee50mm50"] = sample.Sample(
-    name = name,
-    tlatex = "DCH%d Br(ee)=Br(#mu#mu)=0.5" % (mass),
-    line_color = ROOT.kOrange-intiger,
-    marker_color = ROOT.kOrange-intiger,
-    fill_color = ROOT.kOrange-intiger,
-    line_width  = 3,
-    line_style = 1,
-    fill_style = 3004,
-    xsec       = xsec/1000.,
-    )
-  signal_ee50mm50 += [globals()[name+"ee50mm50"]]
-  intiger -= 1
+for br in range(10,110,10):
+  signal_samples += [[]]
+  for mass,xsec in zip(masses,xsecL):
+    intiger = 3
+    if options.makeplot == "True":
+      if mass not in [450,600] or br not in [30,70]: continue
+    name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
+    globals()[name+"ee"+str(br)+"mm"+str(100-br)] = sample.Sample(
+      name = name,
+      tlatex = "DCH%d Br(ee)=%d" % (mass,br),
+      line_color = ROOT.kRed-intiger,
+      marker_color = ROOT.kRed-intiger,
+      fill_color = ROOT.kRed-intiger,
+      line_width  = 3,
+      line_style = 1,
+      fill_style = 3004,
+      xsec       = xsec/1000.,
+      )
+    signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(br)+"mm"+str(100-br)] ]
+    # signal_ee100mm0 += [globals()[name+"ee100mm0"]]
+    # globals()[name+"ee50mm50"] = sample.Sample(
+    #   name = name,
+    #   tlatex = "DCH%d Br(ee)=Br(#mu#mu)=0.5" % (mass),
+    #   line_color = ROOT.kOrange-intiger,
+    #   marker_color = ROOT.kOrange-intiger,
+    #   fill_color = ROOT.kOrange-intiger,
+    #   line_width  = 3,
+    #   line_style = 1,
+    #   fill_style = 3004,
+    #   xsec       = xsec/1000.,
+    #   )
+    # signal_ee50mm50 += [globals()[name+"ee50mm50"]]
+    intiger -= 1
+
 
 # signal = [
 #   samples.Pythia8EvtGen_A14NNPDF23LO_DCH300,
@@ -291,8 +305,22 @@ for s in signal_ee50mm50:
   s.estimator = histmgr.EstimatorDCH( hm=hm, ee=0.5, mm=0.5, sample=s )
   s.nameSuffix = "ee50mm50"
 
+signal = []
+for samps in signal_samples:
+  for s in samps:
+    br = re.findall("Br\(ee\)\=([0-9]*)",s.tlatex)[0]
+    s.estimator = histmgr.EstimatorDCH( hm=hm, ee=float(br)/100., mm=(1-float(br)/100.), sample=s )
+    s.nameSuffix = "ee"+br+"mm"+str(int(100-float(br)))
+    print s.tlatex
+    print float(br)
+    print s.nameSuffix
+    signal += [s]
+
+
+
 # signal = signal_ee100mm0 + signal_ee50mm50
-signal = signal_ee100mm0 
+# signal = [x for x in signal_samples]
+# signal = signal_ee100mm0 
 # signal = signal_ee50mm50
 
 for s in [data]: 
@@ -489,11 +517,18 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 elif options.samples == "allSamples":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.ttbar_Py8,
   samples.diboson_sherpa221,
   samples.dibosonSysSample,
-  samples.singletop,
-  samples.ttX,
+  samples.top_physics,
+  # samples.ttbar_Py8,
+  # samples.singletop,
+  # samples.ttX,
+  # samples.ttX_singletop,
+  # samples.ttbar_Py8_up,
+  # samples.ttbar_Py8_do,
+  # samples.ttbar_Herwig,
+  # samples.ttbar_Py8_aMcAtNlo,
+  # samples.ttbar_Py8_CF,
   fakes_mumu,
   ]
 
@@ -502,7 +537,7 @@ sys_list = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR,
 if (DO_SYS):
   fakes_mumu.estimator.add_systematics(FF)
   for sample in mumu_backgrounds:
-    if sample in [samples.dibosonSysSample]:
+    if sample in [samples.dibosonSysSample,samples.ttbar_Py8_up,samples.ttbar_Py8_do,samples.ttbar_Herwig,samples.ttbar_Py8_aMcAtNlo,samples.ttbar_Py8_CF]:
       print "skip sys MC samples in other systematics"
       continue
     for sys in sys_list:
