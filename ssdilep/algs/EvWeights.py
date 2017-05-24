@@ -1162,7 +1162,9 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
           self.store[self.key] = 0.
         return True
 
-      sf = -1.0
+      sf = 1.0
+      if len(self.store['muons_tight']) != len(self.store['muons']):
+        sf = -1.0
       muons = self.store['muons']
 
       for muon in muons:
@@ -1187,7 +1189,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
               break
           if self.sys == 'UP': ff_mu +=eff_up_mu
           if self.sys == 'DN': ff_mu -=eff_dn_mu
-          sf *= ff_mu
+          sf *= -ff_mu
           if "mc" in self.sampletype :
             sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(0)
             sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(0)
