@@ -227,19 +227,20 @@ signal_samples = []
 xsecL = [82.677, 34.825, 16.704, 8.7528, 4.9001, 2.882, 1.7631, 1.10919, 0.72042, 0.476508, 0.32154, 0.21991, 0.15288, 0.107411, 0.076403, 0.0547825, 0.039656, 0.0288885, 0.021202, 0.0156347, 0.011632, 0.00874109, 0.0065092]
 masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
 
-for br in range(10,110,10):
+# for br in range(10,110,10):
+for br in [10,50,100]:
   signal_samples += [[]]
+  intiger = 1
   for mass,xsec in zip(masses,xsecL):
-    intiger = 3
     if options.makeplot == "True":
-      if mass not in [450,600] or br not in [30,70]: continue
+      if mass not in [500,600,700] or br not in [50]: continue
     name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
     globals()[name+"ee"+str(br)+"mm"+str(100-br)] = sample.Sample(
       name = name,
       tlatex = "DCH%d Br(ee)=%d" % (mass,br),
-      line_color = ROOT.kRed-intiger,
-      marker_color = ROOT.kRed-intiger,
-      fill_color = ROOT.kRed-intiger,
+      line_color = intiger,
+      marker_color = intiger,
+      fill_color = intiger,
       line_width  = 3,
       line_style = 1,
       fill_style = 3004,
@@ -259,7 +260,7 @@ for br in range(10,110,10):
     #   xsec       = xsec/1000.,
     #   )
     # signal_ee50mm50 += [globals()[name+"ee50mm50"]]
-    intiger -= 1
+    intiger += 1
 
 
 # signal = [

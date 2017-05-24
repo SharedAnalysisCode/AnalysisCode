@@ -1049,7 +1049,7 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_PassORSingleLeptonTriggerMuon(self):
-        chain = ["HLT_mu26_imedium", "HLT_mu26_ivarmedium","HLT_mu50"]
+        chain = ["HLT_mu26_ivarmedium","HLT_mu50"]
         for i in xrange(self.chain.passedTriggers.size()):
             if self.chain.passedTriggers.at(i) in chain: return True
 
@@ -1103,6 +1103,12 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_ExactlyZeroElectrons(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==0: 
+          return True
+        return False
+
     def cut_ExactlyOneLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==1: 
@@ -1136,6 +1142,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_AtLeastTwoLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)>1: 
+          return True
+        return False
+
+    def cut_AtLeastTwoLooseMuons(self):
+        muons = self.store['muons']
+        if len(muons)>1: 
           return True
         return False
 
@@ -1188,6 +1200,23 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_NoStrictlyLooseEle(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        for ele in electrons:
+          if not (ele.isIsolated_Loose and ele.LHMedium):
+            return False
+        return True
+
+    def cut_NotNoStrictlyLooseEle(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        ntight = 0
+        for ele in electrons:
+          if (ele.isIsolated_Loose and ele.LHMedium):
+            ntight += 1
+        if ntight < len(electrons):
+          return True
+        return False
+
     def cut_ExactlyThreeLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==3: 
@@ -1217,6 +1246,19 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_ExactlyThreeLooseLepOSZmass(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if not len(leptons)==3: 
+          return False
+        OSPairZmass = 0
+        for pair in itertools.combinations(leptons,2):
+          if pair[0].trkcharge != pair[1].trkcharge : 
+            if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) <= 10*GeV and (pair[0].m == pair[1].m):
+              OSPairZmass += 1
+        if OSPairZmass>0:
+          return True
+        return False
+
     def cut_ExactlyThreeLooseEleLooseLLHOSZVeto(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if not len(electrons)==3: 
@@ -1236,8 +1278,6 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_LooseEleLooseLLHOSZVeto(self):
         electrons = self.store['electrons_loose_LooseLLH']
-        OSPairZmass = 0
-        OS2PairMass = 0
         for pair in itertools.combinations(electrons,2):
           if pair[0].trkcharge != pair[1].trkcharge : 
             if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) <= 10*GeV:
@@ -1270,6 +1310,20 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_ExactlyThreeLeptonsSS90M200(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if not len(leptons)==3: 
+          return False
+        SSPair = 0
+        SSPairMass = 0
+        for pair in itertools.combinations(leptons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            SSPairMass = (pair[0].tlv + pair[1].tlv).M()
+        if SSPair == 1 and (90*GeV < SSPairMass < 200*GeV):
+          return True
+        return False
+
     def cut_ExactlyThreeLooseEleLooseLLHSS200M(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if not len(electrons)==3: 
@@ -1290,11 +1344,24 @@ class CutAlg(pyframe.core.Algorithm):
         SSPairMass = 0
         for pair in itertools.combinations(electrons,2):
           if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            if (pair[0].tlv + pair[1].tlv).M() < 200*GeV:
+              return False
             SSPair += 1
-            SSPairMass = (pair[0].tlv + pair[1].tlv).M()
-        if SSPair == 1 and SSPairMass > 200*GeV:
+        if SSPair in [1,2]:
           return True
         return False
+
+    def cut_ExactlyThreeTightLep(self):
+        leptons = self.store['electrons_tight_MediumLLH_isolLoose'] + self.store['muons_tight']
+        if len(leptons)==3: 
+          return True
+        return False
+
+    def cut_FailExactlyThreeTightLep(self):
+        leptons = self.store['electrons_tight_MediumLLH_isolLoose'] + self.store['muons_tight']
+        if len(leptons)==3: 
+          return False
+        return True
 
     def cut_ExactlyThreeTightEleMediumLLHisolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
@@ -1398,13 +1465,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_SameSignLooseElePtZ100(self):
         electrons = self.store['electrons_loose_LooseLLH']
         SSPair = 0
-        SSPairPass = 0
         for pair in itertools.combinations(electrons,2):
           if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            if (pair[0].tlv+pair[1].tlv).Pt() < 100*GeV:
+              return False
             SSPair += 1
-            if (pair[0].tlv+pair[1].tlv).Pt() > 100*GeV:
-              SSPairPass += 1
-        if SSPair == 1 and SSPairPass == 1:
+        if SSPair in [1,2]:
           return True
         return False
 
@@ -1424,13 +1490,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_SameSignLooseEleDR35(self):
         electrons = self.store['electrons_loose_LooseLLH']
         SSPair = 0
-        SSPairPass = 0
         for pair in itertools.combinations(electrons,2):
           if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            if not pair[0].tlv.DeltaR(pair[1].tlv) < 3.5:
+              return False
             SSPair += 1
-            if pair[0].tlv.DeltaR(pair[1].tlv) < 3.5:
-              SSPairPass += 1
-        if SSPair == 1 and SSPairPass == 1:
+        if SSPair in [1,2]:
           return True
         return False
 
@@ -1694,6 +1759,17 @@ class CutAlg(pyframe.core.Algorithm):
             return False
       return True
 
+    def cut_NoFakeMuonsInMC(self):
+      muons = self.store['muons']
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber in range(306538,306560):
+        return True
+      for mu in muons:
+        if not mu.isTrueIsoMuon() :
+          return False
+      return True
+
     def cut_DCHAllElectron(self):
       if ("mc" not in self.sampletype):
         return True
@@ -1774,6 +1850,137 @@ class CutAlg(pyframe.core.Algorithm):
 
     #__________________________________________________________________________
     def cut_PASS(self):
+      return True
+
+    #__________________________________________________________________________
+    def cut_DeltaMassOverMass(self):
+      #Legend: 1 eeee, 2 mmmm, 3 emem, 4 eemm, 5 eeem, 6 mmem
+      alpha = [0.09, 0.005, 0.003, 0.004, 0.007, 0.004]
+      beta  = [0.74, 1.46,  1.47,  1.46,  1.30,  1.50 ]
+      flavour = 0
+      if self.store['fourLepFlavor'] in ["eeee"]: flavour = 0
+      if self.store['fourLepFlavor'] in ["mmmm"]: flavour = 1
+      if self.store['fourLepFlavor'] in ["emem"]: flavour = 2
+      if self.store['fourLepFlavor'] in ["eemm","mmee"]: flavour = 3
+      if self.store['fourLepFlavor'] in ["eeem","emee"]: flavour = 4
+      if self.store['fourLepFlavor'] in ["mmem","emmm"]: flavour = 5
+      mpos = self.store['mVis1'] 
+      mneg = self.store['mVis2'] 
+      massDiff = (mpos - mneg)/GeV
+      mass     = (mpos + mneg)/(2*GeV)
+
+      massCut = (abs(massDiff)/(alpha[flavour]*(pow(mass,beta[flavour]))))
+      if(abs(massCut) < 3): return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_PassTriggersDLT(self):
+      if self.sampletype == "mc" :
+        runNumber = self.chain.rand_run_nr
+      else :
+        runNumber = self.chain.runNumber
+      
+      if runNumber < 290000. :
+        trigchains={"HLT_2e17_lhloose","HLT_2mu14","HLT_e17_lhloose_nod0_mu14"}
+        for i in xrange(self.chain.passedTriggers.size()):
+          if self.chain.passedTriggers.at(i) in trigchains:
+            return True
+      else:
+        trigchains={"HLT_2e17_lhloose","HLT_2mu14","HLT_e17_lhloose_nod0_mu14"}
+        for i in xrange(self.chain.passedTriggers.size()):
+            if self.chain.passedTriggers.at(i) in trigchains:
+              return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_NoStrictlyLooseElectrons(self):
+      if len(self.store["electrons_loose_LooseLLH"]) == len(self.store['electrons_tight_MediumLLH_isolLoose']):
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_FourTightLeptons(self):
+      if (len(self.store["muons"]) + len(self.store['electrons_tight_MediumLLH_isolLoose']))==4:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_FourLeptons(self):
+      if (len(self.store["muons"]) + len(self.store['electrons_loose_LooseLLH']))==4:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_EleTTTT(self):
+      if len(self.store['electrons_tight_MediumLLH_isolLoose'])==4:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_ZeroTotalCharge(self):
+      electrons = self.store['electrons_loose_LooseLLH']
+      muons     = self.store['muons']
+      leptons = electrons + muons
+      totalCharge=0.
+      for l in leptons:
+        totalCharge += l.trkcharge
+      if(totalCharge==0):
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_TwoSSElectronPairs(self):
+      if self.store["fourLepFlavor"] and self.store["fourLepFlavor"] in ["eeee"]:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_TwoSSMuonPairs(self):
+      if self.store["fourLepFlavor"] in ["mmmm"]:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_TwoSSElectronMuonPairsEEMM(self):
+      if self.store["fourLepFlavor"] in ["eemm","mmee"]:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_TwoSSElectronMuonPairsEMEM(self):
+      if self.store["fourLepFlavor"] in ["emem"]:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_TwoSSElectronMuonPairsEEEM(self):
+      if self.store["fourLepFlavor"] in ["eeem","emee"]:
+        return True
+      return False
+
+    #__________________________________________________________________________
+    def cut_TwoSSElectronMuonPairsMMEM(self):
+      if self.store["fourLepFlavor"] in ["mmem","emmm"]:
+        return True
+      return False
+
+    #____________________________________________________________________________
+    def cut_IsSignalRegion2(self):
+      posmass = self.store['mVis1']
+      negmass = self.store['mVis2']
+
+      if((posmass>200*GeV) and (negmass>200*GeV)):
+        return True
+      return False
+
+    def cut_ZVeto(self):
+      electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+      muons     = self.store['muons']
+      leptons = electrons + muons
+      for pair in itertools.combinations(leptons,2):
+        if pair[0].trkcharge * pair[1].trkcharge < 0 and abs(pair[0].m-pair[1].m)<1e3:
+          if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) < 10*GeV:
+            return False
       return True
     
 #------------------------------------------------------------------------------
@@ -3152,13 +3359,18 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         # should probably make this configurable
         ## get event candidate
         electrons  = self.store['electrons_loose_LooseLLH']
+        muons = self.store['muons']
+        if len(muons) > 0:
+          assert len(electrons) == 0, "lepton veto not working"
+
+        leptons = electrons + muons
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
         jets       = self.store['jets']
         
         EVT    = os.path.join(region, 'event')
-        ELECTRONS = os.path.join(region, 'electrons')
+        LEPTONS = os.path.join(region, 'leptons')
         MET    = os.path.join(region, 'met')
         
         # -----------------
@@ -3168,18 +3380,19 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_averageIntPerXing = self.hist('h_averageIntPerXing', "ROOT.TH1F('$', ';averageInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
-        self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
+        self.h_nleptons = self.hist('h_nleptons', "ROOT.TH1F('$', ';N_{l};Events', 8, 0, 8)", dir=EVT)
+        self.h_nsspairs = self.hist('h_nsspairs', "ROOT.TH1F('$', ';N_{e^{#pm}e^{#pm}};Events', 5, 0, 5)", dir=EVT)
         self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
-        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
+        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ll) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
-        self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
-        self.h_invMassOS1 = self.hist('h_invMassOS1', "ROOT.TH1F('$', ';Leading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
-        self.h_invMassOS2 = self.hist('h_invMassOS2', "ROOT.TH1F('$', ';Subleading OS m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
+        # self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_invMassOS1 = self.hist('h_invMassOS1', "ROOT.TH1F('$', ';Leading OS m(ll) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
+        self.h_invMassOS2 = self.hist('h_invMassOS2', "ROOT.TH1F('$', ';Subleading OS m(ll) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
-        self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ee);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
-        self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
+        self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ll);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
+        # self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -3190,99 +3403,73 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
 
 
         ##Electron plots
-        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(l) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=LEPTONS)
+        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 50, -2.5, 2.5)", dir=LEPTONS)
+        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(l);Events / (0.1)', 64, -3.2, 3.2)", dir=LEPTONS)
+        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l);Events / (0.1)', 100, 0., 10.)", dir=LEPTONS)
+        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l) [mm];Events / (0.01)', 200, -1, 1)", dir=LEPTONS)
         #leading
-        self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(e lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(e lead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(e lead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(l lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=LEPTONS)
+        self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(l lead);Events / (0.1)', 50, -2.5, 2.5)", dir=LEPTONS)
+        self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(l lead);Events / (0.1)', 64, -3.2, 3.2)", dir=LEPTONS)
+        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l lead);Events / (0.1)', 100, 0., 10.)", dir=LEPTONS)
+        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l lead) [mm];Events / (0.01)', 200, -1, 1)", dir=LEPTONS)
         #subleading
-        self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(e sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(e sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(e sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(l sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=LEPTONS)
+        self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(l sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=LEPTONS)
+        self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(l sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=LEPTONS)
+        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l sublead);Events / (0.1)', 100, 0., 10.)", dir=LEPTONS)
+        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=LEPTONS)
         #third
-        self.h_el_third_pt = self.hist('h_el_third_pt', "ROOT.TH1F('$', ';p_{T}(e third) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_third_eta = self.hist('h_el_third_eta', "ROOT.TH1F('$', ';#eta(e third);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_third_phi = self.hist('h_el_third_phi', "ROOT.TH1F('$', ';#phi(e third);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_third_trkd0sig = self.hist('h_el_third_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e third);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_third_trkz0sintheta = self.hist('h_el_third_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e third) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_third_pt = self.hist('h_el_third_pt', "ROOT.TH1F('$', ';p_{T}(l third) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=LEPTONS)
+        self.h_el_third_eta = self.hist('h_el_third_eta', "ROOT.TH1F('$', ';#eta(l third);Events / (0.1)', 50, -2.5, 2.5)", dir=LEPTONS)
+        self.h_el_third_phi = self.hist('h_el_third_phi', "ROOT.TH1F('$', ';#phi(l third);Events / (0.1)', 64, -3.2, 3.2)", dir=LEPTONS)
+        self.h_el_third_trkd0sig = self.hist('h_el_third_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l third);Events / (0.1)', 100, 0., 10.)", dir=LEPTONS)
+        self.h_el_third_trkz0sintheta = self.hist('h_el_third_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l third) [mm];Events / (0.01)', 200, -1, 1)", dir=LEPTONS)
 
         # ---------------
         # Fill histograms
         # ---------------
         if passed:
-          assert len(electrons) in [2,3], "should have exactly three electrons at this point"
-          NEL = len(electrons)
+          assert len(leptons) in [2,3,4], "should have exactly 2/3/4 leptons at this point"
+          NL = len(leptons)
           NSSPairs = 0
-          ele1 = 0
-          ele2 = 0
-          ele3 = 0
-          OS1ele1 = 0
-          OS1ele2 = 0
-          OS2ele1 = 0
-          OS2ele2 = 0
-          for pair in itertools.combinations(electrons,2):
+          NOSPairs = 0
+          SSPairs = []
+          OSPairs = []
+          for pair in itertools.combinations(leptons,2):
             if (pair[0].trkcharge * pair[1].trkcharge) == 1 :
               # same-sign
               NSSPairs += 1
-              ele1 = pair[1]
-              ele2 = pair[0]
-              if pair[0].tlv.Pt() > pair[1].tlv.Pt():
-                ele1 = pair[0]
-                ele2 = pair[1]
-              for third_ele in electrons:
-                if third_ele not in pair:
-                  ele3 = third_ele
-            elif OS1ele1 == 0 :
-              OS1ele1 = pair[0]
-              OS1ele2 = pair[1]
+              SSPairs += [pair]
             else:
-              OS2ele1 = pair[0]
-              OS2ele2 = pair[1]
-          if NEL==3 and (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()) >= (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()):
-            OS1ele1, OS2ele1 = OS2ele1, OS1ele1
-            OS1ele2, OS2ele2 = OS2ele2, OS1ele2
-          assert NSSPairs == 1, "expected exactly one same-sign pair"
-          assert ele1.tlv.Pt() >= ele2.tlv.Pt(), "leading electron has smaller pt than subleading"
-          if NEL==3 :
-            assert (OS1ele1.tlv.Pt() + OS1ele2.tlv.Pt()) > (OS2ele1.tlv.Pt() + OS2ele2.tlv.Pt()), "wrong OS1,OS2 assignement"
-          assert ele3!=ele2 and ele3!=ele1, "third ele not properly defined"
+              NOSPairs += 1
+              OSPairs += [pair]
+          SSPairs.sort(key=lambda x: pair_mass(x), reverse=True )
+          OSPairs.sort(key=lambda x: pair_mass(x), reverse=True )
+          leptons.sort(key=lambda x: x.tlv.Pt(), reverse=True )
 
-          ele1T = ROOT.TLorentzVector()
-          ele1T.SetPtEtaPhiM( ele1.tlv.Pt(), 0., ele1.tlv.Phi(), ele1.tlv.M() )
-          ele2T = ROOT.TLorentzVector()
-          ele2T.SetPtEtaPhiM( ele2.tlv.Pt(), 0., ele2.tlv.Phi(), ele2.tlv.M() )
-          ele3T = ROOT.TLorentzVector()
-          if NEL==3:
-            ele3T.SetPtEtaPhiM( ele3.tlv.Pt(), 0., ele3.tlv.Phi(), ele3.tlv.M() )
+          assert len(SSPairs) < 3, "more than 2 SS pairs??"
+          if len(SSPairs)==2:
+            assert len(OSPairs)==4,"should be 4 OS with 2 SS"
+            assert pair_mass(SSPairs[0]) >= pair_mass(SSPairs[1]), "SS pairs not sorted"
+          assert leptons[0].tlv.Pt() >= leptons[1].tlv.Pt(), "leptons not sorted!"
 
           ## event plots 
           self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
           self.h_NPV.Fill(self.chain.NPV, weight)
-          self.h_nelectrons.Fill(len(electrons), weight)
-          self.h_invMass.Fill( (ele1.tlv+ele2.tlv).M()/GeV, weight)
-          if NEL == 3:
-            self.h_invMassOS1.Fill( (OS1ele1.tlv+OS1ele2.tlv).M()/GeV, weight)
-            self.h_invMassOS2.Fill( (OS2ele1.tlv+OS2ele2.tlv).M()/GeV, weight)
-          self.h_ZbosonPt.Fill( (ele1.tlv+ele2.tlv).Pt()/GeV, weight)
-          self.h_ZbosonEta.Fill( (ele1.tlv+ele2.tlv).Eta(), weight)
-          self.h_DR.Fill( ele1.tlv.DeltaR(ele2.tlv), weight)
-          if NEL == 3:
-            self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt())/GeV, weight )
-            self.h_HTmet.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+ele3.tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
-            self.h_mTtot.Fill( (ele1T+ele2T+ele3T+met_trk.tlv).M()/GeV, weight )
-          else:
-            self.h_HT.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt())/GeV, weight )
-            self.h_HTmet.Fill( (ele1.tlv.Pt()+ele2.tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
-            self.h_mTtot.Fill( (ele1T+ele2T+met_trk.tlv).M()/GeV, weight )
+          self.h_nleptons.Fill(len(leptons), weight)
+          self.h_nsspairs.Fill( NSSPairs, weight)
+          if NL > 2:
+            assert len(OSPairs) in [2,4], "should be 2/4 OS pairs with >2 ele"
+            self.h_invMassOS1.Fill( pair_mass(OSPairs[0])/GeV, weight)
+            self.h_invMassOS2.Fill( pair_mass(OSPairs[1])/GeV, weight)
+          self.h_invMass.Fill( average_mass(SSPairs)/GeV, weight)
+          self.h_ZbosonPt.Fill( pair_pt(SSPairs[0])/GeV, weight)
+          self.h_ZbosonEta.Fill( pair_eta(SSPairs[0]), weight)
+          self.h_DR.Fill( pair_dr(SSPairs[0]), weight)
+          self.h_HT.Fill( leptons_HT(leptons)/GeV, weight )
 
           nbjets = 0
           for jet in jets:
@@ -3299,31 +3486,31 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
           #electron
-          for ele in electrons:
-            self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight)
-            self.h_el_eta.Fill(ele.eta, weight)
-            self.h_el_phi.Fill(ele.tlv.Phi(), weight)
-            self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
-            self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
+          for lep in leptons:
+            self.h_el_pt.Fill(lep.tlv.Pt()/GeV, weight)
+            self.h_el_eta.Fill(lep.eta, weight)
+            self.h_el_phi.Fill(lep.tlv.Phi(), weight)
+            self.h_el_trkd0sig.Fill(lep.trkd0sig, weight)
+            self.h_el_trkz0sintheta.Fill(lep.trkz0sintheta, weight)
  
-          self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
-          self.h_el_lead_eta.Fill(ele1.eta, weight)
-          self.h_el_lead_phi.Fill(ele1.tlv.Phi(), weight)
-          self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
-          self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
+          self.h_el_lead_pt.Fill(leptons[0].tlv.Pt()/GeV, weight)
+          self.h_el_lead_eta.Fill(leptons[0].eta, weight)
+          self.h_el_lead_phi.Fill(leptons[0].tlv.Phi(), weight)
+          self.h_el_lead_trkd0sig.Fill(leptons[0].trkd0sig, weight)
+          self.h_el_lead_trkz0sintheta.Fill(leptons[0].trkz0sintheta, weight)
 
-          self.h_el_sublead_pt.Fill(ele2.tlv.Pt()/GeV, weight)
-          self.h_el_sublead_eta.Fill(ele2.eta, weight)
-          self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
-          self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
-          self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
+          self.h_el_sublead_pt.Fill(leptons[1].tlv.Pt()/GeV, weight)
+          self.h_el_sublead_eta.Fill(leptons[1].eta, weight)
+          self.h_el_sublead_phi.Fill(leptons[1].tlv.Phi(), weight)
+          self.h_el_sublead_trkd0sig.Fill(leptons[1].trkd0sig, weight)
+          self.h_el_sublead_trkz0sintheta.Fill(leptons[1].trkz0sintheta, weight)
 
-          if NEL == 3:
-            self.h_el_third_pt.Fill(ele3.tlv.Pt()/GeV, weight)
-            self.h_el_third_eta.Fill(ele3.eta, weight)
-            self.h_el_third_phi.Fill(ele3.tlv.Phi(), weight)
-            self.h_el_third_trkd0sig.Fill(ele3.trkd0sig, weight)
-            self.h_el_third_trkz0sintheta.Fill(ele3.trkz0sintheta, weight)
+          if NL == 3:
+            self.h_el_third_pt.Fill(leptons[2].tlv.Pt()/GeV, weight)
+            self.h_el_third_eta.Fill(leptons[2].eta, weight)
+            self.h_el_third_phi.Fill(leptons[2].tlv.Phi(), weight)
+            self.h_el_third_trkd0sig.Fill(leptons[2].trkd0sig, weight)
+            self.h_el_third_trkz0sintheta.Fill(leptons[2].trkz0sintheta, weight)
 
 
     #__________________________________________________________________________
@@ -3646,6 +3833,8 @@ class VarsAlg(pyframe.core.Algorithm):
                  key_electrons = 'electrons',
                  require_prompt = False,
                  use_simple_truth = False,
+                 remove_signal_muons = False,
+                 remove_signal_electrons = False,
                  ):
         pyframe.core.Algorithm.__init__(self, name)
         self.key_muons = key_muons
@@ -3654,6 +3843,8 @@ class VarsAlg(pyframe.core.Algorithm):
         self.key_electrons = key_electrons
         self.require_prompt = require_prompt
         self.use_simple_truth = use_simple_truth
+        self.remove_signal_muons = remove_signal_muons
+        self.remove_signal_electrons = remove_signal_electrons
 
     #__________________________________________________________________________
     def execute(self, weight):
@@ -3670,6 +3861,23 @@ class VarsAlg(pyframe.core.Algorithm):
         met = self.store[self.key_met]
         electrons = self.store[self.key_electrons]
 
+        ## remove muons not T or L
+        ## --------------------------------------------------
+        for muon in self.store[self.key_muons][:]:
+          if muon.tlv.Pt() < 30*GeV or muon.trkd0sig > 10.0 or (muon.trkd0sig > 3.0 and muon.isIsolated_FixedCutTightTrackOnly):
+            self.store[self.key_muons].remove(muon)
+
+        if ("mc" in self.sampletype) and self.remove_signal_muons and self.chain.mcChannelNumber in range(306538,306560):
+          for muon in self.store[self.key_muons][:]:
+            if muon.truthOrigin == 0:
+              self.store[self.key_muons].remove(muon)
+
+        if ("mc" in self.sampletype) and self.remove_signal_electrons and self.chain.mcChannelNumber in range(306538,306560):
+          for ele in self.store[self.key_electrons][:]:
+            if ele.truthOrigin == 0:
+              self.store[self.key_electrons].remove(ele)
+
+
         #assert len(muons)>=2, "less than 2 muons in event!"
         
         #assert self.store.has_key(self.key_met), "met key: %s not found in store!" % (self.key_met)
@@ -3677,37 +3885,37 @@ class VarsAlg(pyframe.core.Algorithm):
 
         ## evaluate vars
         ## --------------------------------------------------           
-        if bool(len(electrons)==2):
-          ele1 = electrons[0]
-          ele1T = ROOT.TLorentzVector()
-          ele1T.SetPtEtaPhiM( ele1.tlv.Pt(), 0., ele1.tlv.Phi(), ele1.tlv.M() )
-          ele2 = electrons[1]
-          ele2T = ROOT.TLorentzVector()
-          ele2T.SetPtEtaPhiM( ele2.tlv.Pt(), 0., ele2.tlv.Phi(), ele2.tlv.M() )
+        # if bool(len(electrons)==2):
+        #   ele1 = electrons[0]
+        #   ele1T = ROOT.TLorentzVector()
+        #   ele1T.SetPtEtaPhiM( ele1.tlv.Pt(), 0., ele1.tlv.Phi(), ele1.tlv.M() )
+        #   ele2 = electrons[1]
+        #   ele2T = ROOT.TLorentzVector()
+        #   ele2T.SetPtEtaPhiM( ele2.tlv.Pt(), 0., ele2.tlv.Phi(), ele2.tlv.M() )
         
-          self.store['charge_product'] = ele2.trkcharge*ele1.trkcharge
-          self.store['mVis']           = (ele2.tlv+ele1.tlv).M()
-          self.store['mTtot']          = (ele1T + ele2T + met.tlv).M()  
-          self.store['eles_dphi']     = ele2.tlv.DeltaPhi(ele1.tlv)
-          self.store['eles_deta']     = ele2.tlv.Eta()-ele1.tlv.Eta()
-          self.store['ee_invM']      = (ele1T + ele2T).M()
+        #   self.store['charge_product'] = ele2.trkcharge*ele1.trkcharge
+        #   self.store['mVis']           = (ele2.tlv+ele1.tlv).M()
+        #   self.store['mTtot']          = (ele1T + ele2T + met.tlv).M()  
+        #   self.store['eles_dphi']     = ele2.tlv.DeltaPhi(ele1.tlv)
+        #   self.store['eles_deta']     = ele2.tlv.Eta()-ele1.tlv.Eta()
+        #   self.store['ee_invM']      = (ele1T + ele2T).M()
 
 
 
-        if bool(len(muons)==2):
-          muon1 = muons[0]
-          muon1T = ROOT.TLorentzVector()
-          muon1T.SetPtEtaPhiM( muon1.tlv.Pt(), 0., muon1.tlv.Phi(), muon1.tlv.M() )
-          muon2 = muons[1]
-          muon2T = ROOT.TLorentzVector()
-          muon2T.SetPtEtaPhiM( muon2.tlv.Pt(), 0., muon2.tlv.Phi(), muon2.tlv.M() )
+        # if bool(len(muons)==2):
+        #   muon1 = muons[0]
+        #   muon1T = ROOT.TLorentzVector()
+        #   muon1T.SetPtEtaPhiM( muon1.tlv.Pt(), 0., muon1.tlv.Phi(), muon1.tlv.M() )
+        #   muon2 = muons[1]
+        #   muon2T = ROOT.TLorentzVector()
+        #   muon2T.SetPtEtaPhiM( muon2.tlv.Pt(), 0., muon2.tlv.Phi(), muon2.tlv.M() )
         
-          self.store['charge_product'] = muon2.trkcharge*muon1.trkcharge
-          self.store['mVis']           = (muon2.tlv+muon1.tlv).M()
-          self.store['mTtot']          = (muon1T + muon2T + met.tlv).M()  
-          self.store['muons_dphi']     = muon2.tlv.DeltaPhi(muon1.tlv)
-          self.store['muons_deta']     = muon2.tlv.Eta()-muon1.tlv.Eta()
-          self.store['mumu_invM']      = (muon1T + muon2T).M()
+        #   self.store['charge_product'] = muon2.trkcharge*muon1.trkcharge
+        #   self.store['mVis']           = (muon2.tlv+muon1.tlv).M()
+        #   self.store['mTtot']          = (muon1T + muon2T + met.tlv).M()  
+        #   self.store['muons_dphi']     = muon2.tlv.DeltaPhi(muon1.tlv)
+        #   self.store['muons_deta']     = muon2.tlv.Eta()-muon1.tlv.Eta()
+        #   self.store['mumu_invM']      = (muon1T + muon2T).M()
 
           # definition of tag and probe 
           """
@@ -3732,6 +3940,21 @@ class VarsAlg(pyframe.core.Algorithm):
             self.store['probe'] = copy(muon2) 
           """ 
 
+        # tight muons
+        muons_tight = []
+        for mu in muons:
+          if mu.isIsolated_FixedCutTightTrackOnly and mu.trkd0sig<=3.:
+            muons_tight += [mu]
+        self.store['muons_tight'] = muons_tight
+
+        # # loose muons
+        # muons_loose = []
+        # for mu in muons:
+        #   if mu.trkd0sig<10. and not mu.isIsolated_FixedCutTightTrackOnly:
+        #     muons_loose += [mu]
+        # self.store['muons_loose'] = muons_loose
+
+
         # loose electrons (no iso // LooseLLH)
         electrons_loose_LooseLLH = []
         for ele in electrons:
@@ -3754,14 +3977,204 @@ class VarsAlg(pyframe.core.Algorithm):
             electrons_tight_MediumLLH_isolLoose += [ele]
         self.store['electrons_tight_MediumLLH_isolLoose'] = electrons_tight_MediumLLH_isolLoose
 
-        if bool(len(jets)) and bool(len(muons)):
-          self.store['mujet_dphi'] = muons[0].tlv.DeltaPhi(jets[0].tlv)
-          scdphi = 0.0
-          scdphi += ROOT.TMath.Cos(met.tlv.Phi() - muons[0].tlv.Phi())
-          scdphi += ROOT.TMath.Cos(met.tlv.Phi() - jets[0].tlv.Phi())
-          self.store['scdphi'] = scdphi
+        # if (len(self.store["muons"]) + len(self.store['electrons_loose_LooseLLH']))==4:
+        #   leptons = self.store["muons"] + self.store['electrons_loose_LooseLLH']
+        #   totalCharge = 0
+        #   for l in leptons:
+        #     totalCharge += l.trkcharge
+        #   if totalCharge == 0:
+        #     mVis1 = 0
+        #     mVis2 = 0
+        #     posFlavor = ""
+        #     negFlavor = ""
+        #     for pair in itertools.combinations(leptons,2):
+        #       if pair[0].trkcharge + pair[1].trkcharge == 2:
+        #         mVis1 = (pair[0].tlv + pair[1].tlv).M()
+        #         for lep in pair:
+        #           if lep.m > 100:
+        #             posFlavor += "m"
+        #           else:
+        #             posFlavor += "e"
+        #       elif pair[0].trkcharge + pair[1].trkcharge == -2:
+        #         mVis2 = (pair[0].tlv + pair[1].tlv).M()
+        #         for lep in pair:
+        #           if lep.m > 100:
+        #             negFlavor += "m"
+        #           else:
+        #             negFlavor += "e"
+        #     assert mVis1!=0 and mVis2!=0," not two same-sign lepton pairs !"
+        #     if posFlavor == "me":
+        #       posFlavor = "em"
+        #     if negFlavor == "me":
+        #       negFlavor = "em"
+        #     self.store["mVis1"] = mVis1
+        #     self.store["mVis2"] = mVis2
+        #     self.store["fourLepFlavor"] = posFlavor+negFlavor
+
+
+        # if bool(len(jets)) and bool(len(muons)):
+        #   self.store['mujet_dphi'] = muons[0].tlv.DeltaPhi(jets[0].tlv)
+        #   scdphi = 0.0
+        #   scdphi += ROOT.TMath.Cos(met.tlv.Phi() - muons[0].tlv.Phi())
+        #   scdphi += ROOT.TMath.Cos(met.tlv.Phi() - jets[0].tlv.Phi())
+        #   self.store['scdphi'] = scdphi
 
         return True
+
+#------------------------------------------------------------------------------
+class PlotAlgFourLep(pyframe.algs.CutFlowAlg,CutAlg):
+    """
+
+    For making a set of standard plots after each cut in a cutflow.  PlotAlg
+    inherets from CutAlg so all the functionality from CutAlg is available for
+    applying selection. In addition you can apply weights at different points
+    in the selection.
+
+    The selection should be configured by specifying 'cut_flow' in the
+    constructor as such:
+
+    cut_flow = [
+        ['Cut1', ['Weight1a','Weight1b'],
+        ['Cut2', ['Weight2']],
+        ['Cut3', None],
+        ...
+        ]
+
+    The weights must be available in the store.
+
+    'region' will set the name of the dir where the plots are saved
+
+    Inhereting from CutFlowAlg provides the functionality to produce cutflow
+    histograms that will be named 'cutflow_<region>' and 'cutflow_raw_<region>'
+
+    """
+    #__________________________________________________________________________
+    def __init__(self,
+                 name     = 'PlotAlgFourLep',
+                 region   = '',
+                 obj_keys = [], # make cutflow hist for just this objects
+                 cut_flow = None,
+                 plot_all = True,
+                 ):
+        pyframe.algs.CutFlowAlg.__init__(self,key=region,obj_keys=obj_keys)
+        CutAlg.__init__(self,name,isfilter=False)
+        self.cut_flow = cut_flow
+        self.region   = region
+        self.plot_all = plot_all
+        self.obj_keys = obj_keys
+    
+    #_________________________________________________________________________
+    def initialize(self):
+        pyframe.algs.CutFlowAlg.initialize(self)
+    #_________________________________________________________________________
+    def execute(self, weight):
+   
+        # next line fills in the cutflow hists
+        # the first bin of the cutflow does not
+        # take into account object weights
+        pyframe.algs.CutFlowAlg.execute(self, weight)
+
+        list_cuts = []
+        for cut, list_weights in self.cut_flow:
+            ## apply weights for this cut
+            if list_weights:
+              for w in list_weights: weight *= self.store[w]
+
+            list_cuts.append(cut)
+            passed = self.check_region(list_cuts)
+            self.hists[self.region].count_if(passed, cut, weight)
+
+            ## if plot_all is True, plot after each cut, 
+            ## else only plot after full selection
+            
+            # obj cutflow is computed at the end of the cutflow
+            #if len(list_cuts)==len(self.cut_flow):
+            if self.obj_keys:
+             for k in self.obj_keys:
+              for o in self.store[k]:
+               if hasattr(o,"cdict") and hasattr(o,"wdict"):
+                obj_passed = True
+                obj_weight = 1.0
+                if list_weights:
+                 for w in list_weights:
+                  if w.startswith("MuPairs"):
+                   obj_weight *= o.GetWeight(w) 
+                for c in list_cuts:
+                 if c.startswith("MuPairs"):
+                  obj_passed = o.HasPassedCut(c) and obj_passed
+                self.hists[self.region+"_"+k].count_if(obj_passed and passed, c, obj_weight * weight)
+            
+            if (self.plot_all or len(list_cuts)==len(self.cut_flow)):
+               region_name = os.path.join(self.region,'_'.join(list_cuts))
+               region_name = region_name.replace('!', 'N')
+               region = os.path.join('/regions/', region_name)
+               
+               #if passed:             
+               self.plot(region, passed, list_cuts, cut, list_weights=list_weights, weight=weight)
+
+        return True
+
+    #__________________________________________________________________________
+    def finalize(self):
+        pyframe.algs.CutFlowAlg.finalize(self)
+
+    #__________________________________________________________________________
+    def plot(self, region, passed, list_cuts, cut, list_weights=None, weight=1.0):
+        
+        EVT    = os.path.join(region, 'event')
+        # -----------------
+        # Create histograms
+        # -----------------
+        ## event plots
+        self.h_mVis1 = self.hist('h_mVis1', "ROOT.TH1F('$', ';h_mVis1;Events', 10000, 0, 10000)", dir=EVT)
+        self.h_mVis2 = self.hist('h_mVis2', "ROOT.TH1F('$', ';h_mVis2;Events', 10000, 0, 10000)", dir=EVT)
+
+        if passed:
+          mVis1  = self.store['mVis1']
+          mVis2  = self.store['mVis2']
+
+
+    #__________________________________________________________________________
+    def check_region(self,cutnames):
+        cut_passed = True
+        for cn in cutnames:
+            ## could use this to fail when cuts not available
+            #if not cuts.has_key(cn): return False
+    
+            ## pass if None
+            if cn == 'ALL': continue
+            #if cn.startswith("MuPairs"): continue
+
+            if cn.startswith('!'):
+                cut_passed = not self.apply_cut(cn[1:])
+            else:
+                cut_passed = self.apply_cut(cn) and cut_passed
+            #if not cut_passed:
+            #    return False
+        return cut_passed
+    
+    
+    """ 
+    #__________________________________________________________________________
+    def get_obj_cutflow(self, obj_key, cut, list_weights=None, cut_prefix=""):
+        for o in self.store[obj_key]:
+          if hasattr(o,"cdict") and hasattr(o,"wdict"):
+            obj_weight = 1.0
+            if list_weights: 
+              for w in list_weights:
+                obj_weight *= o.GetWeight(w)
+                if cut_prefix: 
+                  if cut.startswith(cut_prefix): 
+                    obj_passed = o.HasPassedCut(cut) and passed
+            self.hists[self.region+"_"+obj_key].count_if(obj_passed, cut, obj_weight * weight)
+    """
+
+    #__________________________________________________________________________
+    def reset_attributes(self,objects):
+        for o in objects:
+          o.ResetCuts()
+          o.ResetWeights()
+        return
 
 
 #__________________________________________________________________________
@@ -3788,3 +4201,36 @@ def digitize(value, binEdges):
     edhigh = binEdges[i+1]
     if value >= edlow and value < edhigh:
       return i+1
+
+#__________________________________________________________________________
+def pair_mass(pair):
+  return (pair[0].tlv+pair[1].tlv).M()
+
+#__________________________________________________________________________
+def average_mass(pairs):
+  npairs = 0
+  mass = 0
+  for pair in pairs:
+    mass += (pair[0].tlv+pair[1].tlv).M()
+    npairs += 1
+  return mass/npairs
+
+
+#__________________________________________________________________________
+def pair_pt(pair):
+  return (pair[0].tlv+pair[1].tlv).Pt()
+
+#__________________________________________________________________________
+def pair_eta(pair):
+  return (pair[0].tlv+pair[1].tlv).Eta()
+
+#__________________________________________________________________________
+def pair_dr(pair):
+  return pair[0].tlv.DeltaR(pair[1].tlv)
+
+#__________________________________________________________________________
+def leptons_HT(leptons):
+  HT = 0
+  for lep in leptons:
+    HT += lep.tlv.Pt()
+  return HT

@@ -51,6 +51,7 @@ eff = []
 
 m_iter = -1
 for mass in infile:
+  print mass
   m_iter += 1
   print m_iter
   for iterr in range(1,101):
@@ -64,22 +65,22 @@ for mass in infile:
     assert abs(eeee+eemm+mmmm-1.0)<0.001, "something wrong " + str(br) + " " + str(eeee+eemm+mmmm)
 
     cutflow_presel = mass.Get("cutflow_presel")
-    assert cutflow_presel.GetXaxis().GetBinLabel(3)=="Pileup", "not pileup"
+    assert cutflow_presel.GetXaxis().GetBinLabel(4)=="Pileup", "not pileup " + cutflow_presel.GetXaxis().GetBinLabel(4)
 
-    cutflow_SR1_eeee = mass.Get("cutflow_SR1-ele-SR-signal-eeee").Clone("eeee" + str(m_iter) + str(br) )
-    cutflow_SR1_eeee.GetXaxis().SetBinLabel(2,"DCHFilter")
-    cutflow_SR1_eemm = mass.Get("cutflow_SR1-ele-SR-signal-eemm").Clone("eemm" + str(m_iter) + str(br) )
-    cutflow_SR1_eemm.GetXaxis().SetBinLabel(2,"DCHFilter")
+    cutflow_SR_eeee = mass.Get("cutflow_SR-ele-SR-signal-eeee").Clone("eeee" + str(m_iter) + str(br) )
+    cutflow_SR_eeee.GetXaxis().SetBinLabel(2,"DCHFilter")
+    cutflow_SR_eemm = mass.Get("cutflow_SR-ele-SR-signal-eemm").Clone("eemm" + str(m_iter) + str(br) )
+    cutflow_SR_eemm.GetXaxis().SetBinLabel(2,"DCHFilter")
 
 
-    cutflow_SR1_eeee.Scale(eeee*16)
-    cutflow_SR1_eemm.Scale(eemm*8)
+    cutflow_SR_eeee.Scale(eeee*16)
+    cutflow_SR_eemm.Scale(eemm*8)
 
-    cutflow_SR1_eeee.Add(cutflow_SR1_eemm)
+    cutflow_SR_eeee.Add(cutflow_SR_eemm)
 
-    cutflow_SR1_eeee.Scale( 1./(cutflow_presel.GetBinContent(3)) )
+    cutflow_SR_eeee.Scale( 1./(cutflow_presel.GetBinContent(4)) )
 
-    finalEff[m_iter] += [cutflow_SR1_eeee.GetBinContent(cutflow_SR1_eeee.GetNbinsX())]
+    finalEff[m_iter] += [cutflow_SR_eeee.GetBinContent(cutflow_SR_eeee.GetNbinsX())]
 
     if m_iter == 0:
       xaxis += [br]
@@ -102,6 +103,12 @@ leg.SetFillColor(0)
 leg.SetFillStyle(0)
 leg.SetTextSize(0.035)
 
+ArrayY = array('d',[x-25 for x in mass_points]+[mass_points[-1]+25])
+print ArrayY
+
+efficiency = ROOT.TH2D("efficiency","efficiency",len(xaxis)-1,ArrayX,len(mass_points),ArrayY)
+print efficiency.GetXaxis().GetBinCenter(1)
+print efficiency.GetYaxis().GetBinCenter(1)
 
 canv = ROOT.TCanvas("c1","c1",600,600)
 canv.cd()
@@ -109,15 +116,31 @@ hstack = ROOT.THStack("hs","hs")
 for e,m in zip(eff,mass_points):
   hstack.Add(e)
   leg.AddEntry(e,"#font[42]{DCH"+ str(m) +"}",'l')
+  for i in range(1,e.GetNbinsX()+1):
+    efficiency.SetBinContent(efficiency.FindBin(e.GetXaxis().GetBinCenter(i),m), e.GetBinContent(i))
 
 hstack.Draw("line nostack")
 hstack.GetXaxis().SetTitle("Br(H^{#pm#pm}#rightarrow e^{#pm}e^{#pm}) = 1-Br(H^{#pm#pm}#rightarrow X)")
-hstack.GetYaxis().SetTitle("SR1(e^{#pm}e^{#pm} or e^{#pm}e^{#pm}e^{#mp}) efficiency")
-hstack.SetMaximum(0.5)
+hstack.GetYaxis().SetTitle("SR efficiency")
 leg.Draw()
 ROOT.ATLASLabel(0.2,0.9,"internal",1)
 ROOT.myText(0.2,0.85,1,"#sqrt{s}=13 TeV")
 canv.Print("efficiency.eps")
+
+canv2 = ROOT.TCanvas("c2","c2",800,600)
+canv2.cd()
+canv2.SetRightMargin(0.15)
+efficiency.Draw("COLZ")
+efficiency.GetXaxis().SetTitle("Br(H^{#pm#pm}#rightarrow e^{#pm}e^{#pm}) = 1-Br(H^{#pm#pm}#rightarrow X)")
+efficiency.GetYaxis().SetTitle("m(H^{#pm#pm}) [GeV]")
+ROOT.ATLASLabel(0.2,0.9,"internal",ROOT.kWhite)
+ROOT.myText(0.2,0.85,ROOT.kWhite,"#sqrt{s}=13 TeV, SR efficiency")
+canv2.Print("efficiency2D.eps")
+
+outfile = ROOT.TFile("efficiency.root","RECREATE")
+outfile.cd()
+efficiency.Write("efficiency")
+outfile.Close()
 
 
  ## EOF

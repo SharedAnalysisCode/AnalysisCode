@@ -646,7 +646,7 @@ def write_hist(
                 binErr = 0
                 if (nbins+2 > i > 0) and h.GetBinContent(i) < 0:
                     print "fixing negative weight"
-                    binVal = 0.
+                    binVal = 1e-3
                     binErr = h.GetBinError(i)
                 else:
                     binVal = h.GetBinContent(i)
@@ -713,13 +713,13 @@ def write_hist(
                         binValD = 0
                         binErrD = 0
                         if (nbins+2 > i > 0) and hsys[0].GetBinContent(i) < 0:
-                            binValU = 0.
+                            binValU = 1e-3
                             binErrU = hsys[0].GetBinError(i)
                         else:
                             binValU = hsys[0].GetBinContent(i)
                             binErrU = hsys[0].GetBinError(i)
                         if (nbins+2 > i > 0) and hsys[1].GetBinContent(i) < 0:
-                            binValD = 0.
+                            binValD = 1e-3
                             binErrD = hsys[1].GetBinError(i)
                         else:
                             binValD = hsys[1].GetBinContent(i)

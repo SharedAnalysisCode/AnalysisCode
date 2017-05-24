@@ -31,7 +31,9 @@ bins_invM = generateLogBins(50,130,2000)
 bins_invM_fit = generateLogBins(30,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
 bins_invMassSR2EL = generateLogBins(10,200,900)
-bins_invMassSR2ELall = generateLogBins(20,200,3000)
+# bins_invMassSR2ELall = [200.0, 243.0, 294.0, 357.0, 434.0, 526.0, 610.0, 710, 915.0, 2000]
+bins_invMassSR2ELall = [200] + [x for x in range(225,875,50)] + [865,925,975,1025,2000]
+# bins_invMassSR2ELall = generateLogBins(14,200,3000)
 # bins_invMassSR3EL = generateLogBins(20,300,4000)
 bins_invMassSR3EL = generateLogBins(5,200,1000)
 bins_invMassSR3ELall = generateLogBins(14,200,1000)
@@ -76,6 +78,14 @@ nelectrons = Var(name = 'nelectrons',
               xmax  = 6,
               log   = False,
               )
+
+nsspairs = Var(name = 'nsspairs',
+              path  = 'event',
+              xmin  = 0,
+              xmax  = 6,
+              log   = False,
+              )
+
 njets = Var(name = 'njets',
               path  = 'event',
               xmin  = 0,
@@ -215,7 +225,7 @@ invMassSR2EL = Var(name='invMass',
 invMassSR2ELall = Var(name='invMass',
               path   = 'event',
               xmin   = 200,
-              xmax   = 3000,
+              xmax   = 2000,
               rebin  = 1,
               rebinVar  = bins_invMassSR2ELall,
               log    = False,
@@ -986,6 +996,7 @@ vars_dict["DR4"] = DR4.__dict__
 vars_dict["ZbosonPt_SR"] = ZbosonPt_SR.__dict__
 vars_dict["ZbosonPt_SR_2"] = ZbosonPt_SR_2.__dict__
 vars_dict["invMass_fit"] = invMass_fit.__dict__
+vars_dict["nsspairs"] = nsspairs.__dict__
 
 ## EOF
 

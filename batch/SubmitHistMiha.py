@@ -39,7 +39,8 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # outputs
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
-RUN = "AllR_v3_023"
+# RUN = "AllR_v3_023"
+RUN = "AllR_v3_muVetoSR1_006"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -112,7 +113,7 @@ def main():
     all_data = samples.all_data
 
     # all_mc = []
-    all_data = []
+    # all_data = []
 
     nominal = all_mc 
     nominal += all_data

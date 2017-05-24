@@ -1772,7 +1772,7 @@ single_DCH = [Pythia8EvtGen_A14NNPDF23LO_DCH300]
 all_data = []
 all_data += data.daughters
 
-all_mc = [Pythia8EvtGen_A14NNPDF23LO_DCH400]
+all_mc = []
 #all_mc += mytestSample.daughters
 # all_mc += diboson_sherpa.daughters
 #all_mc += VV_ee.daughters
@@ -1814,17 +1814,17 @@ all_mc = [Pythia8EvtGen_A14NNPDF23LO_DCH400]
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-# all_mc += diboson_sherpa221.daughters
-# all_mc += diboson_powheg_alt.daughters
-# all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
-# all_mc += singletop.daughters
+all_mc += diboson_sherpa221.daughters
+all_mc += diboson_powheg_alt.daughters
+all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+all_mc += top_physics.daughters
 # all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters
 # all_mc += ttbar_Py8.daughters
 # all_mc += ttbar_Py8_alt.daughters
-# # signal
-# all_mc += all_DCH.daughters
+# signal
+all_mc += all_DCH.daughters
 
 ### EXOT12 ZPeak
 # all_mc += diboson_sherpa221.daughters

@@ -191,8 +191,8 @@ class MCEventWeight(pyframe.core.Algorithm):
     def execute(self, weight):
         if "mc" in self.sampletype: 
             wmc = self.chain.mcEventWeight
-            # if abs(wmc) > 30. :
-            #   wmc = 1.
+            if self.chain.mcChannelNumber in [361069,361070,361071,361072,361073,361077,363356,363358,363490,363491,363492] and abs(wmc) > 30. :
+              wmc = 1.
             if self.key: self.store[self.key] = wmc
             self.set_weight(wmc*weight)
         return True
@@ -476,6 +476,143 @@ class AllTightEleSF(pyframe.core.Algorithm):
                   probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  +self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  +self.h_etaRateMC.GetBinError( etaBin ))
                   probData = (self.h_ptRateData.GetBinContent( ptBin )-self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )-self.h_etaRateData.GetBinError( etaBin ))
                 sf *= ( 1 - probData )/( 1 - probMC )
+
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
+#------------------------------------------------------------------------------
+class AllTightLepSF(pyframe.core.Algorithm):
+    """
+    AllTightLepSF
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="AllTightLepSF",
+            key            = None,
+            chargeFlipSF   = False,
+            config_file    = None,
+            sys_CF         = None,
+            sys_id         = None,
+            sys_iso        = None,
+            sys_reco       = None,
+            ):
+
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.chargeFlipSF      = chargeFlipSF
+        self.config_file       = config_file
+        self.sys_CF            = sys_CF
+        self.sys_id            = sys_id
+        self.sys_iso           = sys_iso
+        self.sys_reco          = sys_reco
+
+        assert config_file, "Must provide a charge-flip config file!"
+        assert key, "Must provide key for storing ele reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      self.isoLevels = [
+          "isolLoose",
+          "isolTight",
+          ]
+      self.IDLevels = [
+          "LooseAndBLayerLLH",
+          "MediumLLH",
+          "TightLLH",
+          ]
+
+      f = ROOT.TFile.Open(self.config_file)
+      assert f, "Failed to open charge-flip config file: %s"%(self.config_file)
+
+      h_etaFunc = f.Get("etaFunc")
+      assert h_etaFunc, "Failed to get 'h_etaFunc' from %s"%(self.config_file)
+      h_ptFunc = f.Get("ptFunc")
+      assert h_ptFunc, "Failed to get 'h_ptFunc' from %s"%(self.config_file)
+
+      h_etaRateMC = f.Get("MCEtaRate")
+      assert h_etaRateMC, "Failed to get 'h_etaRateMC' from %s"%(self.config_file)
+      h_ptRateMC = f.Get("MCPtRate")
+      assert h_ptRateMC, "Failed to get 'h_ptRateMC' from %s"%(self.config_file)
+
+      h_etaRateData = f.Get("dataEtaRate")
+      assert h_etaRateData, "Failed to get 'h_etaRateData' from %s"%(self.config_file)
+      h_ptRateData = f.Get("dataPtRate")
+      assert h_ptRateData, "Failed to get 'h_ptRateData' from %s"%(self.config_file)
+
+      self.h_etaFunc = h_etaFunc.Clone()
+      self.h_ptFunc  = h_ptFunc.Clone()
+      self.h_etaFunc.SetDirectory(0)
+      self.h_ptFunc.SetDirectory(0)
+
+      self.h_etaRateMC = h_etaRateMC.Clone()
+      self.h_ptRateMC  = h_ptRateMC.Clone()
+      self.h_etaRateMC.SetDirectory(0)
+      self.h_ptRateMC.SetDirectory(0)
+
+      self.h_etaRateData = h_etaRateData.Clone()
+      self.h_ptRateData  = h_ptRateData.Clone()
+      self.h_etaRateData.SetDirectory(0)
+      self.h_ptRateData.SetDirectory(0)
+      f.Close()
+
+      self.id_sys = 0
+      if self.sys_id == "UP":
+        self.id_sys = 2
+      elif self.sys_id == "DN":
+        self.id_sys = 1
+
+      self.iso_sys = 0
+      if self.sys_iso == "UP":
+        self.iso_sys = 2
+      elif self.sys_iso == "DN":
+        self.iso_sys = 1
+
+      self.reco_sys = 0
+      if self.sys_reco == "UP":
+        self.reco_sys = 2
+      elif self.sys_reco == "DN":
+        self.reco_sys = 1
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+        sf=1.0
+        if "mc" in self.sampletype: 
+          electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
+          for ele in electrons:
+            if (ele.electronType() in [1,2,3,4]) or (self.chain.mcChannelNumber in range(306538,306560)):
+              sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
+              sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
+              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+
+            if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
+              ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
+              etaBin = self.h_etaFunc.FindBin( abs(ele.caloCluster_eta ) )
+              if ptBin==self.h_ptFunc.GetNbinsX()+1:
+                ptBin -= 1 
+              if ele.electronType() in [2,3]:
+                if self.sys_CF == None:
+                  sf *= self.h_ptFunc.GetBinContent( ptBin ) * self.h_etaFunc.GetBinContent( etaBin )                
+                elif self.sys_CF == "UP":
+                  sf *= (self.h_ptFunc.GetBinContent( ptBin )+self.h_ptFunc.GetBinError( ptBin )) * (self.h_etaFunc.GetBinContent( etaBin )+self.h_etaFunc.GetBinError( etaBin ))               
+                elif self.sys_CF == "DN":
+                  sf *= (self.h_ptFunc.GetBinContent( ptBin )-self.h_ptFunc.GetBinError( ptBin )) * (self.h_etaFunc.GetBinContent( etaBin )-self.h_etaFunc.GetBinError( etaBin ))
+              elif ele.electronType() in [1]:
+                probMC   = 0
+                probData = 0
+                if self.sys_CF == None:
+                  probMC   = self.h_ptRateMC.GetBinContent( ptBin )   * self.h_etaRateMC.GetBinContent( etaBin )
+                  probData = self.h_ptRateData.GetBinContent( ptBin ) * self.h_etaRateData.GetBinContent( etaBin )
+                elif self.sys_CF == "UP":
+                  probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  -self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  -self.h_etaRateMC.GetBinError( etaBin ))
+                  probData = (self.h_ptRateData.GetBinContent( ptBin )+self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )+self.h_etaRateData.GetBinError( etaBin ))
+                elif self.sys_CF == "DN":
+                  probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  +self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  +self.h_etaRateMC.GetBinError( etaBin ))
+                  probData = (self.h_ptRateData.GetBinContent( ptBin )-self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )-self.h_etaRateData.GetBinError( etaBin ))
+                sf *= ( 1 - probData )/( 1 - probMC )
+          muons = self.store['muons_tight']
+          for mu in muons:
+            sf *= getattr(mu,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(0)
+            sf *= getattr(mu,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(0)
+            sf *= getattr(mu,"_".join(["TTVAEff","SF"])).at(0)
 
         if self.key: 
           self.store[self.key] = sf
@@ -980,6 +1117,87 @@ class GenericFakeFactor(pyframe.core.Algorithm):
         self.store[self.key] = sf
       return True
 
+class GenericFakeFactorMu(pyframe.core.Algorithm):
+    """
+    GenericFakeFactorMu
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="GenericFakeFactorMu",
+            key            = None,
+            sys            = None,
+            config_file    = None,
+            sys_id         = None,
+            sys_iso        = None,
+            sys_reco       = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.sys               = sys
+        self.config_file       = config_file
+        self.sys_id            = sys_id
+        self.sys_iso           = sys_iso
+        self.sys_reco          = sys_reco
+
+        assert key, "Must provide key for storing mu reco sf"
+        assert config_file, "Must provide config file!"
+    #_________________________________________________________________________
+    def initialize(self):
+
+      f = ROOT.TFile.Open(self.config_file)
+      assert f, "Failed to open fake-factor config file: %s"%(self.config_file)
+      
+      g_ff = f.Get("g_ff_stat_sys")
+
+      assert g_ff, "Failed to get 'h_ff' from %s"%(self.config_file)
+
+      self.g_ff = g_ff.Clone()
+      f.Close()
+
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+
+      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560):
+        if self.key: 
+          self.store[self.key] = 0.
+        return True
+
+      sf = -1.0
+      muons = self.store['muons']
+
+      for muon in muons:
+        if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
+          if "mc" in self.sampletype : 
+            sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(0)
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(0)
+            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(0)
+          else :
+            pass
+        else :
+          ff_mu = 0.
+          eff_up_mu = 0.
+          eff_dn_mu = 0.
+          for ibin_mu in xrange(1,self.g_ff.GetN()):
+            edlow = self.g_ff.GetX()[ibin_mu] - self.g_ff.GetEXlow()[ibin_mu]
+            edhi  = self.g_ff.GetX()[ibin_mu] + self.g_ff.GetEXhigh()[ibin_mu]
+            if muon.tlv.Pt()>=edlow and muon.tlv.Pt()<edhi:
+              ff_mu = self.g_ff.GetY()[ibin_mu]
+              eff_up_mu = self.g_ff.GetEYhigh()[ibin_mu]
+              eff_dn_mu = self.g_ff.GetEYlow()[ibin_mu]
+              break
+          if self.sys == 'UP': ff_mu +=eff_up_mu
+          if self.sys == 'DN': ff_mu -=eff_dn_mu
+          sf *= ff_mu
+          if "mc" in self.sampletype :
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(0)
+            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(0)
+          else :
+            pass
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
+
 class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
     """
     ThreeElectron2e17TrigWeight
@@ -1020,19 +1238,23 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
       sf = 1.0
       electrons = self.store['electrons_loose_LooseLLH']
 
-      # two electron case
-      if len(electrons) == 2:
-        for ele in electrons:
-          if ele.electronType() in [1,2,3,4]:
-            if ele.LHMedium and ele.isIsolated_Loose:
-              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
-            else:
-              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+      if "mc" not in self.sampletype:
         if self.key: 
           self.store[self.key] = sf
         return True
 
-      if len(electrons)!=3 or "mc" not in self.sampletype:
+      # two electron case
+      if len(electrons) == 2:
+        for ele in electrons:
+          if ele.LHMedium and ele.isIsolated_Loose:
+            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+          else:
+            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
+      if len(electrons)!=3: 
         if self.key: 
           self.store[self.key] = sf
         return True
@@ -1302,6 +1524,100 @@ class ExactlyOneLooseEleFakeFactor(pyframe.core.Algorithm):
 
         if self.key: 
           self.store[self.key] = sf
+        return True
+
+#------------------------------------------------------------------------------
+class MuTrigSF(pyframe.core.Algorithm):
+    """
+    Muon trigger scale factor (OR of signle muon triggers)
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="MuTrigSF",
+            trig_list   = None,
+            match_all   = False,
+            mu_iso      = None,
+            mu_reco     = None,
+            key         = None,
+            sys_trig    = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.trig_list   = trig_list # if for some reason a different list is needed
+        self.match_all   = match_all
+        self.mu_iso      = mu_iso
+        self.mu_reco     = mu_reco
+        self.key         = key
+        self.sys_trig    = sys_trig
+
+        assert key, "Must provide key for storing mu reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      
+        self.trig_sys=0
+        if self.sys_trig == "UPSTAT":
+            self.trig_sys = 2
+        elif self.sys_trig == "UPSYS":
+            self.trig_sys = 1
+        elif self.sys_trig == "DNSTAT":
+            self.trig_sys = 4
+        elif self.sys_trig == "DNSYS":
+            self.trig_sys = 3
+
+        if not self.mu_reco:      self.mu_reco = "Loose"
+        if not self.mu_iso:       self.mu_iso  = "FixedCutTightTrackOnly"
+      
+        if "Not" in self.mu_iso:  self.mu_iso  = "Loose"
+        if "Not" in self.mu_reco: self.mu_reco = "Loose"
+
+        if not self.trig_list: self.trig_list = self.store["reqTrig"]
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+        trig_sf=1.0
+        if "mc" in self.sampletype: 
+          muons = self.store['muons']
+          
+          eff_data_chain = 1.0 
+          eff_mc_chain   = 1.0
+          
+          for i,m in enumerate(muons):
+          
+            eff_data_muon = 1.0 
+            eff_mc_muon   = 1.0
+
+            if m.isTruthMatchedToMuon: 
+              for trig in self.trig_list:
+                
+                sf_muon  = getattr(m,"_".join(["TrigEff","SF",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at(self.trig_sys)
+                eff_muon = getattr(m,"_".join(["TrigMCEff",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at(0)
+                
+                # EXOT12 for v1 ntuples
+                #sf_muon  = getattr(m,"_".join(["TrigEff","SF",self.mu_reco,self.mu_iso])).at(0)
+                #eff_muon = getattr(m,"_".join(["TrigMCEff",self.mu_reco,self.mu_iso])).at(0)
+                
+                eff_data_muon *= 1 - sf_muon * eff_muon
+                eff_mc_muon   *= 1 - eff_muon
+              
+              eff_data_muon = ( 1 - eff_data_muon )
+              eff_mc_muon   = ( 1 - eff_mc_muon )
+              
+              if self.match_all:
+                eff_data_chain *= eff_data_muon
+                eff_mc_chain   *= eff_mc_muon
+              else:
+                eff_data_chain *= 1. - eff_data_muon
+                eff_mc_chain   *= 1. - eff_mc_muon
+          
+          if not self.match_all: 
+            eff_data_chain = ( 1 - eff_data_chain )
+            eff_mc_chain   = ( 1 - eff_mc_chain )
+          
+          if eff_mc_chain > 0:
+            trig_sf = eff_data_chain / eff_mc_chain
+          
+          #if self.scale: pass
+       
+        if self.key: 
+          self.store[self.key] = trig_sf
         return True
 
 # EOF
