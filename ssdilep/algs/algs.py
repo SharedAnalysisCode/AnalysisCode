@@ -1207,6 +1207,20 @@ class CutAlg(pyframe.core.Algorithm):
             return False
         return True
 
+    def cut_NoStrictlyLooseLep(self):
+        leptons_tight = self.store['electrons_tight_MediumLLH_isolLoose'] + self.store['muons_tight']
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if len(leptons_tight) == len(leptons):
+          return True
+        return False
+
+    def cut_NotNoStrictlyLooseLep(self):
+        leptons_tight = self.store['electrons_tight_MediumLLH_isolLoose'] + self.store['muons_tight']
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if len(leptons_tight) == len(leptons):
+          return False
+        return True
+
     def cut_NotNoStrictlyLooseEle(self):
         electrons = self.store['electrons_loose_LooseLLH']
         ntight = 0
@@ -1220,6 +1234,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_ExactlyThreeLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==3: 
+          return True
+        return False
+
+    def cut_ExactlyThreeLooseLep(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if len(leptons)==3: 
           return True
         return False
 
@@ -1324,6 +1344,20 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_ExactlyThreeLeptonsSS60M200(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if not len(leptons)==3: 
+          return False
+        SSPair = 0
+        SSPairMass = 0
+        for pair in itertools.combinations(leptons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            SSPairMass = (pair[0].tlv + pair[1].tlv).M()
+        if SSPair == 1 and (60*GeV < SSPairMass < 200*GeV):
+          return True
+        return False
+
     def cut_ExactlyThreeLooseEleLooseLLHSS200M(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if not len(electrons)==3: 
@@ -1338,11 +1372,38 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_ExactlyThreeLooseLepSS200M(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if not len(leptons)==3: 
+          return False
+        SSPair = 0
+        SSPairMass = 0
+        for pair in itertools.combinations(leptons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            SSPair += 1
+            SSPairMass = (pair[0].tlv + pair[1].tlv).M()
+        if SSPair == 1 and SSPairMass > 200*GeV:
+          return True
+        return False
+
     def cut_LooseEleLooseLLHSS200M(self):
         electrons = self.store['electrons_loose_LooseLLH']
         SSPair = 0
         SSPairMass = 0
         for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            if (pair[0].tlv + pair[1].tlv).M() < 200*GeV:
+              return False
+            SSPair += 1
+        if SSPair in [1,2]:
+          return True
+        return False
+
+    def cut_LooseLepSS200M(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        SSPair = 0
+        SSPairMass = 0
+        for pair in itertools.combinations(leptons,2):
           if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
             if (pair[0].tlv + pair[1].tlv).M() < 200*GeV:
               return False
@@ -1378,6 +1439,18 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_NotExactlyTwoTightEleMediumLLHisolLoose(self):
         electrons = self.store['electrons_tight_MediumLLH_isolLoose']
         if len(electrons)==2: 
+          return False
+        return True
+
+    def cut_ExactlyTwoTightLeptons(self):
+        leptons = self.store['electrons_tight_MediumLLH_isolLoose'] + self.store["muons_tight"]
+        if len(leptons)==2: 
+          return True
+        return False
+
+    def cut_NotExactlyTwoTightLeptons(self):
+        leptons = self.store['electrons_tight_MediumLLH_isolLoose'] + self.store["muons_tight"]
+        if len(leptons)==2: 
           return False
         return True
 
@@ -1462,10 +1535,28 @@ class CutAlg(pyframe.core.Algorithm):
           if electrons[0].trkcharge*electrons[1].trkcharge == 1: return True
         return False
 
+    def cut_ExactlyTwoLooseMuonSS(self):
+        muons = self.store['muons']
+        if len(muons)==2: 
+          if muons[0].trkcharge*muons[1].trkcharge == 1: return True
+        return False
+
     def cut_SameSignLooseElePtZ100(self):
         electrons = self.store['electrons_loose_LooseLLH']
         SSPair = 0
         for pair in itertools.combinations(electrons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            if (pair[0].tlv+pair[1].tlv).Pt() < 100*GeV:
+              return False
+            SSPair += 1
+        if SSPair in [1,2]:
+          return True
+        return False
+
+    def cut_SameSignLooseLepPtZ100(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        SSPair = 0
+        for pair in itertools.combinations(leptons,2):
           if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
             if (pair[0].tlv+pair[1].tlv).Pt() < 100*GeV:
               return False
@@ -1499,10 +1590,31 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_SameSignLooseLepDR35(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        SSPair = 0
+        for pair in itertools.combinations(leptons,2):
+          if (pair[0].trkcharge * pair[1].trkcharge) > 0.5 : 
+            if not pair[0].tlv.DeltaR(pair[1].tlv) < 3.5:
+              return False
+            SSPair += 1
+        if SSPair in [1,2]:
+          return True
+        return False
+
     def cut_LooseEleHT300(self):
         electrons = self.store['electrons_loose_LooseLLH']
         HT = 0
         for ele in electrons:
+          HT += ele.tlv.Pt()
+        if HT > 300*GeV:
+          return True
+        return False
+
+    def cut_LooseLepHT300(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        HT = 0
+        for ele in leptons:
           HT += ele.tlv.Pt()
         if HT > 300*GeV:
           return True
@@ -1639,10 +1751,34 @@ class CutAlg(pyframe.core.Algorithm):
             return True
         return False
 
+    def cut_Mass130GeV200Leptons(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if len(leptons)==2 :
+          tempMass = (leptons[0].tlv + leptons[1].tlv).M()
+          if tempMass > 130*GeV and tempMass < 200*GeV :
+            return True
+        return False
+
+    def cut_Mass60GeV200Leptons(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if len(leptons)==2 :
+          tempMass = (leptons[0].tlv + leptons[1].tlv).M()
+          if tempMass > 60*GeV and tempMass < 200*GeV :
+            return True
+        return False
+
     def cut_Mass200GeVLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2 :
           tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if tempMass > 200*GeV:
+            return True
+        return False
+
+    def cut_Mass200GeVLooseLep(self):
+        leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        if len(leptons)==2 :
+          tempMass = (leptons[0].tlv + leptons[1].tlv).M()
           if tempMass > 200*GeV:
             return True
         return False
@@ -1974,7 +2110,7 @@ class CutAlg(pyframe.core.Algorithm):
       return False
 
     def cut_ZVeto(self):
-      electrons = self.store['electrons_tight_MediumLLH_isolLoose']
+      electrons = self.store['electrons_loose_LooseLLH']
       muons     = self.store['muons']
       leptons = electrons + muons
       for pair in itertools.combinations(leptons,2):

@@ -16,7 +16,7 @@ from systematics     import *
 from optparse import OptionParser
 import copy
 
-DO_SYS = True
+DO_SYS = False
 
 
 #-----------------
@@ -55,8 +55,15 @@ parser.add_option('-V', '--varName', dest='varName',
                   help='varName',metavar='VARNAME',default=None)
 parser.add_option('-L', '--logy', dest='logy',
                   help='logy',metavar='LOGY',default=None)
+parser.add_option('-y', '--sys', dest='sys',
+                  help='sys',metavar='SYS',default=None)
+parser.add_option('-B', '--branching', dest='branching',
+                  help='branching',metavar='BRANCHING',default=None)
 
 (options, args) = parser.parse_args()
+
+if options.sys == "False":
+  DO_SYS = False
 
 #-----------------
 # Configuration
@@ -136,7 +143,7 @@ elif options.samples == "OSCR":
   # samples.VV_ee,
   samples.diboson_sherpa221,
   # samples.singletop,
-  samples.ttX,
+  # samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples in ["SSVR","SSVRBLIND"]:
@@ -146,7 +153,16 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.VV_ee,
   samples.diboson_sherpa221,
   # samples.singletop,
-  samples.ttX,
+  # samples.ttX,
+  ]
+elif options.samples in ["SSVR_mu","SSVRBLIND"]:
+  mc_backgrounds = [
+  # samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  samples.top_physics,
+  # samples.VV_ee,
+  samples.diboson_sherpa221,
+  # samples.singletop,
+  # samples.ttX,
   ]
 elif options.samples == "ZPeak":
   mc_backgrounds = [
@@ -180,10 +196,17 @@ elif options.samples == "diboson":
 elif options.samples == "dibosonFit":
   mc_backgrounds = [
   samples.diboson_sherpa221,
-  samples.ttX,
+  # samples.ttX,
   # samples.singletop,
   samples.top_physics,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  ]
+elif options.samples == "dibosonFit_mu":
+  mc_backgrounds = [
+  samples.diboson_sherpa221,
+  # samples.ttX,
+  # samples.singletop,
+  samples.top_physics,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mc_backgrounds = [
@@ -228,12 +251,12 @@ xsecL = [82.677, 34.825, 16.704, 8.7528, 4.9001, 2.882, 1.7631, 1.10919, 0.72042
 masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
 
 # for br in range(10,110,10):
-for br in [10,50,100]:
+for br in [0,50,100]:
   signal_samples += [[]]
   intiger = 1
   for mass,xsec in zip(masses,xsecL):
     if options.makeplot == "True":
-      if mass not in [500,600,700] or br not in [50]: continue
+      if mass not in [500,600,700] or br not in ([float(options.branching)] if options.branching else []): continue
     name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
     globals()[name+"ee"+str(br)+"mm"+str(100-br)] = sample.Sample(
       name = name,
@@ -312,9 +335,9 @@ for samps in signal_samples:
     br = re.findall("Br\(ee\)\=([0-9]*)",s.tlatex)[0]
     s.estimator = histmgr.EstimatorDCH( hm=hm, ee=float(br)/100., mm=(1-float(br)/100.), sample=s )
     s.nameSuffix = "ee"+br+"mm"+str(int(100-float(br)))
-    print s.tlatex
-    print float(br)
-    print s.nameSuffix
+    # print s.tlatex
+    # print float(br)
+    # print s.nameSuffix
     signal += [s]
 
 
@@ -480,6 +503,16 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.singletop,
   samples.ttX,
   ]
+elif options.samples in ["SSVR_mu"]:
+  mumu_backgrounds = [
+  # samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  fakes_mumu,
+  # samples.VV_ee,
+  samples.diboson_sherpa221,
+  samples.top_physics,
+  # samples.singletop,
+  # samples.ttX,
+  ]
 elif options.samples == "diboson":
   mumu_backgrounds = [
   # samples.Zee221,
@@ -493,7 +526,7 @@ elif options.samples == "diboson":
   # samples.VV_ee,
   fakes_mumu,
   # samples.singletop,
-  samples.ttX,
+  # samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
   samples.top_physics,
   # samples.WenuPowheg,
@@ -502,10 +535,18 @@ elif options.samples == "dibosonFit":
   mumu_backgrounds = [
   samples.diboson_sherpa221,
   fakes_mumu,
-  samples.ttX,
+  # samples.ttX,
   # samples.singletop,
   samples.top_physics,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  ]
+elif options.samples == "dibosonFit_mu":
+  mumu_backgrounds = [
+  samples.diboson_sherpa221,
+  fakes_mumu,
+  # samples.ttX,
+  # samples.singletop,
+  samples.top_physics,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mumu_backgrounds = [

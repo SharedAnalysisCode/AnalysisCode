@@ -1128,7 +1128,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
             config_file    = None,
             sys_id         = None,
             sys_iso        = None,
-            sys_reco       = None,
+            sys_TTVA       = None,
             ):
         pyframe.core.Algorithm.__init__(self, name=name)
         self.key               = key
@@ -1136,10 +1136,12 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
         self.config_file       = config_file
         self.sys_id            = sys_id
         self.sys_iso           = sys_iso
-        self.sys_reco          = sys_reco
+        self.sys_TTVA          = sys_TTVA
 
         assert key, "Must provide key for storing mu reco sf"
         assert config_file, "Must provide config file!"
+        print config_file
+        
     #_________________________________________________________________________
     def initialize(self):
 
@@ -1153,13 +1155,47 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
       self.g_ff = g_ff.Clone()
       f.Close()
 
+      #Muon ID
+      self.id_sys = 0
+      if self.sys_id == "UPSTAT":
+        self.id_sys = 4
+      elif self.sys_id == "UPSYS":
+        self.id_sys = 8
+      elif self.sys_id == "DNSTAT":
+        self.id_sys = 3
+      elif self.sys_id == "DNSYS":
+        self.id_sys = 7
+
+      self.iso_sys=0
+      if self.sys_id ==   "UPSTAT":
+        self.iso_sys= 2
+      elif self.sys_id == "UPSYS":
+        self.iso_sys= 4
+      elif self.sys_id == "DNSTAT":
+        self.iso_sys= 1
+      elif self.sys_id == "DNSYS":
+        self.iso_sys= 3
+
+      self.TTVA_sys=0
+      if self.sys_TTVA ==   "UPSTAT":
+        self.TTVA_sys= 2
+      elif self.sys_TTVA == "UPSYS":
+        self.TTVA_sys= 4
+      elif self.sys_TTVA == "DNSTAT":
+        self.TTVA_sys= 1
+      elif self.sys_TTVA == "DNSYS":
+        self.TTVA_sys= 3
+
 
     #_________________________________________________________________________
     def execute(self, weight):
 
       if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560):
-        if self.key: 
-          self.store[self.key] = 0.
+        if self.key:
+          if len(self.store['muons_tight']) != len(self.store['muons']) :
+            self.store[self.key] = 0.
+          else:
+            self.store[self.key] = 1.        
         return True
 
       sf = 1.0
@@ -1170,9 +1206,9 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
       for muon in muons:
         if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
           if "mc" in self.sampletype : 
-            sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(0)
-            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(0)
-            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(0)
+            sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys)
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.id_sys)
+            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys)
           else :
             pass
         else :
@@ -1182,7 +1218,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
           for ibin_mu in xrange(1,self.g_ff.GetN()):
             edlow = self.g_ff.GetX()[ibin_mu] - self.g_ff.GetEXlow()[ibin_mu]
             edhi  = self.g_ff.GetX()[ibin_mu] + self.g_ff.GetEXhigh()[ibin_mu]
-            if muon.tlv.Pt()>=edlow and muon.tlv.Pt()<edhi:
+            if muon.tlv.Pt()/GeV>=edlow and muon.tlv.Pt()/GeV<edhi:
               ff_mu = self.g_ff.GetY()[ibin_mu]
               eff_up_mu = self.g_ff.GetEYhigh()[ibin_mu]
               eff_dn_mu = self.g_ff.GetEYlow()[ibin_mu]
@@ -1191,8 +1227,8 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
           if self.sys == 'DN': ff_mu -=eff_dn_mu
           sf *= -ff_mu
           if "mc" in self.sampletype :
-            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(0)
-            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(0)
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.id_sys)
+            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys)
           else :
             pass
 
@@ -1590,7 +1626,7 @@ class MuTrigSF(pyframe.core.Algorithm):
               for trig in self.trig_list:
                 
                 sf_muon  = getattr(m,"_".join(["TrigEff","SF",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at(self.trig_sys)
-                eff_muon = getattr(m,"_".join(["TrigMCEff",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at(0)
+                eff_muon = getattr(m,"_".join(["TrigMCEff",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at( 0 )
                 
                 # EXOT12 for v1 ntuples
                 #sf_muon  = getattr(m,"_".join(["TrigEff","SF",self.mu_reco,self.mu_iso])).at(0)

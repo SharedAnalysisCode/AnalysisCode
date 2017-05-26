@@ -36,3 +36,9 @@ function  fixFolders {
     ln -s `readlink -f nominal/$line` $1$line;
   done;
 }
+
+function fixAllFolders {
+  for line in `ls`; do
+    fixFolders $line/;
+  done
+}

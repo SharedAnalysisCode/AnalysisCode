@@ -1542,7 +1542,7 @@ ttbar_Py8_alt = Sample( name =  'ttbar_Py8_alt',
                 )
 
 top_physics = Sample( name =  'top_physics',
-                    tlatex = 't#bar{t} + single-t',
+                    tlatex = 't + t#bar{t} + t#bar{t}X',
                     fill_color = ROOT.kBlue-10,
                     line_color =  ROOT.kBlue-8,
                     marker_color =  ROOT.kBlue-8,
@@ -1816,9 +1816,9 @@ all_mc = []
 ### EXOT12 dilep
 all_mc += diboson_sherpa221.daughters
 all_mc += diboson_powheg_alt.daughters
-all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+# all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
 all_mc += top_physics.daughters
-# all_mc += ttX.daughters
+all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters
 # all_mc += ttbar_Py8.daughters

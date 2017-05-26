@@ -60,9 +60,9 @@ cd ${MYDIR}
 
 export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
-source $AtlasSetup/scripts/asetup.sh AtlasOffline,21.0.7 --cmtconfig x86_64-slc6-gcc49-opt --nosave
+# source $AtlasSetup/scripts/asetup.sh AtlasOffline,21.0.7 --cmtconfig x86_64-slc6-gcc49-opt --nosave
 . /ceph/grid/runtime/APPS/HEP/ATLAS-SITE
-lsetup root
+lsetup "root 6.08.06-x86_64-slc6-gcc62-opt"
 
 ## copy over working area
 ##echo "ls /data/fscutti"

@@ -40,7 +40,8 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
 # RUN = "AllR_v3_023"
-RUN = "AllR_v3_muVetoSR1_006"
+# RUN = "AllR_v3_muVetoSR1_006"
+RUN = "AllR_mu_v3_005"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -56,7 +57,8 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -64,7 +66,7 @@ DO_NOM = True                        # submit the nominal job
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 
 CF_SYS = True
 FF_SYS = True
@@ -83,6 +85,13 @@ TRIG_SYS = True
 ID_SYS = True
 ISO_SYS = True
 RECO_SYS = True
+
+DO_MUON_SYS = True
+
+DO_ELECTRON_SYS = False
+
+ 
+
 
 
 def main():
@@ -124,76 +133,111 @@ def main():
         ]    
     
     plot_sys = []
-    if CF_SYS:
+
+    if DO_ELECTRON_SYS:
+        if CF_SYS:
+            plot_sys += [
+                ['CF_UP',        nominal],
+                ['CF_DN',        nominal],
+                ]  
+        if FF_SYS:
+            plot_sys += [
+                ['FF_UP',        nominal],
+                ['FF_DN',        nominal],
+                ]  
+        if BEAM_SYS:
+            plot_sys += [
+                ['BEAM_UP',        nominal],
+                ['BEAM_DN',        nominal],
+                ]  
+        if CHOICE_SYS:
+            plot_sys += [
+                ['CHOICE_UP',        nominal],
+                ['CHOICE_DN',        nominal],
+                ]  
+        if PDF_SYS:
+            plot_sys += [
+                ['PDF_UP',        nominal],
+                ['PDF_DN',        nominal],
+                ]  
+        if PI_SYS:
+            plot_sys += [
+                ['PI_UP',        nominal],
+                ['PI_DN',        nominal],
+                ]  
+        if SCALE_Z_SYS:
+            plot_sys += [
+                ['SCALE_Z_UP',        nominal],
+                ['SCALE_Z_DN',        nominal],
+                ]  
+        if EG_RESOLUTION_ALL_SYS:
+            plot_sys += [
+                ['EG_RESOLUTION_ALL_UP',        nominal],
+                ['EG_RESOLUTION_ALL_DN',        nominal],
+                ]  
+        if EG_SCALE_ALLCORR_SYS:
+            plot_sys += [
+                ['EG_SCALE_ALLCORR_UP',        nominal],
+                ['EG_SCALE_ALLCORR_DN',        nominal],
+                ]  
+        if EG_SCALE_E4SCINTILLATOR_SYS:
+            plot_sys += [
+                ['EG_SCALE_E4SCINTILLATOR_UP',        nominal],
+                ['EG_SCALE_E4SCINTILLATOR_DN',        nominal],
+                ]  
+        if TRIG_SYS:
+            plot_sys += [
+                ['TRIG_UP',        nominal],
+                ['TRIG_DN',        nominal],
+                ]  
+        if ID_SYS:
+            plot_sys += [
+                ['ID_UP',        nominal],
+                ['ID_DN',        nominal],
+                ]  
+        if ISO_SYS:
+            plot_sys += [
+                ['ISO_UP',        nominal],
+                ['ISO_DN',        nominal],
+                ]  
+        if RECO_SYS:
+            plot_sys += [
+                ['RECO_UP',        nominal],
+                ['RECO_DN',        nominal],
+                ]
+
+    if DO_MUON_SYS:
         plot_sys += [
-            ['CF_UP',        nominal],
-            ['CF_DN',        nominal],
-            ]  
-    if FF_SYS:
-        plot_sys += [
-            ['FF_UP',        nominal],
-            ['FF_DN',        nominal],
-            ]  
-    if BEAM_SYS:
-        plot_sys += [
-            ['BEAM_UP',        nominal],
-            ['BEAM_DN',        nominal],
-            ]  
-    if CHOICE_SYS:
-        plot_sys += [
-            ['CHOICE_UP',        nominal],
-            ['CHOICE_DN',        nominal],
-            ]  
-    if PDF_SYS:
-        plot_sys += [
-            ['PDF_UP',        nominal],
-            ['PDF_DN',        nominal],
-            ]  
-    if PI_SYS:
-        plot_sys += [
-            ['PI_UP',        nominal],
-            ['PI_DN',        nominal],
-            ]  
-    if SCALE_Z_SYS:
-        plot_sys += [
-            ['SCALE_Z_UP',        nominal],
-            ['SCALE_Z_DN',        nominal],
-            ]  
-    if EG_RESOLUTION_ALL_SYS:
-        plot_sys += [
-            ['EG_RESOLUTION_ALL_UP',        nominal],
-            ['EG_RESOLUTION_ALL_DN',        nominal],
-            ]  
-    if EG_SCALE_ALLCORR_SYS:
-        plot_sys += [
-            ['EG_SCALE_ALLCORR_UP',        nominal],
-            ['EG_SCALE_ALLCORR_DN',        nominal],
-            ]  
-    if EG_SCALE_E4SCINTILLATOR_SYS:
-        plot_sys += [
-            ['EG_SCALE_E4SCINTILLATOR_UP',        nominal],
-            ['EG_SCALE_E4SCINTILLATOR_DN',        nominal],
-            ]  
-    if TRIG_SYS:
-        plot_sys += [
-            ['TRIG_UP',        nominal],
-            ['TRIG_DN',        nominal],
-            ]  
-    if ID_SYS:
-        plot_sys += [
-            ['ID_UP',        nominal],
-            ['ID_DN',        nominal],
-            ]  
-    if ISO_SYS:
-        plot_sys += [
-            ['ISO_UP',        nominal],
-            ['ISO_DN',        nominal],
-            ]  
-    if RECO_SYS:
-        plot_sys += [
-            ['RECO_UP',        nominal],
-            ['RECO_DN',        nominal],
-            ]  
+            ['MUFF_UP',    nominal],
+            ['MUFF_DN',    nominal],
+            ['TRIG_UPSTAT',    nominal],
+            ['TRIG_UPSYS',    nominal],
+            ['TRIG_DNSTAT',    nominal],
+            ['TRIG_DNSYS',    nominal],
+            ['ID_UPSTAT',    nominal],
+            ['ID_DNSTAT',    nominal],
+            ['ID_UPSYS',    nominal],
+            ['ID_DNSYS',    nominal],
+            ['ISO_UPSTAT',    nominal],
+            ['ISO_DNSTAT',    nominal],
+            ['ISO_UPSYS',    nominal],
+            ['ISO_DNSYS',    nominal],
+            ['TTVA_UPSTAT',    nominal],
+            ['TTVA_DNSTAT',    nominal],
+            ['TTVA_UPSYS',    nominal],
+            ['TTVA_DNSYS',    nominal],
+            ['MUON_ID_UP',        nominal],
+            ['MUON_ID_DN',        nominal],
+            ['MUON_MS_UP',        nominal],
+            ['MUON_MS_DN',        nominal],
+            ['MUON_RESBIAS_UP',        nominal],
+            ['MUON_RESBIAS_DN',        nominal],
+            ['MUON_RHO_UP',        nominal],
+            ['MUON_RHO_DN',        nominal],
+            ['MUON_SCALE_UP',        nominal],
+            ['MUON_SCALE_DN',        nominal],
+        ]
+
 
     ## ensure output path exists
     #prepare_path(OUTPATH)
@@ -251,9 +295,9 @@ def submit(tag,job_sys,samps,config={}):
                 continue
             elif s in [samples.Pythia8EvtGen_A14NNPDF23LO_DCH450, samples.Pythia8EvtGen_A14NNPDF23LO_DCH1100]:
                 continue
-            elif s in samples.all_DCH.daughters and config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP']:
+            elif s in samples.all_DCH.daughters and config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP','MUFF_UP','MUFF_DN']:
                 continue
-            elif s in samples.all_data and config['sys'] not in ['FF_UP','FF_DN']:
+            elif s in samples.all_data and config['sys'] not in ['FF_UP','FF_DN','MUFF_UP','MUFF_DN']:
                 continue
             elif s not in samples.AZNLOCTEQ6L1_DYee_DYtautau.daughters and config['sys'] in ["BEAM_UP","CHOICE_UP","PDF_UP","BEAM_UP","PI_UP","SCALE_Z_UP","BEAM_DN","CHOICE_DN","PDF_DN","BEAM_DN","PI_DN","SCALE_Z_DN"]:
                 continue
