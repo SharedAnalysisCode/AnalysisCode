@@ -648,13 +648,8 @@ def write_hist(
                     binVal = h.GetBinContent(i)
                     binErr = h.GetBinError(i)
                 else:
-                    if (nbins > i > 0) and (h.GetBinContent(i-1)>0 and h.GetBinContent(i+1)>0):
-                        binVal = h.GetBinWidth(i)*( h.GetBinContent(i-1)/h.GetBinWidth(i-1) + h.GetBinContent(i+1)/h.GetBinWidth(i+1) ) /2. 
-                        binErr = h.GetBinWidth(i)*( h.GetBinError(i-1)/h.GetBinWidth(i-1) + h.GetBinError(i+1)/h.GetBinWidth(i+1) ) /2.
-                        print "fixing negative weight ", str(binVal)
-                    else :
-                        binVal = 0.
-                        binErr = 0.
+                    binVal = 0.
+                    binErr = 0.
                 hEquiDistant.SetBinContent(i,binVal)
                 hEquiDistant.SetBinError(i,binErr)
                 hNorm.SetBinContent(i,binVal)
@@ -720,23 +715,14 @@ def write_hist(
                             binValU = hsys[0].GetBinContent(i)
                             binErrU = hsys[0].GetBinError(i)
                         else:
-                            if (nbins > i > 0) and (hsys[0].GetBinContent(i-1)>0 and hsys[0].GetBinContent(i+1)>0):
-                                binValU = hsys[0].GetBinWidth(i)*( hsys[0].GetBinContent(i-1)/hsys[0].GetBinWidth(i-1) + hsys[0].GetBinContent(i+1)/hsys[0].GetBinWidth(i+1) ) /2.
-                                binErrU = hsys[0].GetBinWidth(i)*( hsys[0].GetBinError(i-1)/hsys[0].GetBinWidth(i-1) + hsys[0].GetBinError(i+1)/hsys[0].GetBinWidth(i+1) ) /2.
-                            else :
-                                binValU = 0.
-                                binErrU = 0.
+                            binValU = 0.
+                            binErrU = 0.
                         if hsys[1].GetBinContent(i) >= 0:
                             binValD = hsys[1].GetBinContent(i)
                             binErrD = hsys[1].GetBinError(i)
                         else:
-                            if (nbins > i > 0) and hsys[1].GetBinContent(i) < 0 and (hsys[1].GetBinContent(i-1)>0 and hsys[1].GetBinContent(i+1)>0):
-                                binValD = hsys[1].GetBinWidth(i)*( hsys[1].GetBinContent(i-1)/hsys[1].GetBinWidth(i-1) + hsys[1].GetBinContent(i+1)/hsys[1].GetBinWidth(i+1) ) /2.
-                                binErrD = hsys[1].GetBinWidth(i)*( hsys[1].GetBinError(i-1)/hsys[1].GetBinWidth(i-1) + hsys[1].GetBinError(i+1)/hsys[1].GetBinWidth(i+1) ) /2.
-                            else :
-                                binValD = 0.
-                                binErrD = 0.
-                                
+                            binValD = 0.
+                            binErrD = 0.
                         hupEquiDistant.SetBinContent(i,binValU)
                         hupEquiDistant.SetBinError(i,binErrU)
                         hdnEquiDistant.SetBinContent(i,binValD)

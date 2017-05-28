@@ -41,7 +41,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "ZPeak_v3_003"
 # RUN = "AllR_v3_023"
 # RUN = "AllR_v3_muVetoSR1_006"
-RUN = "AllR_mu_v3_005"
+RUN = "AllR_emu_v3_001"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -58,15 +58,18 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
-DO_NOM = True                        # submit the nominal job
+
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
+DO_NOM = True                        # submit the nominal job
+
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
 CF_SYS = True
 FF_SYS = True
@@ -88,7 +91,7 @@ RECO_SYS = True
 
 DO_MUON_SYS = True
 
-DO_ELECTRON_SYS = False
+DO_ELECTRON_SYS = True
 
  
 
@@ -214,10 +217,10 @@ def main():
             ['TRIG_UPSYS',    nominal],
             ['TRIG_DNSTAT',    nominal],
             ['TRIG_DNSYS',    nominal],
-            ['ID_UPSTAT',    nominal],
-            ['ID_DNSTAT',    nominal],
-            ['ID_UPSYS',    nominal],
-            ['ID_DNSYS',    nominal],
+            ['RECO_UPSTAT',    nominal],
+            ['RECO_DNSTAT',    nominal],
+            ['RECO_UPSYS',    nominal],
+            ['RECO_DNSYS',    nominal],
             ['ISO_UPSTAT',    nominal],
             ['ISO_DNSTAT',    nominal],
             ['ISO_UPSYS',    nominal],
@@ -253,7 +256,8 @@ def main():
     if DO_NTUP_SYS: 
       for sys,samps in ntup_sys:
             submit(sys,sys,samps)
-    if DO_PLOT_SYS:  
+    if DO_PLOT_SYS:
+      print "DO_PLOT_SYS"
       for sys,samps in plot_sys:
             submit(sys,'nominal',samps,config={'sys':sys})
 
@@ -373,6 +377,7 @@ def submit(tag,job_sys,samps,config={}):
         cmd += '             (\\"SCRIPT\\" \\"%s\\")\n'    % SCRIPT
         cmd += '             (\\"PBS_ARRAYID\\" \\"%s\\"))'   % str(line_intiger+1)
         cmd += '">>' + TEMPXRSL
+        # cmd += ';arcsub -c pikolit.ijs.si arcsub -S org.ogf.glue.emies.activitycreation -o '+JOBLISTF+' '+TEMPXRSL
         cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
         print cmd
         m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)

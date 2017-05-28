@@ -1126,7 +1126,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
             key            = None,
             sys            = None,
             config_file    = None,
-            sys_id         = None,
+            sys_reco         = None,
             sys_iso        = None,
             sys_TTVA       = None,
             ):
@@ -1134,7 +1134,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
         self.key               = key
         self.sys               = sys
         self.config_file       = config_file
-        self.sys_id            = sys_id
+        self.sys_reco            = sys_reco
         self.sys_iso           = sys_iso
         self.sys_TTVA          = sys_TTVA
 
@@ -1156,24 +1156,24 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
       f.Close()
 
       #Muon ID
-      self.id_sys = 0
-      if self.sys_id == "UPSTAT":
-        self.id_sys = 4
-      elif self.sys_id == "UPSYS":
-        self.id_sys = 8
-      elif self.sys_id == "DNSTAT":
-        self.id_sys = 3
-      elif self.sys_id == "DNSYS":
-        self.id_sys = 7
+      self.reco_sys = 0
+      if self.sys_reco == "UPSTAT":
+        self.reco_sys = 4
+      elif self.sys_reco == "UPSYS":
+        self.reco_sys = 8
+      elif self.sys_reco == "DNSTAT":
+        self.reco_sys = 3
+      elif self.sys_reco == "DNSYS":
+        self.reco_sys = 7
 
       self.iso_sys=0
-      if self.sys_id ==   "UPSTAT":
+      if self.sys_iso ==   "UPSTAT":
         self.iso_sys= 2
-      elif self.sys_id == "UPSYS":
+      elif self.sys_iso == "UPSYS":
         self.iso_sys= 4
-      elif self.sys_id == "DNSTAT":
+      elif self.sys_iso == "DNSTAT":
         self.iso_sys= 1
-      elif self.sys_id == "DNSYS":
+      elif self.sys_iso == "DNSYS":
         self.iso_sys= 3
 
       self.TTVA_sys=0
@@ -1191,12 +1191,10 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
     def execute(self, weight):
 
       if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560):
-        if self.key:
           if len(self.store['muons_tight']) != len(self.store['muons']) :
-            self.store[self.key] = 0.
-          else:
-            self.store[self.key] = 1.        
-        return True
+              if self.key:
+                self.store[self.key] = 0.
+                return True
 
       sf = 1.0
       if len(self.store['muons_tight']) != len(self.store['muons']):
@@ -1207,7 +1205,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
         if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
           if "mc" in self.sampletype : 
             sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys)
-            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.id_sys)
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys)
             sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys)
           else :
             pass
@@ -1227,8 +1225,241 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
           if self.sys == 'DN': ff_mu -=eff_dn_mu
           sf *= -ff_mu
           if "mc" in self.sampletype :
-            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.id_sys)
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys)
             sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys)
+          else :
+            pass
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
+
+class SuperGenericFakeFactor(pyframe.core.Algorithm):
+    """
+    SuperGenericFakeFactor
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="SuperGenericFakeFactor",
+            key            = None,
+            sys_FFe        = None,
+            sys_FFm        = None,
+            config_file_e  = None,
+            config_file_m  = None,
+            config_fileCHF = None,
+            sys_id_e       = None,
+            sys_iso_e      = None,
+            sys_reco_e     = None,
+            sys_reco_m     = None,
+            sys_iso_m      = None,
+            sys_TTVA_m     = None,
+            ):
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+        self.sys_FFe           = sys_FFe
+        self.sys_FFm           = sys_FFm
+        self.config_file_e     = config_file_e
+        self.config_file_m     = config_file_m
+        self.config_fileCHF    = config_fileCHF
+        self.sys_id_e          = sys_id_e
+        self.sys_iso_e         = sys_iso_e
+        self.sys_reco_e        = sys_reco_e
+        self.sys_reco_m        = sys_reco_m
+        self.sys_iso_m         = sys_iso_m
+        self.sys_TTVA_m        = sys_TTVA_m
+
+        assert key, "Must provide key for storing mu reco sf"
+        assert config_file_e, "Must provide config file!"
+        assert config_file_m, "Must provide config file!"
+        assert config_fileCHF, "Must provide config file!"
+    #_________________________________________________________________________
+    def initialize(self):
+
+      f = ROOT.TFile.Open(self.config_file_e)
+      assert f, "Failed to open fake-factor config file: %s"%(self.config_file_e)
+      
+      if self.sys_FFe=="UP":
+        h_ff = f.Get("FFup")
+      elif self.sys_FFe=="DN":
+        h_ff = f.Get("FFdn")
+      else:
+        h_ff = f.Get("FF")
+      assert h_ff, "Failed to get 'h_ff' from %s"%(self.config_file_e)
+
+      self.h_ff = h_ff.Clone()
+      self.h_ff.SetDirectory(0)
+      f.Close()
+
+      f = ROOT.TFile.Open(self.config_file_m)
+      assert f, "Failed to open fake-factor config file: %s"%(self.config_file_m)
+      
+      g_ff = f.Get("g_ff_stat_sys")
+
+      assert g_ff, "Failed to get 'h_ff' from %s"%(self.config_file_m)
+
+      self.g_ff = g_ff.Clone()
+      f.Close()
+
+      fchf = ROOT.TFile.Open(self.config_fileCHF)
+      assert fchf, "Failed to open charge-flip config file: %s"%(self.config_fileCHF)
+
+      h_etaFunc = fchf.Get("etaFunc")
+      assert h_etaFunc, "Failed to get 'h_etaFunc' from %s"%(self.config_fileCHF)
+      h_ptFunc = fchf.Get("ptFunc")
+      assert h_ptFunc, "Failed to get 'h_ptFunc' from %s"%(self.config_fileCHF)
+
+      h_etaRateMC = fchf.Get("MCEtaRate")
+      assert h_etaRateMC, "Failed to get 'h_etaRateMC' from %s"%(self.config_fileCHF)
+      h_ptRateMC = fchf.Get("MCPtRate")
+      assert h_ptRateMC, "Failed to get 'h_ptRateMC' from %s"%(self.config_fileCHF)
+
+      h_etaRateData = fchf.Get("dataEtaRate")
+      assert h_etaRateData, "Failed to get 'h_etaRateData' from %s"%(self.config_fileCHF)
+      h_ptRateData = fchf.Get("dataPtRate")
+      assert h_ptRateData, "Failed to get 'h_ptRateData' from %s"%(self.config_fileCHF)
+
+      self.h_etaFunc = h_etaFunc.Clone()
+      self.h_ptFunc  = h_ptFunc.Clone()
+      self.h_etaFunc.SetDirectory(0)
+      self.h_ptFunc.SetDirectory(0)
+
+      self.h_etaRateMC = h_etaRateMC.Clone()
+      self.h_ptRateMC  = h_ptRateMC.Clone()
+      self.h_etaRateMC.SetDirectory(0)
+      self.h_ptRateMC.SetDirectory(0)
+
+      self.h_etaRateData = h_etaRateData.Clone()
+      self.h_ptRateData  = h_ptRateData.Clone()
+      self.h_etaRateData.SetDirectory(0)
+      self.h_ptRateData.SetDirectory(0)
+      fchf.Clone()
+
+      self.isoLevels = [
+      "isolLoose",
+      "isolTight",
+      ]
+      self.IDLevels = [
+      "LooseAndBLayerLLH",
+      "MediumLLH",
+      "TightLLH",
+      ]
+
+      #Electron
+      self.id_sys_e = 0
+      if self.sys_id_e == "UP":
+        self.id_sys_e = 2
+      elif self.sys_id_e == "DN":
+        self.id_sys_e = 1
+
+      self.iso_sys_e = 0
+      if self.sys_iso_e == "UP":
+        self.iso_sys_e = 2
+      elif self.sys_iso_e == "DN":
+        self.iso_sys_e = 1
+
+      self.reco_sys_e = 0
+      if self.sys_reco_e == "UP":
+        self.reco_sys_e = 2
+      elif self.sys_reco_e == "DN":
+        self.reco_sys_e = 1
+
+      #Muon
+      self.reco_sys_m = 0
+      if self.sys_reco_m == "UPSTAT":
+        self.reco_sys_m = 4
+      elif self.sys_reco_m == "UPSYS":
+        self.reco_sys_m = 8
+      elif self.sys_reco_m == "DNSTAT":
+        self.reco_sys_m = 3
+      elif self.sys_reco_m == "DNSYS":
+        self.reco_sys_m = 7
+
+      self.iso_sys_m=0
+      if self.sys_iso_m ==   "UPSTAT":
+        self.iso_sys_m= 2
+      elif self.sys_iso_m == "UPSYS":
+        self.iso_sys_m= 4
+      elif self.sys_iso_m == "DNSTAT":
+        self.iso_sys_m= 1
+      elif self.sys_iso_m == "DNSYS":
+        self.iso_sys_m= 3
+
+      self.TTVA_sys_m=0
+      if self.sys_TTVA_m ==   "UPSTAT":
+        self.TTVA_sys_m= 2
+      elif self.sys_TTVA_m == "UPSYS":
+        self.TTVA_sys_m= 4
+      elif self.sys_TTVA_m == "DNSTAT":
+        self.TTVA_sys_m= 1
+      elif self.sys_TTVA_m == "DNSYS":
+        self.TTVA_sys_m= 3
+
+    #_________________________________________________________________________
+    def execute(self, weight):
+
+      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560):
+          if len(self.store['muons_tight']) != len(self.store['muons']) or len(self.store['electrons_loose_LooseLLH']) != len(self.store['electrons_tight_MediumLLH_isolLoose']) :
+              if self.key:
+                self.store[self.key] = 0.
+                return True
+
+      sf = 1.0
+      if len(self.store['muons_tight']) != len(self.store['muons']) or len(self.store['electrons_loose_LooseLLH']) != len(self.store['electrons_tight_MediumLLH_isolLoose']):
+        sf = -1.0
+      muons = self.store['muons']
+      electrons = self.store['electrons_loose_LooseLLH']
+
+      for ele in electrons:
+        if (ele.isIsolated_Loose and ele.LHMedium) :
+          if "mc" in self.sampletype : 
+            sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
+            sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
+            ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
+            etaBin = self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) )
+            if ptBin==self.h_ptFunc.GetNbinsX()+1:
+              ptBin -= 1 
+            if ele.electronType() in [2,3]:
+              sf *= self.h_ptFunc.GetBinContent( ptBin ) * self.h_etaFunc.GetBinContent( etaBin )                
+            elif ele.electronType() in [1]:
+              probMC   = self.h_ptRateMC.GetBinContent( ptBin )   * self.h_etaRateMC.GetBinContent( etaBin )
+              probData = self.h_ptRateData.GetBinContent( ptBin ) * self.h_etaRateData.GetBinContent( etaBin )
+              sf *= ( 1 - probData )/( 1 - probMC )
+          else :
+            pass
+        else :
+          sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.caloCluster_eta ) ) )
+          if "mc" in self.sampletype :
+            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys_e)
+            sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
+          else :
+            pass
+
+      for muon in muons:
+        if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
+          if "mc" in self.sampletype : 
+            sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys_m)
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
+            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
+          else :
+            pass
+        else :
+          ff_mu = 0.
+          eff_up_mu = 0.
+          eff_dn_mu = 0.
+          for ibin_mu in xrange(1,self.g_ff.GetN()):
+            edlow = self.g_ff.GetX()[ibin_mu] - self.g_ff.GetEXlow()[ibin_mu]
+            edhi  = self.g_ff.GetX()[ibin_mu] + self.g_ff.GetEXhigh()[ibin_mu]
+            if muon.tlv.Pt()/GeV>=edlow and muon.tlv.Pt()/GeV<edhi:
+              ff_mu = self.g_ff.GetY()[ibin_mu]
+              eff_up_mu = self.g_ff.GetEYhigh()[ibin_mu]
+              eff_dn_mu = self.g_ff.GetEYlow()[ibin_mu]
+              break
+          if self.sys_FFm == 'UP': ff_mu +=eff_up_mu
+          if self.sys_FFm == 'DN': ff_mu -=eff_dn_mu
+          sf *= -ff_mu
+          if "mc" in self.sampletype :
+            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
+            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
           else :
             pass
 
@@ -1594,9 +1825,9 @@ class MuTrigSF(pyframe.core.Algorithm):
         if self.sys_trig == "UPSTAT":
             self.trig_sys = 2
         elif self.sys_trig == "UPSYS":
-            self.trig_sys = 1
-        elif self.sys_trig == "DNSTAT":
             self.trig_sys = 4
+        elif self.sys_trig == "DNSTAT":
+            self.trig_sys = 1
         elif self.sys_trig == "DNSYS":
             self.trig_sys = 3
 

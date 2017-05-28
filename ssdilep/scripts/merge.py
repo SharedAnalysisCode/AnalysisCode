@@ -16,7 +16,9 @@ from systematics     import *
 from optparse import OptionParser
 import copy
 
-DO_SYS = False
+DO_SYS = True
+ELE_SYS = False
+MU_SYS = False
 
 
 #-----------------
@@ -59,11 +61,21 @@ parser.add_option('-y', '--sys', dest='sys',
                   help='sys',metavar='SYS',default=None)
 parser.add_option('-B', '--branching', dest='branching',
                   help='branching',metavar='BRANCHING',default=None)
+parser.add_option('-E', '--elesys', dest='elesys',
+                  help='elesys',metavar='ELESYS',default=None)
+parser.add_option('-M', '--musys', dest='musys',
+                  help='musys',metavar='MUSYS',default=None)
 
 (options, args) = parser.parse_args()
 
 if options.sys == "False":
   DO_SYS = False
+
+if options.elesys == "True":
+  ELE_SYS = True
+
+if options.musys == "True":
+  MU_SYS = True
 
 #-----------------
 # Configuration
@@ -232,6 +244,21 @@ elif options.samples == "allSamples":
   # samples.ttbar_Py8_aMcAtNlo,
   # samples.ttbar_Py8_CF,
   ]
+elif options.samples == "allSamples_mu":
+  mc_backgrounds = [
+  samples.diboson_sherpa221,
+  samples.dibosonSysSample,
+  samples.top_physics,
+  # samples.ttbar_Py8,
+  # samples.singletop,
+  # samples.ttX,
+  # samples.ttX_singletop,
+  # samples.ttbar_Py8_up,
+  # samples.ttbar_Py8_do,
+  # samples.ttbar_Herwig,
+  # samples.ttbar_Py8_aMcAtNlo,
+  # samples.ttbar_Py8_CF,
+  ]
 
 
 fakes_mumu = samples.fakes.copy()
@@ -258,9 +285,10 @@ for br in [0,50,100]:
     if options.makeplot == "True":
       if mass not in [500,600,700] or br not in ([float(options.branching)] if options.branching else []): continue
     name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
+    print "tlatex: ", ("DCH%d Br(ee)=%d" % (mass,br)) if options.elesys=="True" else ("DCH%d Br(#mu#mu)=%d" % (mass,100-br))
     globals()[name+"ee"+str(br)+"mm"+str(100-br)] = sample.Sample(
       name = name,
-      tlatex = "DCH%d Br(ee)=%d" % (mass,br),
+      tlatex = ("DCH%d Br(ee)=%d" % (mass,br)) if options.elesys=="True" else ("DCH%d Br(#mu#mu)=%d" % (mass,100-br)),
       line_color = intiger,
       marker_color = intiger,
       fill_color = intiger,
@@ -332,7 +360,14 @@ for s in signal_ee50mm50:
 signal = []
 for samps in signal_samples:
   for s in samps:
-    br = re.findall("Br\(ee\)\=([0-9]*)",s.tlatex)[0]
+    br = re.findall("Br\(ee\)\=([0-9]*)",s.tlatex)[0] if options.elesys=="True" else re.findall("Br\(#mu#mu\)\=([0-9]*)",s.tlatex)[0]
+    print "asdasd ", br
+    if not options.elesys=="True":
+      print br
+      br = str(100-float(br))
+      print "Br(H->ee)= ", br
+      print "ee= ", float(br)/100.
+      print "mm= ", (1-float(br)/100.)
     s.estimator = histmgr.EstimatorDCH( hm=hm, ee=float(br)/100., mm=(1-float(br)/100.), sample=s )
     s.nameSuffix = "ee"+br+"mm"+str(int(100-float(br)))
     # print s.tlatex
@@ -501,7 +536,7 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   samples.diboson_sherpa221,
   samples.top_physics,
   # samples.singletop,
-  samples.ttX,
+  # samples.ttX,
   ]
 elif options.samples in ["SSVR_mu"]:
   mumu_backgrounds = [
@@ -573,20 +608,48 @@ elif options.samples == "allSamples":
   # samples.ttbar_Py8_CF,
   fakes_mumu,
   ]
+elif options.samples == "allSamples_mu":
+  mumu_backgrounds = [
+  samples.diboson_sherpa221,
+  samples.dibosonSysSample,
+  samples.top_physics,
+  # samples.ttbar_Py8,
+  # samples.singletop,
+  # samples.ttX,
+  # samples.ttX_singletop,
+  # samples.ttbar_Py8_up,
+  # samples.ttbar_Py8_do,
+  # samples.ttbar_Herwig,
+  # samples.ttbar_Py8_aMcAtNlo,
+  # samples.ttbar_Py8_CF,
+  fakes_mumu,
+  ]
 
-sys_list = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, FF, CF, TRIG, ID, ISO, RECO]
+sys_list_ele = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, FF, CF, TRIG, ID, ISO, RECO]
+sys_list_muon = [MUON_ID, MUON_MS, MUON_RESBIAS, MUON_RHO, MUON_SCALE, TRIGSTAT, TRIGSYS, ISOSYS, ISOSTAT, RECOSYS, RECOSTAT, TTVASYS, TTVASTAT]
 
 if (DO_SYS):
-  fakes_mumu.estimator.add_systematics(FF)
+  if ELE_SYS:
+    fakes_mumu.estimator.add_systematics(FF)
+  if MU_SYS:
+    fakes_mumu.estimator.add_systematics(MUFF)
   for sample in mumu_backgrounds:
     if sample in [samples.dibosonSysSample,samples.ttbar_Py8_up,samples.ttbar_Py8_do,samples.ttbar_Herwig,samples.ttbar_Py8_aMcAtNlo,samples.ttbar_Py8_CF]:
       print "skip sys MC samples in other systematics"
       continue
-    for sys in sys_list:
-      sample.estimator.add_systematics(sys)
+    if ELE_SYS:
+      for sys in sys_list_ele:
+        sample.estimator.add_systematics(sys)
+    if MU_SYS:
+      for sys in sys_list_muon:
+        sample.estimator.add_systematics(sys)
   for sample in signal:
-    for sys in sys_list:
-      sample.estimator.add_systematics(sys)
+    if ELE_SYS:
+      for sys in sys_list_ele:
+        sample.estimator.add_systematics(sys)
+    if MU_SYS:
+      for sys in sys_list_muon:
+        sample.estimator.add_systematics(sys)
 
 print options.blind
 

@@ -31,8 +31,9 @@ bins_invM = generateLogBins(50,130,2000)
 bins_invM_fit = generateLogBins(30,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
 bins_invMassSR2EL = generateLogBins(10,200,900)
-# bins_invMassSR2ELall = [200] + [x for x in range(225,875,50)] + [865,925,975,1025,2000]
-bins_invMassSR2ELall = [200] + [x for x in range(325,1525,100)]
+# bins_invMassSR2ELall = [200] + [x for x in range(325,1525,100)]
+bins_invMassSR2ELall = [200] + [x for x in range(275,925,50)] + [975,2000]
+# bins_invMassSR2ELall = [200] + [x for x in range(325,1525,100)]
 bins_invMassSR3EL = generateLogBins(5,200,1000)
 bins_invMassSR3ELall = [200] + [x for x in range(425,2025,200)]
 bins_invM_2 = generateLogBins(15,130,200)
@@ -223,7 +224,7 @@ invMassSR2EL = Var(name='invMass',
 invMassSR2ELall = Var(name='invMass',
               path   = 'event',
               xmin   = 200,
-              xmax   = 975,
+              xmax   = 2000,
               rebin  = 1,
               rebinVar  = bins_invMassSR2ELall,
               log    = False,
@@ -903,7 +904,10 @@ el_lead_ptcone40 = Var(name = 'el_lead_ptcone40',
 ## ---------------------------------------
 ## ---------------------------------------
 
-bins_invM_mu = generateLogBins(20,20,200)
+bins_invM_mu = generateLogBins(12,60,200)
+bins_invM_mu2 = generateLogBins(6,60,200)
+bins_invMass_mu3 = [200] + [x for x in range(325,1525,100)] + [1425,2000]
+
 
 
 ## Event variables
@@ -911,21 +915,32 @@ bins_invM_mu = generateLogBins(20,20,200)
 
 invMass_mu = Var(name='invMass',
               path   = 'event',
-              xmin   = 20,
-              xmax   = 220,
-              rebin  = 20,
+              xmin   = 60,
+              xmax   = 200,
+              rebin  = 1,
+              rebinVar  = bins_invM_mu,
               log    = False,
-              logx   = False,
+              logx   = True,
               )
-
 
 invMass_mu2 = Var(name='invMass',
               path   = 'event',
-              xmin   = 0,
-              xmax   = 240,
-              rebin  = 40,
+              xmin   = 60,
+              xmax   = 200,
+              rebin  = 1,
+              rebinVar  = bins_invM_mu2,
               log    = False,
-              logx   = False,
+              logx   = True,
+              )
+
+invMass_mu3 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 200,
+              xmax   = 2000,
+              rebin  = 1,
+              rebinVar  = bins_invMass_mu3,
+              log    = False,
+              logx   = False
               )
 
 
@@ -1028,6 +1043,7 @@ vars_dict["invMass_fit"] = invMass_fit.__dict__
 vars_dict["nsspairs"] = nsspairs.__dict__
 vars_dict["invMass_mu"] = invMass_mu.__dict__
 vars_dict["invMass_mu2"] = invMass_mu2.__dict__
+vars_dict["invMass_mu3"] = invMass_mu3.__dict__
 
 ## EOF
 

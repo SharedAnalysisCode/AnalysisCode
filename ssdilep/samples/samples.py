@@ -63,8 +63,7 @@ GRL += [
         "311287","311321","311365","311402","311473","311481",
         ]
 
-# GRL += ["284285","302300","306448","307656"]
-# GRL += ["298773","306419","311170","310691"]
+# GRL += ["306448"]
 
 
 
@@ -1816,9 +1815,9 @@ all_mc = []
 ### EXOT12 dilep
 all_mc += diboson_sherpa221.daughters
 all_mc += diboson_powheg_alt.daughters
-# all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
 all_mc += top_physics.daughters
-all_mc += ttX.daughters
+all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+# all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters
 # all_mc += ttbar_Py8.daughters

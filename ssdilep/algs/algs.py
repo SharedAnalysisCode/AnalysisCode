@@ -1151,6 +1151,19 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_OneOrTwoEmus90GeV(self):
+      leptons = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+      if not ( 2 <= len(leptons) <= 4):
+        return False 
+      SSEmu = 0
+      for pair in itertools.combinations(leptons,2):
+        if pair[0].trkcharge * pair[1].trkcharge > 0 and pair[0].m != pair[1].m:
+          if (pair[0].tlv + pair[1].tlv).M() >= 90*GeV :
+            SSEmu += 1
+      if SSEmu in [1,2]:
+        return True
+      return False
+
     def cut_TwoOrThreeElectronsOneSS200GeV(self):
         electronsL = self.store['electrons_loose_LooseLLH']
         electronsT = self.store['electrons_tight_MediumLLH_isolLoose']
@@ -1539,6 +1552,13 @@ class CutAlg(pyframe.core.Algorithm):
         muons = self.store['muons']
         if len(muons)==2: 
           if muons[0].trkcharge*muons[1].trkcharge == 1: return True
+        return False
+
+    def cut_ExactlyTwoLooseLeptons(self):
+        leptons = self.store['muons'] + self.store['electrons_loose_LooseLLH']
+        if len(leptons)==2:
+          assert leptons[0].trkcharge*leptons[1].trkcharge == 1 and leptons[0].m!=leptons[1].m, "OneOrTwoEmus90GeV not working !!"
+          if leptons[0].trkcharge*leptons[1].trkcharge == 1: return True
         return False
 
     def cut_SameSignLooseElePtZ100(self):
@@ -1984,6 +2004,41 @@ class CutAlg(pyframe.core.Algorithm):
         return True
       return False
 
+    def cut_DCHFilteremem(self):
+      if ("mc" not in self.sampletype):
+        return False
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return True
+      if len(self.chain.HLpp_Daughters) not in [0,1]:
+        if self.chain.HLpp_Daughters[0] == self.chain.HLpp_Daughters[1]:
+          return False
+      if len(self.chain.HLmm_Daughters) not in [0,1]:
+        if self.chain.HLmm_Daughters[0] == self.chain.HLmm_Daughters[1]:
+          return False
+      if len(self.chain.HRpp_Daughters) not in [0,1]:
+        if self.chain.HRpp_Daughters[0] == self.chain.HRpp_Daughters[1]:
+          return False
+      if len(self.chain.HRmm_Daughters) not in [0,1]:
+        if self.chain.HRmm_Daughters[0] == self.chain.HRmm_Daughters[1]:
+          return False
+      return True
+
+    def cut_DCHFilteremmm(self):
+      if ("mc" not in self.sampletype):
+        return False
+      elif self.chain.mcChannelNumber not in range(306538,306560):
+        return True
+      if sum([abs(l) for l in self.chain.HLpp_Daughters])==24 and sum([abs(l) for l in self.chain.HLmm_Daughters])==26 :
+        return True
+      elif sum([abs(l) for l in self.chain.HLpp_Daughters])==26 and sum([abs(l) for l in self.chain.HLmm_Daughters])==24 :
+        return True
+      elif sum([abs(l) for l in self.chain.HRpp_Daughters])==24 and sum([abs(l) for l in self.chain.HRmm_Daughters])==26 :
+        return True
+      elif sum([abs(l) for l in self.chain.HRpp_Daughters])==26 and sum([abs(l) for l in self.chain.HRmm_Daughters])==24 :
+        return True
+      return False
+
+
     #__________________________________________________________________________
     def cut_PASS(self):
       return True
@@ -2114,7 +2169,7 @@ class CutAlg(pyframe.core.Algorithm):
       muons     = self.store['muons']
       leptons = electrons + muons
       for pair in itertools.combinations(leptons,2):
-        if pair[0].trkcharge * pair[1].trkcharge < 0 and abs(pair[0].m-pair[1].m)<1e3:
+        if pair[0].trkcharge * pair[1].trkcharge < 0 and pair[0].m == pair[1].m:
           if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) < 10*GeV:
             return False
       return True
@@ -3496,8 +3551,6 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         ## get event candidate
         electrons  = self.store['electrons_loose_LooseLLH']
         muons = self.store['muons']
-        if len(muons) > 0:
-          assert len(electrons) == 0, "lepton veto not working"
 
         leptons = electrons + muons
 
@@ -3971,6 +4024,7 @@ class VarsAlg(pyframe.core.Algorithm):
                  use_simple_truth = False,
                  remove_signal_muons = False,
                  remove_signal_electrons = False,
+                 make_pure_emus = False,
                  ):
         pyframe.core.Algorithm.__init__(self, name)
         self.key_muons = key_muons
@@ -3981,6 +4035,7 @@ class VarsAlg(pyframe.core.Algorithm):
         self.use_simple_truth = use_simple_truth
         self.remove_signal_muons = remove_signal_muons
         self.remove_signal_electrons = remove_signal_electrons
+        self.make_pure_emus = make_pure_emus
 
     #__________________________________________________________________________
     def execute(self, weight):
@@ -4012,6 +4067,31 @@ class VarsAlg(pyframe.core.Algorithm):
           for ele in self.store[self.key_electrons][:]:
             if ele.truthOrigin == 0:
               self.store[self.key_electrons].remove(ele)
+
+        if ("mc" in self.sampletype) and self.make_pure_emus and self.chain.mcChannelNumber in range(306538,306560):
+          for ele in self.store[self.key_electrons][:]:
+            if ele.truthOrigin != 0:
+              self.store[self.key_electrons].remove(ele)
+          for muon in self.store[self.key_muons][:]:
+            if muon.truthOrigin != 0:
+              self.store[self.key_muons].remove(muon)
+          if [l for l in self.chain.HLpp_Daughters] == [-13,-13]:
+            for muon in self.store[self.key_muons][:]:
+              if muon.truthOrigin == 0 and muon.trkcharge == 1:
+                self.store[self.key_muons].remove(muon)           
+          if [l for l in self.chain.HLmm_Daughters] == [13,13]:
+            for muon in self.store[self.key_muons][:]:
+              if muon.truthOrigin == 0 and muon.trkcharge == -1:
+                self.store[self.key_muons].remove(muon)   
+          if [l for l in self.chain.HRpp_Daughters] == [-13,-13]:
+            for muon in self.store[self.key_muons][:]:
+              if muon.truthOrigin == 0 and muon.trkcharge == 1:
+                self.store[self.key_muons].remove(muon)   
+          if [l for l in self.chain.HRmm_Daughters] == [13,13]:
+            for muon in self.store[self.key_muons][:]:
+              if muon.truthOrigin == 0 and muon.trkcharge == -1:
+                self.store[self.key_muons].remove(muon)   
+
 
 
         #assert len(muons)>=2, "less than 2 muons in event!"

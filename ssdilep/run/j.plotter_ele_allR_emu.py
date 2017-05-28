@@ -75,8 +75,8 @@ def analyze(config):
     else:
         treeSys = "nominal"
         if systematic == None: pass
-        elif systematic == 'ELEFF_UP':      sys_FF_ele   = 'UP'
-        elif systematic == 'ELEFF_DN':      sys_FF_ele   = 'DN'
+        elif systematic == 'FF_UP':      sys_FF_ele   = 'UP'
+        elif systematic == 'FF_DN':      sys_FF_ele   = 'DN'
         elif systematic == 'MUFF_UP':      sys_FF_mu   = 'UP'
         elif systematic == 'MUFF_DN':      sys_FF_mu   = 'DN'
         elif systematic == 'CF_UP':      sys_CF   = 'UP'
@@ -180,7 +180,7 @@ def analyze(config):
     #    met_key='met_clus', 
     #    )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False, remove_signal_electrons=True)   
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False, make_pure_emus=True)   
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -204,12 +204,12 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakeMuonsInMC')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroElectrons')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassORSingleLeptonTriggerMuon')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwoLooseMuons')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe17lhloosenod0mu14')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='OneOrTwoEmus90GeV')
     
     ## weights configuration
     ## ---------------------------------------
@@ -217,22 +217,21 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
 
 
-    loop += ssdilep.algs.EvWeights.GenericFakeFactorMu(
-            key='GenericFakeFactorMu',
-            config_file=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_bveto.root'),
-            sys=sys_FF_mu,
-            sys_reco = sys_reco,
-            sys_iso = sys_iso,
-            sys_TTVA = sys_TTVA,
+    loop += ssdilep.algs.EvWeights.SuperGenericFakeFactor(
+            key='SuperGenericFakeFactor',
+            config_file_e=os.path.join(main_path,'ssdilep/data/fakeFactor-16-05-2017.root'),
+            config_file_m=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_bveto.root'),
+            config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
+            sys_FFe=sys_FF_ele,
+            sys_FFm=sys_FF_mu,
+            sys_id_e = sys_id,
+            sys_iso_e = sys_iso,
+            sys_reco_e = sys_reco,
+            sys_reco_m = sys_reco,
+            sys_iso_m = sys_iso,
+            sys_TTVA_m = sys_TTVA,
             )
 
-    loop += ssdilep.algs.EvWeights.MuTrigSF(
-            trig_list     = ["HLT_mu26_ivarmedium_OR_HLT_mu50"],
-            mu_reco       = "Medium",
-            mu_iso        = "FixedCutTightTrackOnly",
-            key           = "MuTrigSF",
-            sys_trig      = sys_trig,
-            )
 
     # TTT REGION
     # ---------------------------------------
@@ -242,9 +241,9 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyThreeLeptonsSS60M200',None],
+               ['ExactlyThreeLeptonsSS90M200',None],
                ['ExactlyThreeLooseLepOSZmass',None],
-               ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyThreeTightLep',['SuperGenericFakeFactor']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -252,9 +251,9 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyThreeLeptonsSS60M200',None],
+               ['ExactlyThreeLeptonsSS90M200',None],
                ['ExactlyThreeLooseLepOSZmass',None],
-               ['FailExactlyThreeTightLep',["GenericFakeFactorMu","MuTrigSF"]],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
 
@@ -264,9 +263,9 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyThreeLeptonsSS60M200',None],
+               ['ExactlyThreeLeptonsSS90M200',None],
                ['ZVeto',None],
-               ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -274,9 +273,9 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyThreeLeptonsSS60M200',None],
+               ['ExactlyThreeLeptonsSS90M200',None],
                ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["GenericFakeFactorMu","MuTrigSF"]],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
 
@@ -288,9 +287,9 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
-               ['Mass60GeV200Leptons',None],
-               ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyTwoLooseLeptons',None],
+               ['Mass130GeV200Leptons',None],
+               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -298,160 +297,160 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
-               ['Mass60GeV200Leptons',None],
-               ['NotExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyTwoLooseLeptons',None],
+               ['Mass130GeV200Leptons',None],
+               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
 
-    # # SIGNAL REGION
-    # # ---------------------------------------
-    # # ------ two muon
+    # SIGNAL REGION
+    # ---------------------------------------
+    # ------ two leptons
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'two-muon-SR',
+            region   = 'two-leptons-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
+               ['ExactlyTwoLooseLeptons',None],
                ['Mass200GeVLooseLep',None],
-               ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'two-muon-SR-fakes',
+            region   = 'two-leptons-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
+               ['ExactlyTwoLooseLeptons',None],
                ['Mass200GeVLooseLep',None],
-               ['NotExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'two-muon-SR-signal-'+channel,
+                region   = 'two-leptons-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
-                   ['ExactlyTwoLooseMuonSS',None],
+                   ['ExactlyTwoLooseLeptons',None],
                    ['Mass200GeVLooseLep',None],
-                   ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+                   ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                    ],
                 )
-    # # ------ two muon dR only
+    # # ------ two lepton dR only
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'two-muon-dR-SR',
+            region   = 'two-lepton-dR-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
+               ['ExactlyTwoLooseLeptons',None],
                ['SameSignLooseLepDR35',None],
                ['Mass200GeVLooseLep',None],
-               ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'two-muon-dR-SR-fakes',
+            region   = 'two-lepton-dR-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
+               ['ExactlyTwoLooseLeptons',None],
                ['SameSignLooseLepDR35',None],
                ['Mass200GeVLooseLep',None],
-               ['NotExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'two-muon-dR-SR-signal-'+channel,
+                region   = 'two-lepton-dR-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
-                   ['ExactlyTwoLooseMuonSS',None],
+                   ['ExactlyTwoLooseLeptons',None],
                    ['SameSignLooseLepDR35',None],
                    ['Mass200GeVLooseLep',None],
-                   ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+                   ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                    ],
                 )
-    # ------ two muon optimized
+    # ------ two lepton optimized
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'two-muon-optimized-SR',
+            region   = 'two-lepton-optimized-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
+               ['ExactlyTwoLooseLeptons',None],
                ['Mass200GeVLooseLep',None],
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
-               ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'two-muon-optimized-SR-fakes',
+            region   = 'two-lepton-optimized-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
-               ['ExactlyTwoLooseMuonSS',None],
+               ['ExactlyTwoLooseLeptons',None],
                ['Mass200GeVLooseLep',None],
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
-               ['NotExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'two-muon-optimized-SR-signal-'+channel,
+                region   = 'two-lepton-optimized-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
-                   ['ExactlyTwoLooseMuonSS',None],
+                   ['ExactlyTwoLooseLeptons',None],
                    ['Mass200GeVLooseLep',None],
                    ['SameSignLooseLepDR35',None],
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
-                   ['ExactlyTwoTightLeptons',['GenericFakeFactorMu','MuTrigSF']],
+                   ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor"]],
                    ],
                 )
-    # # ------ three ele
+    # ------ three ele
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-muon-SR',
+            region   = 'three-lepton-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
                ['ExactlyThreeLooseLep',None],
                ['ExactlyThreeLooseLepSS200M',None],
                ['ZVeto',None],
-               ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-muon-SR-fakes',
+            region   = 'three-lepton-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
                ['ExactlyThreeLooseLep',None],
                ['ExactlyThreeLooseLepSS200M',None],
                ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["GenericFakeFactorMu","MuTrigSF"]],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'three-muon-SR-signal-'+channel,
+                region   = 'three-lepton-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
                    ['ExactlyThreeLooseLep',None],
                    ['ExactlyThreeLooseLepSS200M',None],
                    ['ZVeto',None],
-                   ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                    ],
                 )
-    # # ------ three ele dR only
+    # ------ three ele dR only
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-muon-dR-SR',
+            region   = 'three-lepton-dR-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
@@ -459,11 +458,11 @@ def analyze(config):
                ['ExactlyThreeLooseLepSS200M',None],
                ['ZVeto',None],
                ['SameSignLooseLepDR35',None],
-               ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-muon-dR-SR-fakes',
+            region   = 'three-lepton-dR-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
@@ -471,12 +470,12 @@ def analyze(config):
                ['ExactlyThreeLooseLepSS200M',None],
                ['ZVeto',None],
                ['SameSignLooseLepDR35',None],
-               ['FailExactlyThreeTightLep',["GenericFakeFactorMu","MuTrigSF"]],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'three-muon-dR-SR-signal-'+channel,
+                region   = 'three-lepton-dR-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
@@ -484,12 +483,12 @@ def analyze(config):
                    ['ExactlyThreeLooseLepSS200M',None],
                    ['ZVeto',None],
                    ['SameSignLooseLepDR35',None],
-                   ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                    ],
                 )
-    # # ------ three ele optimized
+    # ------ three ele optimized
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-muon-optimized-SR',
+            region   = 'three-lepton-optimized-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
@@ -499,11 +498,11 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'three-muon-optimized-SR-fakes',
+            region   = 'three-lepton-optimized-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
@@ -513,12 +512,12 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["GenericFakeFactorMu","MuTrigSF"]],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'three-muon-optimized-SR-signal-'+channel,
+                region   = 'three-lepton-optimized-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
@@ -528,12 +527,12 @@ def analyze(config):
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
                    ['ZVeto',None],
-                   ['ExactlyThreeTightLep',['GenericFakeFactorMu','MuTrigSF']],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor"]],
                    ],
                 )
-    # # ------ two or three or four ele
+    # ------ two or three or four ele
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'SR-muon-SR',
+            region   = 'SR-lepton-SR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
@@ -542,11 +541,11 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['NoStrictlyLooseLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['NoStrictlyLooseLep',["SuperGenericFakeFactor"]],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = 'SR-muon-SR-fakes',
+            region   = 'SR-lepton-SR-fakes',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],
@@ -555,12 +554,12 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['NotNoStrictlyLooseLep',['GenericFakeFactorMu','MuTrigSF']],
+               ['NotNoStrictlyLooseLep',["SuperGenericFakeFactor"]],
                ],
             )
-    for channel in ["eeee","eemm","mmmm"]:
+    for channel in ["emem","emmm","mmmm"]:
         loop += ssdilep.algs.algs.PlotAlgThreeLep(
-                region   = 'SR-muon-SR-signal-'+channel,
+                region   = 'SR-lepton-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
                    ['DCHFilter'+channel,None],
@@ -569,7 +568,7 @@ def analyze(config):
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
                    ['ZVeto',None],
-                   ['NoStrictlyLooseLep',['GenericFakeFactorMu','MuTrigSF']],
+                   ['NoStrictlyLooseLep',["SuperGenericFakeFactor"]],
                    ],
                 )
     

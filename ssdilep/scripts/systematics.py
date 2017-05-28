@@ -81,6 +81,9 @@ SCALE_Z = sys_dict['SCALE_Z'] = Systematic(
 
 #_________________________________________________________________________________________
 # Tree Systematics
+#_________________________________________________________________________________________
+#electron
+#_________________________________________________________________________________________
 EG_RESOLUTION_ALL = sys_dict['EG_RESOLUTION_ALL'] = Systematic(
         'EG_RESOLUTION_ALL',
         var_up='EG_RESOLUTION_ALL_UP',
@@ -96,6 +99,34 @@ EG_SCALE_E4SCINTILLATOR = sys_dict['EG_SCALE_E4SCINTILLATOR'] = Systematic(
         var_up='EG_SCALE_E4SCINTILLATOR_UP',
         var_dn='EG_SCALE_E4SCINTILLATOR_DN'
         )
+# muon
+#_________________________________________________________________________________________
+MUON_ID = sys_dict['MUON_ID'] = Systematic(
+        'MUON_ID',
+        var_up='MUON_ID_UP',
+        var_dn='MUON_ID_DN'
+        )
+MUON_MS = sys_dict['MUON_MS'] = Systematic(
+        'MUON_MS',
+        var_up='MUON_MS_UP',
+        var_dn='MUON_MS_DN'
+        )
+MUON_RESBIAS = sys_dict['MUON_RESBIAS'] = Systematic(
+        'MUON_RESBIAS',
+        var_up='MUON_RESBIAS_UP',
+        var_dn='MUON_RESBIAS_DN'
+        )
+MUON_RHO = sys_dict['MUON_RHO'] = Systematic(
+        'MUON_RHO',
+        var_up='MUON_RHO_UP',
+        var_dn='MUON_RHO_DN'
+        )
+MUON_SCALE = sys_dict['MUON_SCALE'] = Systematic(
+        'MUON_SCALE',
+        var_up='MUON_SCALE_UP',
+        var_dn='MUON_SCALE_DN'
+        )
+
 # EG_SCALE_LARCALIB_EXTRA2015PRE = sys_dict['EG_SCALE_LARCALIB_EXTRA2015PRE'] = Systematic(
 #         'EG_SCALE_LARCALIB_EXTRA2015PRE',
 #         var_up='EG_SCALE_LARCALIB_EXTRA2015PRE_UP',
@@ -148,4 +179,54 @@ RECO = sys_dict['RECO'] = Systematic(
         var_up='RECO_UP',
         var_dn='RECO_DN'
         )
+
+# muon
+#_________________________________________________________________________________________
+MUFF = sys_dict['MUFF'] = Systematic(
+        'MUFF',
+        var_up='MUFF_UP',
+        var_dn='MUFF_DN'
+        )
+
+TRIGSTAT = sys_dict['TRIGSTAT'] = Systematic(
+        'TRIGSTAT',
+        var_up='TRIG_UPSTAT',
+        var_dn='TRIG_DNSTAT'
+        )
+TRIGSYS = sys_dict['TRIGSYS'] = Systematic(
+        'TRIGSYS',
+        var_up='TRIG_UPSYS',
+        var_dn='TRIG_DNSYS'
+        )
+ISOSYS = sys_dict['ISOSYS'] = Systematic(
+        'ISOSYS',
+        var_up='ISO_UPSYS',
+        var_dn='ISO_DNSYS'
+        )
+ISOSTAT = sys_dict['ISOSTAT'] = Systematic(
+        'ISOSTAT',
+        var_up='ISO_UPSTAT',
+        var_dn='ISO_DNSTAT'
+        )
+RECOSYS = sys_dict['RECOSYS'] = Systematic(
+        'RECOSYS',
+        var_up='RECO_UPSYS',
+        var_dn='RECO_DNSYS'
+        )
+RECOSTAT = sys_dict['RECOSTAT'] = Systematic(
+        'RECOSTAT',
+        var_up='RECO_UPSTAT',
+        var_dn='RECO_DNSTAT'
+        )
+TTVASYS = sys_dict['TTVASYS'] = Systematic(
+        'TTVASYS',
+        var_up='TTVA_UPSYS',
+        var_dn='TTVA_DNSYS'
+        )
+TTVASTAT = sys_dict['TTVASTAT'] = Systematic(
+        'TTVASTAT',
+        var_up='TTVA_UPSTAT',
+        var_dn='TTVA_DNSTAT'
+        )
+
 ## EOF
