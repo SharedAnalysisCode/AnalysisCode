@@ -377,8 +377,8 @@ def submit(tag,job_sys,samps,config={}):
         cmd += '             (\\"SCRIPT\\" \\"%s\\")\n'    % SCRIPT
         cmd += '             (\\"PBS_ARRAYID\\" \\"%s\\"))'   % str(line_intiger+1)
         cmd += '">>' + TEMPXRSL
-        # cmd += ';arcsub -c pikolit.ijs.si arcsub -S org.ogf.glue.emies.activitycreation -o '+JOBLISTF+' '+TEMPXRSL
-        cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
+        cmd += ';arcsub -c pikolit.ijs.si -S org.ogf.glue.emies.activitycreation -o '+JOBLISTF+' '+TEMPXRSL
+        # cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
         print cmd
         m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
         print m.communicate()[0]

@@ -907,11 +907,23 @@ el_lead_ptcone40 = Var(name = 'el_lead_ptcone40',
 bins_invM_mu = generateLogBins(12,60,200)
 bins_invM_mu2 = generateLogBins(6,60,200)
 bins_invMass_mu3 = [200] + [x for x in range(325,1525,100)] + [1425,2000]
+bins_invM_DB = generateLogBins(12,90,200)
+
 
 
 
 ## Event variables
 ## ---------------------------------------
+
+invMass_DB = Var(name='invMass',
+              path   = 'event',
+              xmin   = 80,
+              xmax   = 210,
+              rebin  = 1,
+              rebinVar  = bins_invM_DB,
+              log    = False,
+              logx   = False,
+              )
 
 invMass_mu = Var(name='invMass',
               path   = 'event',
@@ -1044,6 +1056,7 @@ vars_dict["nsspairs"] = nsspairs.__dict__
 vars_dict["invMass_mu"] = invMass_mu.__dict__
 vars_dict["invMass_mu2"] = invMass_mu2.__dict__
 vars_dict["invMass_mu3"] = invMass_mu3.__dict__
+vars_dict["invMass_DB"] = invMass_DB.__dict__
 
 ## EOF
 

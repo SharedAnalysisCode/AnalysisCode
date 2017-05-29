@@ -167,6 +167,15 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.singletop,
   # samples.ttX,
   ]
+elif options.samples in ["SSVR_emu"]:
+  mc_backgrounds = [
+  samples.diboson_sherpa221,
+  samples.top_physics,
+  # samples.VV_ee,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  # samples.singletop,
+  # samples.ttX,
+  ]
 elif options.samples in ["SSVR_mu","SSVRBLIND"]:
   mc_backgrounds = [
   # samples.AZNLOCTEQ6L1_DYee_DYtautau,
@@ -538,6 +547,16 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   # samples.singletop,
   # samples.ttX,
   ]
+elif options.samples in ["SSVR_emu"]:
+  mumu_backgrounds = [
+  samples.diboson_sherpa221,
+  fakes_mumu,
+  samples.top_physics,
+  samples.AZNLOCTEQ6L1_DYee_DYtautau,
+  # samples.VV_ee,
+  # samples.singletop,
+  # samples.ttX,
+  ]
 elif options.samples in ["SSVR_mu"]:
   mumu_backgrounds = [
   # samples.AZNLOCTEQ6L1_DYee_DYtautau,
@@ -625,7 +644,7 @@ elif options.samples == "allSamples_mu":
   fakes_mumu,
   ]
 
-sys_list_ele = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, FF, CF, TRIG, ID, ISO, RECO]
+sys_list_ele = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, CF, TRIG, ID, ISO, RECO]
 sys_list_muon = [MUON_ID, MUON_MS, MUON_RESBIAS, MUON_RHO, MUON_SCALE, TRIGSTAT, TRIGSYS, ISOSYS, ISOSTAT, RECOSYS, RECOSTAT, TTVASYS, TTVASTAT]
 
 if (DO_SYS):
