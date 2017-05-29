@@ -485,7 +485,7 @@ class EstimatorDCH(BaseEstimator):
     Standard Estimator class for DCH
     '''
     #____________________________________________________________
-    def __init__(self,ee,mm,**kw):
+    def __init__(self,ee,mm,em,**kw):
         BaseEstimator.__init__(self,**kw)
 
         ## xsec / Ntotal, seperately for each systematic
@@ -493,7 +493,8 @@ class EstimatorDCH(BaseEstimator):
         self.mc_lumi_frac = {}
         self.ee = ee
         self.mm = mm
-        assert ee+mm == 1, "sum of brs not equal to one!"
+        self.em = em
+        assert ee+mm+em == 1, "sum of brs not equal to one!"
    
 
     #____________________________________________________________
@@ -506,44 +507,80 @@ class EstimatorDCH(BaseEstimator):
         Feemm = 2*self.ee*self.mm
         Fmmmm = self.mm*self.mm
 
-        heeee = self.hm.hist(histname=histname,
-                         samplename=self.sample.name,
-                         region=region+"-signal-eeee",
-                         icut=icut,
-                         sys=sys,
-                         mode=mode,
-                         )
-        if heeee and self.sample.type == 'mc': 
-            lumi_frac = self.get_mc_lumi_frac(sys,mode)
-            heeee.Scale(self.hm.target_lumi * lumi_frac * 16 * Feeee)
+        Femem = self.em*self.em
+        Femmm = 2*self.em*self.mm
 
-        heemm = self.hm.hist(histname=histname,
-                         samplename=self.sample.name,
-                         region=region+"-signal-eemm",
-                         icut=icut,
-                         sys=sys,
-                         mode=mode,
-                         )
-        if heemm and self.sample.type == 'mc': 
-            lumi_frac = self.get_mc_lumi_frac(sys,mode)
-            heemm.Scale(self.hm.target_lumi * lumi_frac * 8 * Feemm)
+        histos = []
 
-        hmmmm = self.hm.hist(histname=histname,
-                         samplename=self.sample.name,
-                         region=region+"-signal-mmmm",
-                         icut=icut,
-                         sys=sys,
-                         mode=mode,
-                         )
-        if hmmmm and self.sample.type == 'mc': 
-            lumi_frac = self.get_mc_lumi_frac(sys,mode)
-            hmmmm.Scale(self.hm.target_lumi * lumi_frac * 16 * Fmmmm)
+        if self.ee > 0.:
+            heeee = self.hm.hist(histname=histname,
+                             samplename=self.sample.name,
+                             region=region+"-signal-eeee",
+                             icut=icut,
+                             sys=sys,
+                             mode=mode,
+                             )
+            if heeee and self.sample.type == 'mc': 
+                lumi_frac = self.get_mc_lumi_frac(sys,mode)
+                heeee.Scale(self.hm.target_lumi * lumi_frac * 16 * Feeee)
+            histos += [heeee]
 
-        h = None
-        if heeee:
-            h = heeee.Clone()
-            h.Add(heemm)
-            h.Add(hmmmm)
+        if self.ee*self.mm > 0.:
+            heemm = self.hm.hist(histname=histname,
+                             samplename=self.sample.name,
+                             region=region+"-signal-eemm",
+                             icut=icut,
+                             sys=sys,
+                             mode=mode,
+                             )
+            if heemm and self.sample.type == 'mc': 
+                lumi_frac = self.get_mc_lumi_frac(sys,mode)
+                heemm.Scale(self.hm.target_lumi * lumi_frac * 8 * Feemm)
+            histos += [heemm]
+
+        if self.mm > 0.:
+            hmmmm = self.hm.hist(histname=histname,
+                             samplename=self.sample.name,
+                             region=region+"-signal-mmmm",
+                             icut=icut,
+                             sys=sys,
+                             mode=mode,
+                             )
+            if hmmmm and self.sample.type == 'mc': 
+                lumi_frac = self.get_mc_lumi_frac(sys,mode)
+                hmmmm.Scale(self.hm.target_lumi * lumi_frac * 16 * Fmmmm)
+            histos += [hmmmm]
+
+        if self.em > 0.:
+            hemem = self.hm.hist(histname=histname,
+                             samplename=self.sample.name,
+                             region=region+"-signal-emem",
+                             icut=icut,
+                             sys=sys,
+                             mode=mode,
+                             )
+            if hemem and self.sample.type == 'mc': 
+                lumi_frac = self.get_mc_lumi_frac(sys,mode)
+                hemem.Scale(self.hm.target_lumi * lumi_frac * 4 * Femem)
+            histos += [hemem]
+
+        if self.em*self.mm > 0.:
+            hemmm = self.hm.hist(histname=histname,
+                             samplename=self.sample.name,
+                             region=region+"-signal-emmm",
+                             icut=icut,
+                             sys=sys,
+                             mode=mode,
+                             )
+            if hemmm and self.sample.type == 'mc': 
+                lumi_frac = self.get_mc_lumi_frac(sys,mode)
+                hemmm.Scale(self.hm.target_lumi * lumi_frac * 8 * Femmm)
+            histos += [hemmm]
+
+        print histos
+        h = histos[0]
+        for i in range(1,len(histos)):
+            h.Add(histos[i])
 
         return h
         
@@ -594,6 +631,8 @@ class FakeEstimatorGeneral(BaseEstimator):
         region_l_den = region.replace("-CR","-CR-fakes").replace("-VR","-VR-fakes").replace("-SR","-SR-fakes")
         print region_l_den
         print self.data_sample.name
+        print histname
+        print sys
         h_l_den = self.data_sample.hist(histname=histname,
                                 region=region_l_den,
                                 icut=icut,

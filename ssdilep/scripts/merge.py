@@ -20,6 +20,10 @@ DO_SYS = True
 ELE_SYS = False
 MU_SYS = False
 
+BRee = 0.
+BRem = 0.
+BRmm = 0.
+
 
 #-----------------
 # input
@@ -59,12 +63,16 @@ parser.add_option('-L', '--logy', dest='logy',
                   help='logy',metavar='LOGY',default=None)
 parser.add_option('-y', '--sys', dest='sys',
                   help='sys',metavar='SYS',default=None)
-parser.add_option('-B', '--branching', dest='branching',
-                  help='branching',metavar='BRANCHING',default=None)
 parser.add_option('-E', '--elesys', dest='elesys',
                   help='elesys',metavar='ELESYS',default=None)
 parser.add_option('-M', '--musys', dest='musys',
                   help='musys',metavar='MUSYS',default=None)
+parser.add_option('', '--BRee', dest='BRee',
+                  help='BRee',metavar='BREE',default=None)
+parser.add_option('', '--BRem', dest='BRem',
+                  help='BRem',metavar='BREM',default=None)
+parser.add_option('', '--BRmm', dest='BRmm',
+                  help='BRmm',metavar='BRMM',default=None)
 
 (options, args) = parser.parse_args()
 
@@ -76,6 +84,19 @@ if options.elesys == "True":
 
 if options.musys == "True":
   MU_SYS = True
+
+if options.BRee:
+  BRee = options.BRee
+
+if options.BRem:
+  BRem = options.BRem
+
+if options.BRmm:
+  BRmm = options.BRmm
+
+print "BRee: ", BRee
+print "BRem: ", BRem
+print "BRmm: ", BRmm
 
 #-----------------
 # Configuration
@@ -286,99 +307,115 @@ signal_samples = []
 xsecL = [82.677, 34.825, 16.704, 8.7528, 4.9001, 2.882, 1.7631, 1.10919, 0.72042, 0.476508, 0.32154, 0.21991, 0.15288, 0.107411, 0.076403, 0.0547825, 0.039656, 0.0288885, 0.021202, 0.0156347, 0.011632, 0.00874109, 0.0065092]
 masses = [200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300]
 
-# for br in range(10,110,10):
-for br in [0,50,100]:
-  signal_samples += [[]]
-  intiger = 1
-  for mass,xsec in zip(masses,xsecL):
-    if options.makeplot == "True":
-      if mass not in [500,600,700] or br not in ([float(options.branching)] if options.branching else []): continue
-    name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
-    print "tlatex: ", ("DCH%d Br(ee)=%d" % (mass,br)) if options.elesys=="True" else ("DCH%d Br(#mu#mu)=%d" % (mass,100-br))
-    globals()[name+"ee"+str(br)+"mm"+str(100-br)] = sample.Sample(
-      name = name,
-      tlatex = ("DCH%d Br(ee)=%d" % (mass,br)) if options.elesys=="True" else ("DCH%d Br(#mu#mu)=%d" % (mass,100-br)),
-      line_color = intiger,
-      marker_color = intiger,
-      fill_color = intiger,
-      line_width  = 3,
-      line_style = 1,
-      fill_style = 3004,
-      xsec       = xsec/1000.,
-      )
-    signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(br)+"mm"+str(100-br)] ]
-    # signal_ee100mm0 += [globals()[name+"ee100mm0"]]
-    # globals()[name+"ee50mm50"] = sample.Sample(
-    #   name = name,
-    #   tlatex = "DCH%d Br(ee)=Br(#mu#mu)=0.5" % (mass),
-    #   line_color = ROOT.kOrange-intiger,
-    #   marker_color = ROOT.kOrange-intiger,
-    #   fill_color = ROOT.kOrange-intiger,
-    #   line_width  = 3,
-    #   line_style = 1,
-    #   fill_style = 3004,
-    #   xsec       = xsec/1000.,
-    #   )
-    # signal_ee50mm50 += [globals()[name+"ee50mm50"]]
-    intiger += 1
-
-
-# signal = [
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH300,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH350,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH400,
-#   # # samples.Pythia8EvtGen_A14NNPDF23LO_DCH450,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH500,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH550,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH600,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH650,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH700,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH750,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH800,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH850,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH900,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH950,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1000,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1050,
-#   # samples.Pythia8EvtGen_A14NNPDF23LO_DCH1100,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1150,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1200,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1250,
-#   samples.Pythia8EvtGen_A14NNPDF23LO_DCH1300,
-#   ]
-
 
 #--------------
 # Estimators
 #--------------
-#for s in mc_backgrounds + mumu_signals + [data]: 
-#for s in mc_backgrounds:
 
-
-for s in mc_backgrounds: 
-    histmgr.load_base_estimator(hm,s)
-
-for s in signal_ee100mm0:
-  s.estimator = histmgr.EstimatorDCH( hm=hm, ee=1.0, mm=0.0, sample=s )
-  s.nameSuffix = "ee100mm0"
-
-for s in signal_ee50mm50:
-  s.estimator = histmgr.EstimatorDCH( hm=hm, ee=0.5, mm=0.5, sample=s )
-  s.nameSuffix = "ee50mm50"
+signalMassToPlots = [500,600,700]
+BRsToPlot = [100]
 
 signal = []
+
+if options.signal == "True":
+  if float(BRee) > 0 and float(BRmm)+float(BRem)==0:
+
+    print "ee"
+
+    for br in [0,50,100]:
+      signal_samples += [[]]
+      intiger = 1
+      for mass,xsec in zip(masses,xsecL):
+        if options.makeplot == "True":
+          if mass not in signalMassToPlots or br not in BRsToPlot: continue
+        name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
+        print "tlatex: ", "DCH%d Br(ee)=%d" % (mass,br)
+        globals()[name+"ee"+str(br)+"mm"+str(100-br)] = sample.Sample(
+          name = name,
+          tlatex = ("DCH%d Br(ee)=%d" % (mass,br)),
+          line_color = intiger,
+          marker_color = intiger,
+          fill_color = intiger,
+          line_width  = 3,
+          line_style = 1,
+          fill_style = 3004,
+          xsec       = xsec/1000.,
+          )
+        signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(br)+"mm"+str(100-br)] ]
+        intiger += 1
+
+  elif float(BRem) > 0 and float(BRmm)+float(BRee)==0:
+
+    print "em"
+
+    for br in [0,50,100]:
+      signal_samples += [[]]
+      intiger = 1
+      for mass,xsec in zip(masses,xsecL):
+        if options.makeplot == "True":
+          if mass not in signalMassToPlots or br not in BRsToPlot: continue
+        name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
+        print "tlatex: ", "DCH%d Br(e#mu)=%d" % (mass,br)
+        globals()[name+"em"+str(br)+"mm"+str(100-br)] = sample.Sample(
+          name = name,
+          tlatex = ("DCH%d Br(e#mu)=%d" % (mass,br)),
+          line_color = intiger,
+          marker_color = intiger,
+          fill_color = intiger,
+          line_width  = 3,
+          line_style = 1,
+          fill_style = 3004,
+          xsec       = xsec/1000.,
+          )
+        signal_samples[len(signal_samples)-1] += [ globals()[name+"em"+str(br)+"mm"+str(100-br)] ]
+        intiger += 1
+
+  elif float(BRmm) > 0 and float(BRee)+float(BRem)==0:
+
+    print "mm"
+
+    for br in [0,50,100]:
+      signal_samples += [[]]
+      intiger = 1
+      for mass,xsec in zip(masses,xsecL):
+        if options.makeplot == "True":
+          if mass not in signalMassToPlots or br not in BRsToPlot: continue
+        name = "Pythia8EvtGen_A14NNPDF23LO_DCH%d" % mass
+        print "tlatex: ", "DCH%d Br(#mu#mu)=%d" % (mass,br)
+        globals()[name+"ee"+str(100-br)+"mm"+str(br)] = sample.Sample(
+          name = name,
+          tlatex = ("DCH%d Br(#mu#mu)=%d" % (mass,br)),
+          line_color = intiger,
+          marker_color = intiger,
+          fill_color = intiger,
+          line_width  = 3,
+          line_style = 1,
+          fill_style = 3004,
+          xsec       = xsec/1000.,
+          )
+        signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(br)+"mm"+str(100-br)] ]
+        intiger += 1
+
+  else:
+    print "working point ",BRee," ",BRem," ",BRem," not yet supported!"
+
+
 for samps in signal_samples:
   for s in samps:
-    br = re.findall("Br\(ee\)\=([0-9]*)",s.tlatex)[0] if options.elesys=="True" else re.findall("Br\(#mu#mu\)\=([0-9]*)",s.tlatex)[0]
-    print "asdasd ", br
-    if not options.elesys=="True":
-      print br
-      br = str(100-float(br))
-      print "Br(H->ee)= ", br
-      print "ee= ", float(br)/100.
-      print "mm= ", (1-float(br)/100.)
-    s.estimator = histmgr.EstimatorDCH( hm=hm, ee=float(br)/100., mm=(1-float(br)/100.), sample=s )
-    s.nameSuffix = "ee"+br+"mm"+str(int(100-float(br)))
+    br = re.findall("Br\([e#mu]*\)\=([0-9]*)",s.tlatex)[0]
+    print "branching ratio: ", br
+    if float(BRee) > 0 and float(BRmm)+float(BRem)==0:
+      print "ee"
+      s.estimator = histmgr.EstimatorDCH( hm=hm, ee=float(br)/100., mm=(1-float(br)/100.), em=0., sample=s )
+      s.nameSuffix = "ee"+br+"mm"+str(int(100-float(br)))
+    elif float(BRem) > 0 and float(BRmm)+float(BRee)==0:
+      print "em"
+      s.estimator = histmgr.EstimatorDCH( hm=hm, em=float(br)/100., mm=(1-float(br)/100.), ee=0., sample=s )
+      s.nameSuffix = "em"+br+"mm"+str(int(100-float(br)))
+    elif float(BRmm) > 0 and float(BRee)+float(BRem)==0:
+      print "mm"
+      s.estimator = histmgr.EstimatorDCH( hm=hm, em=0., mm=float(br)/100., ee=(1-float(br)/100.), sample=s )
+      s.nameSuffix = "ee"+str(int(100-float(br)))+"mm"+br
     # print s.tlatex
     # print float(br)
     # print s.nameSuffix
@@ -386,12 +423,7 @@ for samps in signal_samples:
 
 
 
-# signal = signal_ee100mm0 + signal_ee50mm50
-# signal = [x for x in signal_samples]
-# signal = signal_ee100mm0 
-# signal = signal_ee50mm50
-
-for s in [data]: 
+for s in [data] + mc_backgrounds: 
     histmgr.load_base_estimator(hm,s)
 
 
