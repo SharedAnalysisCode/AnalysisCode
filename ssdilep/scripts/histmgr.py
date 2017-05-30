@@ -577,7 +577,7 @@ class EstimatorDCH(BaseEstimator):
                 hemmm.Scale(self.hm.target_lumi * lumi_frac * 8 * Femmm)
             histos += [hemmm]
 
-        print histos
+        print histos," ",region," ",sys," ",histname," ",self.sample.name," ",self.ee," ",self.em," ",self.mm
         h = histos[0]
         for i in range(1,len(histos)):
             h.Add(histos[i])
