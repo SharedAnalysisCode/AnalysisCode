@@ -906,7 +906,7 @@ el_lead_ptcone40 = Var(name = 'el_lead_ptcone40',
 
 bins_invM_mu = generateLogBins(12,60,200)
 bins_invM_mu2 = generateLogBins(6,60,200)
-bins_invMass_mu3 = [200] + [x for x in range(325,1525,100)] + [1425,2000]
+bins_invMass_mu3 = [200] + [x for x in range(325,925,100)] + [925,2000]
 bins_invM_DB = generateLogBins(12,90,200)
 
 

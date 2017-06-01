@@ -395,7 +395,7 @@ if options.signal == "True":
           fill_style = 3004,
           xsec       = xsec/1000.,
           )
-        signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(br)+"mm"+str(100-br)] ]
+        signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(100-br)+"mm"+str(br)] ]
         intiger += 1
 
   else:
@@ -557,7 +557,6 @@ elif options.samples == "OSCR":
   samples.diboson_sherpa221,
   # samples.singletop,
   fakes_mumu,
-  samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
   ]
 elif options.samples == "ZPeak":

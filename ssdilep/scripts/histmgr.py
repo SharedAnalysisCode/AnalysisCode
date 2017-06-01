@@ -574,7 +574,7 @@ class EstimatorDCH(BaseEstimator):
                              )
             if hemmm and self.sample.type == 'mc': 
                 lumi_frac = self.get_mc_lumi_frac(sys,mode)
-                hemmm.Scale(self.hm.target_lumi * lumi_frac * 8 * Femmm)
+                hemmm.Scale(self.hm.target_lumi * lumi_frac * 4 * Femmm)
             histos += [hemmm]
 
         print histos," ",region," ",sys," ",histname," ",self.sample.name," ",self.ee," ",self.em," ",self.mm
