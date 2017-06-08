@@ -82,12 +82,15 @@ for triplet in sysSampePairNames:
       # tempNom.Write()
       if len(target)==4:
         if target[3]=="H":
+          print "ASDASD"
           tempHigh.Write()
         elif target[3]=="L":
           tempLow.Write()
+          print "ASDASD"
       else:
         tempHigh.Write()
         tempLow.Write()
+
 for key in infile.GetListOfKeys():
   histoName = key.GetName()
   if sum([x in histoName for x in sysSamples])==0:

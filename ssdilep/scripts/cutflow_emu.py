@@ -74,7 +74,7 @@ for mass in infile:
 
 
     cutflow_SR_emem.Scale(emem*4)
-    cutflow_SR_emmm.Scale(emmm*8)
+    cutflow_SR_emmm.Scale(emmm*4)
 
     cutflow_SR_emem.Add(cutflow_SR_emmm)
 

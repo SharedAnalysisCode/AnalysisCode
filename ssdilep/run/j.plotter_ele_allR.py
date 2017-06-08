@@ -274,7 +274,7 @@ def analyze(config):
     # TT REGION
     # ---------------------------------------
     # ------ OSCR
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'opposite-sign-CR',
             plot_all = False,
             cut_flow = [
@@ -284,7 +284,7 @@ def analyze(config):
                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'opposite-sign-CR-fakes',
             plot_all = False,
             cut_flow = [
@@ -338,7 +338,7 @@ def analyze(config):
     #            ],
     #         )
     # # ## ------ SSVR
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'same-sign-CR',
             plot_all = False,
             cut_flow = [
@@ -348,7 +348,7 @@ def analyze(config):
                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'same-sign-CR-fakes',
             plot_all = False,
             cut_flow = [
@@ -410,7 +410,7 @@ def analyze(config):
     # # SIGNAL REGION
     # # ---------------------------------------
     # # ------ two ele
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'two-ele-SR',
             plot_all = False,
             cut_flow = [
@@ -421,7 +421,7 @@ def analyze(config):
                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'two-ele-SR-fakes',
             plot_all = False,
             cut_flow = [
@@ -433,7 +433,7 @@ def analyze(config):
                ],
             )
     for channel in ["eeee","eemm","mmmm"]:
-        loop += ssdilep.algs.algs.PlotAlgCRele(
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
                 region   = 'two-ele-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
@@ -445,7 +445,7 @@ def analyze(config):
                    ],
                 )
     # # ------ two ele dR only
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'two-ele-dR-SR',
             plot_all = False,
             cut_flow = [
@@ -457,7 +457,7 @@ def analyze(config):
                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'two-ele-dR-SR-fakes',
             plot_all = False,
             cut_flow = [
@@ -470,7 +470,7 @@ def analyze(config):
                ],
             )
     for channel in ["eeee","eemm","mmmm"]:
-        loop += ssdilep.algs.algs.PlotAlgCRele(
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
                 region   = 'two-ele-dR-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [
@@ -483,7 +483,7 @@ def analyze(config):
                    ],
                 )
     # # ------ two ele optimized
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'two-ele-optimized-SR',
             plot_all = False,
             cut_flow = [
@@ -497,7 +497,7 @@ def analyze(config):
                ['ExactlyTwoTightEleMediumLLHisolLoose',['AllTightEleSF','ThreeElectron2e17TrigWeight']],
                ],
             )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
             region   = 'two-ele-optimized-SR-fakes',
             plot_all = False,
             cut_flow = [
@@ -512,7 +512,7 @@ def analyze(config):
                ],
             )
     for channel in ["eeee","eemm","mmmm"]:
-        loop += ssdilep.algs.algs.PlotAlgCRele(
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
                 region   = 'two-ele-optimized-SR-signal-'+channel,
                 plot_all = False,
                 cut_flow = [

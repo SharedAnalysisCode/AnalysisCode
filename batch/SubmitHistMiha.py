@@ -40,8 +40,9 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
 # RUN = "AllR_v3_023"
-# RUN = "AllR_v3_muVetoSR1_006"
-RUN = "AllR_emu_v3_001"
+RUN = "AllR_v3_muVetoSR1_010"
+# RUN = "AllR_emu_v3_001"
+# RUN = "All_SR_001"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -57,9 +58,10 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ele_all_SR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -89,7 +91,7 @@ ID_SYS = True
 ISO_SYS = True
 RECO_SYS = True
 
-DO_MUON_SYS = True
+DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = True
 

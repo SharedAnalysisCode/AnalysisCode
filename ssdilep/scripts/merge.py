@@ -261,7 +261,7 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 elif options.samples == "allSamples":
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.diboson_sherpa221,
+  samples.dibosonSherpaEE,
   samples.dibosonSysSample,
   samples.top_physics,
   # samples.ttbar_Py8,
@@ -276,7 +276,7 @@ elif options.samples == "allSamples":
   ]
 elif options.samples == "allSamples_mu":
   mc_backgrounds = [
-  samples.diboson_sherpa221,
+  samples.dibosonSherpaMM,
   samples.dibosonSysSample,
   samples.top_physics,
   # samples.ttbar_Py8,
@@ -289,6 +289,24 @@ elif options.samples == "allSamples_mu":
   # samples.ttbar_Py8_aMcAtNlo,
   # samples.ttbar_Py8_CF,
   ]
+elif options.samples == "allSamples_emu":
+  mc_backgrounds = [
+  # samples.AZNLOCTEQ6L1_DYee,
+  samples.dibosonSherpaEM,
+  samples.dibosonSysSample,
+  samples.top_physics,
+  # samples.ttbar_Py8,
+  # samples.singletop,
+  # samples.ttX,
+  # samples.ttX_singletop,
+  # samples.ttbar_Py8_up,
+  # samples.ttbar_Py8_do,
+  # samples.ttbar_Herwig,
+  # samples.ttbar_Py8_aMcAtNlo,
+  # samples.ttbar_Py8_CF,
+  ]
+elif options.samples == "signalEigenVectors":
+  mc_backgrounds = samples.list_DCH
 
 
 fakes_mumu = samples.fakes.copy()
@@ -398,35 +416,41 @@ if options.signal == "True":
         signal_samples[len(signal_samples)-1] += [ globals()[name+"ee"+str(100-br)+"mm"+str(br)] ]
         intiger += 1
 
-  else:
-    print "working point ",BRee," ",BRem," ",BRem," not yet supported!"
+  elif options.signal and float(BRmm)+float(BRee)+float(BRem)==0:
+    pass
 
 
 for samps in signal_samples:
   for s in samps:
-    br = re.findall("Br\([e#mu]*\)\=([0-9]*)",s.tlatex)[0]
-    print "branching ratio: ", br
     if float(BRee) > 0 and float(BRmm)+float(BRem)==0:
+      br = re.findall("Br\([e#mu]*\)\=([0-9]*)",s.tlatex)[0]
       print "ee"
       s.estimator = histmgr.EstimatorDCH( hm=hm, ee=float(br)/100., mm=(1-float(br)/100.), em=0., sample=s )
       s.nameSuffix = "ee"+br+"mm"+str(int(100-float(br)))
     elif float(BRem) > 0 and float(BRmm)+float(BRee)==0:
+      br = re.findall("Br\([e#mu]*\)\=([0-9]*)",s.tlatex)[0]
       print "em"
       s.estimator = histmgr.EstimatorDCH( hm=hm, em=float(br)/100., mm=(1-float(br)/100.), ee=0., sample=s )
       s.nameSuffix = "em"+br+"mm"+str(int(100-float(br)))
     elif float(BRmm) > 0 and float(BRee)+float(BRem)==0:
+      br = re.findall("Br\([e#mu]*\)\=([0-9]*)",s.tlatex)[0]
       print "mm"
       s.estimator = histmgr.EstimatorDCH( hm=hm, em=0., mm=float(br)/100., ee=(1-float(br)/100.), sample=s )
       s.nameSuffix = "ee"+str(int(100-float(br)))+"mm"+br
-    print s.tlatex
+    elif options.signal and float(BRmm)+float(BRee)+float(BRem)==0:
+      pass
     # print float(br)
     # print s.nameSuffix
     signal += [s]
 
 
 
-for s in [data] + mc_backgrounds: 
+for s in [data] + mc_backgrounds:
     histmgr.load_base_estimator(hm,s)
+    if options.samples == "signalEigenVectors":
+      s.nameSuffix = re.findall(".*signal-([em]*)",options.region)[0]
+      print s.name
+      print s.nameSuffix
 
 
 if options.fakest == "FakeFactor":
@@ -646,7 +670,7 @@ elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
 elif options.samples == "allSamples":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.diboson_sherpa221,
+  samples.dibosonSherpaEE,
   samples.dibosonSysSample,
   samples.top_physics,
   # samples.ttbar_Py8,
@@ -662,7 +686,7 @@ elif options.samples == "allSamples":
   ]
 elif options.samples == "allSamples_mu":
   mumu_backgrounds = [
-  samples.diboson_sherpa221,
+  samples.dibosonSherpaMM,
   samples.dibosonSysSample,
   samples.top_physics,
   # samples.ttbar_Py8,
@@ -676,6 +700,26 @@ elif options.samples == "allSamples_mu":
   # samples.ttbar_Py8_CF,
   fakes_mumu,
   ]
+elif options.samples == "allSamples_emu":
+  mumu_backgrounds = [
+  # samples.AZNLOCTEQ6L1_DYee,
+  samples.dibosonSherpaEM,
+  samples.dibosonSysSample,
+  samples.top_physics,
+  # samples.ttbar_Py8,
+  # samples.singletop,
+  # samples.ttX,
+  # samples.ttX_singletop,
+  # samples.ttbar_Py8_up,
+  # samples.ttbar_Py8_do,
+  # samples.ttbar_Herwig,
+  # samples.ttbar_Py8_aMcAtNlo,
+  # samples.ttbar_Py8_CF,
+  fakes_mumu,
+  ]
+elif options.samples == "signalEigenVectors":
+  mumu_backgrounds = samples.list_DCH
+
 
 sys_list_ele = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, CF, TRIG, ID, ISO, RECO]
 sys_list_muon = [MUON_ID, MUON_MS, MUON_RESBIAS, MUON_RHO, MUON_SCALE, TRIGSTAT, TRIGSYS, ISOSYS, ISOSTAT, RECOSYS, RECOSTAT, TTVASYS, TTVASTAT]
@@ -738,7 +782,7 @@ else:
  funcs.write_hist(
          backgrounds = mumu_backgrounds,
          signal      = signal if options.signal=="True" else None, 
-         data        = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg"] else None,
+         data        = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg","signalEigenVectors"] else None,
          region      = options.region,
          icut        = int(options.icut),
          histname    = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),

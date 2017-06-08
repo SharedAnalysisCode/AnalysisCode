@@ -1507,6 +1507,11 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
       sf = 1.0
       electrons = self.store['electrons_loose_LooseLLH']
 
+      if len(electrons) not in [2,3]: 
+        if self.key: 
+          self.store[self.key] = sf
+        return True
+
       if "mc" not in self.sampletype:
         if self.key: 
           self.store[self.key] = sf

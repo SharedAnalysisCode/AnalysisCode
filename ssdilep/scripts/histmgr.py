@@ -494,7 +494,7 @@ class EstimatorDCH(BaseEstimator):
         self.ee = ee
         self.mm = mm
         self.em = em
-        assert ee+mm+em == 1, "sum of brs not equal to one!"
+        assert abs(ee+mm+em-1.)<1e-12, "sum of brs not equal to one! "+str(ee)+" "+str(em)+" "+str(mm)
    
 
     #____________________________________________________________
