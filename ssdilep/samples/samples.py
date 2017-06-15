@@ -63,7 +63,7 @@ GRL += [
         "311287","311321","311365","311402","311473","311481",
         ]
 
-# GRL += ["306448"]
+# GRL += ["307514"]
 
 
 
@@ -1337,6 +1337,8 @@ Ztautau = Sample( name =   'Ztautau',
 
 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop  = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop", xsec =  0.025778*1000   )
 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top      = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top",     xsec =  0.043739*1000   )
+PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop = Sample( name = "PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop",  xsec = 1.2615  * 1.0215 )
+PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top   = Sample( name = "PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top",  xsec = 2.0517 * 1.0046 )
 PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop           = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop",          xsec =  0.0035814*1000  )
 PowhegPythiaEvtGen_P2012_Wt_dilepton_top               = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_top",              xsec =  0.0035835*1000  )
 
@@ -1745,6 +1747,51 @@ vgamma = Sample ( name = 'vgamma',
                       ]
                 )
 
+
+#-----------------------------------------------------------------------------
+# Rare
+# Notes:
+#       * cross sections: https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/trunk/data/susy_crosssections_13TeV.txt
+#-----------------------------------------------------------------------------
+
+MadGraphPythia8EvtGen_A14NNPDF23LO_ttbarWll      = Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_ttbarWll",  xsec = 0.000266      *  1.34 )
+MadGraphPythia8EvtGen_A14NNPDF23_3top_SM         = Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23_3top_SM",  xsec = 0.00164 )
+MadGraphPythia8EvtGen_A14NNPDF23_4topSM          = Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23_4topSM",  xsec = 0.0091622     *  1.0042 )
+MadGraphPythia8EvtGen_A14NNPDF23_ttbarWW         = Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23_ttbarWW",  xsec = 0.0080975     *  1.2231 )
+MadGraphPythiaEvtGen_P2012_tZ_4fl_tchan_noAllHad = Sample( name = "MadGraphPythiaEvtGen_P2012_tZ_4fl_tchan_noAllHad",  xsec = 0.24013 )
+Sherpa_CT10_WWW_3l3v                             = Sample( name = "Sherpa_CT10_WWW_3l3v",  xsec = 0.008343      *  1.      )
+Sherpa_CT10_WWZ_2l4v                             = Sample( name = "Sherpa_CT10_WWZ_2l4v",  xsec = 0.0034299     *  1.      )
+Sherpa_CT10_WWZ_4l2v                             = Sample( name = "Sherpa_CT10_WWZ_4l2v",  xsec = 0.001734      *  1.      )
+Sherpa_CT10_WZZ_3l3v                             = Sample( name = "Sherpa_CT10_WZZ_3l3v",  xsec = 0.0019248     *  0.44444 )
+Sherpa_CT10_WZZ_5l1v                             = Sample( name = "Sherpa_CT10_WZZ_5l1v",  xsec = 0.00021783    *  1.      )
+Sherpa_CT10_ZZZ_2l4v                             = Sample( name = "Sherpa_CT10_ZZZ_2l4v",  xsec = 0.0004453     *  0.44815 )
+Sherpa_CT10_ZZZ_4l2v                             = Sample( name = "Sherpa_CT10_ZZZ_4l2v",  xsec = 0.00044125    *  0.22542 )
+Sherpa_CT10_ZZZ_6l0v                             = Sample( name = "Sherpa_CT10_ZZZ_6l0v",  xsec = 1.7059e-05    *  1.      )
+aMcAtNloPythia8EvtGen_A14_NNPDF23LO_260000_tWZDR = Sample( name = "aMcAtNloPythia8EvtGen_A14_NNPDF23LO_260000_tWZDR",  xsec = 0.015558 )
+
+Rare = Sample ( name = 'rare',
+                  tlatex = 'rare',
+                  fill_color = ROOT.kCyan+1,
+                  line_color =  ROOT.kCyan+2,
+                  marker_color =  ROOT.kCyan+2,
+                  daughters = [
+                      MadGraphPythia8EvtGen_A14NNPDF23LO_ttbarWll      ,
+                      MadGraphPythia8EvtGen_A14NNPDF23_3top_SM         ,
+                      MadGraphPythia8EvtGen_A14NNPDF23_4topSM          ,
+                      MadGraphPythia8EvtGen_A14NNPDF23_ttbarWW         ,
+                      MadGraphPythiaEvtGen_P2012_tZ_4fl_tchan_noAllHad ,
+                      Sherpa_CT10_WWW_3l3v                             ,
+                      Sherpa_CT10_WWZ_2l4v                             ,
+                      Sherpa_CT10_WWZ_4l2v                             ,
+                      Sherpa_CT10_WZZ_3l3v                             ,
+                      Sherpa_CT10_WZZ_5l1v                             ,
+                      Sherpa_CT10_ZZZ_2l4v                             ,
+                      Sherpa_CT10_ZZZ_4l2v                             ,
+                      Sherpa_CT10_ZZZ_6l0v                             ,
+                      aMcAtNloPythia8EvtGen_A14_NNPDF23LO_260000_tWZDR ,
+                      ]
+                )
+
 #-----------------------------------------------------------------------------
 # Doubly charged Higss 
 # Notes:
@@ -1908,6 +1955,7 @@ all_mc += diboson_sherpa221.daughters
 all_mc += diboson_powheg_alt.daughters
 all_mc += top_physics.daughters
 all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+all_mc += Rare.daughters
 # all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters

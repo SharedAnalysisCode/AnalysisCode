@@ -1243,6 +1243,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             key            = None,
             sys_FFe        = None,
             sys_FFm        = None,
+            sys_CHF        = None,
             config_file_e  = None,
             config_file_m  = None,
             config_fileCHF = None,
@@ -1257,6 +1258,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
         self.key               = key
         self.sys_FFe           = sys_FFe
         self.sys_FFm           = sys_FFm
+        self.sys_CHF           = sys_CHF
         self.config_file_e     = config_file_e
         self.config_file_m     = config_file_m
         self.config_fileCHF    = config_fileCHF
@@ -1419,10 +1421,24 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             if ptBin==self.h_ptFunc.GetNbinsX()+1:
               ptBin -= 1 
             if ele.electronType() in [2,3]:
-              sf *= self.h_ptFunc.GetBinContent( ptBin ) * self.h_etaFunc.GetBinContent( etaBin )                
+              if self.sys_CHF == None:
+                sf *= self.h_ptFunc.GetBinContent( ptBin ) * self.h_etaFunc.GetBinContent( etaBin )                
+              elif self.sys_CHF == "UP":
+                sf *= (self.h_ptFunc.GetBinContent( ptBin )+self.h_ptFunc.GetBinError( ptBin )) * (self.h_etaFunc.GetBinContent( etaBin )+self.h_etaFunc.GetBinError( etaBin ))               
+              elif self.sys_CHF == "DN":
+                sf *= (self.h_ptFunc.GetBinContent( ptBin )-self.h_ptFunc.GetBinError( ptBin )) * (self.h_etaFunc.GetBinContent( etaBin )-self.h_etaFunc.GetBinError( etaBin ))
             elif ele.electronType() in [1]:
-              probMC   = self.h_ptRateMC.GetBinContent( ptBin )   * self.h_etaRateMC.GetBinContent( etaBin )
-              probData = self.h_ptRateData.GetBinContent( ptBin ) * self.h_etaRateData.GetBinContent( etaBin )
+              probMC   = 0
+              probData = 0
+              if self.sys_CHF == None:
+                probMC   = self.h_ptRateMC.GetBinContent( ptBin )   * self.h_etaRateMC.GetBinContent( etaBin )
+                probData = self.h_ptRateData.GetBinContent( ptBin ) * self.h_etaRateData.GetBinContent( etaBin )
+              elif self.sys_CHF == "UP":
+                probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  -self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  -self.h_etaRateMC.GetBinError( etaBin ))
+                probData = (self.h_ptRateData.GetBinContent( ptBin )+self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )+self.h_etaRateData.GetBinError( etaBin ))
+              elif self.sys_CHF == "DN":
+                probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  +self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  +self.h_etaRateMC.GetBinError( etaBin ))
+                probData = (self.h_ptRateData.GetBinContent( ptBin )-self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )-self.h_etaRateData.GetBinError( etaBin ))
               sf *= ( 1 - probData )/( 1 - probMC )
           else :
             pass

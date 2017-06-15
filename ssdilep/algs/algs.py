@@ -2234,6 +2234,16 @@ class CutAlg(pyframe.core.Algorithm):
           if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) < 10*GeV:
             return False
       return True
+
+    def cut_ZVeto30(self):
+      electrons = self.store['electrons_loose_LooseLLH']
+      muons     = self.store['muons']
+      leptons = electrons + muons
+      for pair in itertools.combinations(leptons,2):
+        if pair[0].trkcharge * pair[1].trkcharge < 0 and pair[0].m == pair[1].m:
+          if abs( (pair[0].tlv + pair[1].tlv).M() - g_mZ) < 30*GeV:
+            return False
+      return True
     
 #------------------------------------------------------------------------------
 class PlotAlg(pyframe.algs.CutFlowAlg,CutAlg):

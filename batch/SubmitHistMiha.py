@@ -40,9 +40,9 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
 # RUN = "AllR_v3_023"
-RUN = "AllR_v3_muVetoSR1_010"
+RUN = "AllR_v3_muVetoSR1_011"
 # RUN = "AllR_emu_v3_001"
-# RUN = "All_SR_001"
+# RUN = "All_SR_002"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -65,6 +65,7 @@ SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
+
 
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
@@ -126,7 +127,7 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    # all_mc = []
+    all_mc = []
     # all_data = []
 
     nominal = all_mc 

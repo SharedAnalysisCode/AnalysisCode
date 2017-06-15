@@ -11,7 +11,7 @@ from optparse import OptionParser
 #-----------------
 # input
 # example:
-# python ../ssdilep/scripts/postProcessFile.py -i AllR_v3_020_root/merged.root -o AllR_v3_020_root/templateFile.root -s "dibosonSysSample:dibosonSherpa:DBGen,ttbar_Herwig:ttbar_Py8:TTHadron,ttbar_Py8_aMcAtNlo:ttbar_Py8:TTGen,ttbar_Py8_CF:ttbar_Py8:TTCF,ttbar_Py8_up:ttbar_Py8:TTRad:H,ttbar_Py8_do:ttbar_Py8:TTRad:L"
+# python ../ssdilep/scripts/postProcessFile.py -i AllSR/merged.root -o AllSR/templateFile.root -s "dibosonSysSample:dibosonSherpaEM:DBGenEE,dibosonSysSample:dibosonSherpaMM:DBGenEM,dibosonSysSample:dibosonSherpaMM:DBGenMM"
 #-----------------
 parser = OptionParser()
 parser.add_option('-i', '--input', dest='infile',

@@ -29,7 +29,7 @@ bins_mt = generateLogBins(50,50,2000)
 bins_HT = generateLogBins(50,60,4000)
 bins_HT2 = generateLogBins(20,60,4000)
 bins_invM = generateLogBins(50,130,2000)
-bins_invM_fit = generateLogBins(30,130,2000)
+bins_invM_fit = generateLogBins(10,130,2000)
 bins_invMLong = generateLogBins(150,130,10000)
 bins_invMassSR2EL = generateLogBins(10,200,900)
 # bins_invMassSR2ELall = [200] + [x for x in range(325,1525,100)]
@@ -108,7 +108,7 @@ HT = Var(name='HT',
               rebin  = 1,
               rebinVar  = bins_HT,
               #rebinVar  = bins_Zpeak2,
-              log    = False,
+              log    = True,
               logx   = True
               )
 
@@ -119,7 +119,7 @@ HT2 = Var(name='HT',
               rebin  = 1,
               rebinVar  = bins_HT2,
               #rebinVar  = bins_Zpeak2,
-              log    = False,
+              log    = True,
               logx   = True
               )
 
