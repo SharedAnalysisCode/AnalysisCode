@@ -644,7 +644,7 @@ class FakeEstimatorGeneral(BaseEstimator):
           if not hmc_l: 
             print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
             continue
-          h_l_den.Add(hmc_l,-1)
+          # h_l_den.Add(hmc_l,-1)
         if "CR-fakes" in region: 
             return h_l_den
         elif "VR-fakes" in region:

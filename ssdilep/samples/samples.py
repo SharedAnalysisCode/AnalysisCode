@@ -1412,6 +1412,8 @@ ttX_singletop = Sample( name =   'ttX_singletop',
                                PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
                                PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
                                PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+                               PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop,
+                               PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top,
                               ],
                 )
 
@@ -1610,6 +1612,30 @@ top_physics = Sample( name =  'top_physics',
                                  PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
                                  PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
                                  PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+                                 PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop,
+                                 PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top,
+                                 ttW_Np0,                
+                                 ttW_Np1,        
+                                 ttW_Np2,        
+                                 MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0,       
+                                 MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1,       
+                                 ttH125, 
+                                ],
+                )
+
+top_physics_noSC = Sample( name =  'top_physics',
+                    tlatex = 't + t#bar{t} + t#bar{t}X',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil,
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
+                                 PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
+                                 PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+                                 # PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop,
+                                 # PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top,
                                  ttW_Np0,                
                                  ttW_Np1,        
                                  ttW_Np2,        
@@ -1789,6 +1815,10 @@ Rare = Sample ( name = 'rare',
                       Sherpa_CT10_ZZZ_4l2v                             ,
                       Sherpa_CT10_ZZZ_6l0v                             ,
                       aMcAtNloPythia8EvtGen_A14_NNPDF23LO_260000_tWZDR ,
+                      PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_ggH125_ZZ4lep,                
+                      PowhegPythia8EvtGen_CT10_AZNLOCTEQ6L1_VBFH125_ZZ4lep,        
+                      Pythia8EvtGen_A14NNPDF23LO_WH125_ZZ4l,        
+                      Pythia8EvtGen_A14NNPDF23LO_ZH125_ZZ4l,
                       ]
                 )
 
@@ -1951,18 +1981,18 @@ all_mc = []
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-all_mc += diboson_sherpa221.daughters
-all_mc += diboson_powheg_alt.daughters
-all_mc += top_physics.daughters
-all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
-all_mc += Rare.daughters
+# all_mc += diboson_sherpa221.daughters
+# all_mc += diboson_powheg_alt.daughters
+# all_mc += top_physics.daughters
+# all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+# all_mc += Rare.daughters
 # all_mc += ttX.daughters
 # all_mc += ttbar.daughters
 # all_mc += ttbar_alt.daughters
 # all_mc += ttbar_Py8.daughters
 # all_mc += ttbar_Py8_alt.daughters
 # signal
-all_mc += all_DCH.daughters
+# all_mc += all_DCH.daughters
 
 ### EXOT12 ZPeak
 # all_mc += diboson_sherpa221.daughters
@@ -1975,3 +2005,12 @@ all_mc += all_DCH.daughters
 # all_mc += ZtautauPowheg.daughters 
 
 # all_mc += AZNLOCTEQ6L1_DYee_failed.daughters
+
+
+### EXOT12 Z peak paper
+all_mc += Zee221.daughters
+all_mc += top_physics.daughters
+all_mc += diboson_sherpa221.daughters
+all_mc += ZtautauPowheg.daughters 
+all_mc += Rare.daughters
+# signal

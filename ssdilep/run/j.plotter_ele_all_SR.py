@@ -273,7 +273,7 @@ def analyze(config):
     #         )
     ## ------ 3LVRee-VR Z veto 30 GeV
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRmee-Zveto-VR',
+            region   = '3LVRee-Zveto-VR',
             plot_all = False,
             cut_flow = [
                ['DCHFilter',None],

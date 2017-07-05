@@ -40,9 +40,10 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "SSVRele36_7"
 # RUN = "ZPeak_v3_003"
 # RUN = "AllR_v3_023"
-RUN = "AllR_v3_muVetoSR1_011"
+# RUN = "AllR_v3_3LVR"
 # RUN = "AllR_emu_v3_001"
 # RUN = "All_SR_002"
+RUN = "ZPeak_Paper_001"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -61,7 +62,7 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_ele_all_SR.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
@@ -70,27 +71,27 @@ BEXEC="HistMiha.sh"                  # exec script (probably dont change)
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_NOM = True                        # submit the nominal job
+DO_NOM = False                        # submit the nominal job
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
 CF_SYS = True
 FF_SYS = True
 
-BEAM_SYS = True
-CHOICE_SYS = True
-PDF_SYS = True
-PI_SYS = True
-SCALE_Z_SYS = True
+BEAM_SYS = False
+CHOICE_SYS = False
+PDF_SYS = False
+PI_SYS = False
+SCALE_Z_SYS = False
 
-EG_RESOLUTION_ALL_SYS = True
-EG_SCALE_ALLCORR_SYS = True
-EG_SCALE_E4SCINTILLATOR_SYS = True
+EG_RESOLUTION_ALL_SYS = False
+EG_SCALE_ALLCORR_SYS = False
+EG_SCALE_E4SCINTILLATOR_SYS = False
 
-TRIG_SYS = True
-ID_SYS = True
-ISO_SYS = True
-RECO_SYS = True
+TRIG_SYS = False
+ID_SYS = False
+ISO_SYS = False
+RECO_SYS = False
 
 DO_MUON_SYS = False
 
@@ -127,7 +128,7 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    all_mc = []
+    # all_mc = []
     # all_data = []
 
     nominal = all_mc 
@@ -380,8 +381,8 @@ def submit(tag,job_sys,samps,config={}):
         cmd += '             (\\"SCRIPT\\" \\"%s\\")\n'    % SCRIPT
         cmd += '             (\\"PBS_ARRAYID\\" \\"%s\\"))'   % str(line_intiger+1)
         cmd += '">>' + TEMPXRSL
-        cmd += ';arcsub -c pikolit.ijs.si -S org.ogf.glue.emies.activitycreation -o '+JOBLISTF+' '+TEMPXRSL
-        # cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
+        # cmd += ';arcsub -c pikolit.ijs.si -S org.ogf.glue.emies.activitycreation -o '+JOBLISTF+' '+TEMPXRSL
+        cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
         print cmd
         m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
         print m.communicate()[0]

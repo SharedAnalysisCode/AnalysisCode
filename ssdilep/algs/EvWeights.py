@@ -934,7 +934,7 @@ class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
         if "mc" in self.sampletype: 
           electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
           for ele in electrons:
-            if ele.electronType() in [1,2,3,4]:
+            if ele.electronType():
               sf *= getattr(ele,"RecoEff_SF").at(0)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
               sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
@@ -1126,7 +1126,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
             key            = None,
             sys            = None,
             config_file    = None,
-            sys_reco         = None,
+            sys_reco       = None,
             sys_iso        = None,
             sys_TTVA       = None,
             ):
@@ -1134,7 +1134,7 @@ class GenericFakeFactorMu(pyframe.core.Algorithm):
         self.key               = key
         self.sys               = sys
         self.config_file       = config_file
-        self.sys_reco            = sys_reco
+        self.sys_reco          = sys_reco
         self.sys_iso           = sys_iso
         self.sys_TTVA          = sys_TTVA
 
@@ -1253,6 +1253,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             sys_reco_m     = None,
             sys_iso_m      = None,
             sys_TTVA_m     = None,
+            emu_store      = None,
             ):
         pyframe.core.Algorithm.__init__(self, name=name)
         self.key               = key
@@ -1268,6 +1269,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
         self.sys_reco_m        = sys_reco_m
         self.sys_iso_m         = sys_iso_m
         self.sys_TTVA_m        = sys_TTVA_m
+        self.emu_store         = emu_store
 
         assert key, "Must provide key for storing mu reco sf"
         assert config_file_e, "Must provide config file!"
@@ -1398,17 +1400,38 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
     #_________________________________________________________________________
     def execute(self, weight):
 
+      MUONS_T = []
+      MUONS = []
+      ELECTRONS_T = []
+      ELECTRONS = []
+      if self.emu_store:
+        EMUS = self.store['emu_store']
+        for emu in EMUS:
+          if emu.m < 1.:
+            ELECTRONS += [emu]
+            if ( emu.isIsolated_Loose and emu.LHMedium ) :
+              ELECTRONS_T += [emu]
+          else:
+            MUONS += [emu]
+            if ( emu.isIsolated_FixedCutTightTrackOnly and emu.trkd0sig<=3. ) :
+              MUONS_T += [emu]
+      else:
+        MUONS_T = self.store['muons_tight']
+        MUONS   = self.store['muons']
+        ELECTRONS_T = self.store['electrons_tight_MediumLLH_isolLoose']
+        ELECTRONS   = self.store['electrons_loose_LooseLLH']
+
       if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560):
-          if len(self.store['muons_tight']) != len(self.store['muons']) or len(self.store['electrons_loose_LooseLLH']) != len(self.store['electrons_tight_MediumLLH_isolLoose']) :
+          if len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T) :
               if self.key:
                 self.store[self.key] = 0.
                 return True
 
       sf = 1.0
-      if len(self.store['muons_tight']) != len(self.store['muons']) or len(self.store['electrons_loose_LooseLLH']) != len(self.store['electrons_tight_MediumLLH_isolLoose']):
+      if len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T):
         sf = -1.0
-      muons = self.store['muons']
-      electrons = self.store['electrons_loose_LooseLLH']
+      muons = MUONS
+      electrons = ELECTRONS
 
       for ele in electrons:
         if (ele.isIsolated_Loose and ele.LHMedium) :

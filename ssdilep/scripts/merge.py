@@ -172,7 +172,7 @@ elif options.samples in ["ttbar","ttbarss"]:
 elif options.samples == "OSCR":
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.VV_ee,
   samples.diboson_sherpa221,
   # samples.singletop,
@@ -182,7 +182,7 @@ elif options.samples == "OSCR":
 elif options.samples in ["SSVR","SSVRBLIND"]:
   mc_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.VV_ee,
   samples.diboson_sherpa221,
   # samples.singletop,
@@ -191,7 +191,7 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
 elif options.samples in ["SSVR_emu"]:
   mc_backgrounds = [
   samples.diboson_sherpa221,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.VV_ee,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   # samples.singletop,
@@ -200,7 +200,7 @@ elif options.samples in ["SSVR_emu"]:
 elif options.samples in ["SSVR_mu","SSVRBLIND"]:
   mc_backgrounds = [
   # samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.VV_ee,
   samples.diboson_sherpa221,
   # samples.singletop,
@@ -233,14 +233,15 @@ elif options.samples == "diboson":
   # samples.singletop,
   samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
-  samples.top_physics,
+  samples.top_physics_noSC,
+  # samples.Rare,
   ]
 elif options.samples == "dibosonFit":
   mc_backgrounds = [
   samples.diboson_sherpa221,
   # samples.ttX,
   # samples.singletop,
-  samples.top_physics,
+  samples.top_physics_noSC,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples == "dibosonFit_mu":
@@ -248,7 +249,7 @@ elif options.samples == "dibosonFit_mu":
   samples.diboson_sherpa221,
   # samples.ttX,
   # samples.singletop,
-  samples.top_physics,
+  samples.top_physics_noSC,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mc_backgrounds = [
@@ -263,7 +264,7 @@ elif options.samples == "allSamples":
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.dibosonSherpaEE,
   samples.dibosonSysSample,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.ttbar_Py8,
   # samples.singletop,
   # samples.ttX,
@@ -278,7 +279,7 @@ elif options.samples == "allSamples_mu":
   mc_backgrounds = [
   samples.dibosonSherpaMM,
   samples.dibosonSysSample,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.ttbar_Py8,
   # samples.singletop,
   # samples.ttX,
@@ -294,7 +295,7 @@ elif options.samples == "allSamples_emu":
   # samples.AZNLOCTEQ6L1_DYee,
   samples.dibosonSherpaEM,
   samples.dibosonSysSample,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.ttbar_Py8,
   # samples.singletop,
   # samples.ttX,
@@ -577,7 +578,7 @@ elif options.samples == "OSCR":
   mumu_backgrounds = [
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   # samples.VV_ee,
-  samples.top_physics,
+  samples.top_physics_noSC,
   samples.diboson_sherpa221,
   # samples.singletop,
   fakes_mumu,
@@ -600,7 +601,7 @@ elif options.samples in ["SSVR","SSVRBLIND"]:
   fakes_mumu,
   # samples.VV_ee,
   samples.diboson_sherpa221,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.singletop,
   # samples.ttX,
   ]
@@ -608,7 +609,7 @@ elif options.samples in ["SSVR_emu"]:
   mumu_backgrounds = [
   samples.diboson_sherpa221,
   fakes_mumu,
-  samples.top_physics,
+  samples.top_physics_noSC,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   # samples.VV_ee,
   # samples.singletop,
@@ -620,7 +621,7 @@ elif options.samples in ["SSVR_mu"]:
   fakes_mumu,
   # samples.VV_ee,
   samples.diboson_sherpa221,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.singletop,
   # samples.ttX,
   ]
@@ -639,7 +640,8 @@ elif options.samples == "diboson":
   # samples.singletop,
   # samples.ttX,
   # samples.AZNLOCTEQ6L1_DYtautau,
-  samples.top_physics,
+  samples.top_physics_noSC,
+  # samples.Rare,
   # samples.WenuPowheg,
   ]
 elif options.samples == "dibosonFit":
@@ -648,7 +650,7 @@ elif options.samples == "dibosonFit":
   fakes_mumu,
   # samples.ttX,
   # samples.singletop,
-  samples.top_physics,
+  samples.top_physics_noSC,
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   ]
 elif options.samples == "dibosonFit_mu":
@@ -657,7 +659,7 @@ elif options.samples == "dibosonFit_mu":
   fakes_mumu,
   # samples.ttX,
   # samples.singletop,
-  samples.top_physics,
+  samples.top_physics_noSC,
   ]
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mumu_backgrounds = [
@@ -672,7 +674,7 @@ elif options.samples == "allSamples":
   samples.AZNLOCTEQ6L1_DYee_DYtautau,
   samples.dibosonSherpaEE,
   samples.dibosonSysSample,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.ttbar_Py8,
   # samples.singletop,
   # samples.ttX,
@@ -688,7 +690,7 @@ elif options.samples == "allSamples_mu":
   mumu_backgrounds = [
   samples.dibosonSherpaMM,
   samples.dibosonSysSample,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.ttbar_Py8,
   # samples.singletop,
   # samples.ttX,
@@ -705,7 +707,7 @@ elif options.samples == "allSamples_emu":
   # samples.AZNLOCTEQ6L1_DYee,
   samples.dibosonSherpaEM,
   samples.dibosonSysSample,
-  samples.top_physics,
+  samples.top_physics_noSC,
   # samples.ttbar_Py8,
   # samples.singletop,
   # samples.ttX,

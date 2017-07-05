@@ -46,6 +46,8 @@ bins_Zpeak2 = [50,80,100,130]
 bins_met = generateLogBins(15,1,1000)
 bins_met_2 = generateLogBins(50,25,2000)
 
+SSVRbins = generateLogBins(30,130,10000)
+
 eta_cf_bins = [-2.5, -2.4, -2.3, -2.2, -2.1, -2.0, -1.9, -1.8, -1.7, -1.6, -1.52, -1.37, -1.20, -1.1, -1.0, -0.9, -0.7, -0.45, 0.0, 0.45, 0.7, 0.9, 1.0, 1.1, 1.2, 1.37, 1.52, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
 pt_cf_bins  = [30., 34., 38., 43., 48., 55., 62., 69., 78.0, 88.0, 100., 115., 140., 200., 2000.]
 
@@ -73,7 +75,7 @@ NPV = Var(name = 'NPV',
               log   = False,
               )
 
-nelectrons = Var(name = 'nelectrons',
+nleptons = Var(name = 'nleptons',
               path  = 'event',
               xmin  = 0,
               xmax  = 6,
@@ -306,6 +308,16 @@ invMass_5 = Var(name='invMass',
               logx   = False,
               )
 
+invMass_6 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 130,
+              xmax   = 2000,
+              rebin  = 1,
+              rebinVar  = SSVRbins,
+              log    = False,
+              logx   = True,
+              )
+
 invMassPeak = Var(name='invMass',
               path   = 'event',
               xmin   = 71.5,
@@ -386,39 +398,39 @@ chargeFlipHist = Var(name='chargeFlipHist',
                 )
 
 el_lead_pt_eta = Var(name='el_lead_pt_eta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_sublead_pt_eta = Var(name='el_sublead_pt_eta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_pt_eta = Var(name='el_pt_eta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_pt_eta_all = Var(name='el_pt_eta_all',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_pt_eta_chf2 = Var(name='el_pt_eta_chf2',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_t_2D_pt_Ceta = Var(name='el_t_2D_pt_Ceta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_l_2D_pt_Ceta = Var(name='el_l_2D_pt_Ceta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_sl_2D_pt_Ceta = Var(name='el_sl_2D_pt_Ceta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 ## MET
@@ -487,7 +499,7 @@ met_clus_et = Var(name='met_clus_et',
 ## Single muon variables
 ## ---------------------------------------
 el_t_pt = Var(name = 'el_t_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -499,7 +511,7 @@ el_t_pt = Var(name = 'el_t_pt',
               )
 
 el_l_pt = Var(name = 'el_l_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -511,7 +523,7 @@ el_l_pt = Var(name = 'el_l_pt',
               )
 
 el_sl_pt = Var(name = 'el_sl_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -523,7 +535,7 @@ el_sl_pt = Var(name = 'el_sl_pt',
               )
 
 el_lead_pt = Var(name = 'el_lead_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -534,7 +546,7 @@ el_lead_pt = Var(name = 'el_lead_pt',
 
 
 el_lead_pt_2 = Var(name = 'el_lead_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 500.,
               rebin  = 1,
@@ -544,7 +556,7 @@ el_lead_pt_2 = Var(name = 'el_lead_pt',
               )
 
 el_pt = Var(name = 'el_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -554,7 +566,7 @@ el_pt = Var(name = 'el_pt',
               )
 
 el_random_pt = Var(name = 'el_random_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -564,7 +576,7 @@ el_random_pt = Var(name = 'el_random_pt',
               )
 
 el_pt_cf = Var(name = 'el_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -574,7 +586,7 @@ el_pt_cf = Var(name = 'el_pt',
               )
 
 el_lead_pt_cf = Var(name = 'el_lead_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -584,7 +596,7 @@ el_lead_pt_cf = Var(name = 'el_lead_pt',
               )
 
 el_sublead_pt_cf = Var(name = 'el_sublead_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -604,7 +616,7 @@ ZbosonPt_cf = Var(name='ZbosonPt',
               )
 
 el_sublead_pt = Var(name = 'el_sublead_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -614,7 +626,7 @@ el_sublead_pt = Var(name = 'el_sublead_pt',
               )
 
 el_sublead_pt_2 = Var(name = 'el_sublead_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 500.,
               rebin  = 1,
@@ -624,7 +636,7 @@ el_sublead_pt_2 = Var(name = 'el_sublead_pt',
               )
 
 el_third_pt_2 = Var(name = 'el_third_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 500.,
               rebin  = 1,
@@ -634,7 +646,7 @@ el_third_pt_2 = Var(name = 'el_third_pt',
               )
 
 el_third_pt_SR = Var(name = 'el_third_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 1,
@@ -644,7 +656,7 @@ el_third_pt_SR = Var(name = 'el_third_pt',
               )
 
 el_lead_eta = Var(name = 'el_lead_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -652,7 +664,7 @@ el_lead_eta = Var(name = 'el_lead_eta',
               )
 
 el_lead_eta_2 = Var(name = 'el_lead_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               rebin   = 5,
@@ -660,7 +672,7 @@ el_lead_eta_2 = Var(name = 'el_lead_eta',
               )
 
 el_eta = Var(name = 'el_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -668,7 +680,7 @@ el_eta = Var(name = 'el_eta',
               )
 
 el_eta_cf = Var(name = 'el_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               rebin  = 1,
@@ -677,7 +689,7 @@ el_eta_cf = Var(name = 'el_eta',
               )
 
 el_lead_eta_cf = Var(name = 'el_lead_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               rebin  = 1,
@@ -686,7 +698,7 @@ el_lead_eta_cf = Var(name = 'el_lead_eta',
               )
 
 el_sublead_eta_cf = Var(name = 'el_sublead_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               rebin  = 1,
@@ -695,7 +707,7 @@ el_sublead_eta_cf = Var(name = 'el_sublead_eta',
               )
 
 el_t_eta = Var(name = 'el_t_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -704,7 +716,7 @@ el_t_eta = Var(name = 'el_t_eta',
               )
 
 el_l_eta = Var(name = 'el_l_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -713,7 +725,7 @@ el_l_eta = Var(name = 'el_l_eta',
               )
 
 el_sl_eta = Var(name = 'el_sl_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -722,7 +734,7 @@ el_sl_eta = Var(name = 'el_sl_eta',
               )
 
 el_sublead_eta = Var(name = 'el_sublead_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 4,
@@ -730,7 +742,7 @@ el_sublead_eta = Var(name = 'el_sublead_eta',
               )
 
 el_sublead_eta_2 = Var(name = 'el_sublead_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               rebin   = 5,
@@ -738,7 +750,7 @@ el_sublead_eta_2 = Var(name = 'el_sublead_eta',
               )
 
 el_third_eta_2 = Var(name = 'el_third_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               rebin   = 5,
@@ -746,7 +758,7 @@ el_third_eta_2 = Var(name = 'el_third_eta',
               )
 
 el_lead_phi = Var(name = 'el_lead_phi',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -3.2,
               xmax    = 3.2,
               rebin   = 1,
@@ -754,7 +766,7 @@ el_lead_phi = Var(name = 'el_lead_phi',
               )
 
 el_lead_phi_2 = Var(name = 'el_lead_phi',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -3.2,
               xmax    = 3.2,
               rebin   = 4,
@@ -762,7 +774,7 @@ el_lead_phi_2 = Var(name = 'el_lead_phi',
               )
 
 el_phi = Var(name = 'el_phi',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -3.14,
               xmax    = 3.14,
               rebin   = 1,
@@ -770,7 +782,7 @@ el_phi = Var(name = 'el_phi',
               )
 
 el_sublead_phi = Var(name = 'el_sublead_phi',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -3.2,
               xmax    = 3.2,
               rebin   = 1,
@@ -778,7 +790,7 @@ el_sublead_phi = Var(name = 'el_sublead_phi',
               )
 
 el_sublead_phi_2 = Var(name = 'el_sublead_phi',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -3.2,
               xmax    = 3.2,
               rebin   = 4,
@@ -786,7 +798,7 @@ el_sublead_phi_2 = Var(name = 'el_sublead_phi',
               )
 
 el_third_phi_2 = Var(name = 'el_third_phi',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -3.2,
               xmax    = 3.2,
               rebin   = 8,
@@ -794,7 +806,7 @@ el_third_phi_2 = Var(name = 'el_third_phi',
               )
 
 el_lead_trkd0 = Var(name = 'el_lead_trkd0',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -0.4,
               xmax    = 0.4,
               rebin  = 2,
@@ -802,7 +814,7 @@ el_lead_trkd0 = Var(name = 'el_lead_trkd0',
               )
 
 el_sublead_trkd0 = Var(name = 'el_sublead_trkd0',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -0.4,
               xmax    = 0.4,
               rebin   = 2,
@@ -810,7 +822,7 @@ el_sublead_trkd0 = Var(name = 'el_sublead_trkd0',
               )
 
 el_lead_trkd0sig = Var(name = 'el_lead_trkd0sig',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = 0.,
               xmax    = 10.,
               rebin   = 1,
@@ -818,7 +830,7 @@ el_lead_trkd0sig = Var(name = 'el_lead_trkd0sig',
               )
 
 el_sublead_trkd0sig = Var(name = 'el_sublead_trkd0sig',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = 0.,
               xmax    = 10.,
               rebin   = 1,
@@ -826,7 +838,7 @@ el_sublead_trkd0sig = Var(name = 'el_sublead_trkd0sig',
               )
 
 el_lead_trkz0 = Var(name = 'el_lead_trkz0',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.0,
               xmax    = 2.0,
               rebin   = 2,
@@ -834,7 +846,7 @@ el_lead_trkz0 = Var(name = 'el_lead_trkz0',
               )
 
 el_sublead_trkz0 = Var(name = 'el_sublead_trkz0',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.0,
               xmax    = 2.0,
               rebin   = 2,
@@ -842,7 +854,7 @@ el_sublead_trkz0 = Var(name = 'el_sublead_trkz0',
               )
 
 el_lead_trkz0sintheta = Var(name = 'el_lead_trkz0sintheta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -0.8,
               xmax    = 0.8,
               rebin   = 2,
@@ -850,7 +862,7 @@ el_lead_trkz0sintheta = Var(name = 'el_lead_trkz0sintheta',
               )
 
 el_sublead_trkz0sintheta = Var(name = 'el_sublead_trkz0sintheta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -0.8,
               xmax    = 0.8,
               rebin   = 2,
@@ -859,7 +871,7 @@ el_sublead_trkz0sintheta = Var(name = 'el_sublead_trkz0sintheta',
 
 # isolation
 el_lead_topoetcone20 = Var(name = 'el_lead_topoetcone20',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
@@ -867,56 +879,56 @@ el_lead_topoetcone20 = Var(name = 'el_lead_topoetcone20',
               )
 
 el_lead_topoetcone30 = Var(name = 'el_lead_topoetcone30',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_topoetcone40 = Var(name = 'el_lead_topoetcone40',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_ptvarcone20 = Var(name = 'el_lead_ptvarcone20',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_ptvarcone30 = Var(name = 'el_lead_ptvarcone30',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_ptvarcone40 = Var(name = 'el_lead_ptvarcone40',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_ptcone20 = Var(name = 'el_lead_ptcone20',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_ptcone30 = Var(name = 'el_lead_ptcone30',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
               log    = False,
               )
 el_lead_ptcone40 = Var(name = 'el_lead_ptcone40',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 0.,
               xmax   = 3.5,
               rebin  = 100,
@@ -1006,7 +1018,7 @@ vars_list = []
 vars_list.append(averageIntPerXing)
 vars_list.append(actualIntPerXing)
 vars_list.append(NPV)
-vars_list.append(nelectrons)
+vars_list.append(nleptons)
 vars_list.append(njets)
 vars_list.append(nbjets)
 vars_list.append(invMass)
@@ -1106,6 +1118,7 @@ vars_dict["invMass_mu3"] = invMass_mu3.__dict__
 vars_dict["invMass_mu4"] = invMass_mu4.__dict__
 vars_dict["invMass_mu5"] = invMass_mu5.__dict__
 vars_dict["invMass_DB"] = invMass_DB.__dict__
+vars_dict["invMass_6"] = invMass_6.__dict__
 
 ## EOF
 
