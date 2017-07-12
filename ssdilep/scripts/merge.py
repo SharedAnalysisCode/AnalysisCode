@@ -209,14 +209,22 @@ elif options.samples in ["SSVR_mu","SSVRBLIND"]:
 elif options.samples == "ZPeak":
   mc_backgrounds = [
   samples.Zee221,
-  samples.diboson_sherpa221,
-  samples.ttbar_Py8,
-  samples.singletop_inc,
-  samples.ttX,
+  samples.diboson_sherpa221_all,
+  samples.top_physics_all,
+  # samples.ttbar_Py8,
+  # samples.singletop_inc,
+  # samples.ttX,
+  # samples.WenuPowheg,
+  # samples.WtaunuPowheg,
+  samples.ZtautauPowheg,
   samples.WenuPowheg,
   samples.WtaunuPowheg,
-  # samples.ZtautauPowheg,
+  samples.Rare,
   # samples.Higgs,
+  ]
+elif options.samples == "totalSM":
+  mc_backgrounds = [
+  samples.AllSM,
   ]
 elif options.samples == "diboson":
   mc_backgrounds = [
@@ -509,15 +517,6 @@ if (DO_SYS):
     chargeFlip.estimator.add_systematics(CF)
   if options.samples == "chargeflip":
     samples.Zee221.estimator.add_systematics(CF)
-  if options.samples == "ZPeak":
-    samples.Zee221.estimator.add_systematics(CF)
-    samples.diboson_sherpa221.estimator.add_systematics(CF)
-    samples.ttbar_Py8.estimator.add_systematics(CF)
-    samples.singletop_inc.estimator.add_systematics(CF)
-    samples.ttX.estimator.add_systematics(CF)
-    samples.WenuPowheg.estimator.add_systematics(CF)
-    samples.WtaunuPowheg.estimator.add_systematics(CF)
-    # samples.ZtautauPowheg.estimator.add_systematics(CF)
 
 mumu_vdict  = vars_ee.vars_dict
 #fakes_vdict = vars_fakes.vars_dict
@@ -587,13 +586,22 @@ elif options.samples == "OSCR":
 elif options.samples == "ZPeak":
   mumu_backgrounds = [
   samples.Zee221,
-  samples.diboson_sherpa221,
-  samples.ttbar_Py8,
-  samples.singletop_inc,
-  samples.ttX,
+  samples.diboson_sherpa221_all,
+  samples.top_physics_all,
+  # samples.ttbar_Py8,
+  # samples.singletop_inc,
+  # samples.ttX,
+  # samples.WenuPowheg,
+  # samples.WtaunuPowheg,
+  samples.ZtautauPowheg,
   samples.WenuPowheg,
   samples.WtaunuPowheg,
-  # samples.ZtautauPowheg,
+  samples.Rare,
+  # samples.Higgs,
+  ]
+elif options.samples == "totalSM":
+  mumu_backgrounds = [
+  samples.AllSM,
   ]
 elif options.samples in ["SSVR","SSVRBLIND"]:
   mumu_backgrounds = [

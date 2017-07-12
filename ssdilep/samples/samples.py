@@ -444,6 +444,34 @@ diboson_sherpa221 = Sample( name =   'dibosonSherpa',
                                 Sherpa_CT10_llvvjj_ss_EW6,
                               ],
                 )
+
+diboson_sherpa221_all = Sample( name =   'dibosonSherpaAll',
+                  tlatex = 'diboson',
+                  fill_color   = ROOT.kGreen-6,
+                  line_color   = ROOT.kGreen-2,
+                  marker_color = ROOT.kGreen-2,
+                  daughters = [
+                        Sherpa_221_NNPDF30NNLO_llll     ,
+                        Sherpa_221_NNPDF30NNLO_lllv     ,
+                        Sherpa_221_NNPDF30NNLO_llvv     ,
+                        Sherpa_221_NNPDF30NNLO_lvvv     ,
+                        Sherpa_221_NNPDF30NNLO_vvvv     ,
+                        Sherpa_221_NNPDF30NNLO_WlvZqq   ,
+                        Sherpa_221_NNPDF30NNLO_WplvWmqq ,
+                        Sherpa_221_NNPDF30NNLO_WpqqWmlv ,
+                        Sherpa_221_NNPDF30NNLO_WqqZll   ,
+                        Sherpa_221_NNPDF30NNLO_WqqZvv   ,
+                        Sherpa_221_NNPDF30NNLO_ZqqZll   ,
+                        Sherpa_221_NNPDF30NNLO_ZqqZvv   ,
+                        Sherpa_CT10_ggllll              ,
+                        Sherpa_CT10_ggllvv              ,
+                        Sherpa_CT10_lllljj_EW6          ,
+                        Sherpa_CT10_lllvjj_EW6          ,
+                        Sherpa_CT10_llvvjj_ss_EW4       ,
+                        Sherpa_CT10_llvvjj_ss_EW6       ,
+                              ],
+                )
+
 dibosonSherpaEE = Sample( name =   'dibosonSherpaEE',
                   tlatex = 'diboson',
                   fill_color   = ROOT.kGreen-6,
@@ -1027,6 +1055,25 @@ Zee_221_Pt280_500_BFilter         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_
 
 Zee_221_Pt500_1000                = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_MAXHTPTV500_1000",                 xsec = 1.76307831    )
 Zee_221_Pt1000_E_CM               = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zee_MAXHTPTV1000_E_CMS",               xsec = 0.144870607   )
+ 
+
+Zmumu_221_Pt0_70_CVetoBVeto         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV0_70_CVetoBVeto",                xsec = 1589.63171493 ) 
+Zmumu_221_Pt70_140_CVetoBVeto       = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV70_140_CVetoBVeto",              xsec = 73.2358669381 )
+Zmumu_221_Pt140_280_CVetoBVeto      = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV140_280_CVetoBVeto",             xsec = 23.6817868221 )
+Zmumu_221_Pt280_500_CVetoBVeto      = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV280_500_CVetoBVeto",             xsec = 4.65412767872 )
+
+Zmumu_221_Pt0_70_CFilterBVeto       = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV0_70_CFilterBVeto",              xsec = 218.444620579 )
+Zmumu_221_Pt70_140_CFilterBVeto     = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV70_140_CFilterBVeto",            xsec = 19.8011918832 )
+Zmumu_221_Pt140_280_CFilterBVeto    = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV140_280_CFilterBVeto",           xsec = 9.0542335581  )
+Zmumu_221_Pt280_500_CFilterBVeto    = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV280_500_CFilterBVeto",           xsec = 2.2089252644  )
+
+Zmumu_221_Pt0_70_BFilter            = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV0_70_BFilter",                   xsec = 124.006897499 )
+Zmumu_221_Pt70_140_BFilter          = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV70_140_BFilter",                 xsec = 12.10333124   )
+Zmumu_221_Pt140_280_BFilter         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV140_280_BFilter",                xsec = 5.68849102914 )
+Zmumu_221_Pt280_500_BFilter         = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV280_500_BFilter",                xsec = 1.46019684049 )
+
+Zmumu_221_Pt500_1000                = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV500_1000",                 xsec = 1.74308876     )
+Zmumu_221_Pt1000_E_CM               = Sample( name =  "Sherpa_221_NNPDF30NNLO_Zmumu_MAXHTPTV1000_E_CMS",               xsec = 0.144012519    )
 
 
 Zee221 = Sample( name =   'Zee221',
@@ -1049,6 +1096,29 @@ Zee221 = Sample( name =   'Zee221',
                                Zee_221_Pt280_500_BFilter,        
                                Zee_221_Pt500_1000,
                                Zee_221_Pt1000_E_CM,   
+                              ],
+                )
+
+Zmumu221 = Sample( name =   'Zmumu221',
+                  tlatex = 'Sherpa221 Zmumu',
+                  fill_color = ROOT.kWhite,
+                  line_color =  ROOT.kBlack,
+                  marker_color =  ROOT.kBlack,
+                  daughters = [
+                               Zmumu_221_Pt0_70_CVetoBVeto,        
+                               Zmumu_221_Pt70_140_CVetoBVeto,                                    
+                               Zmumu_221_Pt140_280_CVetoBVeto,     
+                               Zmumu_221_Pt280_500_CVetoBVeto,     
+                               Zmumu_221_Pt0_70_CFilterBVeto,      
+                               Zmumu_221_Pt70_140_CFilterBVeto,    
+                               Zmumu_221_Pt140_280_CFilterBVeto,   
+                               Zmumu_221_Pt280_500_CFilterBVeto,   
+                               Zmumu_221_Pt0_70_BFilter,           
+                               Zmumu_221_Pt70_140_BFilter,         
+                               Zmumu_221_Pt140_280_BFilter,        
+                               Zmumu_221_Pt280_500_BFilter,        
+                               Zmumu_221_Pt500_1000,
+                               Zmumu_221_Pt1000_E_CM,   
                               ],
                 ) 
 
@@ -1623,6 +1693,28 @@ top_physics = Sample( name =  'top_physics',
                                 ],
                 )
 
+top_physics_all = Sample( name =  'top_physics_all',
+                    tlatex = 't + t#bar{t} + t#bar{t}X',
+                    fill_color = ROOT.kBlue-10,
+                    line_color =  ROOT.kBlue-8,
+                    marker_color =  ROOT.kBlue-8,
+                    daughters = [        
+                                 PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad,
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
+                                 PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
+                                 PowhegPythiaEvtGen_P2012_Wt_inclusive_top,
+                                 PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop, 
+                                 PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop,
+                                 PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top,
+                                 ttW_Np0,                
+                                 ttW_Np1,        
+                                 ttW_Np2,        
+                                 MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0,       
+                                 MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1,       
+                                 ttH125, 
+                                ],
+                )
+
 top_physics_noSC = Sample( name =  'top_physics',
                     tlatex = 't + t#bar{t} + t#bar{t}X',
                     fill_color = ROOT.kBlue-10,
@@ -2009,8 +2101,20 @@ all_mc = []
 
 ### EXOT12 Z peak paper
 all_mc += Zee221.daughters
-all_mc += top_physics.daughters
-all_mc += diboson_sherpa221.daughters
-all_mc += ZtautauPowheg.daughters 
+all_mc += Zmumu221.daughters
+all_mc += top_physics_all.daughters
+all_mc += diboson_sherpa221_all.daughters
 all_mc += Rare.daughters
+# all_mc += ZtautauPowheg.daughters 
+# all_mc += WenuPowheg.daughters
+# all_mc += WtaunuPowheg.daughters
+
+AllSM = Sample( name =   'AllSM',
+                  tlatex = 'total SM',
+                  fill_color = ROOT.kWhite,
+                  line_color =  ROOT.kBlack,
+                  marker_color =  ROOT.kBlack,
+                  daughters = Zee221.daughters+top_physics_all.daughters+diboson_sherpa221_all.daughters+Rare.daughters+ZtautauPowheg.daughters+WenuPowheg.daughters+WtaunuPowheg.daughters,
+                ) 
+
 # signal

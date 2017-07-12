@@ -318,6 +318,14 @@ invMass_6 = Var(name='invMass',
               logx   = True,
               )
 
+invMass_7 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 70,
+              xmax   = 120,
+              rebin  = 1,
+              log    = False,
+              )
+
 invMassPeak = Var(name='invMass',
               path   = 'event',
               xmin   = 71.5,
@@ -1119,6 +1127,7 @@ vars_dict["invMass_mu4"] = invMass_mu4.__dict__
 vars_dict["invMass_mu5"] = invMass_mu5.__dict__
 vars_dict["invMass_DB"] = invMass_DB.__dict__
 vars_dict["invMass_6"] = invMass_6.__dict__
+vars_dict["invMass_7"] = invMass_7.__dict__
 
 ## EOF
 

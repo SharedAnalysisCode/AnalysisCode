@@ -309,6 +309,35 @@ class OneOrTwoBjetsSF(pyframe.core.Algorithm):
       return True
 
 #------------------------------------------------------------------------------
+class GlobalBjet(pyframe.core.Algorithm):
+    """
+    GlobalBjet
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="GlobalBjet",
+            key            = None,
+            ):
+
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+
+        assert key, "Must provide key for storing ele reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      pass
+    #_________________________________________________________________________
+    def execute(self, weight):
+      sf=1.0
+      if "mc" in self.sampletype: 
+        jets = self.store['jets']
+        for jet in jets:
+          sf *= getattr(jet,"SFFix77").at(0)
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
+
+#------------------------------------------------------------------------------
 class ExactlyOneTightEleSF(pyframe.core.Algorithm):
     """
     ExactlyOneTightEleSF

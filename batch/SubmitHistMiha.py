@@ -43,7 +43,8 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "AllR_v3_3LVR"
 # RUN = "AllR_emu_v3_001"
 # RUN = "All_SR_002"
-RUN = "ZPeak_Paper_001"
+# RUN = "ZPeak_Paper_003"
+RUN = "HN_002"
 # RUN = "WJets_v3_004"
 # RUN = "FFele_v3_006"
 
@@ -59,7 +60,8 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
@@ -71,7 +73,7 @@ BEXEC="HistMiha.sh"                  # exec script (probably dont change)
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_NOM = False                        # submit the nominal job
+DO_NOM = True                        # submit the nominal job
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
@@ -95,7 +97,7 @@ RECO_SYS = False
 
 DO_MUON_SYS = False
 
-DO_ELECTRON_SYS = True
+DO_ELECTRON_SYS = False
 
  
 

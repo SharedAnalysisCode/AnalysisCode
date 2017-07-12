@@ -106,7 +106,7 @@ class CutAlg(pyframe.core.Algorithm):
     
     #__________________________________________________________________________
     def cut_AtLeastTwoJets(self):
-        return self.chain.njets > 1
+        return len(self.store['jets']) > 1
     
     #__________________________________________________________________________
     def cut_AllMuPt22(self):
@@ -1653,10 +1653,22 @@ class CutAlg(pyframe.core.Algorithm):
           if muons[0].trkcharge*muons[1].trkcharge == 1: return True
         return False
 
+    def cut_ExactlyTwoLooseMuonOS(self):
+        muons = self.store['muons']
+        if len(muons)==2: 
+          if muons[0].trkcharge*muons[1].trkcharge == -1: return True
+        return False
+
     def cut_ExactlyTwoLooseElectronSS(self):
         muons = self.store['electrons_loose_LooseLLH']
         if len(muons)==2: 
           if muons[0].trkcharge*muons[1].trkcharge == 1: return True
+        return False
+
+    def cut_ExactlyTwoLooseElectronOS(self):
+        muons = self.store['electrons_loose_LooseLLH']
+        if len(muons)==2: 
+          if muons[0].trkcharge*muons[1].trkcharge == -1: return True
         return False
 
     def cut_ExactlyTwoLooseLeptons(self):
@@ -1821,6 +1833,40 @@ class CutAlg(pyframe.core.Algorithm):
         for ele in leptons:
           HT += ele.tlv.Pt()
         if HT > 300*GeV:
+          return True
+        return False
+
+    def cut_Mjj110(self):
+        jets = self.store['jets']
+        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+        if (jets[0].tlv + jets[1].tlv).M() > 110*GeV:
+          return True
+        return False
+
+    def cut_TwoEleTwoJetHT400(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets']
+        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+        HT = 0
+        for ele in leptons:
+          HT += ele.tlv.Pt()
+        HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+        if HT > 400*GeV:
+          return True
+        return False
+
+    def cut_TwoMuonTwoJetHT400(self):
+        leptons = self.store['muons']
+        jets = self.store['jets']
+        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+        HT = 0
+        for ele in leptons:
+          HT += ele.tlv.Pt()
+        HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+        if HT > 400*GeV:
           return True
         return False
 
@@ -2113,6 +2159,54 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         else:
           return False
+
+    def cut_Mass60GeV110ele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 60*GeV < tempMass <= 110*GeV :
+            return True;
+        return False
+
+    def cut_Mass110GeV400ele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 110*GeV < tempMass <= 400*GeV :
+            return True;
+        return False
+
+    def cut_Mass400GeVele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 400*GeV < tempMass :
+            return True;
+        return False
+
+    def cut_Mass60GeV110muon(self):
+        electrons = self.store['muons']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 60*GeV < tempMass <= 110*GeV :
+            return True;
+        return False
+
+    def cut_Mass110GeV400muon(self):
+        electrons = self.store['muons']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 110*GeV < tempMass <= 400*GeV :
+            return True;
+        return False
+
+    def cut_Mass400GeVmuon(self):
+        electrons = self.store['muons']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 400*GeV < tempMass :
+            return True;
+        return False
 
     def cut_BadJetVeto(self):
         jets = self.store['jets']
@@ -4154,14 +4248,16 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         
         # should probably make this configurable
         ## get event candidate
-        electrons  = self.store['electrons_loose_LooseLLH']
+        electrons  = self.store['electrons_loose_LooseLLH'] + self.store['muons']
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
         jets       = self.store['jets']
+        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         
         EVT    = os.path.join(region, 'event')
-        ELECTRONS = os.path.join(region, 'electrons')
+        ELECTRONS = os.path.join(region, 'leptons')
         MET    = os.path.join(region, 'met')
         
         # -----------------
@@ -4174,13 +4270,16 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
         self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
-        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
+        self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ll) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_invMassFine = self.hist('h_invMassFine', "ROOT.TH1F('$', ';m(ll) [GeV];Events / (0.1 GeV)', 20000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
-        self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
-        self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ee);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
+        self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
+        self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ll);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
         self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
         self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_HTlljj = self.hist('h_HTlljj', "ROOT.TH1F('$', ';Hlljj_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_Mjj = self.hist('h_Mjj', "ROOT.TH1F('$', ';m(jj) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -4190,23 +4289,23 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
-        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(e);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(l) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(l);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         #leading
-        self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(e lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(e lead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(e lead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(l lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(l lead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(l lead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         #subleading
-        self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(e sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(e sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(e sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(e sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(e sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(l sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(l sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(l sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
 
         # ---------------
         # Fill histograms
@@ -4223,6 +4322,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_NPV.Fill(self.chain.NPV, weight)
           self.h_nelectrons.Fill(len(electrons), weight)
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
+          self.h_invMassFine.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
           self.h_DR.Fill( electrons[0].tlv.DeltaR(electrons[1].tlv), weight)
@@ -4236,6 +4336,10 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
               nbjets += 1
           self.h_njets.Fill(len(jets), weight)
           self.h_nbjets.Fill(nbjets, weight)
+
+          if len(jets) > 1:
+            self.h_HTlljj.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+jets[0].tlv.Pt()+jets[1].tlv.Pt())/GeV, weight )
+            self.h_Mjj.Fill( (jets[0].tlv+jets[1].tlv).M()/GeV, weight)
 
           ## met plots
           self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
