@@ -82,6 +82,13 @@ nleptons = Var(name = 'nleptons',
               log   = False,
               )
 
+nelectrons = Var(name = 'nelectrons',
+              path  = 'event',
+              xmin  = 0,
+              xmax  = 6,
+              log   = False,
+              )
+
 nsspairs = Var(name = 'nsspairs',
               path  = 'event',
               xmin  = 0,
@@ -430,15 +437,15 @@ el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
                 )
 
 el_t_2D_pt_Ceta = Var(name='el_t_2D_pt_Ceta',
-                path   = 'leptons',
+                path   = 'electrons',
                 )
 
 el_l_2D_pt_Ceta = Var(name='el_l_2D_pt_Ceta',
-                path   = 'leptons',
+                path   = 'electrons',
                 )
 
 el_sl_2D_pt_Ceta = Var(name='el_sl_2D_pt_Ceta',
-                path   = 'leptons',
+                path   = 'electrons',
                 )
 
 ## MET
@@ -507,7 +514,7 @@ met_clus_et = Var(name='met_clus_et',
 ## Single muon variables
 ## ---------------------------------------
 el_t_pt = Var(name = 'el_t_pt',
-              path   = 'leptons',
+              path   = 'electrons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -519,7 +526,7 @@ el_t_pt = Var(name = 'el_t_pt',
               )
 
 el_l_pt = Var(name = 'el_l_pt',
-              path   = 'leptons',
+              path   = 'electrons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -531,7 +538,7 @@ el_l_pt = Var(name = 'el_l_pt',
               )
 
 el_sl_pt = Var(name = 'el_sl_pt',
-              path   = 'leptons',
+              path   = 'electrons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -715,7 +722,7 @@ el_sublead_eta_cf = Var(name = 'el_sublead_eta',
               )
 
 el_t_eta = Var(name = 'el_t_eta',
-              path    = 'leptons',
+              path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -724,7 +731,7 @@ el_t_eta = Var(name = 'el_t_eta',
               )
 
 el_l_eta = Var(name = 'el_l_eta',
-              path    = 'leptons',
+              path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -733,7 +740,7 @@ el_l_eta = Var(name = 'el_l_eta',
               )
 
 el_sl_eta = Var(name = 'el_sl_eta',
-              path    = 'leptons',
+              path    = 'electrons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -955,6 +962,13 @@ bins_invMass_mu5 = [200,2000]
 bins_invM_DB = generateLogBins(12,90,200)
 
 
+bins_invMZVR1 = generateLogBins(30,110,400)
+bins_invMZVR2 = generateLogBins(15,110,400)
+bins_invMZVR3 = generateLogBins(7,110,400)
+
+bins_mjj = generateLogBins(30,110,4000)
+bins_mjj2 = generateLogBins(15,110,4000)
+bins_mjj3 = generateLogBins(7,110,4000)
 
 
 ## Event variables
@@ -1020,6 +1034,87 @@ invMass_mu5 = Var(name='invMass',
               logx   = False
               )
 
+Mjj = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_mjj,
+              log    = False,
+              logx   = True
+              )
+
+Mjj2 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_mjj2,
+              log    = False,
+              logx   = True
+              )
+
+Mjj3 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_mjj3,
+              log    = False,
+              logx   = True
+              )
+
+
+invMassZCR = Var(name='invMass',
+              path   = 'event',
+              xmin   = 60,
+              xmax   = 110,
+              rebin  = 2,
+              #rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
+invMassZCR3 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 60,
+              xmax   = 110,
+              rebin  = 10,
+              #rebinVar  = bins_invM,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
+invMassZVR1 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 400,
+              rebin  = 1,
+              rebinVar  = bins_invMZVR1,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
+invMassZVR2 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 400,
+              rebin  = 1,
+              rebinVar  = bins_invMZVR2,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
+invMassZVR3 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 400,
+              rebin  = 1,
+              rebinVar  = bins_invMZVR3,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
 
 
 vars_list = []
@@ -1071,7 +1166,9 @@ vars_list.append(el_pt)
 vars_list.append(el_eta)
 vars_list.append(met_trk_mt)
 vars_list.append(el_phi)
+vars_list.append(nelectrons)
 vars_list.append(DR)
+vars_list.append(Mjj)
 
 vars_dict = {}
 for var in vars_list: vars_dict[var.name] = var.__dict__
@@ -1128,6 +1225,13 @@ vars_dict["invMass_mu5"] = invMass_mu5.__dict__
 vars_dict["invMass_DB"] = invMass_DB.__dict__
 vars_dict["invMass_6"] = invMass_6.__dict__
 vars_dict["invMass_7"] = invMass_7.__dict__
+vars_dict["Mjj2"] = Mjj2.__dict__
+vars_dict["Mjj3"] = Mjj3.__dict__
+vars_dict["invMassZVR1"] = invMassZVR1.__dict__
+vars_dict["invMassZVR2"] = invMassZVR2.__dict__
+vars_dict["invMassZVR3"] = invMassZVR3.__dict__
+vars_dict["invMassZCR"] = invMassZCR.__dict__
+vars_dict["invMassZCR3"] = invMassZCR3.__dict__
 
 ## EOF
 

@@ -28,8 +28,11 @@ USER   = os.getenv('USER')
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT19and0' # input NTUP path
 
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
-NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
+# NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
+
+NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT19and12unskimmed"
+
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
 INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) )
@@ -44,9 +47,10 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "AllR_emu_v3_001"
 # RUN = "All_SR_002"
 # RUN = "ZPeak_Paper_003"
-RUN = "HN_002"
+# RUN = "HN_004"
 # RUN = "WJets_v3_004"
-# RUN = "FFele_v3_006"
+# RUN = "WJets_HN_003"
+RUN = "FFele_HN_005"
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -56,12 +60,12 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
@@ -75,9 +79,9 @@ TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 
-CF_SYS = True
+CF_SYS = False
 FF_SYS = True
 
 BEAM_SYS = False
@@ -97,7 +101,7 @@ RECO_SYS = False
 
 DO_MUON_SYS = False
 
-DO_ELECTRON_SYS = False
+DO_ELECTRON_SYS = True
 
  
 
@@ -400,7 +404,7 @@ def input_file(sample,sys):
     
     if sys!='nominal': sys='sys_'+sys
     sinput += '.root'
-    sinput = os.path.join(NTUP,sys,sinput) 
+    sinput = os.path.join(NTUP,sinput) 
     return sinput
 
 if __name__=='__main__': main()

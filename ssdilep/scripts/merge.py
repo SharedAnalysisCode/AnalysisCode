@@ -103,7 +103,7 @@ print "BRmm: ", BRmm
 #-----------------
 #lumi =  3158.13
 #lumi =  18232.76
-lumi =  36074.56
+lumi =  36097.56
 #lumi =  18232.8
 #lumi = 5000
 
@@ -141,11 +141,11 @@ if options.samples == "wjet":
   mc_backgrounds = [
   samples.WenuPowheg,
   samples.ZeePowheg,
-  samples.ttbar_Py8,
+  samples.ttbar_inc,
   samples.singletop_inc,
-  samples.diboson_sherpa221,
+  samples.diboson_sherpa221_all,
   samples.WtaunuPowheg,
-  # samples.ZtautauPowheg,
+  samples.ZtautauPowheg,
   ]
 elif options.samples == "FFele":
   mc_backgrounds = [
@@ -153,9 +153,9 @@ elif options.samples == "FFele":
   samples.WtaunuPowheg,
   samples.ZeePowheg,
   samples.ZtautauPowheg,
-  samples.ttbar_Py8,
+  samples.ttbar_inc,
   samples.singletop_inc,
-  samples.diboson_sherpa221,
+  samples.diboson_sherpa221_all,
   ]
 elif options.samples == "chargeFlipData":
   mc_backgrounds = [
@@ -221,6 +221,26 @@ elif options.samples == "ZPeak":
   samples.WtaunuPowheg,
   samples.Rare,
   # samples.Higgs,
+  ]
+elif options.samples == "HNee":
+  mc_backgrounds = [
+  samples.Zee221,
+  samples.diboson_sherpa221_all,
+  samples.top_physics_all,
+  samples.Rare,
+  samples.WenuPowheg,
+  samples.WtaunuPowheg,
+  samples.ZtautauPowheg,
+  ]
+elif options.samples == "HNmumu":
+  mc_backgrounds = [
+  samples.Zmumu221,
+  samples.diboson_sherpa221_all,
+  samples.top_physics_all,
+  samples.Rare,
+  samples.WenuPowheg,
+  samples.WtaunuPowheg,
+  samples.ZtautauPowheg,
   ]
 elif options.samples == "totalSM":
   mc_backgrounds = [
@@ -483,6 +503,13 @@ elif options.fakest == "FakeFactorGeneral":
       data_sample = data,
       mc_samples = mc_backgrounds )
 
+elif options.fakest == "MCFakes":
+  fakes_mumu.estimator = histmgr.MCFakes(
+      hm=hm, 
+      sample=fakes_mumu,
+      data_sample = data,
+      mc_samples = mc_backgrounds )
+
 elif options.fakest == "ChargeFlip":
   chargeFlip.estimator = histmgr.ChargeFlipEsimator(
       hm=hm, 
@@ -531,20 +558,20 @@ if options.samples == "wjet":
   samples.WenuPowheg,
   fakes_mumu,
   samples.ZeePowheg,
-  samples.ttbar_Py8,
-  samples.diboson_sherpa221,
+  samples.ttbar_inc,
+  samples.diboson_sherpa221_all,
   samples.singletop_inc,
   samples.WtaunuPowheg,
-  # samples.ZtautauPowheg,
+  samples.ZtautauPowheg,
   ]
 elif options.samples == "FFele":
   mumu_backgrounds = [
   samples.WenuPowheg,
   samples.ZeePowheg,
-  samples.diboson_sherpa221,
+  samples.diboson_sherpa221_all,
   samples.WtaunuPowheg,
   samples.ZtautauPowheg,
-  samples.ttbar_Py8,
+  samples.ttbar_inc,
   samples.singletop_inc,
   ]
 elif options.samples == "chargeFlipData":
@@ -672,6 +699,28 @@ elif options.samples == "dibosonFit_mu":
 elif options.samples in ["chargeflip","chargeflipTruth"]:
   mumu_backgrounds = [
   samples.Zee221,
+  ]
+elif options.samples == "HNee":
+  mumu_backgrounds = [
+  samples.Zee221,
+  fakes_mumu,
+  samples.diboson_sherpa221_all,
+  samples.top_physics_all,
+  samples.Rare,
+  samples.WenuPowheg,
+  samples.WtaunuPowheg,
+  samples.ZtautauPowheg,
+  ]
+elif options.samples == "HNmumu":
+  mumu_backgrounds = [
+  samples.Zmumu221,
+  fakes_mumu,
+  samples.diboson_sherpa221_all,
+  samples.top_physics_all,
+  samples.Rare,
+  samples.WenuPowheg,
+  samples.WtaunuPowheg,
+  samples.ZtautauPowheg,
   ]
 elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
   mumu_backgrounds = [

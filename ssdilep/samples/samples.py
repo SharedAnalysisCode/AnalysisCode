@@ -1405,15 +1405,15 @@ Ztautau = Sample( name =   'Ztautau',
 #Wt_inclusive_antitop                  = Sample( name =  "Wt_inclusive_antitop",              xsec =  33.989 )
 
 
-PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop  = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop", xsec =  0.025778*1000   )
-PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top      = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top",     xsec =  0.043739*1000   )
-PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop = Sample( name = "PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop",  xsec = 1.2615  * 1.0215 )
-PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top   = Sample( name = "PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top",  xsec = 2.0517 * 1.0046 )
-PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop           = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop",          xsec =  0.0035814*1000  )
-PowhegPythiaEvtGen_P2012_Wt_dilepton_top               = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_top",              xsec =  0.0035835*1000  )
+PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop  = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop", xsec =   26.276    )
+PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top      = Sample( name = "PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top",     xsec =   44.152    )
+PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop = Sample( name = "PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop",  xsec = 1.288662  )
+PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top   = Sample( name = "PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top",  xsec =   2.06121   )
+PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop           = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop",          xsec =   3.7747956 )
+PowhegPythiaEvtGen_P2012_Wt_dilepton_top               = Sample( name = "PowhegPythiaEvtGen_P2012_Wt_dilepton_top",              xsec =   3.777009  )
 
-PowhegPythiaEvtGen_P2012_Wt_inclusive_top              = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_top",            xsec =  0.034009*1000   ) 
-PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop          = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop",        xsec =  0.033989*1000   )
+PowhegPythiaEvtGen_P2012_Wt_inclusive_top              = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_top",            xsec =   35.845486 ) 
+PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop          = Sample( name =  "PowhegPythiaEvtGen_P2012_Wt_inclusive_antitop",        xsec =   35.824406 )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ttX 
@@ -1548,11 +1548,10 @@ singletop_inc = Sample( name =   'singletop',
 # Notes:
 #       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryTTbar 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad            = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec = 451.645679998 )
-PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad               = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad",    xsec = 380.11432     )
-PowhegPythiaEvtGen_P2012_ttbar_nonallhad                       = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec = 0.69611*0.54341*1000 )
-PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil                  = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil",       xsec = 0.073329*1000 )
-Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO                     = Sample( name =  "Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO",          xsec = 87.531048  )
+PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad            = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad", xsec =  452.69355909 )
+PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad               = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad",    xsec =  380.21072415 )
+PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil                  = Sample( name =  "PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil",       xsec =  87.627231743 )
+Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO                     = Sample( name =  "Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO",          xsec =  87.531048    )
 
 ttbar = Sample( name =  'ttbar_dilep',
                     tlatex = 't#bar{t}',
@@ -2064,13 +2063,13 @@ all_mc = []
 ## EOF
 
 ### EXOT0 fake rate measurement configuration
-# all_mc += diboson_sherpa221.daughters
-# all_mc += WenuPowheg.daughters
-# all_mc += WtaunuPowheg.daughters
-# all_mc += ZeePowheg.daughters
-# all_mc += ZtautauPowheg.daughters
-# all_mc += singletop_inc.daughters
-# all_mc += ttbar_inc.daughters
+all_mc += diboson_sherpa221_all.daughters
+all_mc += WenuPowheg.daughters
+all_mc += WtaunuPowheg.daughters
+all_mc += ZeePowheg.daughters
+all_mc += ZtautauPowheg.daughters
+all_mc += singletop_inc.daughters
+all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
 # all_mc += diboson_sherpa221.daughters
@@ -2100,11 +2099,11 @@ all_mc = []
 
 
 ### EXOT12 Z peak paper
-all_mc += Zee221.daughters
-all_mc += Zmumu221.daughters
-all_mc += top_physics_all.daughters
-all_mc += diboson_sherpa221_all.daughters
-all_mc += Rare.daughters
+# all_mc += Zee221.daughters
+# all_mc += Zmumu221.daughters
+# all_mc += top_physics_all.daughters
+# all_mc += diboson_sherpa221_all.daughters
+# all_mc += Rare.daughters
 # all_mc += ZtautauPowheg.daughters 
 # all_mc += WenuPowheg.daughters
 # all_mc += WtaunuPowheg.daughters

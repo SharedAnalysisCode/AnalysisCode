@@ -106,8 +106,19 @@ class CutAlg(pyframe.core.Algorithm):
     
     #__________________________________________________________________________
     def cut_AtLeastTwoJets(self):
-        return len(self.store['jets']) > 1
-    
+        return len(self.store['jets_tight']) > 1
+ 
+    #__________________________________________________________________________
+    def cut_AtLeastTwo50GeVJets(self):
+      count = 0
+      for jet in self.store['jets_tight']:
+        if jet.pt >= 50 * GeV:
+          count += 1
+      if count > 1:
+        return True
+      else:
+        return False
+
     #__________________________________________________________________________
     def cut_AllMuPt22(self):
       muons = self.store['muons']
@@ -729,9 +740,9 @@ class CutAlg(pyframe.core.Algorithm):
       return met.tlv.Pt() < 60 * GeV
 
     #__________________________________________________________________________
-    def cut_METtrkLow60(self):
+    def cut_METtrkLow100(self):
       met = self.store["met_trk"]
-      return met.tlv.Pt() < 60 * GeV
+      return met.tlv.Pt() < 100 * GeV
 
     #__________________________________________________________________________
     def cut_METhigher25(self):
@@ -753,11 +764,11 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_EleJetDphi28(self):
       lead_ele = self.store["electrons_loose_LooseLLH"][0]
       lead_jet = None
-      if self.store["jets"]:
-        lead_jet = self.store["jets"][0]
-      if lead_jet:
-        return abs(lead_ele.tlv.DeltaPhi(lead_jet.tlv)) > 2.8
-      else: return False
+      for jet in self.store["jets_tight"]:
+        if jet.pt >= 30 * GeV:
+          if abs(lead_ele.tlv.DeltaPhi(jet.tlv)) > 2.8:
+            return True
+      return False
    
     #__________________________________________________________________________
     def cut_SumCosDPhi02(self):
@@ -1838,7 +1849,7 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_Mjj110(self):
         jets = self.store['jets']
-        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         if (jets[0].tlv + jets[1].tlv).M() > 110*GeV:
           return True
@@ -1847,7 +1858,7 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_TwoEleTwoJetHT400(self):
         leptons = self.store['electrons_loose_LooseLLH']
         jets = self.store['jets']
-        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         HT = 0
         for ele in leptons:
@@ -1860,7 +1871,7 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_TwoMuonTwoJetHT400(self):
         leptons = self.store['muons']
         jets = self.store['jets']
-        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         HT = 0
         for ele in leptons:
@@ -2151,7 +2162,7 @@ class CutAlg(pyframe.core.Algorithm):
     #----- b-veto
     def cut_bjetveto(self):
         nbjets = 0
-        jets = self.store['jets']
+        jets = self.store['jets_tight']
         for jet in jets:
           if jet.isFix77:
             nbjets += 1
@@ -2209,11 +2220,47 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_BadJetVeto(self):
-        jets = self.store['jets']
+        jets = self.store['jets_tight']
         for jet in jets:
           if not jet.isClean:
             return False
         return True
+
+    def cut_NoLooseFakesInMC(self):
+      if ("mc" not in self.sampletype):
+        return True
+      elif self.chain.mcChannelNumber in range(306538,306560):
+        return True
+      electrons = self.store['electrons']
+      muons = self.store['muons']
+      for ele in electrons:
+        if ele.electronType() not in [1,2,3] :
+          if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
+            return False
+      for mu in muons:
+        if not mu.isTrueIsoMuon() :
+          return False
+      return True
+
+    def cut_atLeastOneLooseFakeInMC(self):
+      if ("mc" not in self.sampletype):
+        return False
+      elif self.chain.mcChannelNumber in range(306538,306560):
+        return False
+      electrons = self.store['electrons']
+      muons = self.store['muons']
+      nfakes = 0
+      for ele in electrons:
+        if ele.electronType() not in [1,2,3] :
+          if ( ele.pt>30*GeV and ele.LHLoose and ele.trkd0sig<5.0 and abs(ele.trkz0sintheta)<0.5 ) :
+            nfakes += 1
+      for mu in muons:
+        if not mu.isTrueIsoMuon() :
+          nfakes += 1
+      if nfakes > 0:
+        return True
+      else:
+        return False
 
     def cut_NoFakesInMC(self):
       electrons = self.store['electrons']
@@ -3364,14 +3411,17 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
     #_________________________________________________________________________
     def initialize(self):
         pyframe.algs.CutFlowAlg.initialize(self)
-        self.pt_bins  = [30., 35., 40., 45., 50., 55., 60., 65., 70., 75., 80., 90., 100., 120., 140., 180., 250., 350., 500., 2000.]
+        self.pt_bins  = [30., 35., 40., 45., 50., 55., 60., 65., 70., 75., 80., 90., 100., 120., 140., 180., 250., 350., 500., 10000.]
         self.eta_bins = [0.0, 1.37, 1.52, 2.01, 2.47]
-        # self.trigger_strings   = ["HLT_e24_lhvloose_nod0_L1EM20VH","HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
-        # self.trigger_bounds    = [31.                             ,65.                             ,125.                   ,145.                   ,99999999.]
-        # self.trigger_prescaled = [138.43197                       ,112.3913                        ,25.5606                ,6.69107                ,1.0      ]
-        self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
-        self.trigger_bounds    = [65.                             ,125.                   ,145.                   ,99999999.]
-        self.trigger_prescaled = [112.3913                        ,25.5606                ,6.69107                ,1.0      ]
+        # self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
+        # self.trigger_bounds    = [65.                             ,125.                   ,145.                   ,99999999.]
+        # self.trigger_prescaled = [111.53                          ,25.402                 ,6.5846                 ,1.0      ]
+        # self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e140_lhloose_nod0"]
+        # self.trigger_bounds    = [70.                             ,800.                   ,99999999999]
+        # self.trigger_prescaled = [111.53                          ,25.402                 ,1.0]
+        self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0"]
+        self.trigger_bounds    = [65.                             ,99999999999.           ]
+        self.trigger_prescaled = [111.53                          ,25.402                 ]
     #_________________________________________________________________________
     def execute(self, weight):
    
@@ -3648,7 +3698,7 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         pyframe.algs.CutFlowAlg.initialize(self)
         self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
         self.trigger_bounds    = [65.                             ,125.                   ,145.                   ,99999999.]
-        self.trigger_prescaled = [112.3913                        ,25.5606                ,6.69107                ,1.0      ]
+        self.trigger_prescaled = [111.53                          ,25.402                 ,6.5846                 ,1.0      ]
     #_________________________________________________________________________
     def execute(self, weight):
    
@@ -3709,9 +3759,11 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         electrons  = self.store['electrons_loose_LooseLLH']
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
+
+        jets       = self.store['jets_tight']
         
         EVT    = os.path.join(region, 'event')
-        ELECTRONS = os.path.join(region, 'electrons')
+        ELECTRONS = os.path.join(region, 'leptons')
         MET    = os.path.join(region, 'met')
         
         # -----------------
@@ -3722,6 +3774,7 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
+        self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 8, 0, 8)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -3765,6 +3818,7 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight*elePassTrigger)
           self.h_NPV.Fill(self.chain.NPV, weight*elePassTrigger)
           self.h_nelectrons.Fill(len(electrons), weight*elePassTrigger)
+          self.h_njets.Fill(len(jets), weight*elePassTrigger)
           ## met plots
           self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight*elePassTrigger)
           self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight*elePassTrigger)
@@ -3785,6 +3839,11 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_phi.Fill(ele.tlv.Phi(), weight*elePassTrigger)
           self.h_el_trkd0sig.Fill(ele.trkd0sig, weight*elePassTrigger)
           self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger)
+
+          if "Wjets-tight-VR" in region:
+            print region
+            print electrons[0].tlv.Pt()/GeV," ",met_trk.tlv.Pt()/GeV," ",(ele1T+met_trk.tlv).M()/GeV," ",len(jets)
+            print "==============="
 
 
     #__________________________________________________________________________
@@ -4253,7 +4312,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
         jets       = self.store['jets']
-        jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         
         EVT    = os.path.join(region, 'event')
@@ -4264,48 +4323,54 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         # Create histograms
         # -----------------
         ## event plots
-        self.h_averageIntPerXing = self.hist('h_averageIntPerXing', "ROOT.TH1F('$', ';averageInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
-        self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
+        # self.h_averageIntPerXing = self.hist('h_averageIntPerXing', "ROOT.TH1F('$', ';averageInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
+        # self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
         self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ll) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
-        self.h_invMassFine = self.hist('h_invMassFine', "ROOT.TH1F('$', ';m(ll) [GeV];Events / (0.1 GeV)', 20000, 0, 2000)", dir=EVT)
+        # self.h_invMassFine = self.hist('h_invMassFine', "ROOT.TH1F('$', ';m(ll) [GeV];Events / (0.1 GeV)', 20000, 0, 2000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ll);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
-        self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
+        # self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
         self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_HTlljj = self.hist('h_HTlljj', "ROOT.TH1F('$', ';Hlljj_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
-        self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        # self.h_HTmet = self.hist('h_HTmet', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_Mjj = self.hist('h_Mjj', "ROOT.TH1F('$', ';m(jj) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
+        self.h_truthOrigin = self.hist('h_truthOrigin', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
+        self.h_truthType = self.hist('h_truthType', "ROOT.TH1F('$', ';truthType;Events', 51, -1, 50)", dir=EVT)
+        self.h_firstEgMotherTruthOrigin = self.hist('h_firstEgMotherTruthOrigin', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
+        self.h_firstEgMotherTruthType = self.hist('h_firstEgMotherTruthType', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
+        self.h_truthLink  = self.hist2DVariable('h_truthLink',  [x for x in range(-1,51)], [x for x in range(-1,51)], dir=EVT)
+        self.h_firstEgMother  = self.hist2DVariable('h_firstEgMother',  [x for x in range(-1,51)], [x for x in range(-1,51)], dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
+        # self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        # self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
+        # self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
+        # self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
-        self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(l) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
-        self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
-        self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(l);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        # self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(l) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
+        # self.h_el_eta = self.hist('h_el_eta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
+        # self.h_el_phi = self.hist('h_el_phi', "ROOT.TH1F('$', ';#phi(l);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
+        # self.h_el_trkd0sig = self.hist('h_el_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        # self.h_el_trkz0sintheta = self.hist('h_el_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         #leading
         self.h_el_lead_pt = self.hist('h_el_lead_pt', "ROOT.TH1F('$', ';p_{T}(l lead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
         self.h_el_lead_eta = self.hist('h_el_lead_eta', "ROOT.TH1F('$', ';#eta(l lead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
         self.h_el_lead_phi = self.hist('h_el_lead_phi', "ROOT.TH1F('$', ';#phi(l lead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        # self.h_el_lead_trkd0sig = self.hist('h_el_lead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l lead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        # self.h_el_lead_trkz0sintheta = self.hist('h_el_lead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l lead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
         #subleading
         self.h_el_sublead_pt = self.hist('h_el_sublead_pt', "ROOT.TH1F('$', ';p_{T}(l sublead) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
         self.h_el_sublead_eta = self.hist('h_el_sublead_eta', "ROOT.TH1F('$', ';#eta(l sublead);Events / (0.1)', 50, -2.5, 2.5)", dir=ELECTRONS)
         self.h_el_sublead_phi = self.hist('h_el_sublead_phi', "ROOT.TH1F('$', ';#phi(l sublead);Events / (0.1)', 64, -3.2, 3.2)", dir=ELECTRONS)
-        self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
-        self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
+        # self.h_el_sublead_trkd0sig = self.hist('h_el_sublead_trkd0sig', "ROOT.TH1F('$', ';d^{trk sig}_{0}(l sublead);Events / (0.1)', 100, 0., 10.)", dir=ELECTRONS)
+        # self.h_el_sublead_trkz0sintheta = self.hist('h_el_sublead_trkz0sintheta', "ROOT.TH1F('$', ';z^{trk}_{0}sin#theta(l sublead) [mm];Events / (0.01)', 200, -1, 1)", dir=ELECTRONS)
 
         # ---------------
         # Fill histograms
@@ -4317,18 +4382,18 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           ele2T = ROOT.TLorentzVector()
           ele2T.SetPtEtaPhiM( electrons[1].tlv.Pt(), 0., electrons[1].tlv.Phi(), electrons[1].tlv.M() )
           ## event plots 
-          self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
-          self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
+          # self.h_averageIntPerXing.Fill(self.chain.averageInteractionsPerCrossing, weight)
+          # self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
           self.h_NPV.Fill(self.chain.NPV, weight)
           self.h_nelectrons.Fill(len(electrons), weight)
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
-          self.h_invMassFine.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
+          # self.h_invMassFine.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
           self.h_DR.Fill( electrons[0].tlv.DeltaR(electrons[1].tlv), weight)
-          self.h_mTtot.Fill( (ele1T+ele2T+met_trk.tlv).M()/GeV, weight )
+          # self.h_mTtot.Fill( (ele1T+ele2T+met_trk.tlv).M()/GeV, weight )
           self.h_HT.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt())/GeV, weight )
-          self.h_HTmet.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
+          # self.h_HTmet.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
 
           nbjets = 0
           for jet in jets:
@@ -4343,18 +4408,38 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
 
           ## met plots
           self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
-          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
+          # self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
-          self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
-          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
-          self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
+          # self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
+          # self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
+          # self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
+
           #electron
-          for ele in electrons:
-            self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight)
-            self.h_el_eta.Fill(ele.eta, weight)
-            self.h_el_phi.Fill(ele.tlv.Phi(), weight)
-            self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
-            self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
+          # for ele in electrons:
+            # self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight)
+            # self.h_el_eta.Fill(ele.eta, weight)
+            # self.h_el_phi.Fill(ele.tlv.Phi(), weight)
+            # self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
+            # self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
+          
+          print "========================================="
+          for ele in self.store['electrons_loose_LooseLLH']:
+            print ele.trkcharge," ",ele.firstEgMotherPdgId/-11.," ",ele.truthType," ",ele.truthOrigin," ",ele.firstEgMotherTruthType," ",ele.firstEgMotherTruthOrigin, " type: ",ele.electronType()
+            print " "
+            if ele.electronType() not in [1,2,3]:
+              print "filling up the boy"
+              print " "
+              self.h_truthOrigin.Fill(ele.truthOrigin, weight)
+              self.h_truthType.Fill(ele.truthType, weight)
+              self.h_firstEgMotherTruthOrigin.Fill(ele.firstEgMotherTruthOrigin-0.5, weight)
+              self.h_firstEgMotherTruthType.Fill(ele.firstEgMotherTruthType-0.5, weight)
+              self.h_firstEgMother.Fill(ele.firstEgMotherTruthType-0.5, ele.firstEgMotherTruthOrigin-0.5, weight)
+              self.h_truthLink.Fill(ele.truthType-0.5, ele.truthOrigin-0.5, weight)
+          for mu in self.store['muons']:
+            if not mu.isTrueIsoMuon() :
+              self.h_truthOrigin.Fill(mu.truthOrigin-0.5, weight)
+              self.h_truthType.Fill(mu.truthType-0.5, weight)
+              self.h_truthLink.Fill(mu.truthType-0.5, mu.truthOrigin-0.5, weight)           
 
           ele1 = electrons[1]
           ele2 = electrons[0]
@@ -4366,14 +4451,14 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_lead_pt.Fill(ele1.tlv.Pt()/GeV, weight)
           self.h_el_lead_eta.Fill(ele1.eta, weight)
           self.h_el_lead_phi.Fill(ele1.tlv.Phi(), weight)
-          self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
-          self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
+          # self.h_el_lead_trkd0sig.Fill(ele1.trkd0sig, weight)
+          # self.h_el_lead_trkz0sintheta.Fill(ele1.trkz0sintheta, weight)
 
           self.h_el_sublead_pt.Fill(ele2.tlv.Pt()/GeV, weight)
           self.h_el_sublead_eta.Fill(ele2.eta, weight)
           self.h_el_sublead_phi.Fill(ele2.tlv.Phi(), weight)
-          self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
-          self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
+          # self.h_el_sublead_trkd0sig.Fill(ele2.trkd0sig, weight)
+          # self.h_el_sublead_trkz0sintheta.Fill(ele2.trkz0sintheta, weight)
 
 
     #__________________________________________________________________________
@@ -4466,6 +4551,17 @@ class VarsAlg(pyframe.core.Algorithm):
         met = self.store[self.key_met]
         electrons = self.store[self.key_electrons]
 
+        ## make tight jets
+        jets_tight = []
+        for jet in jets:
+          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) <= 2.8:
+            jets_tight += [jet]
+
+        jets_tight.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        if len(jets_tight) > 1:
+          assert jets_tight[0].tlv.Pt() >= jets_tight[1].tlv.Pt(), "jets_tight not sorted.."
+        self.store['jets_tight'] = jets_tight        
+
         ## remove fakes from signal
         if ("mc" in self.sampletype) and self.chain.mcChannelNumber in range(306538,306560):
           for ele in self.store[self.key_electrons][:]:
@@ -4508,6 +4604,13 @@ class VarsAlg(pyframe.core.Algorithm):
             for muon in self.store[self.key_muons][:]:
               if muon.truthOrigin == 0 and muon.trkcharge == -1:
                 self.store[self.key_muons].remove(muon)  
+
+
+        # mJJ
+        if len(jets_tight) > 1:
+          self.store['MJJ'] = (jets_tight[0].tlv + jets_tight[1].tlv).M()/GeV
+        else:
+         self.store['MJJ'] = -999. 
 
 
         # tight muons

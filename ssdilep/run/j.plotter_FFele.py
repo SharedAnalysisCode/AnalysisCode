@@ -109,15 +109,10 @@ def analyze(config):
     ## weights
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.EvWeights.MCEventWeight(cutflow='presel',key='weight_mc_event')
-    loop += ssdilep.algs.EvWeights.LPXKfactor(cutflow='presel',key='lpx_kfactor')
     loop += ssdilep.algs.EvWeights.Pileup(cutflow='presel',key='weight_pileup')
-    #loop += ssdilep.algs.EvWeights.TrigPresc(cutflow='presel',key='trigger_prescale')
-    # loop += ssdilep.algs.EvWeights.DataUnPresc(cutflow='presel',key='data_unprescale') 
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
@@ -129,30 +124,15 @@ def analyze(config):
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
-    """
-    No trigger scale factors!!!
-    loop += ssdilep.algs.EvWeights.MuTrigSF(
-            is_single_mu = True,
-            mu_trig_level="Loose_Loose",
-            mu_trig_chain="HLT_mu20_L1MU15",
-            key='SingleMuonTrigSF',
-            scale=None,
+
+    loop += ssdilep.algs.EvWeights.GlobalBjet(
+            key='GlobalBjet',
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
-            key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
+    loop += ssdilep.algs.EvWeights.GlobalJVT(
+            key='GlobalJVT',
             )
-    """
-    ## objects
-    ## +++++++++++++++++++++++++++++++++++++++
-    """
-    loop += ssdilep.algs.ObjWeights.MuAllSF(
-            #mu_level="Tight",
-            mu_index=0,
-            key='MuLeadAllSF',
-            scale=None,
-            )
-    """
+
     ##-------------------------------------------------------------------------
     ## make plots
     ##-------------------------------------------------------------------------
@@ -164,7 +144,7 @@ def analyze(config):
             region   = 'FakeEnrichedRegion-nominal',
             plot_all = False,
             cut_flow = [
-               ['bjetveto',None],
+               ['bjetveto',["GlobalBjet","GlobalJVT"]],
                ['METtrkLow25',None],
                ],
             )
@@ -173,18 +153,27 @@ def analyze(config):
             region   = 'FakeEnrichedRegion-MET60',
             plot_all = False,
             cut_flow = [
-               ['bjetveto',None],
+               ['bjetveto',["GlobalBjet","GlobalJVT"]],
                ['METtrkLow60',None],
                ],
             )
 
     loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-ASjet',
+            region   = 'FakeEnrichedRegion-MET100',
             plot_all = False,
             cut_flow = [
-               ['bjetveto',None],
+               ['bjetveto',["GlobalBjet","GlobalJVT"]],
+               ['METtrkLow100',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgFFee(
+            region   = 'FakeEnrichedRegion-TwoJets',
+            plot_all = False,
+            cut_flow = [
+               ['bjetveto',["GlobalBjet","GlobalJVT"]],
                ['METtrkLow25',None],
-               ['EleJetDphi28',None],
+               ['AtLeastTwo50GeVJets',None],
                ],
             )
 

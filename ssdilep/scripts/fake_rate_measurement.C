@@ -13,7 +13,7 @@
 #include "Fit/ParameterSettings.h"
 #include <iostream>
 
-void fake_rate_measurement_helper(std::string var = "nominal"){
+void fake_rate_measurement_helper(std::string var = "nominal", std::string var3 = "_FFnominal", std::string var4 = ""){
   
   double mcscale = 1.0;
   if (var=="mcup") mcscale = 1.10;
@@ -23,10 +23,16 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   if (var=="mcup") var2 = "nominal";
   else if (var=="mcdn") var2 = "nominal";
 
+  std::cout << var << std::endl;
+
   
-  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_006/hists_el_t_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
-  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_006/hists_el_l_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
-  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_v3_006/hists_el_sl_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + "_FFnominal.root").c_str());
+  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_001/hists_el_t_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
+  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_001/hists_el_l_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
+  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_001/hists_el_sl_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
+  
+  std::cout << var << " " << var3 << " " << var4 << std::endl;
+  std::cout << nominal_t << " " << nominal_l << " " << nominal_sl << std::endl;
+
 
   TH2F* nominal_t_wenu = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WenuPowheg").c_str());
   TH2F* nominal_t_Wtaunu = (TH2F*) nominal_t->Get(("h_FakeEnrichedRegion-" + var2 + "_nominal_WtaunuPowheg").c_str());
@@ -148,7 +154,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   leg.AddEntry(projX3,"1.52 < |#eta| < 2.01","pe0");
   leg.AddEntry(projX4,"2.01 < |#eta| < 2.47","pe0");
 
-  TFile* outFile = new TFile(("fakeRate-"+var+".root").c_str(),"RECREATE");
+  TFile* outFile = new TFile(("fakeRate-"+var+var4+".root").c_str(),"RECREATE");
   nominal_data_rate->SetName(("fakeRateDivide-"+var+"").c_str());
   nominal_data_rate_eff->SetName(("fakeRate-"+var+"").c_str());
   //nominal_data_rate->Write();
@@ -167,7 +173,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
 
   TCanvas c2("c2","c2",600,600);
   c2.SetLogx();
-  projX1->GetYaxis()->SetRangeUser(0,0.5);
+  projX1->GetYaxis()->SetRangeUser(0,1.0);
   projX1->GetXaxis()->SetNoExponent();
   projX1->GetXaxis()->SetMoreLogLabels();
   projX1->GetXaxis()->SetTitle("p_{T} [GeV]");
@@ -187,7 +193,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
   projX1FF->GetXaxis()->SetTitle("p_{T} [GeV]");
   projX1FF->GetYaxis()->SetTitle("fake factor");
   projX1FF->Draw("pe0");
-  projX1FF->GetYaxis()->SetRangeUser(0,1.0);
+  projX1FF->GetYaxis()->SetRangeUser(0,2.0);
   projX3FF->Draw("same");
   projX4FF->Draw("same");
   leg.Draw();
@@ -198,7 +204,7 @@ void fake_rate_measurement_helper(std::string var = "nominal"){
 
   TCanvas c4("c4","c4",600,600);
   c4.SetLogx();
-  projX1ff->GetYaxis()->SetRangeUser(0,1.0);
+  projX1ff->GetYaxis()->SetRangeUser(0,2.0);
   projX1ff->GetXaxis()->SetNoExponent();
   projX1ff->GetXaxis()->SetMoreLogLabels();
   projX1ff->GetXaxis()->SetTitle("p_{T} [GeV]");
@@ -225,21 +231,30 @@ void fake_rate_measurement(){
 
   fake_rate_measurement_helper("nominal");
   fake_rate_measurement_helper("MET60");
-  fake_rate_measurement_helper("ASjet");
+  fake_rate_measurement_helper("MET100");
+  fake_rate_measurement_helper("nominal","_FFNoLooseTrig","-NoLooseTrig");
+  fake_rate_measurement_helper("TwoJets");
   fake_rate_measurement_helper("mcup");
   fake_rate_measurement_helper("mcdn");
 
   TFile* nominalFile = new TFile("fakeRate-nominal.root","READ");
   TFile* MET60File = new TFile("fakeRate-MET60.root","READ");
-  TFile* ASjetFile = new TFile("fakeRate-ASjet.root","READ");
+  TFile* MET100File = new TFile("fakeRate-MET100.root","READ");
+  TFile* ASjetFile = new TFile("fakeRate-nominal-NoLooseTrig.root","READ");
+  TFile* TwoJetsFile = new TFile("fakeRate-TwoJets.root","READ");
   TFile* mcupfile = new TFile("fakeRate-mcup.root","READ");
   TFile* mcdnfile = new TFile("fakeRate-mcdn.root","READ");
 
   TH2F* fr1 = (TH2F*) nominalFile->Get("fakeFactor-nominal");
   TH2F* fr2 = (TH2F*) MET60File->Get("fakeFactor-MET60");
-  TH2F* fr3 = (TH2F*) ASjetFile->Get("fakeFactor-ASjet");
+  TH2F* fr3 = (TH2F*) ASjetFile->Get("fakeFactor-nominal");
   TH2F* fr4 = (TH2F*) mcupfile->Get("fakeFactor-mcup");
   TH2F* fr5 = (TH2F*) mcdnfile->Get("fakeFactor-mcdn");
+  TH2F* fr6 = (TH2F*) MET100File->Get("fakeFactor-MET100");
+  TH2F* fr7 = (TH2F*) TwoJetsFile->Get("fakeFactor-TwoJets");
+
+  std::cout << ASjetFile << std::endl;
+
 
   TH1D* temp1 = new TH1D();
   TH1D* temp2 = new TH1D();
@@ -256,14 +271,24 @@ void fake_rate_measurement(){
   temp6->SetFillColor(kYellow);
   temp6->SetLineColor(kYellow);
 
-  leg = TLegend(0.18,0.45,0.4,0.75);
+  TH1D* temp7 = new TH1D();
+  temp7->SetMarkerColor(kRed+2);
+  temp7->SetLineColor(kRed+2);
+  TH1D* temp8 = new TH1D();
+  temp8->SetMarkerColor(kBlue+2);
+  temp8->SetLineColor(kBlue+2);
+
+
+  leg = TLegend(0.18,0.40,0.4,0.75);
   leg.SetBorderSize(0);
   leg.SetFillColor(0);
   leg.SetFillStyle(0);
   leg.SetTextSize(0.045);
   leg.AddEntry(temp1,"#font[42]{nominal}","pe0");
   leg.AddEntry(temp2,"#font[42]{MET < 60}","pe0");
-  leg.AddEntry(temp3,"#font[42]{away side jet}","pe0");
+  leg.AddEntry(temp7,"#font[42]{MET < 100}","pe0");
+  leg.AddEntry(temp3,"#font[42]{No LooseLH Trig}","pe0");
+  leg.AddEntry(temp8,"#font[42]{two jets}","pe0");
   leg.AddEntry(temp4,"#font[42]{MC up 10%}","pe0");
   leg.AddEntry(temp5,"#font[42]{MC down 10%}","pe0");
   leg.AddEntry(temp6,"#font[42]{Final Sys. Unc.}","f");
@@ -282,13 +307,17 @@ void fake_rate_measurement(){
 
   TH1D* proj1nom = fr1->ProjectionX("proj1nom",1,1);
   TH1D* proj1M60 = fr2->ProjectionX("proj1M60",1,1);
+  TH1D* proj1M100 = fr6->ProjectionX("proj1M100",1,1);
   TH1D* proj1asj = fr3->ProjectionX("proj1asj",1,1);
+  TH1D* proj1twoj = fr7->ProjectionX("proj1twoj",1,1);
   TH1D* proj1up = fr4->ProjectionX("proj1up",1,1);
   TH1D* proj1dn = fr5->ProjectionX("proj1dn",1,1);
   proj1M60->SetLineWidth(0);
+  proj1M100->SetLineWidth(0);
   proj1up->SetLineWidth(0);
   proj1dn->SetLineWidth(0);
   proj1asj->SetLineWidth(0);
+  proj1twoj->SetLineWidth(0);
 
   TH1D* proj1StatErrUp = (TH1D*) proj1nom->Clone();
   TH1D* proj1StatErrDn = (TH1D*) proj1nom->Clone();
@@ -300,13 +329,17 @@ void fake_rate_measurement(){
   TGraphErrors*  proj1StatErrUpGr =  TH1TOTGraph(proj1StatErrUp);
   TGraphErrors*  proj1StatErrDnGr =  TH1TOTGraph(proj1StatErrDn);
   TGraphErrors*  proj1M60ErrGr =  TH1TOTGraph(proj1M60);
+  TGraphErrors*  proj1M100ErrGr =  TH1TOTGraph(proj1M100);
   TGraphErrors*  proj1asjErrGr =  TH1TOTGraph(proj1asj);
+  TGraphErrors*  proj1twojErrGr =  TH1TOTGraph(proj1twoj);
   TGraphErrors*  proj1upErrGr =  TH1TOTGraph(proj1up);
   TGraphErrors*  proj1dnErrGr =  TH1TOTGraph(proj1dn);
 
   TGraphAsymmErrors* proj1ErrBand = myMakeBand(proj1StatGr, proj1StatErrUpGr, proj1StatErrDnGr);
   myAddtoBand(proj1M60ErrGr, proj1ErrBand);
+  myAddtoBand(proj1M100ErrGr, proj1ErrBand);
   myAddtoBand(proj1asjErrGr, proj1ErrBand);
+  myAddtoBand(proj1twojErrGr, proj1ErrBand);
   myAddtoBand(proj1upErrGr, proj1ErrBand);
   myAddtoBand(proj1dnErrGr, proj1ErrBand);
 
@@ -323,13 +356,19 @@ void fake_rate_measurement(){
   pad_1->cd();
   proj1M60->SetMarkerColor(kRed);
   proj1M60->SetLineColor(kRed);
+  proj1M100->SetMarkerColor(kRed+2);
+  proj1M100->SetLineColor(kRed+2);
   proj1asj->SetMarkerColor(kBlue);
   proj1asj->SetLineColor(kBlue);
+  proj1twoj->SetMarkerColor(kBlue+2);
+  proj1twoj->SetLineColor(kBlue+2);
   proj1up->SetMarkerStyle(22);
   proj1dn->SetMarkerStyle(23);
   proj1nom->SetMarkerSize(0.8);
   proj1asj->SetMarkerSize(0.8);
+  proj1twoj->SetMarkerSize(0.8);
   proj1M60->SetMarkerSize(0.8);
+  proj1M100->SetMarkerSize(0.8);
   proj1up->SetMarkerSize(0.8);
   proj1dn->SetMarkerSize(0.8);
   proj1nom->Draw("P E");
@@ -341,12 +380,14 @@ void fake_rate_measurement(){
   proj1nom->GetYaxis()->SetNdivisions(515);
   proj1nom->GetYaxis()->SetTitleSize(0.07);
   proj1nom->GetYaxis()->SetTitleOffset(0.95);
-  proj1nom->GetYaxis()->SetRangeUser(0.1,0.7);
+  proj1nom->GetYaxis()->SetRangeUser(0.,3.0);
   proj1nom->GetXaxis()->SetLabelSize(0);
   proj1up->Draw("same P E X0");
   proj1dn->Draw("same P E X0");
   proj1M60->Draw("same P E X0");
+  proj1M100->Draw("same P E X0");
   proj1asj->Draw("same P E X0");
+  proj1twoj->Draw("same P E X0");
   proj1nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
   myText(0.18,0.80,1,"0.0 < |#eta| < 1.37");
@@ -355,19 +396,25 @@ void fake_rate_measurement(){
   pad_2->SetLogx();
   pad_2->cd();
   TH1D* proj1M60r = (TH1D*) proj1M60->Clone(); proj1M60r->Divide(proj1nom);
+  TH1D* proj1M100r = (TH1D*) proj1M100->Clone(); proj1M100r->Divide(proj1nom);
   TH1D* proj1upr = (TH1D*) proj1up->Clone(); proj1upr->Divide(proj1nom);
   TH1D* proj1dnr = (TH1D*) proj1dn->Clone(); proj1dnr->Divide(proj1nom);
   TH1D* proj1asjr = (TH1D*) proj1asj->Clone(); proj1asjr->Divide(proj1nom);
+  TH1D* proj1twojr = (TH1D*) proj1twoj->Clone(); proj1twojr->Divide(proj1nom);
   proj1M60r->SetLineWidth(0);
+  proj1M100r->SetLineWidth(0);
   proj1upr->SetLineWidth(0);
   proj1dnr->SetLineWidth(0);
   proj1asjr->SetLineWidth(0);
+  proj1twojr->SetLineWidth(0);
   proj1M60r->Draw("PE0X0");
   proj1ErrBandRatio->Draw("E3");
   proj1M60r->Draw("same PE0X0");
+  proj1M100r->Draw("same PE0X0");
   proj1upr->Draw("same PE0X0");
   proj1dnr->Draw("same PE0X0");
   proj1asjr->Draw("same PE0X0");
+  proj1twojr->Draw("same PE0X0");
   proj1M60r->GetXaxis()->SetLabelSize(0.15);
   proj1M60r->GetYaxis()->SetLabelSize(0.13);
   proj1M60r->GetYaxis()->SetDecimals();
@@ -377,7 +424,7 @@ void fake_rate_measurement(){
   proj1M60r->GetXaxis()->SetTitleOffset(1.0);
   proj1M60r->GetYaxis()->SetTitleSize(0.15);
   proj1M60r->GetYaxis()->SetTitleOffset(0.40);
-  proj1M60r->GetYaxis()->SetRangeUser(0.5,1.5);
+  proj1M60r->GetYaxis()->SetRangeUser(0.,2.0);
   proj1M60r->GetYaxis()->SetNdivisions(106);
   proj1M60r->GetXaxis()->SetNoExponent();
   proj1M60r->GetXaxis()->SetMoreLogLabels();
@@ -402,13 +449,17 @@ void fake_rate_measurement(){
 
   TH1D* proj3nom = fr1->ProjectionX("proj3nom",3,3);
   TH1D* proj3M60 = fr2->ProjectionX("proj3M60",3,3);
+  TH1D* proj3M100 = fr6->ProjectionX("proj3M100",3,3);
   TH1D* proj3asj = fr3->ProjectionX("proj3asj",3,3);
+  TH1D* proj3twoj = fr7->ProjectionX("proj3twoj",3,3);
   TH1D* proj3up = fr4->ProjectionX("proj3up",3,3);
   TH1D* proj3dn = fr5->ProjectionX("proj3dn",3,3);
   proj3M60->SetLineWidth(0);
+  proj3M100->SetLineWidth(0);
   proj3up->SetLineWidth(0);
   proj3dn->SetLineWidth(0);
   proj3asj->SetLineWidth(0);
+  proj3twoj->SetLineWidth(0);
 
   TH1D* proj3StatErrUp = (TH1D*) proj3nom->Clone();
   TH1D* proj3StatErrDn = (TH1D*) proj3nom->Clone();
@@ -420,13 +471,17 @@ void fake_rate_measurement(){
   TGraphErrors*  proj3StatErrUpGr =  TH1TOTGraph(proj3StatErrUp);
   TGraphErrors*  proj3StatErrDnGr =  TH1TOTGraph(proj3StatErrDn);
   TGraphErrors*  proj3M60ErrGr =  TH1TOTGraph(proj3M60);
+  TGraphErrors*  proj3M100ErrGr =  TH1TOTGraph(proj3M100);
   TGraphErrors*  proj3asjErrGr =  TH1TOTGraph(proj3asj);
+  TGraphErrors*  proj3twojErrGr =  TH1TOTGraph(proj3twoj);
   TGraphErrors*  proj3upErrGr =  TH1TOTGraph(proj3up);
   TGraphErrors*  proj3dnErrGr =  TH1TOTGraph(proj3dn);
 
   TGraphAsymmErrors* proj3ErrBand = myMakeBand(proj3StatGr, proj3StatErrUpGr, proj3StatErrDnGr);
   myAddtoBand(proj3M60ErrGr, proj3ErrBand);
+  myAddtoBand(proj3M100ErrGr, proj3ErrBand);
   myAddtoBand(proj3asjErrGr, proj3ErrBand);
+  myAddtoBand(proj3twojErrGr, proj3ErrBand);
   myAddtoBand(proj3upErrGr, proj3ErrBand);
   myAddtoBand(proj3dnErrGr, proj3ErrBand);
 
@@ -443,13 +498,19 @@ void fake_rate_measurement(){
   pad_1->cd();
   proj3M60->SetMarkerColor(kRed);
   proj3M60->SetLineColor(kRed);
+  proj3M100->SetMarkerColor(kRed+2);
+  proj3M100->SetLineColor(kRed+2);
   proj3asj->SetMarkerColor(kBlue);
   proj3asj->SetLineColor(kBlue);
+  proj3twoj->SetMarkerColor(kBlue+2);
+  proj3twoj->SetLineColor(kBlue+2);
   proj3up->SetMarkerStyle(22);
   proj3dn->SetMarkerStyle(23);
   proj3nom->SetMarkerSize(0.8);
   proj3asj->SetMarkerSize(0.8);
+  proj3twoj->SetMarkerSize(0.8);
   proj3M60->SetMarkerSize(0.8);
+  proj3M100->SetMarkerSize(0.8);
   proj3up->SetMarkerSize(0.8);
   proj3dn->SetMarkerSize(0.8);
   proj3nom->Draw("P E");
@@ -461,12 +522,14 @@ void fake_rate_measurement(){
   proj3nom->GetYaxis()->SetNdivisions(515);
   proj3nom->GetYaxis()->SetTitleSize(0.07);
   proj3nom->GetYaxis()->SetTitleOffset(0.95);
-  proj3nom->GetYaxis()->SetRangeUser(0.1,0.7);
+  proj3nom->GetYaxis()->SetRangeUser(0.,3.0);
   proj3nom->GetXaxis()->SetLabelSize(0);
   proj3up->Draw("same P E X0");
   proj3dn->Draw("same P E X0");
   proj3M60->Draw("same P E X0");
+  proj3M100->Draw("same P E X0");
   proj3asj->Draw("same P E X0");
+  proj3twoj->Draw("same P E X0");
   proj3nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
   myText(0.18,0.80,1,"1.52 < |#eta| < 2.01");
@@ -475,19 +538,25 @@ void fake_rate_measurement(){
   pad_2->SetLogx();
   pad_2->cd();
   TH1D* proj3M60r = (TH1D*) proj3M60->Clone(); proj3M60r->Divide(proj3nom);
+  TH1D* proj3M100r = (TH1D*) proj3M100->Clone(); proj3M100r->Divide(proj3nom);
   TH1D* proj3upr = (TH1D*) proj3up->Clone(); proj3upr->Divide(proj3nom);
   TH1D* proj3dnr = (TH1D*) proj3dn->Clone(); proj3dnr->Divide(proj3nom);
   TH1D* proj3asjr = (TH1D*) proj3asj->Clone(); proj3asjr->Divide(proj3nom);
+  TH1D* proj3twojr = (TH1D*) proj3twoj->Clone(); proj3twojr->Divide(proj3nom);
   proj3M60r->SetLineWidth(0);
+  proj3M100r->SetLineWidth(0);
   proj3upr->SetLineWidth(0);
   proj3dnr->SetLineWidth(0);
   proj3asjr->SetLineWidth(0);
+  proj3twojr->SetLineWidth(0);
   proj3M60r->Draw("PE0X0");
   proj3ErrBandRatio->Draw("E3");
   proj3M60r->Draw("same PE0X0");
+  proj3M100r->Draw("same PE0X0");
   proj3upr->Draw("same PE0X0");
   proj3dnr->Draw("same PE0X0");
   proj3asjr->Draw("same PE0X0");
+  proj3twojr->Draw("same PE0X0");
   proj3M60r->GetXaxis()->SetLabelSize(0.15);
   proj3M60r->GetYaxis()->SetLabelSize(0.13);
   proj3M60r->GetYaxis()->SetDecimals();
@@ -497,7 +566,7 @@ void fake_rate_measurement(){
   proj3M60r->GetXaxis()->SetTitleOffset(1.0);
   proj3M60r->GetYaxis()->SetTitleSize(0.15);
   proj3M60r->GetYaxis()->SetTitleOffset(0.40);
-  proj3M60r->GetYaxis()->SetRangeUser(0.5,1.5);
+  proj3M60r->GetYaxis()->SetRangeUser(0.,2.0);
   proj3M60r->GetYaxis()->SetNdivisions(106);
   proj3M60r->GetXaxis()->SetNoExponent();
   proj3M60r->GetXaxis()->SetMoreLogLabels();
@@ -523,13 +592,17 @@ void fake_rate_measurement(){
 
   TH1D* proj4nom = fr1->ProjectionX("proj4nom",4,4);
   TH1D* proj4M60 = fr2->ProjectionX("proj4M60",4,4);
+  TH1D* proj4M100 = fr6->ProjectionX("proj4M100",4,4);
   TH1D* proj4asj = fr3->ProjectionX("proj4asj",4,4);
+  TH1D* proj4twoj = fr7->ProjectionX("proj4twoj",4,4);
   TH1D* proj4up = fr4->ProjectionX("proj4up",4,4);
   TH1D* proj4dn = fr5->ProjectionX("proj4dn",4,4);
   proj4M60->SetLineWidth(0);
+  proj4M100->SetLineWidth(0);
   proj4up->SetLineWidth(0);
   proj4dn->SetLineWidth(0);
   proj4asj->SetLineWidth(0);
+  proj4twoj->SetLineWidth(0);
 
   TH1D* proj4StatErrUp = (TH1D*) proj4nom->Clone();
   TH1D* proj4StatErrDn = (TH1D*) proj4nom->Clone();
@@ -541,13 +614,17 @@ void fake_rate_measurement(){
   TGraphErrors*  proj4StatErrUpGr =  TH1TOTGraph(proj4StatErrUp);
   TGraphErrors*  proj4StatErrDnGr =  TH1TOTGraph(proj4StatErrDn);
   TGraphErrors*  proj4M60ErrGr =  TH1TOTGraph(proj4M60);
+  TGraphErrors*  proj4M100ErrGr =  TH1TOTGraph(proj4M100);
   TGraphErrors*  proj4asjErrGr =  TH1TOTGraph(proj4asj);
+  TGraphErrors*  proj4twojErrGr =  TH1TOTGraph(proj4twoj);
   TGraphErrors*  proj4upErrGr =  TH1TOTGraph(proj4up);
   TGraphErrors*  proj4dnErrGr =  TH1TOTGraph(proj4dn);
 
   TGraphAsymmErrors* proj4ErrBand = myMakeBand(proj4StatGr, proj4StatErrUpGr, proj4StatErrDnGr);
   myAddtoBand(proj4M60ErrGr, proj4ErrBand);
+  myAddtoBand(proj4M100ErrGr, proj4ErrBand);
   myAddtoBand(proj4asjErrGr, proj4ErrBand);
+  myAddtoBand(proj4twojErrGr, proj4ErrBand);
   myAddtoBand(proj4upErrGr, proj4ErrBand);
   myAddtoBand(proj4dnErrGr, proj4ErrBand);
 
@@ -564,13 +641,19 @@ void fake_rate_measurement(){
   pad_1->cd();
   proj4M60->SetMarkerColor(kRed);
   proj4M60->SetLineColor(kRed);
+  proj4M100->SetMarkerColor(kRed+2);
+  proj4M100->SetLineColor(kRed+2);
   proj4asj->SetMarkerColor(kBlue);
   proj4asj->SetLineColor(kBlue);
+  proj4twoj->SetMarkerColor(kBlue+2);
+  proj4twoj->SetLineColor(kBlue+2);
   proj4up->SetMarkerStyle(22);
   proj4dn->SetMarkerStyle(23);
   proj4nom->SetMarkerSize(0.8);
   proj4asj->SetMarkerSize(0.8);
+  proj4twoj->SetMarkerSize(0.8);
   proj4M60->SetMarkerSize(0.8);
+  proj4M100->SetMarkerSize(0.8);
   proj4up->SetMarkerSize(0.8);
   proj4dn->SetMarkerSize(0.8);
   proj4nom->Draw("P E");
@@ -582,12 +665,14 @@ void fake_rate_measurement(){
   proj4nom->GetYaxis()->SetNdivisions(515);
   proj4nom->GetYaxis()->SetTitleSize(0.07);
   proj4nom->GetYaxis()->SetTitleOffset(0.95);
-  proj4nom->GetYaxis()->SetRangeUser(0.1,0.7);
+  proj4nom->GetYaxis()->SetRangeUser(0.,3.0);
   proj4nom->GetXaxis()->SetLabelSize(0);
   proj4up->Draw("same P E X0");
   proj4dn->Draw("same P E X0");
   proj4M60->Draw("same P E X0");
+  proj4M100->Draw("same P E X0");
   proj4asj->Draw("same P E X0");
+  proj4twoj->Draw("same P E X0");
   proj4nom->Draw("same P E");
   ATLASLabel(0.18,0.85,"Internal",1);
   myText(0.18,0.80,1,"2.01 < |#eta| < 2.47");
@@ -596,19 +681,25 @@ void fake_rate_measurement(){
   pad_2->SetLogx();
   pad_2->cd();
   TH1D* proj4M60r = (TH1D*) proj4M60->Clone(); proj4M60r->Divide(proj4nom);
+  TH1D* proj4M100r = (TH1D*) proj4M100->Clone(); proj4M100r->Divide(proj4nom);
   TH1D* proj4upr = (TH1D*) proj4up->Clone(); proj4upr->Divide(proj4nom);
   TH1D* proj4dnr = (TH1D*) proj4dn->Clone(); proj4dnr->Divide(proj4nom);
   TH1D* proj4asjr = (TH1D*) proj4asj->Clone(); proj4asjr->Divide(proj4nom);
+  TH1D* proj4twojr = (TH1D*) proj4twoj->Clone(); proj4twojr->Divide(proj4nom);
   proj4M60r->SetLineWidth(0);
+  proj4M100r->SetLineWidth(0);
   proj4upr->SetLineWidth(0);
   proj4dnr->SetLineWidth(0);
   proj4asjr->SetLineWidth(0);
+  proj4twojr->SetLineWidth(0);
   proj4M60r->Draw("PE0X0");
   proj4ErrBandRatio->Draw("E3");
   proj4M60r->Draw("same PE0X0");
+  proj4M100r->Draw("same PE0X0");
   proj4upr->Draw("same PE0X0");
   proj4dnr->Draw("same PE0X0");
   proj4asjr->Draw("same PE0X0");
+  proj4twojr->Draw("same PE0X0");
   proj4M60r->GetXaxis()->SetLabelSize(0.15);
   proj4M60r->GetYaxis()->SetLabelSize(0.13);
   proj4M60r->GetYaxis()->SetDecimals();
@@ -618,7 +709,7 @@ void fake_rate_measurement(){
   proj4M60r->GetXaxis()->SetTitleOffset(1.0);
   proj4M60r->GetYaxis()->SetTitleSize(0.15);
   proj4M60r->GetYaxis()->SetTitleOffset(0.40);
-  proj4M60r->GetYaxis()->SetRangeUser(0.5,1.5);
+  proj4M60r->GetYaxis()->SetRangeUser(0.,2.0);
   proj4M60r->GetYaxis()->SetNdivisions(106);
   proj4M60r->GetXaxis()->SetNoExponent();
   proj4M60r->GetXaxis()->SetMoreLogLabels();

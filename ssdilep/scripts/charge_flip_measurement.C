@@ -278,12 +278,12 @@ void charge_flip_measurement(){
   c1->cd();
   std::vector<TH1D*> c1h1vec;
   c1h1vec.push_back(NM2.m_flipRateEta);
-  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","abs(#eta)",0,2.5,0,2.47);
-  ATLASLabel(0.20,0.83,"internal",1);
-  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","abs(#eta)",1e-2,20,0,2.47);
+  gROOT->ProcessLine("pad_1->SetLogy();");
+  ATLASLabel(0.20,0.83,"Preliminary",1);
+  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
   myText(0.60,0.75,1,"P(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
-  //gROOT->ProcessLine("pad_1->SetLogy();");
   //c1->SetLogy();
   /*NM1.m_flipRateEta->Draw();
   NM1.m_flipRateEta->GetXaxis()->SetTitle("#eta");
@@ -302,8 +302,8 @@ void charge_flip_measurement(){
   std::vector<TH1D*> c2h1vec;
   c2h1vec.push_back(NM2.m_flipRatePt);
   drawComparison2(c2,&c2h1vec,NM1.m_flipRatePt,"#sigma(p_{T})","p_{T} [GeV]",0,0.2,30,400,true);
-  ATLASLabel(0.20,0.83,"internal",1);
-  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.5 fb^{-1}");
+  ATLASLabel(0.20,0.83,"Preliminary",1);
+  myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
   myText(0.60,0.75,1,"P(p_{T},#eta) = #sigma(p_{T}) #times f(#eta)");
   leg->Draw();
   //c2->SetLogy();

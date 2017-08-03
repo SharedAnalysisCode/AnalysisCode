@@ -32,6 +32,69 @@ import itertools
 GeV = 1000.0
 
 #------------------------------------------------------------------------------
+class MJJReweight(pyframe.core.Algorithm):
+    """
+    MJJReweight
+    """
+    #__________________________________________________________________________
+    def __init__(self, 
+                 cutflow=None,
+                 key=None,
+                 sys_peak=None,
+                 sys_width=None,
+                 sys_tail=None,
+                 ):
+        pyframe.core.Algorithm.__init__(self, name="MJJReweight", isfilter=True)
+
+        self.cutflow = cutflow
+        self.key = key
+        self.sys_peak = sys_peak
+        self.sys_width = sys_width
+        self.sys_tail = sys_tail
+
+        self.peak = 177.
+        if self.sys_peak == "DN":
+          self.peak -= 13.
+        elif self.sys_peak == "UP":
+          self.peak += 13.
+
+        self.width = 877.
+        if self.sys_width == "DN":
+          self.width -= 22.
+        elif self.sys_width == "UP":
+          self.width += 22.
+
+        self.tail = -3.0
+        if self.sys_tail == "DN":
+          self.tail -= 0.24
+        elif self.sys_tail == "UP":
+          self.tail += 0.24
+
+
+    #__________________________________________________________________________
+    def execute(self, weight):
+        if "mc" in self.sampletype and self.chain.mcChannelNumber in range(364100,364127+1):
+          MJJ = self.store["MJJ"]
+          if MJJ < - 900:
+            MJJw = 1.
+            if self.key: self.store[self.key] = MJJw
+            self.set_weight(MJJw*weight)
+            return True
+
+          k1 = ROOT.TMath.Log( 1.0 - ( MJJ - self.peak ) * self.tail / self.width )
+          k2 = 2.3548200450309494 # 2 Sqrt( Ln(4) )
+          k3 = ( 2.0 / k2 ) * ROOT.TMath.ASinH( 0.5 * k2 * self.tail)
+          norm = 4.52282
+          k32 = k3 * k3
+          MJJw = norm*ROOT.TMath.Exp( ( -0.5 / k32 * k1 * k1 ) - ( k32 * 0.5 ) )
+        else:
+          MJJw = 1.
+
+        if self.key: self.store[self.key] = MJJw
+        self.set_weight(MJJw*weight)  
+        return True
+
+#------------------------------------------------------------------------------
 class LPXKfactor(pyframe.core.Algorithm):
     """
     multiply event weight by the LPXKfactor
@@ -329,9 +392,39 @@ class GlobalBjet(pyframe.core.Algorithm):
     def execute(self, weight):
       sf=1.0
       if "mc" in self.sampletype: 
-        jets = self.store['jets']
+        jets = self.store['jets_tight']
         for jet in jets:
           sf *= getattr(jet,"SFFix77").at(0)
+
+      if self.key: 
+        self.store[self.key] = sf
+      return True
+
+#------------------------------------------------------------------------------
+class GlobalJVT(pyframe.core.Algorithm):
+    """
+    GlobalJVT
+    """
+    #__________________________________________________________________________
+    def __init__(self, name="GlobalJVT",
+            key            = None,
+            ):
+
+        pyframe.core.Algorithm.__init__(self, name=name)
+        self.key               = key
+
+        assert key, "Must provide key for storing ele reco sf"
+    #_________________________________________________________________________
+    def initialize(self):
+      pass
+    #_________________________________________________________________________
+    def execute(self, weight):
+      sf=1.0
+      if "mc" in self.sampletype: 
+        jets = self.store['jets']
+        for jet in jets:
+          sf *= getattr(jet,"JvtEff_SF_Medium").at(0)
+          sf *= getattr(jet,"fJvtEff_SF_Medium").at(0)
 
       if self.key: 
         self.store[self.key] = sf
@@ -1270,6 +1363,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
     #__________________________________________________________________________
     def __init__(self, name="SuperGenericFakeFactor",
             key            = None,
+            do_FFweight    = None,
             sys_FFe        = None,
             sys_FFm        = None,
             sys_CHF        = None,
@@ -1286,6 +1380,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             ):
         pyframe.core.Algorithm.__init__(self, name=name)
         self.key               = key
+        self.do_FFweight       = do_FFweight
         self.sys_FFe           = sys_FFe
         self.sys_FFm           = sys_FFm
         self.sys_CHF           = sys_CHF
@@ -1457,17 +1552,18 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
                 return True
 
       sf = 1.0
-      if len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T):
+      if self.do_FFweight and ( len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T) ):
         sf = -1.0
       muons = MUONS
       electrons = ELECTRONS
 
       for ele in electrons:
         if (ele.isIsolated_Loose and ele.LHMedium) :
-          if "mc" in self.sampletype : 
-            sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
-            sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
+          if "mc" in self.sampletype :
+            if ele.electronType() in [1,2,3] :
+              sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
+              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
+              sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
             ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
             etaBin = self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) )
             if ptBin==self.h_ptFunc.GetNbinsX()+1:
@@ -1492,44 +1588,44 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
                 probMC   = (self.h_ptRateMC.GetBinContent( ptBin )  +self.h_ptRateMC.GetBinError( ptBin ))   * (self.h_etaRateMC.GetBinContent( etaBin )  +self.h_etaRateMC.GetBinError( etaBin ))
                 probData = (self.h_ptRateData.GetBinContent( ptBin )-self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )-self.h_etaRateData.GetBinError( etaBin ))
               sf *= ( 1 - probData )/( 1 - probMC )
-          else :
-            pass
         else :
-          sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.caloCluster_eta ) ) )
+          if self.do_FFweight:
+            electron_pt = ele.tlv.Pt()/GeV
+            if electron_pt > 2000.:
+              electron_pt = 1999.
+            sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( electron_pt, abs( ele.caloCluster_eta ) ) )
           if "mc" in self.sampletype :
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys_e)
-            sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
-          else :
-            pass
+            if ele.electronType() in [1,2,3] :
+              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys_e)
+              sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
 
       for muon in muons:
         if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
-          if "mc" in self.sampletype : 
-            sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys_m)
-            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
-            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
-          else :
-            pass
-        else :
-          ff_mu = 0.
-          eff_up_mu = 0.
-          eff_dn_mu = 0.
-          for ibin_mu in xrange(1,self.g_ff.GetN()):
-            edlow = self.g_ff.GetX()[ibin_mu] - self.g_ff.GetEXlow()[ibin_mu]
-            edhi  = self.g_ff.GetX()[ibin_mu] + self.g_ff.GetEXhigh()[ibin_mu]
-            if muon.tlv.Pt()/GeV>=edlow and muon.tlv.Pt()/GeV<edhi:
-              ff_mu = self.g_ff.GetY()[ibin_mu]
-              eff_up_mu = self.g_ff.GetEYhigh()[ibin_mu]
-              eff_dn_mu = self.g_ff.GetEYlow()[ibin_mu]
-              break
-          if self.sys_FFm == 'UP': ff_mu +=eff_up_mu
-          if self.sys_FFm == 'DN': ff_mu -=eff_dn_mu
-          sf *= -ff_mu
           if "mc" in self.sampletype :
-            sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
-            sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
-          else :
-            pass
+            if muon.isTrueIsoMuon() :
+              sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys_m)
+              sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
+              sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
+        else :
+          if self.do_FFweight:
+            ff_mu = 0.
+            eff_up_mu = 0.
+            eff_dn_mu = 0.
+            for ibin_mu in xrange(1,self.g_ff.GetN()):
+              edlow = self.g_ff.GetX()[ibin_mu] - self.g_ff.GetEXlow()[ibin_mu]
+              edhi  = self.g_ff.GetX()[ibin_mu] + self.g_ff.GetEXhigh()[ibin_mu]
+              if muon.tlv.Pt()/GeV>=edlow and muon.tlv.Pt()/GeV<edhi:
+                ff_mu = self.g_ff.GetY()[ibin_mu]
+                eff_up_mu = self.g_ff.GetEYhigh()[ibin_mu]
+                eff_dn_mu = self.g_ff.GetEYlow()[ibin_mu]
+                break
+            if self.sys_FFm == 'UP': ff_mu +=eff_up_mu
+            if self.sys_FFm == 'DN': ff_mu -=eff_dn_mu
+            sf *= -ff_mu
+          if "mc" in self.sampletype :
+            if muon.isTrueIsoMuon() :
+              sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
+              sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
 
       if self.key: 
         self.store[self.key] = sf

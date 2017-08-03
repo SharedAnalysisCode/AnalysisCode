@@ -103,7 +103,7 @@ def analyze(config):
         met_key='met_clus', 
         )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=False, use_simple_truth=False)  
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)  
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -119,6 +119,7 @@ def analyze(config):
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLH')

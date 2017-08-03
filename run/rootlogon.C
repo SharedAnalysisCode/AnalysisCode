@@ -147,7 +147,7 @@ TGraphErrors* TH1TOTGraph_2(TH1 *h1, double n=1, double nAll=1, bool errorX = tr
 }
 
 TH1D* drawComparison2(TCanvas* can, std::vector<TH1D* > *h1vec, TH1D* h2, const char* Ytitle, const char* Xtitle, double ydown = 0, double yup = 0, double xmin = 0, double xmax = 0, bool logx = false, 
-	double ratioDown = 0.5, double ratioUp = 1.5, bool ratioOrSub = true, TF1* ratioFun = 0, bool invertColor = false, std::string drawOpt = "PE0", bool verticalLines = false, TGraphAsymmErrors* sysBand = 0)
+	double ratioDown = 0.5, double ratioUp = 1.5, bool ratioOrSub = true, TF1* ratioFun = 0, bool invertColor = false, std::string drawOpt = "PE", bool verticalLines = false, TGraphAsymmErrors* sysBand = 0)
 {    
     can->cd();
     //h1->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -186,12 +186,12 @@ TH1D* drawComparison2(TCanvas* can, std::vector<TH1D* > *h1vec, TH1D* h2, const 
 	h1->GetYaxis()->SetTitleSize(0.07);
 	h1->GetYaxis()->SetTitleOffset(0.95);
 
-	h2->Draw("PE0same");
+	h2->Draw("PEsame");
 	h2->SetMarkerSize(0.8);
 
 	for (unsigned int i = 1; i < h1vec->size(); i++){
 		h1vec->at(i)->SetMarkerSize(0.8);
-		h1vec->at(i)->Draw("PE0same");
+		h1vec->at(i)->Draw("PEsame");
 	}
 
 
@@ -228,7 +228,7 @@ TH1D* drawComparison2(TCanvas* can, std::vector<TH1D* > *h1vec, TH1D* h2, const 
 		ratio->SetMarkerColor(h1->GetMarkerColor());
 		ratio->SetLineColor(h1->GetLineColor());
 	}
-	ratioGr = TH1TOTGraph_2(ratio,1,h1vec->size(),false);
+	ratioGr = TH1TOTGraph_2(ratio,1,h1vec->size(),true);
 	ratioGr->SetMarkerSize(0.8);
 	ratioGr->SetMarkerColor(ratio->GetMarkerColor());
 	ratioGr->SetLineColor(ratio->GetLineColor());

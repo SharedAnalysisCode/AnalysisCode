@@ -613,6 +613,79 @@ class EstimatorDCH(BaseEstimator):
 
 
 #------------------------------------------------------------
+class MCFakes(BaseEstimator):
+    '''
+    Estimator for merging different regions
+    '''
+    #____________________________________________________________
+    def __init__(self,data_sample,mc_samples,**kw):
+        BaseEstimator.__init__(self,**kw)
+        self.data_sample = data_sample
+        self.mc_samples = mc_samples
+    #____________________________________________________________
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+        
+        # ---------
+        # MCFakes
+        # ---------
+        region_l_den = region.replace("-CR","-CR-fakesMC").replace("-VR","-VR-fakesMC").replace("-SR","-SR-fakesMC")
+        print region
+        print region_l_den
+        print self.data_sample.name
+        print histname
+        print sys
+        firstSample = True
+        h_l_den = None
+        for s in self.mc_samples:
+          hmc_l = s.hist(histname=histname,region=region_l_den,icut=icut,sys=sys,mode=mode)
+          if not hmc_l: 
+            print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
+            continue
+          if firstSample:
+            h_l_den = hmc_l
+            firstSample = False
+          else:
+            h_l_den.Add(hmc_l)
+        if "CR-fakesMC" in region: 
+            return h_l_den
+        elif "VR-fakesMC" in region:
+            return h_l_den
+        elif "SR-fakesMC" in region:
+            return h_l_den
+        
+        
+        h = h_l_den.Clone("fakesMC_hist")
+
+        return h
+
+    #__________________________________________________________________________
+    def add_systematics(self, sys):
+        if not isinstance(sys,list): sys = [sys]
+        self.allowed_systematics += sys
+        self.data_sample.estimator.add_systematics(sys)
+        for s in self.mc_samples:
+          s.estimator.add_systematics(sys)
+
+    #__________________________________________________________________________
+    def is_affected_by_systematic(self, sys):
+        """
+        Override BaseEstimator implemenation.
+        Check all daughter systematics
+        """
+        if sys in self.allowed_systematics: return True
+        for s in self.mc_samples + [self.data_sample]: 
+            if s.estimator.is_affected_by_systematic(sys): return True
+        return False
+
+    #__________________________________________________________________________
+    def flush_hists(self):
+        BaseEstimator.flush_hists(self)
+        self.data_sample.estimator.flush_hists()
+        for s in self.mc_samples:
+          s.estimator.flush_hists()
+
+
+#------------------------------------------------------------
 class FakeEstimatorGeneral(BaseEstimator):
     '''
     Estimator for merging different regions
@@ -645,7 +718,7 @@ class FakeEstimatorGeneral(BaseEstimator):
           if not hmc_l: 
             print "WARNING: For sample %s, no %s in %s for %s %s found ..." % (s.name, histname, region, sys, mode)
             continue
-          # h_l_den.Add(hmc_l,-1)
+          h_l_den.Add(hmc_l,-1)
         if "CR-fakes" in region: 
             return h_l_den
         elif "VR-fakes" in region:

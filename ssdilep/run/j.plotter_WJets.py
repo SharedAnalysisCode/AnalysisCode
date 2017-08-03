@@ -44,11 +44,11 @@ def analyze(config):
     config.setdefault('sys',None)
     systematic = config['sys']
 
-    sys_FF    = None
+    sys_FF_ele    = None
 
     if   systematic == None: pass
-    elif systematic == 'FF_UP':      sys_FF    = 'UP'
-    elif systematic == 'FF_DN':      sys_FF    = 'DN'
+    elif systematic == 'FF_UP':      sys_FF_ele    = 'UP'
+    elif systematic == 'FF_DN':      sys_FF_ele    = 'DN'
     else: 
         assert False, "Invalid systematic %s!"%(systematic)
 
@@ -100,7 +100,7 @@ def analyze(config):
         met_key='met_clus', 
         )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=True)  
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)  
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -109,20 +109,15 @@ def analyze(config):
     ## weights
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.EvWeights.MCEventWeight(cutflow='presel',key='weight_mc_event')
-    loop += ssdilep.algs.EvWeights.LPXKfactor(cutflow='presel',key='lpx_kfactor')
     loop += ssdilep.algs.EvWeights.Pileup(cutflow='presel',key='weight_pileup')
-    #loop += ssdilep.algs.EvWeights.TrigPresc(cutflow='presel',key='trigger_prescale')
-    # loop += ssdilep.algs.EvWeights.DataUnPresc(cutflow='presel',key='data_unprescale')
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLTe120lhloose')
-    #loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassSingleEleChain')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyOneLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
+    # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='METhigher25')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='MThigher50')
 
@@ -132,14 +127,29 @@ def analyze(config):
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
 
-    loop += ssdilep.algs.EvWeights.ExactlyOneTightEleSF(
-            key='ExactlyOneTightEleSF_MediumLLH_isolLoose',
+    loop += ssdilep.algs.EvWeights.GlobalBjet(
+            key='GlobalBjet',
             )
 
-    loop += ssdilep.algs.EvWeights.ExactlyOneLooseEleFakeFactor(
-            key='ExactlyOneLooseEleFF',
-            config_file=os.path.join(main_path,'ssdilep/data/fakeFactor-01-04-2017.root'),
-            sys = sys_FF,
+    loop += ssdilep.algs.EvWeights.GlobalJVT(
+            key='GlobalJVT',
+            )
+
+    loop += ssdilep.algs.EvWeights.SuperGenericFakeFactor(
+            key='SuperGenericFakeFactor',
+            do_FFweight=True,
+            config_file_e=os.path.join(main_path,'ssdilep/data/fakeFactor-01-08-2017.root'),
+            config_file_m=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_bveto.root'),
+            config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
+            sys_FFe=sys_FF_ele,
+            # sys_FFm=sys_FF_mu,
+            # sys_CHF=sys_CF,
+            # sys_id_e = sys_id,
+            # sys_iso_e = sys_iso,
+            # sys_reco_e = sys_reco,
+            # sys_reco_m = sys_reco,
+            # sys_iso_m = sys_iso,
+            # sys_TTVA_m = sys_TTVA,
             )
 
 
@@ -157,42 +167,87 @@ def analyze(config):
     ## make plots
     ##-------------------------------------------------------------------------
 
-    ## MyTestRegion
+    ## WJets nominal
     ## ---------------------------------------
-
     loop += ssdilep.algs.algs.PlotAlgWJets(
             region   = 'Wjets-VR',
             plot_all = False,
             cut_flow = [
-               ['ExactlyOneTightEleMediumLLHisolLoose',["ExactlyOneTightEleSF_MediumLLH_isolLoose"]],
+               ['ExactlyOneTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
                ],
             )
 
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-VR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyZeroTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
+               ],
+            )
+
+    ## WJets 2 jets
+    ## ---------------------------------------
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-TwoJets-VR',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyOneTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
+               ['AtLeastTwoJets',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-TwoJets-VR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyZeroTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
+               ['AtLeastTwoJets',None],
+               ],
+            )
+
+    ## WJets tight
+    ## ---------------------------------------
     loop += ssdilep.algs.algs.PlotAlgWJets(
             region   = 'Wjets-tight-VR',
             plot_all = False,
             cut_flow = [
-               ['ExactlyOneTightEleMediumLLHisolLoose',["ExactlyOneTightEleSF_MediumLLH_isolLoose"]],
+               ['ExactlyOneTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
                ['METtrkLow60',None],
                ['MTlow120',None],
                ],
             )
 
     loop += ssdilep.algs.algs.PlotAlgWJets(
-            region   = 'Wjets-VR-L',
+            region   = 'Wjets-tight-VR-fakes',
             plot_all = False,
             cut_flow = [
-               ['ExactlyZeroTightEleMediumLLHisolLoose',["ExactlyOneLooseEleFF"]],
+               ['ExactlyZeroTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
+               ['METtrkLow60',None],
+               ['MTlow120',None],
+               ],
+            )
+
+    ## WJets tight 2 jets
+    ## ---------------------------------------
+    loop += ssdilep.algs.algs.PlotAlgWJets(
+            region   = 'Wjets-tight-TwoJets-VR',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyOneTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
+               ['METtrkLow60',None],
+               ['MTlow120',None],
+               ['AtLeastTwoJets',None],
                ],
             )
 
     loop += ssdilep.algs.algs.PlotAlgWJets(
-            region   = 'Wjets-tight-VR-L',
+            region   = 'Wjets-tight-TwoJets-VR-fakes',
             plot_all = False,
             cut_flow = [
-               ['ExactlyZeroTightEleMediumLLHisolLoose',["ExactlyOneLooseEleFF"]],
+               ['ExactlyZeroTightEleMediumLLHisolLoose',["SuperGenericFakeFactor","GlobalBjet","GlobalJVT"]],
                ['METtrkLow60',None],
                ['MTlow120',None],
+               ['AtLeastTwoJets',None],
                ],
             )
 
