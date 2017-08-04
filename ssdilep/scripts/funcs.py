@@ -233,6 +233,7 @@ def plot_hist(
     plotsfile     = None,
     sig_rescale   = None,
     xlabel        = None,
+    Ymin          = 1e-2,
     ):
     
     '''
@@ -294,8 +295,9 @@ def plot_hist(
     if data: 
         h_data = hists[data]
         h_data.SetMarkerSize(0.8)
-        h_data.Sumw2(0)
-        h_data.SetBinErrorOption(1)
+        if h_data.GetSumOfWeights()==h_data.GetEntries():
+          h_data.Sumw2(0)
+          h_data.SetBinErrorOption(1)
         if blind: apply_blind(h_data,blind)
         h_ratio = h_data.Clone('%s_ratio'%(h_data.GetName()))
         h_ratioGr = ROOT.TGraphAsymmErrors()
@@ -381,7 +383,7 @@ def plot_hist(
     else: c = ROOT.TCanvas(cname,cname,600,600)
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
-    ymin = 1.e-2 if log else 0.000001
+    ymin = Ymin if log else 0.000001
     ymax = h_total.GetMaximum()
     for b in backgrounds:
       if not b in hists.keys(): continue

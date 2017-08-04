@@ -219,10 +219,15 @@ void charge_flip_measurement(){
   // std::string SSCenterInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowSS_Powheg.root";
   // std::string SSSidebandInputFile = "/ceph/grid/home/atlas/miham/storage/ZPeak36_01_Mar/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
 
-  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowAS_Powheg.root";
-  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
-  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS_Powheg.root";
-  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  // std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  // std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  // std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  // std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  
+  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
   
   
 
@@ -231,13 +236,13 @@ void charge_flip_measurement(){
   TFile* SSCenterFile   = new TFile(SSCenterInputFile.c_str());
   TFile* SSSidebandFile = new TFile(SSSidebandInputFile.c_str());
 
-  TH1F* hOSCenterData = (TH1F*) OSCenterFile->Get("h_ZWindowAS_nominal_data");
+  TH1F* hOSCenterData = (TH1F*) OSCenterFile->Get("h_ZWindowAS_nominal_full_2015-2016_physics_Main");
   TH1F* hOSCenterMC   = (TH1F*) OSCenterFile->Get("h_ZWindowAS_nominal_Zee221");
-  TH1F* hSSCenterData = (TH1F*) SSCenterFile->Get("h_ZWindowSS_nominal_data");
+  TH1F* hSSCenterData = (TH1F*) SSCenterFile->Get("h_ZWindowSS_nominal_full_2015-2016_physics_Main");
   TH1F* hSSCenterMC   = (TH1F*) SSCenterFile->Get("h_ZWindowSS_nominal_Zee221");
-  TH1F* hOSSidebandData = (TH1F*) OSSidebandFile->Get("h_ZWindowAS-Sideband_nominal_data");
+  TH1F* hOSSidebandData = (TH1F*) OSSidebandFile->Get("h_ZWindowAS-Sideband_nominal_full_2015-2016_physics_Main");
   TH1F* hOSSidebandMC   = (TH1F*) OSSidebandFile->Get("h_ZWindowAS-Sideband_nominal_Zee221");
-  TH1F* hSSSidebandData = (TH1F*) SSSidebandFile->Get("h_ZWindowSS-Sideband_nominal_data");
+  TH1F* hSSSidebandData = (TH1F*) SSSidebandFile->Get("h_ZWindowSS-Sideband_nominal_full_2015-2016_physics_Main");
   TH1F* hSSSidebandMC   = (TH1F*) SSSidebandFile->Get("h_ZWindowSS-Sideband_nominal_Zee221");
 
   if(hOSCenterData) std::cout << "h_ZWindowOS_nominal_data found" <<std::endl; else std::cout << "h_ZWindowOS_nominal_data not found" <<std::endl;

@@ -99,8 +99,8 @@ nsspairs = Var(name = 'nsspairs',
 njets = Var(name = 'njets',
               path  = 'event',
               xmin  = 0,
-              xmax  = 6,
-              log   = False,
+              xmax  = 8,
+              log   = True,
             )
 
 nbjets = Var(name = 'nbjets',

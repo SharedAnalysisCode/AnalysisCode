@@ -103,7 +103,7 @@ def analyze(config):
         met_key='met_clus', 
         )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)  
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=False, use_simple_truth=False)  
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -112,50 +112,49 @@ def analyze(config):
     ## weights
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.EvWeights.MCEventWeight(cutflow='presel',key='weight_mc_event')
-    loop += ssdilep.algs.EvWeights.LPXKfactor(cutflow='presel',key='lpx_kfactor')
     loop += ssdilep.algs.EvWeights.Pileup(cutflow='presel',key='weight_pileup')
     #loop += ssdilep.algs.EvWeights.TrigPresc(cutflow='presel',key='trigger_prescale')
     # loop += ssdilep.algs.EvWeights.DataUnPresc(cutflow='presel',key='data_unprescale') 
    
     ## cuts
     ## +++++++++++++++++++++++++++++++++++++++
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
+    # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhloose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT2e17lhvloose')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='LooseEleVetoCrack')
 
     
     ## weights configuration
     ## ---------------------------------------
     ## event
     ## +++++++++++++++++++++++++++++++++++++++
-    """
-    No trigger scale factors!!!
-    loop += ssdilep.algs.EvWeights.MuTrigSF(
-            is_single_mu = True,
-            mu_trig_level="Loose_Loose",
-            mu_trig_chain="HLT_mu20_L1MU15",
-            key='SingleMuonTrigSF',
-            scale=None,
+
+    loop += ssdilep.algs.EvWeights.GlobalBjet(
+            key='GlobalBjet',
             )
-    """ 
+
+    loop += ssdilep.algs.EvWeights.GlobalJVT(
+            key='GlobalJVT',
+            )
+
+
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose',
-            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-04-08-2017.root'),
             chargeFlipSF=False,
             )
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleSF(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF',
-            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-04-08-2017.root'),
             chargeFlipSF=True,
             sys_CF = sys_CF,
             )
 
     loop += ssdilep.algs.EvWeights.ExactlyTwoTightEleOStoSS(
             key='ExactlyTwoTightEleSF_MediumLLH_isolLoose_OStoSS',
-            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
+            config_file=os.path.join(main_path,'ssdilep/data/chargeFlipRates-04-08-2017.root'),
             sys_CF = sys_CF,
             )
     
@@ -180,37 +179,37 @@ def analyze(config):
             region   = 'ZWindowAS',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
                ['ZMassWindowMediumLLHisolLooseNominal',None],
                ],
             )
 
-    # loop += ssdilep.algs.algs.PlotAlgZee(
-    #         region   = 'ZWindowOStoSS',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_OStoSS']],
-    #            ['ZMassWindowMediumLLHisolLooseNominal',None],
-    #            ],
-    #         )
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowOStoSS',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_OStoSS']],
+               ['ZMassWindowMediumLLHisolLooseNominal',None],
+               ],
+            )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
             region   = 'ZWindowSS',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
                ['ZMassWindowMediumLLHisolLooseSSNominal',None],
                ],
             )
 
-    # loop += ssdilep.algs.algs.PlotAlgZee(
-    #         region   = 'ZWindowSSchfSF',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF']],
-    #            ['ZMassWindowMediumLLHisolLooseSSNominal',None],
-    #            ],
-    #         )
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowSSchfSF',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF','GlobalBjet','GlobalJVT']],
+               ['ZMassWindowMediumLLHisolLooseSSNominal',None],
+               ],
+            )
 
     # loop += ssdilep.algs.algs.PlotAlgZee(
     #         region   = 'BeyondZAS',
@@ -221,23 +220,23 @@ def analyze(config):
     #            ],
     #         )
 
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowAS-Sideband',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindowMediumLLHisolLooseSidebandNominal',None],
-               ],
-            )
+    # loop += ssdilep.algs.algs.PlotAlgZee(
+    #         region   = 'ZWindowAS-Sideband',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
+    #            ['ZMassWindowMediumLLHisolLooseSidebandNominal',None],
+    #            ],
+    #         )
 
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowSS-Sideband',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose']],
-               ['ZMassWindowMediumLLHisolLooseSSSidebandNominal',None],
-               ],
-            )
+    # loop += ssdilep.algs.algs.PlotAlgZee(
+    #         region   = 'ZWindowSS-Sideband',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
+    #            ['ZMassWindowMediumLLHisolLooseSSSidebandNominal',None],
+    #            ],
+    #         )
 
 
     ## TruthStudies

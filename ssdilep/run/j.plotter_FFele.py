@@ -173,7 +173,7 @@ def analyze(config):
             cut_flow = [
                ['bjetveto',["GlobalBjet","GlobalJVT"]],
                ['METtrkLow25',None],
-               ['AtLeastTwo50GeVJets',None],
+               ['AtLeastTwoJets',None],
                ],
             )
 

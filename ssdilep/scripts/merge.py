@@ -73,6 +73,8 @@ parser.add_option('', '--BRem', dest='BRem',
                   help='BRem',metavar='BREM',default=None)
 parser.add_option('', '--BRmm', dest='BRmm',
                   help='BRmm',metavar='BRMM',default=None)
+parser.add_option('', '--ymin', dest='ymin',
+                  help='ymin',metavar='ymin',default=None)
 
 (options, args) = parser.parse_args()
 
@@ -126,7 +128,10 @@ hm = histmgr.HistMgr(basedir=options.indir,target_lumi=lumi)
 #-----------------
 
 ## data
-data = samples.data
+if options.samples == "FFele":
+  data = samples.dataEXOT19
+else:
+  data = samples.EXOT12_Dilepton_data
 mc_backgrounds = []
 ## backgrounds 
 
@@ -538,13 +543,6 @@ else:
 #for s in mc_backgrounds + mumu_signals:
 #    s.estimator.add_systematics(mc_sys)
 
-if (DO_SYS):
-  # fakes_mumu.estimator.add_systematics(FF)
-  if options.fakest == "ChargeFlip":
-    chargeFlip.estimator.add_systematics(CF)
-  if options.samples == "chargeflip":
-    samples.Zee221.estimator.add_systematics(CF)
-
 mumu_vdict  = vars_ee.vars_dict
 #fakes_vdict = vars_fakes.vars_dict
 
@@ -835,6 +833,7 @@ if options.makeplot == "True":
     save_eps      = True,
     plotsfile     = plotsfile,
     blind         = int(options.blind) if options.blind else None,
+    Ymin          = float(options.ymin) if options.ymin else 1e-2,
     )
 
 else:

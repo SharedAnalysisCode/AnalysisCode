@@ -100,7 +100,7 @@ def analyze(config):
         met_key='met_clus', 
         )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)  
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=False, use_simple_truth=False)  
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -117,7 +117,7 @@ def analyze(config):
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyOneLooseEleLooseLLH')
-    # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='METhigher25')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='MThigher50')
 
@@ -138,7 +138,7 @@ def analyze(config):
     loop += ssdilep.algs.EvWeights.SuperGenericFakeFactor(
             key='SuperGenericFakeFactor',
             do_FFweight=True,
-            config_file_e=os.path.join(main_path,'ssdilep/data/fakeFactor-01-08-2017.root'),
+            config_file_e=os.path.join(main_path,'ssdilep/data/fakeFactor-03-08-2017.root'),
             config_file_m=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_bveto.root'),
             config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
             sys_FFe=sys_FF_ele,

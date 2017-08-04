@@ -31,7 +31,9 @@ USER   = os.getenv('USER')
 # NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
-NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT19and12unskimmed"
+# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT19and12unskimmed"
+# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12_dilepton"
+NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
 
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
@@ -49,8 +51,11 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "ZPeak_Paper_003"
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
-# RUN = "WJets_HN_003"
-RUN = "FFele_HN_005"
+
+# RUN = "WJets_HN_006"
+# RUN = "FFele_HN_006"
+RUN = "ZPeak_HN_003"
+
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
 OUTFILE="ntuple.root"         # file output by pyframe job 
@@ -60,10 +65,10 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
@@ -79,10 +84,10 @@ TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
-CF_SYS = False
-FF_SYS = True
+CF_SYS = True
+FF_SYS = False
 
 BEAM_SYS = False
 CHOICE_SYS = False
@@ -299,7 +304,7 @@ def submit(tag,job_sys,samps,config={}):
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
-    maxevents = 1000000
+    maxevents = 2000000
     for s in samps:
         if len(config) > 0:
             ## skip signal and alt samples
@@ -324,7 +329,7 @@ def submit(tag,job_sys,samps,config={}):
         stype  = s.type
  
         nlines = 1
-        if os.stat(sinput).st_size>5e8:
+        if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
             print sinput
             tempFile = ROOT.TFile.Open(sinput)
             tempFile.cd("physics")
@@ -375,7 +380,7 @@ def submit(tag,job_sys,samps,config={}):
         cmd += '&\n'
         cmd += '(executable=\\"%s\\")\n' % BEXEC
         cmd += '(jobName=\\"'+jobnames[line_intiger]+'\\")\n'
-        cmd += '(memory=4000)\n'
+        cmd += '(memory=2000)\n'
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'
         cmd += '(gmlog="gmlog")\n'

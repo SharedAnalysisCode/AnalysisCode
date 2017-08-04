@@ -833,7 +833,7 @@ class ExactlyTwoTightEleOStoSS(pyframe.core.Algorithm):
               sf *= getattr(ele,"RecoEff_SF").at(0)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
               sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
-              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
+              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
         if self.key: 
           self.store[self.key] = sf
@@ -1056,11 +1056,12 @@ class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
         if "mc" in self.sampletype: 
           electrons = self.store['electrons_tight_' + self.IDLevels[1] + "_" + self.isoLevels[0] ]
           for ele in electrons:
-            if ele.electronType():
+            if ele.electronType() in [1,2,3,4]:
               sf *= getattr(ele,"RecoEff_SF").at(0)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
               sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
-              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
+              # sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
+              sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )

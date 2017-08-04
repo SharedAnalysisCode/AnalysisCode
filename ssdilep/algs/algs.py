@@ -1007,8 +1007,24 @@ class CutAlg(pyframe.core.Algorithm):
         chain = ["HLT_2e17_lhloose"]
         for i in xrange(self.chain.passedTriggers.size()):
             if self.chain.passedTriggers.at(i) in chain: return True
-
         return False
+
+    def cut_PassHLT2e17lhvloose(self):
+      if self.sampletype == "mc" :
+        runNumber = self.chain.rand_run_nr
+      else :
+        runNumber = self.chain.runNumber
+      if runNumber < 290000. :
+        trigchains={"HLT_2e12_lhloose_L12EM10VH"}
+        for i in xrange(self.chain.passedTriggers.size()):
+          if self.chain.passedTriggers.at(i) in trigchains:
+            return True
+      else:
+        trigchains={"HLT_2e17_lhvloose_nod0"}
+        for i in xrange(self.chain.passedTriggers.size()):
+            if self.chain.passedTriggers.at(i) in trigchains:
+              return True
+      return False
 
     def cut_PassHLTmu26imedium(self):
         chain = ["HLT_mu26_imedium"]
@@ -3308,8 +3324,8 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           # charge-flip histograms
           ptbin1 = digitize( ele1.tlv.Pt()/GeV, pt_bins )
           ptbin2 = digitize( ele2.tlv.Pt()/GeV, pt_bins )
-          etabin1 = digitize( abs(ele1.tlv.Eta()), eta_bins )
-          etabin2 = digitize( abs(ele2.tlv.Eta()), eta_bins )
+          etabin1 = digitize( abs(ele1.caloCluster_eta), eta_bins )
+          etabin2 = digitize( abs(ele2.caloCluster_eta), eta_bins )
           assert ptbin1!=0 and ptbin2!=0 and etabin1!=0 and etabin2!=0, "bins shouldn't be 0"
           # encode pt1, pt2, eta1, eta2 into 1D bins given pt_bins and eta_bins
           totBin = ( (ptbin1-1)*(len(eta_bins)-1) + etabin1-1 )*(len(eta_bins)-1)*len(pt_bins) + ( (ptbin2-1)*(len(eta_bins)-1) + etabin2 )
@@ -3696,9 +3712,12 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
     #_________________________________________________________________________
     def initialize(self):
         pyframe.algs.CutFlowAlg.initialize(self)
-        self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
-        self.trigger_bounds    = [65.                             ,125.                   ,145.                   ,99999999.]
-        self.trigger_prescaled = [111.53                          ,25.402                 ,6.5846                 ,1.0      ]
+        # self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0","HLT_e120_lhloose_nod0","HLT_e140_lhloose_nod0"]
+        # self.trigger_bounds    = [65.                             ,125.                   ,145.                   ,99999999.]
+        # self.trigger_prescaled = [111.53                          ,25.402                 ,6.5846                 ,1.0      ]
+        self.trigger_strings   = ["HLT_e26_lhvloose_nod0_L1EM20VH","HLT_e60_lhvloose_nod0"]
+        self.trigger_bounds    = [65.                             ,99999999999.           ]
+        self.trigger_prescaled = [111.53                          ,25.402                 ]
     #_________________________________________________________________________
     def execute(self, weight):
    
@@ -3774,7 +3793,7 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
-        self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 8, 0, 8)", dir=EVT)
+        self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         ## met plots
         self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
@@ -3839,11 +3858,6 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_el_phi.Fill(ele.tlv.Phi(), weight*elePassTrigger)
           self.h_el_trkd0sig.Fill(ele.trkd0sig, weight*elePassTrigger)
           self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight*elePassTrigger)
-
-          if "Wjets-tight-VR" in region:
-            print region
-            print electrons[0].tlv.Pt()/GeV," ",met_trk.tlv.Pt()/GeV," ",(ele1T+met_trk.tlv).M()/GeV," ",len(jets)
-            print "==============="
 
 
     #__________________________________________________________________________
