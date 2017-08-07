@@ -82,6 +82,7 @@ if options.sys == "False":
   DO_SYS = False
 
 if options.elesys == "True":
+  print "set ele sys to true"
   ELE_SYS = True
 
 if options.musys == "True":
@@ -99,6 +100,9 @@ if options.BRmm:
 print "BRee: ", BRee
 print "BRem: ", BRem
 print "BRmm: ", BRmm
+
+print "ELE_SYS: ", ELE_SYS
+
 
 #-----------------
 # Configuration
@@ -128,10 +132,14 @@ hm = histmgr.HistMgr(basedir=options.indir,target_lumi=lumi)
 #-----------------
 
 ## data
-if options.samples == "FFele":
+if options.samples in ["FFele","wjet"]:
   data = samples.dataEXOT19
+elif options.samples ==  "ZPeak":
+  data = samples.EXOT12_data
+elif options.samples ==  "HNee":
+  data = samples.dataEXOT12
 else:
-  data = samples.EXOT12_Dilepton_data
+  data = samples.data
 mc_backgrounds = []
 ## backgrounds 
 
@@ -213,15 +221,15 @@ elif options.samples in ["SSVR_mu","SSVRBLIND"]:
   ]
 elif options.samples == "ZPeak":
   mc_backgrounds = [
-  samples.Zee221,
-  samples.diboson_sherpa221_all,
+  samples.ZeeSherpa221,
+  samples.diboson_sherpa222_all,
   samples.top_physics_all,
   # samples.ttbar_Py8,
   # samples.singletop_inc,
   # samples.ttX,
   # samples.WenuPowheg,
   # samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
+  # samples.Ztautau221,
   samples.WenuPowheg,
   samples.WtaunuPowheg,
   samples.Rare,
@@ -229,19 +237,16 @@ elif options.samples == "ZPeak":
   ]
 elif options.samples == "HNee":
   mc_backgrounds = [
-  samples.Zee221,
-  samples.diboson_sherpa221_all,
-  samples.top_physics_all,
+  samples.ZeeSherpa221,
+  samples.diboson_sherpa222,
+  samples.top_physics,
   samples.Rare,
-  samples.WenuPowheg,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
   ]
 elif options.samples == "HNmumu":
   mc_backgrounds = [
   samples.Zmumu221,
-  samples.diboson_sherpa221_all,
-  samples.top_physics_all,
+  samples.diboson_sherpa221,
+  samples.top_physics,
   samples.Rare,
   samples.WenuPowheg,
   samples.WtaunuPowheg,
@@ -610,15 +615,15 @@ elif options.samples == "OSCR":
   ]
 elif options.samples == "ZPeak":
   mumu_backgrounds = [
-  samples.Zee221,
-  samples.diboson_sherpa221_all,
+  samples.ZeeSherpa221,
+  samples.diboson_sherpa222_all,
   samples.top_physics_all,
   # samples.ttbar_Py8,
   # samples.singletop_inc,
   # samples.ttX,
   # samples.WenuPowheg,
   # samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
+  # samples.Ztautau221,
   samples.WenuPowheg,
   samples.WtaunuPowheg,
   samples.Rare,
@@ -700,21 +705,18 @@ elif options.samples in ["chargeflip","chargeflipTruth"]:
   ]
 elif options.samples == "HNee":
   mumu_backgrounds = [
-  samples.Zee221,
+  samples.ZeeSherpa221,
   fakes_mumu,
-  samples.diboson_sherpa221_all,
-  samples.top_physics_all,
+  samples.diboson_sherpa222,
+  samples.top_physics,
   samples.Rare,
-  samples.WenuPowheg,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
   ]
 elif options.samples == "HNmumu":
   mumu_backgrounds = [
   samples.Zmumu221,
   fakes_mumu,
-  samples.diboson_sherpa221_all,
-  samples.top_physics_all,
+  samples.diboson_sherpa221,
+  samples.top_physics,
   samples.Rare,
   samples.WenuPowheg,
   samples.WtaunuPowheg,
@@ -778,11 +780,41 @@ elif options.samples == "signalEigenVectors":
   mumu_backgrounds = samples.list_DCH
 
 
-sys_list_ele = [BEAM, CHOICE, PDF, PI, SCALE_Z, EG_RESOLUTION_ALL, EG_SCALE_ALLCORR, EG_SCALE_E4SCINTILLATOR, CF, TRIG, ID, ISO, RECO]
-sys_list_muon = [MUON_ID, MUON_MS, MUON_RESBIAS, MUON_RHO, MUON_SCALE, TRIGSTAT, TRIGSYS, ISOSYS, ISOSTAT, RECOSYS, RECOSTAT, TTVASYS, TTVASTAT]
+sys_list_ele = [
+# BEAM,
+# CHOICE,
+# PDF,
+# PI,
+# SCALE_Z,
+# EG_RESOLUTION_ALL,
+# EG_SCALE_ALLCORR,
+# EG_SCALE_E4SCINTILLATOR,
+CF,
+# TRIG,
+# ID,
+# ISO,
+# RECO,
+]
+
+sys_list_muon = [
+MUON_ID,
+MUON_MS,
+MUON_RESBIAS,
+MUON_RHO,
+MUON_SCALE,
+TRIGSTAT,
+TRIGSYS,
+ISOSYS,
+ISOSTAT,
+RECOSYS,
+RECOSTAT,
+TTVASYS,
+TTVASTAT,
+]
 
 if (DO_SYS):
-  if ELE_SYS:
+  if options.fakest!="" and ELE_SYS:
+    print "Fake Factor Sys"
     fakes_mumu.estimator.add_systematics(FF)
   if MU_SYS:
     fakes_mumu.estimator.add_systematics(MUFF)
@@ -811,6 +843,18 @@ if options.logy=="True":
   tempLogy = True
 elif options.logy=="False":
   tempLogy = False
+
+HNsignal = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3600_NR3500",
+          tlatex = "WR3600 NR3500",
+          line_color = ROOT.kRed-8,
+          fill_color = ROOT.kRed-6,
+          line_width  = 3,
+          line_style = 1,
+          fill_style = 3004,
+          xsec       = 0.00007153,
+          )
+histmgr.load_base_estimator(hm,HNsignal)
+signal = [HNsignal]
 
 if options.makeplot == "True":
  funcs.plot_hist(

@@ -224,10 +224,10 @@ void charge_flip_measurement(){
   // std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS_Powheg.root";
   // std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_v3_002_cf/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
   
-  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowAS_Powheg.root";
-  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
-  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowSS_Powheg.root";
-  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_002/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
+  std::string OSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_chargeflip_001/hists_chargeFlipHist_ZWindowAS_Powheg.root";
+  std::string OSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_chargeflip_001/hists_chargeFlipHist_ZWindowAS-Sideband_Powheg.root";
+  std::string SSCenterInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_chargeflip_001/hists_chargeFlipHist_ZWindowSS_Powheg.root";
+  std::string SSSidebandInputFile = "/afs/f9.ijs.si/home/miham/AnalysisCode/run/ZPeak_HN_chargeflip_001/hists_chargeFlipHist_ZWindowSS-Sideband_Powheg.root";
   
   
 

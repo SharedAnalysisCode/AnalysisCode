@@ -353,7 +353,7 @@ def plot_hist(
     leg.SetTextSize(0.045)
     if not do_ratio_plot:
         leg.SetTextSize(0.035)
-    if data: leg.AddEntry(h_data,"#font[42]{"+str(data.tlatex)+"}",'P')
+    if data: leg.AddEntry(h_data,"#font[42]{Data}",'P')
     for b in backgrounds: 
       if not b in hists.keys(): continue
       leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')

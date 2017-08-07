@@ -1864,7 +1864,7 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_Mjj110(self):
-        jets = self.store['jets']
+        jets = self.store['jets_tight']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         if (jets[0].tlv + jets[1].tlv).M() > 110*GeV:
@@ -1873,7 +1873,7 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_TwoEleTwoJetHT400(self):
         leptons = self.store['electrons_loose_LooseLLH']
-        jets = self.store['jets']
+        jets = self.store['jets_tight']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         HT = 0
@@ -2243,9 +2243,9 @@ class CutAlg(pyframe.core.Algorithm):
         return True
 
     def cut_NoLooseFakesInMC(self):
-      if ("mc" not in self.sampletype):
+      if "mc" not in self.sampletype:
         return True
-      elif self.chain.mcChannelNumber in range(306538,306560):
+      elif self.chain.mcChannelNumber in range(306538,306560) + [302703]:
         return True
       electrons = self.store['electrons']
       muons = self.store['muons']
@@ -3194,6 +3194,8 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         electrons  = self.store['electrons_tight_MediumLLH_isolLoose']
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
+
+        jets       = self.store['jets_tight']
         
         EVT    = os.path.join(region, 'event')
         ELECTRONS = os.path.join(region, 'electrons')
@@ -3207,6 +3209,7 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
+        self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         #self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_invMass = self.hist('h_invMass', "ROOT.TH1F('$', ';m(ee) [GeV];Events / (0.2 GeV)', 50000, 0, 10000)", dir=EVT)
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
@@ -3271,6 +3274,7 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_actualIntPerXing.Fill(self.chain.actualInteractionsPerCrossing, weight)
           self.h_NPV.Fill(self.chain.NPV, weight)
           self.h_nelectrons.Fill(len(electrons), weight)
+          self.h_njets.Fill(len(jets), weight)
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
@@ -4325,7 +4329,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
-        jets       = self.store['jets']
+        jets       = self.store['jets_tight']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         
@@ -4436,13 +4440,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
             # self.h_el_trkd0sig.Fill(ele.trkd0sig, weight)
             # self.h_el_trkz0sintheta.Fill(ele.trkz0sintheta, weight)
           
-          print "========================================="
           for ele in self.store['electrons_loose_LooseLLH']:
-            print ele.trkcharge," ",ele.firstEgMotherPdgId/-11.," ",ele.truthType," ",ele.truthOrigin," ",ele.firstEgMotherTruthType," ",ele.firstEgMotherTruthOrigin, " type: ",ele.electronType()
-            print " "
             if ele.electronType() not in [1,2,3]:
-              print "filling up the boy"
-              print " "
               self.h_truthOrigin.Fill(ele.truthOrigin, weight)
               self.h_truthType.Fill(ele.truthType, weight)
               self.h_firstEgMotherTruthOrigin.Fill(ele.firstEgMotherTruthOrigin-0.5, weight)

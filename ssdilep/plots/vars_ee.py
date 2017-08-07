@@ -99,7 +99,7 @@ nsspairs = Var(name = 'nsspairs',
 njets = Var(name = 'njets',
               path  = 'event',
               xmin  = 0,
-              xmax  = 8,
+              xmax  = 20,
               log   = True,
             )
 
@@ -437,15 +437,15 @@ el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
                 )
 
 el_t_2D_pt_Ceta = Var(name='el_t_2D_pt_Ceta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_l_2D_pt_Ceta = Var(name='el_l_2D_pt_Ceta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 el_sl_2D_pt_Ceta = Var(name='el_sl_2D_pt_Ceta',
-                path   = 'electrons',
+                path   = 'leptons',
                 )
 
 ## MET
@@ -514,7 +514,7 @@ met_clus_et = Var(name='met_clus_et',
 ## Single muon variables
 ## ---------------------------------------
 el_t_pt = Var(name = 'el_t_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -526,7 +526,7 @@ el_t_pt = Var(name = 'el_t_pt',
               )
 
 el_l_pt = Var(name = 'el_l_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -538,7 +538,7 @@ el_l_pt = Var(name = 'el_l_pt',
               )
 
 el_sl_pt = Var(name = 'el_sl_pt',
-              path   = 'electrons',
+              path   = 'leptons',
               xmin   = 30.,
               xmax   = 2000.,
               rebin  = 4,
@@ -722,7 +722,7 @@ el_sublead_eta_cf = Var(name = 'el_sublead_eta',
               )
 
 el_t_eta = Var(name = 'el_t_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -731,7 +731,7 @@ el_t_eta = Var(name = 'el_t_eta',
               )
 
 el_l_eta = Var(name = 'el_l_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -740,7 +740,7 @@ el_l_eta = Var(name = 'el_l_eta',
               )
 
 el_sl_eta = Var(name = 'el_sl_eta',
-              path    = 'electrons',
+              path    = 'leptons',
               xmin    = -2.47,
               xmax    = 2.47,
               #rebin   = 5,
@@ -966,6 +966,10 @@ bins_invMZVR1 = generateLogBins(30,110,400)
 bins_invMZVR2 = generateLogBins(15,110,400)
 bins_invMZVR3 = generateLogBins(7,110,400)
 
+bins_invMZSR1 = generateLogBins(25,400,4000)
+bins_invMZSR2 = generateLogBins(10,400,4000)
+
+
 bins_mjj = generateLogBins(30,110,4000)
 bins_mjj2 = generateLogBins(15,110,4000)
 bins_mjj3 = generateLogBins(7,110,4000)
@@ -1095,12 +1099,32 @@ invMassZVR1 = Var(name='invMass',
               log    = False,
               )
 
+invMassZSR1 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 400,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_invMZSR1,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
 invMassZVR2 = Var(name='invMass',
               path   = 'event',
               xmin   = 110,
               xmax   = 400,
               rebin  = 1,
               rebinVar  = bins_invMZVR2,
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              )
+
+invMassZSR2 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 400,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_invMZSR2,
               #rebinVar  = bins_Zpeak2,
               log    = False,
               )
@@ -1232,6 +1256,8 @@ vars_dict["invMassZVR2"] = invMassZVR2.__dict__
 vars_dict["invMassZVR3"] = invMassZVR3.__dict__
 vars_dict["invMassZCR"] = invMassZCR.__dict__
 vars_dict["invMassZCR3"] = invMassZCR3.__dict__
+vars_dict["invMassZSR1"] = invMassZSR1.__dict__
+vars_dict["invMassZSR2"] = invMassZSR2.__dict__
 
 ## EOF
 

@@ -18,6 +18,8 @@ USER   = os.getenv('USER')
 #arcproxy -S gen.vo.sling.si
 #arcproxy -S atlas:/atlas/si
 
+print "test"
+
 ## global config
 # inputs
 #NTUP='/coepp/cephfs/mel/fscutti/ssdilep/presc/merged' # input NTUP path
@@ -52,9 +54,10 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-# RUN = "WJets_HN_006"
+RUN = "HN_011"
+# RUN = "WJets_HN_010"
 # RUN = "FFele_HN_006"
-RUN = "ZPeak_HN_003"
+# RUN = "ZPeak_HN_Dilepton_003"
 
 
 OUTPATH="/ceph/grid/home/atlas/%s/AnalysisCode/%s"%(USER,RUN) # 
@@ -68,9 +71,9 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
@@ -87,7 +90,7 @@ DO_NOM = True                        # submit the nominal job
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
 CF_SYS = True
-FF_SYS = False
+FF_SYS = True
 
 BEAM_SYS = False
 CHOICE_SYS = False

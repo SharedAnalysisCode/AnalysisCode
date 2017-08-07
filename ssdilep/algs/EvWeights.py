@@ -254,7 +254,7 @@ class MCEventWeight(pyframe.core.Algorithm):
     def execute(self, weight):
         if "mc" in self.sampletype: 
             wmc = self.chain.mcEventWeight
-            if self.chain.mcChannelNumber in [361069,361070,361071,361072,361073,361077,363356,363358,363490,363491,363492] and abs(wmc) > 30. :
+            if self.chain.mcChannelNumber in range(364100,364141)+range(361069,361074)+[364250,364253,364254,364255,361077,363356,363358,363490,363491,363492] and abs(wmc) > 100. :
               wmc = 1.
             if self.key: self.store[self.key] = wmc
             self.set_weight(wmc*weight)
@@ -1546,7 +1546,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
         ELECTRONS_T = self.store['electrons_tight_MediumLLH_isolLoose']
         ELECTRONS   = self.store['electrons_loose_LooseLLH']
 
-      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560):
+      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560) + [302703]:
           if len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T) :
               if self.key:
                 self.store[self.key] = 0.
@@ -1561,7 +1561,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
       for ele in electrons:
         if (ele.isIsolated_Loose and ele.LHMedium) :
           if "mc" in self.sampletype :
-            if ele.electronType() in [1,2,3] :
+            if True or ele.electronType() in [1,2,3] :
               sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
               sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
@@ -1596,14 +1596,14 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
               electron_pt = 1999.
             sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( electron_pt, abs( ele.caloCluster_eta ) ) )
           if "mc" in self.sampletype :
-            if ele.electronType() in [1,2,3] :
+            if True or ele.electronType() in [1,2,3] :
               sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
 
       for muon in muons:
         if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
           if "mc" in self.sampletype :
-            if muon.isTrueIsoMuon() :
+            if True or  muon.isTrueIsoMuon() :
               sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys_m)
               sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
               sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
@@ -1624,7 +1624,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             if self.sys_FFm == 'DN': ff_mu -=eff_dn_mu
             sf *= -ff_mu
           if "mc" in self.sampletype :
-            if muon.isTrueIsoMuon() :
+            if True or muon.isTrueIsoMuon() :
               sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
               sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
 
@@ -1686,9 +1686,9 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
       if len(electrons) == 2:
         for ele in electrons:
           if ele.LHMedium and ele.isIsolated_Loose:
-            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
           else:
-            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+            sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
         if self.key: 
           self.store[self.key] = sf
         return True
@@ -1709,33 +1709,33 @@ class ThreeElectron2e17TrigWeight(pyframe.core.Algorithm):
           if eleFail not in pair:
             for elePass in pair:
               if elePass.LHMedium and elePass.isIsolated_Loose:
-                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
-                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
-                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
+                                     getattr(elePass,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
               else:
-                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
-                                     getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
-                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+                combinationProbD  *= getattr(elePass,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
+                                     getattr(elePass,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+                combinationProbMC *= getattr(elePass,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
             if eleFail.LHMedium and eleFail.isIsolated_Loose:
-              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
-                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys) )
-              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
+                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys) )
+              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
             else:
-              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
-                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys) )
-              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+              combinationProbD  *= 1 - ( getattr(eleFail,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
+                                         getattr(eleFail,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys) )
+              combinationProbMC *= 1 -   getattr(eleFail,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
             break
         P2passD  += combinationProbD   # a*b*(1-c) + a*c*(1-b) + b*c*(1-d) 
         P2passMC += combinationProbMC  # a*b*(1-c) + a*c*(1-b) + b*c*(1-d)
       for ele in electrons:
         if ele.LHMedium and ele.isIsolated_Loose:
-          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
-                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
-          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)*\
+                      getattr(ele,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
+          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[1]+self.isoLevels[1]).at(self.trig_sys)
         else:
-          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
-                      getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
-          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e17_lhloose_2016_e17_lhloose_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+          P3passD  *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)*\
+                      getattr(ele,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
+          P3passMC *= getattr(ele,"TrigMCEff_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_" +self.IDLevels[0]+self.isoLevels[0]).at(self.trig_sys)
 
       sf = (P2passD+P3passD)/(P2passMC+P3passMC)
 

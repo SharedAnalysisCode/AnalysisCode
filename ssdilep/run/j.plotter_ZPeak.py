@@ -185,22 +185,32 @@ def analyze(config):
             )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowOStoSS',
+            region   = 'ZWindowAS-twoJets',
             plot_all = False,
             cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_OStoSS']],
+               ['ExactlyTwoTightEleMediumLLHisolLoose',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
                ['ZMassWindowMediumLLHisolLooseNominal',None],
+               ['AtLeastTwoJets',None],
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgZee(
-            region   = 'ZWindowSS',
-            plot_all = False,
-            cut_flow = [
-               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
-               ['ZMassWindowMediumLLHisolLooseSSNominal',None],
-               ],
-            )
+    # loop += ssdilep.algs.algs.PlotAlgZee(
+    #         region   = 'ZWindowOStoSS',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['ExactlyTwoTightEleMediumLLHisolLooseOS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_OStoSS','GlobalBjet','GlobalJVT']],
+    #            ['ZMassWindowMediumLLHisolLooseNominal',None],
+    #            ],
+    #         )
+
+    # loop += ssdilep.algs.algs.PlotAlgZee(
+    #         region   = 'ZWindowSS',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose','GlobalBjet','GlobalJVT']],
+    #            ['ZMassWindowMediumLLHisolLooseSSNominal',None],
+    #            ],
+    #         )
 
     loop += ssdilep.algs.algs.PlotAlgZee(
             region   = 'ZWindowSSchfSF',
@@ -208,6 +218,16 @@ def analyze(config):
             cut_flow = [
                ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF','GlobalBjet','GlobalJVT']],
                ['ZMassWindowMediumLLHisolLooseSSNominal',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgZee(
+            region   = 'ZWindowSSchfSF-twoJets',
+            plot_all = False,
+            cut_flow = [
+               ['ExactlyTwoTightEleMediumLLHisolLooseSS',['ExactlyTwoTightEleSF_MediumLLH_isolLoose_CHFSF','GlobalBjet','GlobalJVT']],
+               ['ZMassWindowMediumLLHisolLooseSSNominal',None],
+               ['AtLeastTwoJets',None],
                ],
             )
 

@@ -140,7 +140,7 @@ def analyze(config):
             do_FFweight=True,
             config_file_e=os.path.join(main_path,'ssdilep/data/fakeFactor-03-08-2017.root'),
             config_file_m=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_bveto.root'),
-            config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-28-03-2017.root'),
+            config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-04-08-2017.root'),
             sys_FFe=sys_FF_ele,
             # sys_FFm=sys_FF_mu,
             # sys_CHF=sys_CF,
