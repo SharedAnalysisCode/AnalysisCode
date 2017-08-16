@@ -50,9 +50,13 @@ def analyze(config):
     sys_pi = None
     sys_scale_z = None
 
+    ## b-jet and JVT
+    sys_bjet = None
+    sys_JVT = None
+
     ## tree systematics
     # treeSys = ""
-    if systematic == 'EG_RESOLUTION_ALL_UP': treeSys = "EG_RESOLUTION_ALL__1up"
+    if systematic   == 'EG_RESOLUTION_ALL_UP': treeSys = "EG_RESOLUTION_ALL__1up"
     elif systematic == 'EG_RESOLUTION_ALL_DN': treeSys = "EG_RESOLUTION_ALL__1down"
     elif systematic == 'EG_SCALE_ALLCORR_UP': treeSys = "EG_SCALE_ALLCORR__1up"
     elif systematic == 'EG_SCALE_ALLCORR_DN': treeSys = "EG_SCALE_ALLCORR__1down"
@@ -74,6 +78,69 @@ def analyze(config):
     # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2015PRE_DN': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2015PRE__1down"
     # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2016PRE_UP': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2016PRE__1up"
     # elif systematic == 'EG_SCALE_LARTEMPERATURE_EXTRA2016PRE_DN': treeSys = "EG_SCALE_LARTEMPERATURE_EXTRA2016PRE__1down"
+    elif systematic == 'JET_BJES_Response_UP'                 : treeSys = 'JET_BJES_Response__1up'
+    elif systematic == 'JET_BJES_Response_DN'                 : treeSys = 'JET_BJES_Response__1down'
+    elif systematic == 'JET_EffectiveNP_1_UP'                 : treeSys = 'JET_EffectiveNP_1__1up'
+    elif systematic == 'JET_EffectiveNP_1_DN'                 : treeSys = 'JET_EffectiveNP_1__1down'
+    elif systematic == 'JET_EffectiveNP_2_UP'                 : treeSys = 'JET_EffectiveNP_2__1up'
+    elif systematic == 'JET_EffectiveNP_2_DN'                 : treeSys = 'JET_EffectiveNP_2__1down'
+    elif systematic == 'JET_EffectiveNP_3_UP'                 : treeSys = 'JET_EffectiveNP_3__1up'
+    elif systematic == 'JET_EffectiveNP_3_DN'                 : treeSys = 'JET_EffectiveNP_3__1down'
+    elif systematic == 'JET_EffectiveNP_4_UP'                 : treeSys = 'JET_EffectiveNP_4__1up'
+    elif systematic == 'JET_EffectiveNP_4_DN'                 : treeSys = 'JET_EffectiveNP_4__1down'
+    elif systematic == 'JET_EffectiveNP_5_UP'                 : treeSys = 'JET_EffectiveNP_5__1up'
+    elif systematic == 'JET_EffectiveNP_5_DN'                 : treeSys = 'JET_EffectiveNP_5__1down'
+    elif systematic == 'JET_EffectiveNP_6_UP'                 : treeSys = 'JET_EffectiveNP_6__1up'
+    elif systematic == 'JET_EffectiveNP_6_DN'                 : treeSys = 'JET_EffectiveNP_6__1down'
+    elif systematic == 'JET_EffectiveNP_7_UP'                 : treeSys = 'JET_EffectiveNP_7__1up'
+    elif systematic == 'JET_EffectiveNP_7_DN'                 : treeSys = 'JET_EffectiveNP_7__1down'
+    elif systematic == 'JET_EffectiveNP_8restTerm_UP'         : treeSys = 'JET_EffectiveNP_8restTerm__1up'
+    elif systematic == 'JET_EffectiveNP_8restTerm_DN'         : treeSys = 'JET_EffectiveNP_8restTerm__1down'
+    elif systematic == 'JET_EtaIntercalibration_Modelling_UP' : treeSys = 'JET_EtaIntercalibration_Modelling__1up'
+    elif systematic == 'JET_EtaIntercalibration_Modelling_DN' : treeSys = 'JET_EtaIntercalibration_Modelling__1down'
+    elif systematic == 'JET_EtaIntercalibration_NonClosure_UP': treeSys = 'JET_EtaIntercalibration_NonClosure__1up'
+    elif systematic == 'JET_EtaIntercalibration_NonClosure_DN': treeSys = 'JET_EtaIntercalibration_NonClosure__1down'
+    elif systematic == 'JET_EtaIntercalibration_TotalStat_UP' : treeSys = 'JET_EtaIntercalibration_TotalStat__1up'
+    elif systematic == 'JET_EtaIntercalibration_TotalStat_DN' : treeSys = 'JET_EtaIntercalibration_TotalStat__1down'
+    elif systematic == 'JET_Flavor_Composition_UP'            : treeSys = 'JET_Flavor_Composition__1up'
+    elif systematic == 'JET_Flavor_Composition_DN'            : treeSys = 'JET_Flavor_Composition__1down'
+    elif systematic == 'JET_Flavor_Response_UP'               : treeSys = 'JET_Flavor_Response__1up'
+    elif systematic == 'JET_Flavor_Response_DN'               : treeSys = 'JET_Flavor_Response__1down'
+    elif systematic == 'JET_Pileup_OffsetMu_UP'               : treeSys = 'JET_Pileup_OffsetMu__1up'
+    elif systematic == 'JET_Pileup_OffsetMu_DN'               : treeSys = 'JET_Pileup_OffsetMu__1down'
+    elif systematic == 'JET_Pileup_OffsetNPV_UP'              : treeSys = 'JET_Pileup_OffsetNPV__1up'
+    elif systematic == 'JET_Pileup_OffsetNPV_DN'              : treeSys = 'JET_Pileup_OffsetNPV__1down'
+    elif systematic == 'JET_Pileup_PtTerm_UP'                 : treeSys = 'JET_Pileup_PtTerm__1up'
+    elif systematic == 'JET_Pileup_PtTerm_DN'                 : treeSys = 'JET_Pileup_PtTerm__1down'
+    elif systematic == 'JET_Pileup_RhoTopology_UP'            : treeSys = 'JET_Pileup_RhoTopology__1up'
+    elif systematic == 'JET_Pileup_RhoTopology_DN'            : treeSys = 'JET_Pileup_RhoTopology__1down'
+    elif systematic == 'JET_PunchThrough_MC15_UP'             : treeSys = 'JET_PunchThrough_MC15__1up'
+    elif systematic == 'JET_PunchThrough_MC15_DN'             : treeSys = 'JET_PunchThrough_MC15__1down'
+    elif systematic == 'JET_SingleParticle_HighPt_UP'         : treeSys = 'JET_SingleParticle_HighPt__1up'
+    elif systematic == 'JET_SingleParticle_HighPt_DN'         : treeSys = 'JET_SingleParticle_HighPt__1down'
+    elif systematic == 'JET_JER_CROSS_CALIB_FORWARD_UP'       : treeSys = 'JET_JER_CROSS_CALIB_FORWARD__1up'
+    elif systematic == 'JET_JER_CROSS_CALIB_FORWARD_UP'       : treeSys = 'JET_JER_CROSS_CALIB_FORWARD__down'
+    elif systematic == 'JET_JER_NOISE_FORWARD_UP'             : treeSys = 'JET_JER_NOISE_FORWARD__1up'
+    elif systematic == 'JET_JER_NOISE_FORWARD_UP'             : treeSys = 'JET_JER_NOISE_FORWARD__1down'
+    elif systematic == 'JET_JER_NP0_DN'                       : treeSys = 'JET_JER_NP0__1down'
+    elif systematic == 'JET_JER_NP0_UP'                       : treeSys = 'JET_JER_NP0__1up'
+    elif systematic == 'JET_JER_NP1_DN'                       : treeSys = 'JET_JER_NP1__1down'
+    elif systematic == 'JET_JER_NP1_UP'                       : treeSys = 'JET_JER_NP1__1up'
+    elif systematic == 'JET_JER_NP2_DN'                       : treeSys = 'JET_JER_NP2__1down'
+    elif systematic == 'JET_JER_NP2_UP'                       : treeSys = 'JET_JER_NP2__1up'
+    elif systematic == 'JET_JER_NP3_DN'                       : treeSys = 'JET_JER_NP3__1down'
+    elif systematic == 'JET_JER_NP3_UP'                       : treeSys = 'JET_JER_NP3__1up'
+    elif systematic == 'JET_JER_NP4_DN'                       : treeSys = 'JET_JER_NP4__1down'
+    elif systematic == 'JET_JER_NP4_UP'                       : treeSys = 'JET_JER_NP4__1up'
+    elif systematic == 'JET_JER_NP5_DN'                       : treeSys = 'JET_JER_NP5__1down'
+    elif systematic == 'JET_JER_NP5_UP'                       : treeSys = 'JET_JER_NP5__1up'
+    elif systematic == 'JET_JER_NP6_DN'                       : treeSys = 'JET_JER_NP6__1down'
+    elif systematic == 'JET_JER_NP6_UP'                       : treeSys = 'JET_JER_NP6__1up'
+    elif systematic == 'JET_JER_NP7_DN'                       : treeSys = 'JET_JER_NP7__1down'
+    elif systematic == 'JET_JER_NP7_UP'                       : treeSys = 'JET_JER_NP7__1up'
+    elif systematic == 'JET_JER_NP8_DN'                       : treeSys = 'JET_JER_NP8__1down'
+    elif systematic == 'JET_JER_NP8_UP'                       : treeSys = 'JET_JER_NP8__1up'
+
     else:
         treeSys = "nominal"
         if systematic == None: pass
@@ -110,9 +177,23 @@ def analyze(config):
         elif systematic == 'TTVA_UPSTAT':  sys_TTVA  = 'UPSTAT'
         elif systematic == 'TTVA_DNSTAT':  sys_TTVA  = 'DNSTAT'    
         elif systematic == 'TTVA_UPSYS':  sys_TTVA  = 'UPSYS'
-        elif systematic == 'TTVA_DNSYS':  sys_TTVA  = 'DNSYS'    
+        elif systematic == 'TTVA_DNSYS':  sys_TTVA  = 'DNSYS'
+        elif systematic == 'B_SYS_DN'   : sys_bjet = 'B_SYS_DN'    
+        elif systematic == 'B_SYS_UP'   : sys_bjet = 'B_SYS_UP'   
+        elif systematic == 'C_SYS_DN'   : sys_bjet = 'C_SYS_DN'   
+        elif systematic == 'C_SYS_UP'   : sys_bjet = 'C_SYS_UP'   
+        elif systematic == 'L_SYS_DN'   : sys_bjet = 'L_SYS_DN'   
+        elif systematic == 'L_SYS_UP'   : sys_bjet = 'L_SYS_UP'   
+        elif systematic == 'E_SYS_DN'   : sys_bjet = 'E_SYS_DN'   
+        elif systematic == 'E_SYS_UP'   : sys_bjet = 'E_SYS_UP'   
+        elif systematic == 'EFC_SYS_DN' : sys_bjet = 'EFC_SYS_DN' 
+        elif systematic == 'EFC_SYS_UP' : sys_bjet = 'EFC_SYS_UP' 
+        elif systematic == 'JVT_SYS_DN' : sys_JVT = 'JVT_SYS_DN' 
+        elif systematic == 'JVT_SYS_UP' : sys_JVT = 'JVT_SYS_UP' 
 
     assert treeSys!="", "Invalid systematic %s!"%(systematic)
+
+    print treeSys," with systematic: ",systematic
 
     ##-------------------------------------------------------------------------
     ## setup
@@ -190,8 +271,7 @@ def analyze(config):
     # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakeMuonsInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwoJets')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwo50GeVJets')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwo100GeVJets')
     
     ## weights configuration
     ## ---------------------------------------
@@ -203,7 +283,7 @@ def analyze(config):
             key='SuperGenericFakeFactor',
             do_FFweight=True,
             config_file_e=os.path.join(main_path,'ssdilep/data/fakeFactor-03-08-2017.root'),
-            config_file_m=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_bveto.root'),
+            config_file_m=os.path.join(main_path,'ssdilep/data/sys_ff_mulead_pt_data_v11.root'),
             config_fileCHF=os.path.join(main_path,'ssdilep/data/chargeFlipRates-04-08-2017.root'),
             sys_FFe=sys_FF_ele,
             sys_FFm=sys_FF_mu,
@@ -248,14 +328,45 @@ def analyze(config):
 
     loop += ssdilep.algs.EvWeights.GlobalBjet(
             key='GlobalBjet',
+            sys = sys_bjet,
             )
 
     loop += ssdilep.algs.EvWeights.GlobalJVT(
             key='GlobalJVT',
+            sys = sys_JVT,
             )
 
     # Electron Channel OS
     # ---------------------------------------
+    # ------ Z peak
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'electron-OS-Z-PEAK',
+            plot_all = False,
+            cut_flow = [
+               ['NoLooseFakesInMC',None],
+               ['PassHLT2e17lhvloose',None],
+               ['ExactlyZeroMuons',None],
+               ['ExactlyTwoLooseElectronOS',None],
+               ['TwoEleTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass60GeV110ele',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'electron-OS-Z-PEAK-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['NoLooseFakesInMC',None],
+               ['PassHLT2e17lhvloose',None],
+               ['ExactlyZeroMuons',None],
+               ['ExactlyTwoLooseElectronOS',None],
+               ['TwoEleTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass60GeV110ele',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+               ],
+            )
     # ------ ZCR
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'electron-OS-Z-CR',
@@ -265,9 +376,9 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass60GeV110ele',None],
+               ['Mass110GeV300ele',None],
                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
@@ -279,41 +390,12 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass60GeV110ele',None],
+               ['Mass110GeV300ele',None],
                ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
-    if DO_FAKE_COMPOSITION:
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-OS-Z-CR-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronOS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass60GeV110ele',None],
-                 ['ExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-OS-Z-CR-fakes-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronOS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass60GeV110ele',None],
-                 ['NotExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
     # ---------------------------------------
     # ------ ZVR
     loop += ssdilep.algs.algs.PlotAlgCRele(
@@ -324,9 +406,9 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass110GeV400ele',None],
+               ['Mass300GeV400ele',None],
                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
@@ -338,41 +420,12 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass110GeV400ele',None],
+               ['Mass300GeV400ele',None],
                ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
-    if DO_FAKE_COMPOSITION:
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-OS-Z-VR-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronOS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass110GeV400ele',None],
-                 ['ExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-OS-Z-VR-fakes-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronOS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass110GeV400ele',None],
-                 ['NotExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
     # ---------------------------------------
     # ------ ZSR
     loop += ssdilep.algs.algs.PlotAlgCRele(
@@ -405,6 +458,35 @@ def analyze(config):
             )
     # Electron Channel SS
     # ---------------------------------------
+    # ------ Z PEAK
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'electron-SS-Z-PEAK',
+            plot_all = False,
+            cut_flow = [
+               ['NoLooseFakesInMC',None],
+               ['PassHLT2e17lhvloose',None],
+               ['ExactlyZeroMuons',None],
+               ['ExactlyTwoLooseElectronSS',None],
+               ['TwoEleTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass60GeV110ele',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'electron-SS-Z-PEAK-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['NoLooseFakesInMC',None],
+               ['PassHLT2e17lhvloose',None],
+               ['ExactlyZeroMuons',None],
+               ['ExactlyTwoLooseElectronSS',None],
+               ['TwoEleTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass60GeV110ele',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+               ],
+            )
     # ------ ZCR
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'electron-SS-Z-CR',
@@ -414,9 +496,9 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronSS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass60GeV110ele',None],
+               ['Mass110GeV300ele',None],
                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
@@ -428,41 +510,12 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronSS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass60GeV110ele',None],
+               ['Mass110GeV300ele',None],
                ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
-    if DO_FAKE_COMPOSITION:
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-SS-Z-CR-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronSS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass60GeV110ele',None],
-                 ['ExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-SS-Z-CR-fakes-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronSS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass60GeV110ele',None],
-                 ['NotExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
     # ---------------------------------------
     # ------ ZVR
     loop += ssdilep.algs.algs.PlotAlgCRele(
@@ -473,9 +526,9 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronSS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass110GeV400ele',None],
+               ['Mass300GeV400ele',None],
                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
@@ -487,41 +540,12 @@ def analyze(config):
                ['PassHLT2e17lhvloose',None],
                ['ExactlyZeroMuons',None],
                ['ExactlyTwoLooseElectronSS',None],
-               ['TwoEleTwoJetHT400',None],
+               ['TwoEleTwoJetHT300',None],
                ['Mjj110',None],
-               ['Mass110GeV400ele',None],
+               ['Mass300GeV400ele',None],
                ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
-    if DO_FAKE_COMPOSITION:
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-SS-Z-VR-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronSS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass110GeV400ele',None],
-                 ['ExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
-      loop += ssdilep.algs.algs.PlotAlgCRele(
-              region   = 'electron-SS-Z-VR-fakes-fakesMC',
-              plot_all = False,
-              cut_flow = [
-                 ['atLeastOneLooseFakeInMC',None],
-                 ['PassHLT2e17lhvloose',None],
-                 ['ExactlyZeroMuons',None],
-                 ['ExactlyTwoLooseElectronSS',None],
-                 ['TwoEleTwoJetHT400',None],
-                 ['Mjj110',None],
-                 ['Mass110GeV400ele',None],
-                 ['NotExactlyTwoTightLeptons',['SuperGenericWeight','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-                 ],
-              )
     # ---------------------------------------
     # ------ ZSR
     loop += ssdilep.algs.algs.PlotAlgCRele(

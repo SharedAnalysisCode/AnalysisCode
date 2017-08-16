@@ -962,17 +962,21 @@ bins_invMass_mu5 = [200,2000]
 bins_invM_DB = generateLogBins(12,90,200)
 
 
-bins_invMZVR1 = generateLogBins(30,110,400)
-bins_invMZVR2 = generateLogBins(15,110,400)
-bins_invMZVR3 = generateLogBins(7,110,400)
+bins_invMZCR1 = generateLogBins(16,110,200)
+bins_invMZCR2 = generateLogBins(8,110,300)
 
-bins_invMZSR1 = generateLogBins(25,400,4000)
-bins_invMZSR2 = generateLogBins(10,400,4000)
+bins_invMZVR1 = generateLogBins(20,200,400)
+bins_invMZVR2 = generateLogBins(6,200,400)
+bins_invMZVR3 = generateLogBins(6,110,400)
+
+bins_invMZSR1 = generateLogBins(20,400,2000)
+bins_invMZSR2 = generateLogBins(4,400,2000)
 
 
-bins_mjj = generateLogBins(30,110,4000)
-bins_mjj2 = generateLogBins(15,110,4000)
-bins_mjj3 = generateLogBins(7,110,4000)
+bins_mjj  = generateLogBins(30,110,4000)
+bins_mjj2 = generateLogBins(8,110,4000)
+bins_mjj3 = generateLogBins(4,110,4000)
+bins_mjj4 = generateLogBins(3,110,4000)
 
 
 ## Event variables
@@ -1069,23 +1073,40 @@ Mjj3 = Var(name='Mjj',
               )
 
 
-invMassZCR = Var(name='invMass',
+Mjj4 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_mjj4,
+              log    = False,
+              logx   = True
+              )
+
+invMassZCRpeak = Var(name='invMass',
               path   = 'event',
               xmin   = 60,
               xmax   = 110,
               rebin  = 2,
-              #rebinVar  = bins_invM,
-              #rebinVar  = bins_Zpeak2,
+              # rebinVar  = bins_invMZCR1,
+              log    = False,
+              )
+
+invMassZCR = Var(name='invMass',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 200,
+              rebin  = 1,
+              rebinVar  = bins_invMZCR1,
               log    = False,
               )
 
 invMassZCR3 = Var(name='invMass',
               path   = 'event',
-              xmin   = 60,
-              xmax   = 110,
-              rebin  = 10,
-              #rebinVar  = bins_invM,
-              #rebinVar  = bins_Zpeak2,
+              xmin   = 110,
+              xmax   = 300,
+              rebin  = 1,
+              rebinVar  = bins_invMZCR2,
               log    = False,
               )
 
@@ -1102,7 +1123,7 @@ invMassZVR1 = Var(name='invMass',
 invMassZSR1 = Var(name='invMass',
               path   = 'event',
               xmin   = 400,
-              xmax   = 4000,
+              xmax   = 2000,
               rebin  = 1,
               rebinVar  = bins_invMZSR1,
               #rebinVar  = bins_Zpeak2,
@@ -1111,10 +1132,10 @@ invMassZSR1 = Var(name='invMass',
 
 invMassZVR2 = Var(name='invMass',
               path   = 'event',
-              xmin   = 110,
+              xmin   = 300,
               xmax   = 400,
-              rebin  = 1,
-              rebinVar  = bins_invMZVR2,
+              rebin  = 50,
+              # rebinVar  = bins_invMZVR2,
               #rebinVar  = bins_Zpeak2,
               log    = False,
               )
@@ -1122,7 +1143,7 @@ invMassZVR2 = Var(name='invMass',
 invMassZSR2 = Var(name='invMass',
               path   = 'event',
               xmin   = 400,
-              xmax   = 4000,
+              xmax   = 2000,
               rebin  = 1,
               rebinVar  = bins_invMZSR2,
               #rebinVar  = bins_Zpeak2,
@@ -1139,9 +1160,103 @@ invMassZVR3 = Var(name='invMass',
               log    = False,
               )
 
+HT2Lep2Jet_30 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 100,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(30,100,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              )
+
+HT2Lep2Jet_20 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 100,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(20,100,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              )
+
+HT2Lep2Jet_15 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 300,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(15,300,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              logx   = True,
+              )
+
+HT2Lep2Jet_10 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 100,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(10,100,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              )
+
+HT2Lep2Jet_10 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 100,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(8,100,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              )
+
+HT2Lep2Jet_8 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 300,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(8,300,4000),
+              #rebinVar  = bins_Zpeak2,
+              log     = False,
+              logx    = True,
+              )
+
+HT2Lep2Jet_5 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 300,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(5,300,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = False,
+              logx   = True,
+              )
+
+HT2Lep2Jet_5s = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 400,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(5,400,4000),
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              logx   = True,
+              )
+
+MCWeights = Var(name='MCWeights',
+              path   = 'event',
+              xmin   = -520,
+              xmax   = 520,
+              rebin  = 1,
+              #rebinVar  = bins_Zpeak2,
+              log    = True,
+              logx   = True,
+              )
 
 
 vars_list = []
+vars_list.append(MCWeights)
 vars_list.append(averageIntPerXing)
 vars_list.append(actualIntPerXing)
 vars_list.append(NPV)
@@ -1251,6 +1366,7 @@ vars_dict["invMass_6"] = invMass_6.__dict__
 vars_dict["invMass_7"] = invMass_7.__dict__
 vars_dict["Mjj2"] = Mjj2.__dict__
 vars_dict["Mjj3"] = Mjj3.__dict__
+vars_dict["Mjj4"] = Mjj4.__dict__
 vars_dict["invMassZVR1"] = invMassZVR1.__dict__
 vars_dict["invMassZVR2"] = invMassZVR2.__dict__
 vars_dict["invMassZVR3"] = invMassZVR3.__dict__
@@ -1258,6 +1374,14 @@ vars_dict["invMassZCR"] = invMassZCR.__dict__
 vars_dict["invMassZCR3"] = invMassZCR3.__dict__
 vars_dict["invMassZSR1"] = invMassZSR1.__dict__
 vars_dict["invMassZSR2"] = invMassZSR2.__dict__
+vars_dict["HT2Lep2Jet_30"] = HT2Lep2Jet_30.__dict__
+vars_dict["HT2Lep2Jet_20"] = HT2Lep2Jet_20.__dict__
+vars_dict["HT2Lep2Jet_15"] = HT2Lep2Jet_15.__dict__
+vars_dict["HT2Lep2Jet_10"] = HT2Lep2Jet_10.__dict__
+vars_dict["invMassZCRpeak"] = invMassZCRpeak.__dict__
+vars_dict["HT2Lep2Jet_8"] = HT2Lep2Jet_8.__dict__
+vars_dict["HT2Lep2Jet_5"] = HT2Lep2Jet_5.__dict__
+vars_dict["HT2Lep2Jet_5s"] = HT2Lep2Jet_5s.__dict__
 
 ## EOF
 

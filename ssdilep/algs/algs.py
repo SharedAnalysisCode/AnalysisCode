@@ -120,6 +120,17 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     #__________________________________________________________________________
+    def cut_AtLeastTwo100GeVJets(self):
+      count = 0
+      for jet in self.store['jets_tight']:
+        if jet.pt >= 100 * GeV and abs(jet.tlv.Eta()) < 2.0:
+          count += 1
+      if count > 1:
+        return True
+      else:
+        return False
+
+    #__________________________________________________________________________
     def cut_AllMuPt22(self):
       muons = self.store['muons']
       passed = True
@@ -998,9 +1009,28 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_PassSingleEleChain(self):
-      chain = ["HLT_e24_lhmedium_L1EM18VH","HLT_e24_lhmedium_L1EM20VH","HLT_e60_lhmedium","HLT_e120_lhloose"]
-      for i in xrange(self.chain.passedTriggers.size()):
-        if self.chain.passedTriggers.at(i) in chain: return True
+      if self.sampletype == "mc" :
+        runNumber = self.chain.rand_run_nr
+      else :
+        runNumber = self.chain.runNumber
+      if runNumber < 290000. :
+        trigchains={"HLT_e24_lhmedium_L1EM20VH","HLT_e60_lhmedium","HLT_e120_lhloose"}
+        for i in xrange(self.chain.passedTriggers.size()):
+          if self.chain.passedTriggers.at(i) in trigchains:
+            for ele in self.chain['electron']:
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains):
+                if self.chain.passedTriggers.at(i) == triggerStr:
+                  if isMatched:
+                    return True
+      else:
+        trigchains={"HLT_e26_lhtight_nod0_ivarloose","HLT_e60_lhmedium_nod0","HLT_e140_lhloose_nod0"}
+        for i in xrange(self.chain.passedTriggers.size()):
+          if self.chain.passedTriggers.at(i) in trigchains:
+            for ele in self.chain['electron']:
+              for isMatched,triggerStr in zip(ele.isTrigMatchedToChain,self.chain.el_listTrigChains):
+                if self.chain.passedTriggers.at(i) == triggerStr:
+                  if isMatched:
+                    return True
       return False
 
     def cut_PassHLT2e17lhloose(self):
@@ -1164,6 +1194,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_AtLeastOneLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)>0: 
+          return True
+        return False
+
+    def cut_ExactlyTwoContainerElectrons(self):
+        electrons = self.store['electrons']
+        if len(electrons)==2: 
           return True
         return False
 
@@ -1871,6 +1907,20 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+
+    def cut_TwoContainerEleTwoJetHT400(self):
+        leptons = self.store['electrons']
+        jets = self.store['jets_tight']
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+        HT = 0
+        for ele in leptons:
+          HT += ele.tlv.Pt()
+        HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+        if HT > 400*GeV:
+          return True
+        return False
+
     def cut_TwoEleTwoJetHT400(self):
         leptons = self.store['electrons_loose_LooseLLH']
         jets = self.store['jets_tight']
@@ -1881,6 +1931,19 @@ class CutAlg(pyframe.core.Algorithm):
           HT += ele.tlv.Pt()
         HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
         if HT > 400*GeV:
+          return True
+        return False
+
+    def cut_TwoEleTwoJetHT300(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+        HT = 0
+        for ele in leptons:
+          HT += ele.tlv.Pt()
+        HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+        if HT > 300*GeV:
           return True
         return False
 
@@ -2203,8 +2266,49 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_Mass110GeV200ele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 110*GeV < tempMass <= 200*GeV :
+            return True;
+        return False
+
+    def cut_Mass110GeV300ele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 110*GeV < tempMass <= 300*GeV :
+            return True;
+        return False
+
+    def cut_Mass200GeV400ele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 200*GeV < tempMass <= 400*GeV :
+            return True;
+        return False
+
+
+    def cut_Mass300GeV400ele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 300*GeV < tempMass <= 400*GeV :
+            return True;
+        return False
+
     def cut_Mass400GeVele(self):
         electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 400*GeV < tempMass :
+            return True;
+        return False
+
+    def cut_Mass400GeVContainerele(self):
+        electrons = self.store['electrons']
         if len(electrons)==2 :
           tempMass = (electrons[0].tlv + electrons[1].tlv).M()
           if 400*GeV < tempMass :
@@ -2245,7 +2349,7 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_NoLooseFakesInMC(self):
       if "mc" not in self.sampletype:
         return True
-      elif self.chain.mcChannelNumber in range(306538,306560) + [302703]:
+      elif self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713):
         return True
       electrons = self.store['electrons']
       muons = self.store['muons']
@@ -4257,12 +4361,14 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
                  obj_keys = [],
                  cut_flow = None,
                  plot_all = True,
+                 ele_container = 'electrons_loose_LooseLLH'
                  ):
         pyframe.algs.CutFlowAlg.__init__(self,key=region,obj_keys=obj_keys)
         CutAlg.__init__(self,name,isfilter=False)
         self.cut_flow = cut_flow
         self.region   = region
         self.plot_all = plot_all
+        self.ele_container = ele_container
         self.obj_keys = obj_keys
     
     #_________________________________________________________________________
@@ -4325,7 +4431,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         
         # should probably make this configurable
         ## get event candidate
-        electrons  = self.store['electrons_loose_LooseLLH'] + self.store['muons']
+        electrons  = self.store[self.ele_container] + self.store['muons']
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
@@ -4344,6 +4450,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         # self.h_averageIntPerXing = self.hist('h_averageIntPerXing', "ROOT.TH1F('$', ';averageInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         # self.h_actualIntPerXing = self.hist('h_actualIntPerXing', "ROOT.TH1F('$', ';actualInteractionsPerCrossing;Events', 50, -0.5, 49.5)", dir=EVT)
         self.h_NPV = self.hist('h_NPV', "ROOT.TH1F('$', ';NPV;Events', 35, 0., 35.0)", dir=EVT)
+        self.h_MCWeights = self.hist('h_MCWeights', "ROOT.TH1F('$', ';MC Event Weight (round to int);Events', 1000, -500, 500)", dir=EVT)
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
         self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
@@ -4412,6 +4519,11 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           # self.h_mTtot.Fill( (ele1T+ele2T+met_trk.tlv).M()/GeV, weight )
           self.h_HT.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt())/GeV, weight )
           # self.h_HTmet.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+met_trk.tlv.Pt())/GeV, weight )
+          if "mc" in self.sampletype:
+            self.h_MCWeights.Fill( self.chain.mcEventWeight )
+          else:
+            self.h_MCWeights.Fill( 1. )
+
 
           nbjets = 0
           for jet in jets:

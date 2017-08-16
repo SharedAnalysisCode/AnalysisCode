@@ -54,7 +54,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-RUN = "HN_011"
+RUN = "HN_003_SYS"
 # RUN = "WJets_HN_010"
 # RUN = "FFele_HN_006"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -89,27 +89,11 @@ DO_NOM = True                        # submit the nominal job
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
-CF_SYS = True
-FF_SYS = True
-
-BEAM_SYS = False
-CHOICE_SYS = False
-PDF_SYS = False
-PI_SYS = False
-SCALE_Z_SYS = False
-
-EG_RESOLUTION_ALL_SYS = False
-EG_SCALE_ALLCORR_SYS = False
-EG_SCALE_E4SCINTILLATOR_SYS = False
-
-TRIG_SYS = False
-ID_SYS = False
-ISO_SYS = False
-RECO_SYS = False
-
 DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = True
+
+DO_JET_SYS = True
 
  
 
@@ -156,107 +140,145 @@ def main():
     plot_sys = []
 
     if DO_ELECTRON_SYS:
-        if CF_SYS:
-            plot_sys += [
-                ['CF_UP',        nominal],
-                ['CF_DN',        nominal],
-                ]  
-        if FF_SYS:
-            plot_sys += [
-                ['FF_UP',        nominal],
-                ['FF_DN',        nominal],
-                ]  
-        if BEAM_SYS:
-            plot_sys += [
-                ['BEAM_UP',        nominal],
-                ['BEAM_DN',        nominal],
-                ]  
-        if CHOICE_SYS:
-            plot_sys += [
-                ['CHOICE_UP',        nominal],
-                ['CHOICE_DN',        nominal],
-                ]  
-        if PDF_SYS:
-            plot_sys += [
-                ['PDF_UP',        nominal],
-                ['PDF_DN',        nominal],
-                ]  
-        if PI_SYS:
-            plot_sys += [
-                ['PI_UP',        nominal],
-                ['PI_DN',        nominal],
-                ]  
-        if SCALE_Z_SYS:
-            plot_sys += [
-                ['SCALE_Z_UP',        nominal],
-                ['SCALE_Z_DN',        nominal],
-                ]  
-        if EG_RESOLUTION_ALL_SYS:
-            plot_sys += [
-                ['EG_RESOLUTION_ALL_UP',        nominal],
-                ['EG_RESOLUTION_ALL_DN',        nominal],
-                ]  
-        if EG_SCALE_ALLCORR_SYS:
-            plot_sys += [
-                ['EG_SCALE_ALLCORR_UP',        nominal],
-                ['EG_SCALE_ALLCORR_DN',        nominal],
-                ]  
-        if EG_SCALE_E4SCINTILLATOR_SYS:
-            plot_sys += [
-                ['EG_SCALE_E4SCINTILLATOR_UP',        nominal],
-                ['EG_SCALE_E4SCINTILLATOR_DN',        nominal],
-                ]  
-        if TRIG_SYS:
-            plot_sys += [
-                ['TRIG_UP',        nominal],
-                ['TRIG_DN',        nominal],
-                ]  
-        if ID_SYS:
-            plot_sys += [
-                ['ID_UP',        nominal],
-                ['ID_DN',        nominal],
-                ]  
-        if ISO_SYS:
-            plot_sys += [
-                ['ISO_UP',        nominal],
-                ['ISO_DN',        nominal],
-                ]  
-        if RECO_SYS:
-            plot_sys += [
-                ['RECO_UP',        nominal],
-                ['RECO_DN',        nominal],
-                ]
+        plot_sys += [
+            ['CF_UP'                                , nominal],
+            ['CF_DN'                                , nominal],
+            ['FF_UP'                                , nominal],
+            ['FF_DN'                                , nominal],
+            # ['BEAM_UP'                              , nominal],
+            # ['BEAM_DN'                              , nominal],
+            # ['CHOICE_UP'                            , nominal],
+            # ['CHOICE_DN'                            , nominal],
+            # ['PDF_UP'                               , nominal],
+            # ['PDF_DN'                               , nominal],
+            # ['PI_UP'                                , nominal],
+            # ['PI_DN'                                , nominal],
+            # ['SCALE_Z_UP'                           , nominal],
+            # ['SCALE_Z_DN'                           , nominal],
+            ['EG_RESOLUTION_ALL_UP'                 , nominal],
+            ['EG_RESOLUTION_ALL_DN'                 , nominal],
+            ['EG_SCALE_ALLCORR_UP'                  , nominal],
+            ['EG_SCALE_ALLCORR_DN'                  , nominal],
+            ['EG_SCALE_E4SCINTILLATOR_UP'           , nominal],
+            ['EG_SCALE_E4SCINTILLATOR_DN'           , nominal],
+            ['TRIG_UP'                              , nominal],
+            ['TRIG_DN'                              , nominal],
+            ['ID_UP'                                , nominal],
+            ['ID_DN'                                , nominal],
+            ['ISO_UP'                               , nominal],
+            ['ISO_DN'                               , nominal],
+            ['RECO_UP'                              , nominal],
+            ['RECO_DN'                              , nominal],
+        ]
 
     if DO_MUON_SYS:
         plot_sys += [
-            ['MUFF_UP',    nominal],
-            ['MUFF_DN',    nominal],
-            ['TRIG_UPSTAT',    nominal],
-            ['TRIG_UPSYS',    nominal],
-            ['TRIG_DNSTAT',    nominal],
-            ['TRIG_DNSYS',    nominal],
-            ['RECO_UPSTAT',    nominal],
-            ['RECO_DNSTAT',    nominal],
-            ['RECO_UPSYS',    nominal],
-            ['RECO_DNSYS',    nominal],
-            ['ISO_UPSTAT',    nominal],
-            ['ISO_DNSTAT',    nominal],
-            ['ISO_UPSYS',    nominal],
-            ['ISO_DNSYS',    nominal],
-            ['TTVA_UPSTAT',    nominal],
-            ['TTVA_DNSTAT',    nominal],
-            ['TTVA_UPSYS',    nominal],
-            ['TTVA_DNSYS',    nominal],
-            ['MUON_ID_UP',        nominal],
-            ['MUON_ID_DN',        nominal],
-            ['MUON_MS_UP',        nominal],
-            ['MUON_MS_DN',        nominal],
-            ['MUON_RESBIAS_UP',        nominal],
-            ['MUON_RESBIAS_DN',        nominal],
-            ['MUON_RHO_UP',        nominal],
-            ['MUON_RHO_DN',        nominal],
-            ['MUON_SCALE_UP',        nominal],
-            ['MUON_SCALE_DN',        nominal],
+            ['MUFF_UP'                              , nominal],
+            ['MUFF_DN'                              , nominal],
+            ['TRIG_UPSTAT'                          , nominal],
+            ['TRIG_DNSTAT'                          , nominal],
+            ['TRIG_UPSYS'                           , nominal],
+            ['TRIG_DNSYS'                           , nominal],
+            ['RECO_UPSTAT'                          , nominal],
+            ['RECO_DNSTAT'                          , nominal],
+            ['RECO_UPSYS'                           , nominal],
+            ['RECO_DNSYS'                           , nominal],
+            ['ISO_UPSTAT'                           , nominal],
+            ['ISO_DNSTAT'                           , nominal],
+            ['ISO_UPSYS'                            , nominal],
+            ['ISO_DNSYS'                            , nominal],
+            ['TTVA_UPSTAT'                          , nominal],
+            ['TTVA_DNSTAT'                          , nominal],
+            ['TTVA_UPSYS'                           , nominal],
+            ['TTVA_DNSYS'                           , nominal],
+            ['MUON_ID_UP'                           , nominal],
+            ['MUON_ID_DN'                           , nominal],
+            ['MUON_MS_UP'                           , nominal],
+            ['MUON_MS_DN'                           , nominal],
+            ['MUON_RESBIAS_UP'                      , nominal],
+            ['MUON_RESBIAS_DN'                      , nominal],
+            ['MUON_RHO_UP'                          , nominal],
+            ['MUON_RHO_DN'                          , nominal],
+            ['MUON_SCALE_UP'                        , nominal],
+            ['MUON_SCALE_DN'                        , nominal],
+        ]
+
+    if DO_JET_SYS:
+        plot_sys += [
+            ['B_SYS_DN'                             , nominal],
+            ['B_SYS_UP'                             , nominal],
+            ['C_SYS_DN'                             , nominal],
+            ['C_SYS_UP'                             , nominal],
+            ['L_SYS_DN'                             , nominal],
+            ['L_SYS_UP'                             , nominal],
+            ['E_SYS_DN'                             , nominal],
+            ['E_SYS_UP'                             , nominal],
+            ['EFC_SYS_DN'                           , nominal],
+            ['EFC_SYS_UP'                           , nominal],
+            ['JVT_SYS_DN'                           , nominal],
+            ['JVT_SYS_UP'                           , nominal],
+            ['JET_BJES_Response_UP'                 , nominal],
+            ['JET_BJES_Response_DN'                 , nominal],
+            ['JET_EffectiveNP_1_UP'                 , nominal],
+            ['JET_EffectiveNP_1_DN'                 , nominal],
+            ['JET_EffectiveNP_2_UP'                 , nominal],
+            ['JET_EffectiveNP_2_DN'                 , nominal],
+            ['JET_EffectiveNP_3_UP'                 , nominal],
+            ['JET_EffectiveNP_3_DN'                 , nominal],
+            ['JET_EffectiveNP_4_UP'                 , nominal],
+            ['JET_EffectiveNP_4_DN'                 , nominal],
+            ['JET_EffectiveNP_5_UP'                 , nominal],
+            ['JET_EffectiveNP_5_DN'                 , nominal],
+            ['JET_EffectiveNP_6_UP'                 , nominal],
+            ['JET_EffectiveNP_6_DN'                 , nominal],
+            ['JET_EffectiveNP_7_UP'                 , nominal],
+            ['JET_EffectiveNP_7_DN'                 , nominal],
+            ['JET_EffectiveNP_8restTerm_UP'         , nominal],
+            ['JET_EffectiveNP_8restTerm_DN'         , nominal],
+            ['JET_EtaIntercalibration_Modelling_UP' , nominal],
+            ['JET_EtaIntercalibration_Modelling_DN' , nominal],
+            ['JET_EtaIntercalibration_NonClosure_UP', nominal],
+            ['JET_EtaIntercalibration_NonClosure_DN', nominal],
+            ['JET_EtaIntercalibration_TotalStat_UP' , nominal],
+            ['JET_EtaIntercalibration_TotalStat_DN' , nominal],
+            ['JET_Flavor_Composition_UP'            , nominal],
+            ['JET_Flavor_Composition_DN'            , nominal],
+            ['JET_Flavor_Response_UP'               , nominal],
+            ['JET_Flavor_Response_DN'               , nominal],
+            ['JET_Pileup_OffsetMu_UP'               , nominal],
+            ['JET_Pileup_OffsetMu_DN'               , nominal],
+            ['JET_Pileup_OffsetNPV_UP'              , nominal],
+            ['JET_Pileup_OffsetNPV_DN'              , nominal],
+            ['JET_Pileup_PtTerm_UP'                 , nominal],
+            ['JET_Pileup_PtTerm_DN'                 , nominal],
+            ['JET_Pileup_RhoTopology_UP'            , nominal],
+            ['JET_Pileup_RhoTopology_DN'            , nominal],
+            ['JET_PunchThrough_MC15_UP'             , nominal],
+            ['JET_PunchThrough_MC15_DN'             , nominal],
+            ['JET_SingleParticle_HighPt_UP'         , nominal],
+            ['JET_SingleParticle_HighPt_DN'         , nominal],
+            ['JET_JER_CROSS_CALIB_FORWARD_UP'       , nominal],
+            ['JET_JER_CROSS_CALIB_FORWARD_DN'       , nominal],
+            ['JET_JER_NOISE_FORWARD_UP'             , nominal],
+            ['JET_JER_NOISE_FORWARD_DN'             , nominal],
+            ['JET_JER_NP0_DN'                       , nominal],
+            ['JET_JER_NP0_UP'                       , nominal],
+            ['JET_JER_NP1_DN'                       , nominal],
+            ['JET_JER_NP1_UP'                       , nominal],
+            ['JET_JER_NP2_DN'                       , nominal],
+            ['JET_JER_NP2_UP'                       , nominal],
+            ['JET_JER_NP3_DN'                       , nominal],
+            ['JET_JER_NP3_UP'                       , nominal],
+            ['JET_JER_NP4_DN'                       , nominal],
+            ['JET_JER_NP4_UP'                       , nominal],
+            ['JET_JER_NP5_DN'                       , nominal],
+            ['JET_JER_NP5_UP'                       , nominal],
+            ['JET_JER_NP6_DN'                       , nominal],
+            ['JET_JER_NP6_UP'                       , nominal],
+            ['JET_JER_NP7_DN'                       , nominal],
+            ['JET_JER_NP7_UP'                       , nominal],
+            ['JET_JER_NP8_DN'                       , nominal],
+            ['JET_JER_NP8_UP'                       , nominal],
         ]
 
 
@@ -307,7 +329,7 @@ def submit(tag,job_sys,samps,config={}):
     f = open(cfg,'w')
     nsubjobs = 0
     jobnames = []
-    maxevents = 2000000
+    maxevents = 1000000
     for s in samps:
         if len(config) > 0:
             ## skip signal and alt samples
@@ -318,6 +340,8 @@ def submit(tag,job_sys,samps,config={}):
             elif s in [samples.Pythia8EvtGen_A14NNPDF23LO_DCH450, samples.Pythia8EvtGen_A14NNPDF23LO_DCH1100]:
                 continue
             elif s in samples.all_DCH.daughters and config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP','MUFF_UP','MUFF_DN']:
+                continue
+            elif s in samples.all_HN.daughters and config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP','MUFF_UP','MUFF_DN']:
                 continue
             elif s in samples.all_data and config['sys'] not in ['FF_UP','FF_DN','MUFF_UP','MUFF_DN']:
                 continue

@@ -229,4 +229,230 @@ TTVASTAT = sys_dict['TTVASTAT'] = Systematic(
         var_dn='TTVA_DNSTAT'
         )
 
+# jet
+#_________________________________________________________________________________________
+
+                             
+B_SYS = sys_dict['B_SYS'] = Systematic(
+      'B_SYS',
+      var_up='B_SYS_UP',
+      var_dn='B_SYS_DN',
+      )                             
+                             
+C_SYS = sys_dict['C_SYS'] = Systematic(
+      'C_SYS',
+      var_up='C_SYS_UP',
+      var_dn='C_SYS_DN',
+      )                             
+                             
+L_SYS = sys_dict['L_SYS'] = Systematic(
+      'L_SYS',
+      var_up='L_SYS_UP',
+      var_dn='L_SYS_DN',
+      )                             
+                             
+E_SYS = sys_dict['E_SYS'] = Systematic(
+      'E_SYS',
+      var_up='E_SYS_UP',
+      var_dn='E_SYS_DN',
+      )                             
+                           
+EFC_SYS = sys_dict['EFC_SYS'] = Systematic(
+      'EFC_SYS',
+      var_up='EFC_SYS_UP',
+      var_dn='EFC_SYS_DN',
+      )                           
+                           
+JVT_SYS = sys_dict['JVT_SYS'] = Systematic(
+      'JVT_SYS',
+      var_up='JVT_SYS_UP',
+      var_dn='JVT_SYS_DN',
+      )         
+
+JET_BJES_Response = sys_dict['JET_BJES_Response'] = Systematic(
+      'JET_BJES_Response',
+      var_up='JET_BJES_Response_UP',
+      var_dn='JET_BJES_Response_DN',
+      )                 
+                 
+JET_EffectiveNP_1 = sys_dict['JET_EffectiveNP_1'] = Systematic(
+      'JET_EffectiveNP_1',
+      var_up='JET_EffectiveNP_1_UP',
+      var_dn='JET_EffectiveNP_1_DN',
+      )                 
+                 
+JET_EffectiveNP_2 = sys_dict['JET_EffectiveNP_2'] = Systematic(
+      'JET_EffectiveNP_2',
+      var_up='JET_EffectiveNP_2_UP',
+      var_dn='JET_EffectiveNP_2_DN',
+      )                 
+                 
+JET_EffectiveNP_3 = sys_dict['JET_EffectiveNP_3'] = Systematic(
+      'JET_EffectiveNP_3',
+      var_up='JET_EffectiveNP_3_UP',
+      var_dn='JET_EffectiveNP_3_DN',
+      )                 
+                 
+JET_EffectiveNP_4 = sys_dict['JET_EffectiveNP_4'] = Systematic(
+      'JET_EffectiveNP_4',
+      var_up='JET_EffectiveNP_4_UP',
+      var_dn='JET_EffectiveNP_4_DN',
+      )                 
+                 
+JET_EffectiveNP_5 = sys_dict['JET_EffectiveNP_5'] = Systematic(
+      'JET_EffectiveNP_5',
+      var_up='JET_EffectiveNP_5_UP',
+      var_dn='JET_EffectiveNP_5_DN',
+      )                 
+                 
+JET_EffectiveNP_6 = sys_dict['JET_EffectiveNP_6'] = Systematic(
+      'JET_EffectiveNP_6',
+      var_up='JET_EffectiveNP_6_UP',
+      var_dn='JET_EffectiveNP_6_DN',
+      )                 
+                 
+JET_EffectiveNP_7 = sys_dict['JET_EffectiveNP_7'] = Systematic(
+      'JET_EffectiveNP_7',
+      var_up='JET_EffectiveNP_7_UP',
+      var_dn='JET_EffectiveNP_7_DN',
+      )                 
+                 
+JET_EffectiveNP_8restTerm = sys_dict['JET_EffectiveNP_8restTerm'] = Systematic(
+      'JET_EffectiveNP_8restTerm',
+      var_up='JET_EffectiveNP_8restTerm_UP',
+      var_dn='JET_EffectiveNP_8restTerm_DN',
+      )         
+         
+JET_EtaIntercalibration_Modelling = sys_dict['JET_EtaIntercalibration_Modelling'] = Systematic(
+      'JET_EtaIntercalibration_Modelling',
+      var_up='JET_EtaIntercalibration_Modelling_UP',
+      var_dn='JET_EtaIntercalibration_Modelling_DN',
+      ) 
+ 
+JET_EtaIntercalibration_NonClosure = sys_dict['JET_EtaIntercalibration_NonClosure'] = Systematic(
+      'JET_EtaIntercalibration_NonClosure',
+      var_up='JET_EtaIntercalibration_NonClosure_UP',
+      var_dn='JET_EtaIntercalibration_NonClosure_DN',
+      )
+
+JET_EtaIntercalibration_TotalStat = sys_dict['JET_EtaIntercalibration_TotalStat'] = Systematic(
+      'JET_EtaIntercalibration_TotalStat',
+      var_up='JET_EtaIntercalibration_TotalStat_UP',
+      var_dn='JET_EtaIntercalibration_TotalStat_DN',
+      ) 
+ 
+JET_Flavor_Composition = sys_dict['JET_Flavor_Composition'] = Systematic(
+      'JET_Flavor_Composition',
+      var_up='JET_Flavor_Composition_UP',
+      var_dn='JET_Flavor_Composition_DN',
+      )            
+            
+JET_Flavor_Response = sys_dict['JET_Flavor_Response'] = Systematic(
+      'JET_Flavor_Response',
+      var_up='JET_Flavor_Response_UP',
+      var_dn='JET_Flavor_Response_DN',
+      )               
+               
+JET_Pileup_OffsetMu = sys_dict['JET_Pileup_OffsetMu'] = Systematic(
+      'JET_Pileup_OffsetMu',
+      var_up='JET_Pileup_OffsetMu_UP',
+      var_dn='JET_Pileup_OffsetMu_DN',
+      )               
+               
+JET_Pileup_OffsetNPV = sys_dict['JET_Pileup_OffsetNPV'] = Systematic(
+      'JET_Pileup_OffsetNPV',
+      var_up='JET_Pileup_OffsetNPV_UP',
+      var_dn='JET_Pileup_OffsetNPV_DN',
+      )              
+              
+JET_Pileup_PtTerm = sys_dict['JET_Pileup_PtTerm'] = Systematic(
+      'JET_Pileup_PtTerm',
+      var_up='JET_Pileup_PtTerm_UP',
+      var_dn='JET_Pileup_PtTerm_DN',
+      )                 
+                 
+JET_Pileup_RhoTopology = sys_dict['JET_Pileup_RhoTopology'] = Systematic(
+      'JET_Pileup_RhoTopology',
+      var_up='JET_Pileup_RhoTopology_UP',
+      var_dn='JET_Pileup_RhoTopology_DN',
+      )            
+            
+JET_PunchThrough_MC15 = sys_dict['JET_PunchThrough_MC15'] = Systematic(
+      'JET_PunchThrough_MC15',
+      var_up='JET_PunchThrough_MC15_UP',
+      var_dn='JET_PunchThrough_MC15_DN',
+      )             
+             
+JET_SingleParticle_HighPt = sys_dict['JET_SingleParticle_HighPt'] = Systematic(
+      'JET_SingleParticle_HighPt',
+      var_up='JET_SingleParticle_HighPt_UP',
+      var_dn='JET_SingleParticle_HighPt_DN',
+      )         
+         
+JET_JER_CROSS_CALIB_FORWARD = sys_dict['JET_JER_CROSS_CALIB_FORWARD'] = Systematic(
+      'JET_JER_CROSS_CALIB_FORWARD',
+      var_up='JET_JER_CROSS_CALIB_FORWARD_UP',
+      var_dn='JET_JER_CROSS_CALIB_FORWARD_DN',
+      )   
+
+JET_JER_NOISE_FORWARD = sys_dict['JET_JER_NOISE_FORWARD'] = Systematic(
+      'JET_JER_NOISE_FORWARD',
+      var_up='JET_JER_NOISE_FORWARD_UP',
+      var_dn='JET_JER_NOISE_FORWARD_DN',
+      )             
+                       
+JET_JER_NP0 = sys_dict['JET_JER_NP0'] = Systematic(
+      'JET_JER_NP0',
+      var_up='JET_JER_NP0_UP',
+      var_dn='JET_JER_NP0_DN',
+      )                       
+                       
+JET_JER_NP1 = sys_dict['JET_JER_NP1'] = Systematic(
+      'JET_JER_NP1',
+      var_up='JET_JER_NP1_UP',
+      var_dn='JET_JER_NP1_DN',
+      )                       
+                       
+JET_JER_NP2 = sys_dict['JET_JER_NP2'] = Systematic(
+      'JET_JER_NP2',
+      var_up='JET_JER_NP2_UP',
+      var_dn='JET_JER_NP2_DN',
+      )                       
+                       
+JET_JER_NP3 = sys_dict['JET_JER_NP3'] = Systematic(
+      'JET_JER_NP3',
+      var_up='JET_JER_NP3_UP',
+      var_dn='JET_JER_NP3_DN',
+      )                       
+                       
+JET_JER_NP4 = sys_dict['JET_JER_NP4'] = Systematic(
+      'JET_JER_NP4',
+      var_up='JET_JER_NP4_UP',
+      var_dn='JET_JER_NP4_DN',
+      )                       
+                       
+JET_JER_NP5 = sys_dict['JET_JER_NP5'] = Systematic(
+      'JET_JER_NP5',
+      var_up='JET_JER_NP5_UP',
+      var_dn='JET_JER_NP5_DN',
+      )                       
+                       
+JET_JER_NP6 = sys_dict['JET_JER_NP6'] = Systematic(
+      'JET_JER_NP6',
+      var_up='JET_JER_NP6_UP',
+      var_dn='JET_JER_NP6_DN',
+      )                       
+                       
+JET_JER_NP7 = sys_dict['JET_JER_NP7'] = Systematic(
+      'JET_JER_NP7',
+      var_up='JET_JER_NP7_UP',
+      var_dn='JET_JER_NP7_DN',
+      )                       
+                       
+JET_JER_NP8 = sys_dict['JET_JER_NP8'] = Systematic(
+      'JET_JER_NP8',
+      var_up='JET_JER_NP8_UP',
+      var_dn='JET_JER_NP8_DN',
+      )                       
+
 ## EOF

@@ -61,6 +61,9 @@ def get_hists(
         # print "Performing variable bin rebining with on " + histname
         runArray = array('d',rebinVar)
         h = h.Rebin( len(rebinVar)-1, histname+"Var", runArray )
+        print "OVERFLOW CHECK FOR ", s.name," ", h.GetBinContent(h.GetNbinsX()+1)
+        h.SetBinContent(h.GetNbinsX(), h.GetBinContent(h.GetNbinsX()+1) + h.GetBinContent(h.GetNbinsX()) )
+        h.SetBinError(h.GetNbinsX(), sqrt(h.GetBinError(h.GetNbinsX()+1)**2 + h.GetBinError(h.GetNbinsX())**2) )
       hists[s] = h
       assert h, 'failed to gen hist for %s'%s.name
       h.SetName('h_%s_%s'%(region,s.name))
@@ -596,6 +599,7 @@ def write_hist(
         rebinToEq   = None,
         regName     = None,
         varName     = None,
+        noNorm      = None,
         ):
     """
     write hists for backgrounds, signals and data to file.
@@ -616,6 +620,8 @@ def write_hist(
         rebinVar=rebinVar,
         sys_dict=sys_dict,
         )
+
+    print "noNorm ",noNorm
 
     #histnamestr = histname.replace('/','_')
     fname = outname
@@ -662,7 +668,8 @@ def write_hist(
             hNormOut = ROOT.TH1F(hnameNorm,hnameNorm,1,0.5,1.5)
             hNormOut.SetBinContent(1,hNorm.GetBinContent(1))
             hNormOut.SetBinError(1,hNorm.GetBinError(1))
-            fout.WriteTObject(hNormOut,hnameNorm)
+            if noNorm != True:
+              fout.WriteTObject(hNormOut,hnameNorm)
         else:
             fout.WriteTObject(h,hname)
         ## systematics
@@ -747,8 +754,9 @@ def write_hist(
                     if(hsys[1]):
                         hdnNormOut.SetBinContent(1,hdnNorm.GetBinContent(1))
                         hdnNormOut.SetBinError(1,hdnNorm.GetBinError(1))
-                    fout.WriteTObject(hupNormOut,hname_sys_upNorm)
-                    fout.WriteTObject(hdnNormOut,hname_sys_dnNorm)
+                    if noNorm != True:
+                      fout.WriteTObject(hupNormOut,hname_sys_upNorm)
+                      fout.WriteTObject(hdnNormOut,hname_sys_dnNorm)
 
 
     ## create total background hists

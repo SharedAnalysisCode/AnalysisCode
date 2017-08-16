@@ -254,7 +254,7 @@ class MCEventWeight(pyframe.core.Algorithm):
     def execute(self, weight):
         if "mc" in self.sampletype: 
             wmc = self.chain.mcEventWeight
-            if self.chain.mcChannelNumber in range(364100,364141)+range(361069,361074)+[364250,364253,364254,364255,361077,363356,363358,363490,363491,363492] and abs(wmc) > 100. :
+            if self.chain.mcChannelNumber in range(364100,364141)+range(361069,361074)+[364250,364253,364254,364255,361077,363356,363358,363490,363491,363492] and abs(wmc) > 30. :
               wmc = 1.
             if self.key: self.store[self.key] = wmc
             self.set_weight(wmc*weight)
@@ -379,22 +379,48 @@ class GlobalBjet(pyframe.core.Algorithm):
     #__________________________________________________________________________
     def __init__(self, name="GlobalBjet",
             key            = None,
+            sys            = None,
             ):
 
         pyframe.core.Algorithm.__init__(self, name=name)
+        self.sys               = sys
         self.key               = key
 
         assert key, "Must provide key for storing ele reco sf"
     #_________________________________________________________________________
     def initialize(self):
-      pass
+      self.bjet_sys = 0
+      if self.sys == "B_SYS_DN":
+        self.bjet_sys = 1
+      elif self.sys == "B_SYS_UP":
+        self.bjet_sys = 2
+      elif self.sys == "C_SYS_DN":
+        self.bjet_sys = 3
+      elif self.sys == "C_SYS_UP":
+        self.bjet_sys = 4
+      elif self.sys == "L_SYS_DN":
+        self.bjet_sys = 5
+      elif self.sys == "L_SYS_UP":
+        self.bjet_sys = 6
+      elif self.sys == "E_SYS_DN":
+        self.bjet_sys = 7
+      elif self.sys == "E_SYS_UP":
+        self.bjet_sys = 8
+      elif self.sys == "EFC_SYS_DN":
+        self.bjet_sys = 9
+      elif self.sys == "EFC_SYS_UP":
+        self.bjet_sys = 10
+
+      print self.bjet_sys
     #_________________________________________________________________________
     def execute(self, weight):
       sf=1.0
       if "mc" in self.sampletype: 
         jets = self.store['jets_tight']
         for jet in jets:
-          sf *= getattr(jet,"SFFix77").at(0)
+          sf *= getattr(jet,"SFFix77").at(self.bjet_sys)
+          # print "==============="
+          # print sf
 
       if self.key: 
         self.store[self.key] = sf
@@ -408,22 +434,28 @@ class GlobalJVT(pyframe.core.Algorithm):
     #__________________________________________________________________________
     def __init__(self, name="GlobalJVT",
             key            = None,
+            sys            = None,
             ):
 
         pyframe.core.Algorithm.__init__(self, name=name)
+        self.sys               = sys
         self.key               = key
 
         assert key, "Must provide key for storing ele reco sf"
     #_________________________________________________________________________
     def initialize(self):
-      pass
+      self.jvt_sys = 0
+      if self.sys == "JVT_SYS_DN":
+        self.jvt_sys = 1
+      elif self.sys == "JVT_SYS_UP":
+        self.jvt_sys = 2
     #_________________________________________________________________________
     def execute(self, weight):
       sf=1.0
       if "mc" in self.sampletype: 
         jets = self.store['jets']
         for jet in jets:
-          sf *= getattr(jet,"JvtEff_SF_Medium").at(0)
+          sf *= getattr(jet,"JvtEff_SF_Medium").at(self.jvt_sys)
           sf *= getattr(jet,"fJvtEff_SF_Medium").at(0)
 
       if self.key: 
@@ -1546,7 +1578,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
         ELECTRONS_T = self.store['electrons_tight_MediumLLH_isolLoose']
         ELECTRONS   = self.store['electrons_loose_LooseLLH']
 
-      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560) + [302703]:
+      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713):
           if len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T) :
               if self.key:
                 self.store[self.key] = 0.
@@ -1561,10 +1593,12 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
       for ele in electrons:
         if (ele.isIsolated_Loose and ele.LHMedium) :
           if "mc" in self.sampletype :
-            if True or ele.electronType() in [1,2,3] :
+            if (self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713)) or ele.electronType() in [1,2,3] :
               sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
               sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
+            if self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713):
+              continue # no charge-flip SF for signal
             ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
             etaBin = self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) )
             if ptBin==self.h_ptFunc.GetNbinsX()+1:
@@ -1590,6 +1624,8 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
                 probData = (self.h_ptRateData.GetBinContent( ptBin )-self.h_ptRateData.GetBinError( ptBin )) * (self.h_etaRateData.GetBinContent( etaBin )-self.h_etaRateData.GetBinError( etaBin ))
               sf *= ( 1 - probData )/( 1 - probMC )
         else :
+          if "mc" in self.sampletype:
+            assert self.chain.mcChannelNumber not in range(306538,306560) + range(302657,302713), " no fake factor for signal.."
           if self.do_FFweight:
             electron_pt = ele.tlv.Pt()/GeV
             if electron_pt > 2000.:
@@ -1603,11 +1639,13 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
       for muon in muons:
         if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
           if "mc" in self.sampletype :
-            if True or  muon.isTrueIsoMuon() :
+            if (self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713)) or  muon.isTrueIsoMuon() :
               sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys_m)
               sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
               sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
         else :
+          if "mc" in self.sampletype:
+            assert self.chain.mcChannelNumber not in range(306538,306560) + range(302657,302713), " no fake factor for signal.."
           if self.do_FFweight:
             ff_mu = 0.
             eff_up_mu = 0.

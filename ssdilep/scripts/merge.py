@@ -20,6 +20,9 @@ DO_SYS = True
 ELE_SYS = False
 MU_SYS = False
 
+
+JET_SYS = True
+
 BRee = 0.
 BRem = 0.
 BRmm = 0.
@@ -75,6 +78,8 @@ parser.add_option('', '--BRmm', dest='BRmm',
                   help='BRmm',metavar='BRMM',default=None)
 parser.add_option('', '--ymin', dest='ymin',
                   help='ymin',metavar='ymin',default=None)
+parser.add_option('', '--noNorm', dest='noNorm',
+                  help='noNorm',metavar='noNorm',default=None)
 
 (options, args) = parser.parse_args()
 
@@ -238,6 +243,7 @@ elif options.samples == "ZPeak":
 elif options.samples == "HNee":
   mc_backgrounds = [
   samples.ZeeSherpa221,
+  # samples.MGPy8Zee,
   samples.diboson_sherpa222,
   samples.top_physics,
   samples.Rare,
@@ -483,8 +489,10 @@ for samps in signal_samples:
     signal += [s]
 
 
+signal = samples.list_HN
 
-for s in [data] + mc_backgrounds:
+
+for s in [data] + mc_backgrounds + signal:
     histmgr.load_base_estimator(hm,s)
     if options.samples == "signalEigenVectors":
       s.nameSuffix = re.findall(".*signal-([em]*)",options.region)[0]
@@ -706,6 +714,7 @@ elif options.samples in ["chargeflip","chargeflipTruth"]:
 elif options.samples == "HNee":
   mumu_backgrounds = [
   samples.ZeeSherpa221,
+  # samples.MGPy8Zee,
   fakes_mumu,
   samples.diboson_sherpa222,
   samples.top_physics,
@@ -781,19 +790,14 @@ elif options.samples == "signalEigenVectors":
 
 
 sys_list_ele = [
-# BEAM,
-# CHOICE,
-# PDF,
-# PI,
-# SCALE_Z,
-# EG_RESOLUTION_ALL,
-# EG_SCALE_ALLCORR,
-# EG_SCALE_E4SCINTILLATOR,
+EG_RESOLUTION_ALL,
+EG_SCALE_ALLCORR,
+EG_SCALE_E4SCINTILLATOR,
 CF,
-# TRIG,
-# ID,
-# ISO,
-# RECO,
+TRIG,
+ID,
+ISO,
+RECO,
 ]
 
 sys_list_muon = [
@@ -812,6 +816,48 @@ TTVASYS,
 TTVASTAT,
 ]
 
+sys_list_jet = [
+B_SYS,
+C_SYS,
+L_SYS,
+E_SYS,
+EFC_SYS,
+JVT_SYS,
+JET_BJES_Response,
+JET_EffectiveNP_1,
+JET_EffectiveNP_2,
+JET_EffectiveNP_3,
+JET_EffectiveNP_4,
+JET_EffectiveNP_5,
+JET_EffectiveNP_6,
+JET_EffectiveNP_7,
+JET_EffectiveNP_8restTerm,
+JET_EtaIntercalibration_Modelling,
+JET_EtaIntercalibration_NonClosure,
+JET_EtaIntercalibration_TotalStat,
+JET_Flavor_Composition,
+JET_Flavor_Response,
+JET_Pileup_OffsetMu,
+JET_Pileup_OffsetNPV,
+JET_Pileup_PtTerm,
+JET_Pileup_RhoTopology,
+JET_PunchThrough_MC15,
+JET_SingleParticle_HighPt,
+JET_JER_CROSS_CALIB_FORWARD,
+JET_JER_NOISE_FORWARD,
+JET_JER_NP0,
+JET_JER_NP1,
+JET_JER_NP2,
+JET_JER_NP3,
+JET_JER_NP4,
+JET_JER_NP5,
+JET_JER_NP6,
+JET_JER_NP7,
+JET_JER_NP8,
+]
+
+print "MU SYS, ",MU_SYS
+
 if (DO_SYS):
   if options.fakest!="" and ELE_SYS:
     print "Fake Factor Sys"
@@ -822,6 +868,9 @@ if (DO_SYS):
     if sample in [samples.dibosonSysSample,samples.ttbar_Py8_up,samples.ttbar_Py8_do,samples.ttbar_Herwig,samples.ttbar_Py8_aMcAtNlo,samples.ttbar_Py8_CF]:
       print "skip sys MC samples in other systematics"
       continue
+    if JET_SYS:
+      for sys in sys_list_jet:
+        sample.estimator.add_systematics(sys)
     if ELE_SYS:
       for sys in sys_list_ele:
         sample.estimator.add_systematics(sys)
@@ -829,6 +878,9 @@ if (DO_SYS):
       for sys in sys_list_muon:
         sample.estimator.add_systematics(sys)
   for sample in signal:
+    if JET_SYS:
+      for sys in sys_list_jet:
+        sample.estimator.add_systematics(sys)
     if ELE_SYS:
       for sys in sys_list_ele:
         sample.estimator.add_systematics(sys)
@@ -844,17 +896,36 @@ if options.logy=="True":
 elif options.logy=="False":
   tempLogy = False
 
-HNsignal = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3600_NR3500",
-          tlatex = "WR3600 NR3500",
-          line_color = ROOT.kRed-8,
-          fill_color = ROOT.kRed-6,
+tempNoNorm = None
+if options.noNorm=="True":
+  tempNoNorm = True
+elif options.noNorm=="False":
+  tempNoNorm = False
+
+HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR1050",
+          tlatex = "WR4200 NR1050",
+          line_color = ROOT.kRed-4,
+          fill_color = ROOT.kRed-2,
           line_width  = 3,
           line_style = 1,
           fill_style = 3004,
-          xsec       = 0.00007153,
+          xsec       = 0.002262,
           )
-histmgr.load_base_estimator(hm,HNsignal)
-signal = [HNsignal]
+histmgr.load_base_estimator(hm,HNsignal1)
+
+HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR1200",
+          tlatex = "WR600 NR1200",
+          line_color = ROOT.kGreen-7,
+          fill_color = ROOT.kGreen-5,
+          line_width  = 3,
+          line_style = 1,
+          fill_style = 3004,
+          xsec       = 0.003102,
+          )
+histmgr.load_base_estimator(hm,HNsignal2)
+
+if options.rebinToEq!="True":
+  signal = [HNsignal1,HNsignal2]
 
 if options.makeplot == "True":
  funcs.plot_hist(
@@ -894,7 +965,8 @@ else:
          outname     = plotsfile,
          regName     = options.tag,
          rebinToEq   = True if options.rebinToEq=="True" else False,
-         varName     = str(options.varName)
+         varName     = str(options.varName),
+         noNorm      = tempNoNorm
          )
  ## EOF
 
