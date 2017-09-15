@@ -270,8 +270,8 @@ def analyze(config):
     # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakeMuonsInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwo100GeVJets')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
     
     ## weights configuration
     ## ---------------------------------------

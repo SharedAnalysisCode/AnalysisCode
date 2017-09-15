@@ -283,9 +283,9 @@ class OneOrTwoBjetsSF(pyframe.core.Algorithm):
       if "mc" in self.sampletype: 
         jets = self.store['jets']
         for jet in jets:
-          if jet.isFix70:
+          if jet.isFix77:
             sf *= getattr(jet,"jvtSF").at(0)
-            sf *= getattr(jet,"SFFix70").at(0)
+            sf *= getattr(jet,"SFFix77").at(0)
 
       if self.key: 
         self.store[self.key] = sf
@@ -338,7 +338,7 @@ class GlobalBjet(pyframe.core.Algorithm):
       if "mc" in self.sampletype: 
         jets = self.store['jets_tight']
         for jet in jets:
-          sf *= getattr(jet,"SFFix70").at(self.bjet_sys)
+          sf *= getattr(jet,"SFFix77").at(self.bjet_sys)
           # print "==============="
           # print sf
 

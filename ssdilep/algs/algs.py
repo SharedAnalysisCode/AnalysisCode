@@ -2269,7 +2269,7 @@ class CutAlg(pyframe.core.Algorithm):
         nbjets = 0
         jets = self.store['jets_tight']
         for jet in jets:
-          if jet.isFix70:
+          if jet.isFix77:
             nbjets += 1
         if nbjets == 0:
           return True
@@ -2382,9 +2382,9 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_BadJetVeto(self):
-        jets = self.store['jets_tight']
+        jets = self.store['jets']
         for jet in jets:
-          if not jet.isClean:
+          if (not jet.isClean) and jet.JvtPass_Medium:
             return False
         return True
 
@@ -4554,7 +4554,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
 
           nbjets = 0
           for jet in jets:
-            if jet.isFix70:
+            if jet.isFix77:
               nbjets += 1
           self.h_njets.Fill(len(jets), weight)
           self.h_nbjets.Fill(nbjets, weight)
@@ -4750,7 +4750,7 @@ class VarsAlg(pyframe.core.Algorithm):
         ## make tight jets
         jets_tight = []
         for jet in jets:
-          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) <= 2.0 and jet.tlv.Pt()>100*GeV:
+          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) <= 2.5 and jet.tlv.Pt()>20*GeV:
             jets_tight += [jet]
 
         jets_tight.sort(key=lambda x: x.tlv.Pt(), reverse=True )
@@ -4829,16 +4829,16 @@ class VarsAlg(pyframe.core.Algorithm):
             electrons_OSHN += [ele]
         self.store['electrons_OSHN'] = electrons_OSHN
 
-        if self.chain.mcEventNumber in [108,1100,1159,1849,2028,2749,2842,3959]:
-          print "this event apparently failed the selection"
-          print "self.chain.mcEventNumber ",self.chain.mcEventNumber
-          for i,ele in enumerate(electrons):
-            print "electron ",i
-            print "ele.isIsolated_LooseTrackOnly ",ele.isIsolated_LooseTrackOnly
-            print "ele.LHMedium ",ele.LHMedium
-            print "ele.tlv.Pt() ",ele.tlv.Pt()/GeV
-          print "========"
-          print "========"
+        # if self.chain.mcEventNumber in [108,1100,1159,1849,2028,2749,2842,3959]:
+        #   print "this event apparently failed the selection"
+        #   print "self.chain.mcEventNumber ",self.chain.mcEventNumber
+        #   for i,ele in enumerate(electrons):
+        #     print "electron ",i
+        #     print "ele.isIsolated_LooseTrackOnly ",ele.isIsolated_LooseTrackOnly
+        #     print "ele.LHMedium ",ele.LHMedium
+        #     print "ele.tlv.Pt() ",ele.tlv.Pt()/GeV
+        #   print "========"
+        #   print "========"
 
         # loose electrons (no iso // LooseLLH)
         electrons_loose_LooseLLH = []
