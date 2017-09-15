@@ -1311,6 +1311,43 @@ ZeeSherpa221 = Sample( name =   'Zee221',
                               ],
                 )
 
+ZmmSherpa221 = Sample( name =   'Zmm221',
+                  tlatex = 'Drell-Yan',
+                  fill_color = ROOT.kWhite,
+                  line_color =  ROOT.kBlack,
+                  marker_color =  ROOT.kBlack,
+                  daughters = [
+                               Zmumu_221_Pt0_70_CVetoBVeto,        
+                               Zmumu_221_Pt70_140_CVetoBVeto,                                    
+                               Zmumu_221_Pt140_280_CVetoBVeto,     
+                               Zmumu_221_Pt280_500_CVetoBVeto,     
+                               Zmumu_221_Pt0_70_CFilterBVeto,      
+                               Zmumu_221_Pt70_140_CFilterBVeto,    
+                               Zmumu_221_Pt140_280_CFilterBVeto,   
+                               Zmumu_221_Pt280_500_CFilterBVeto,   
+                               Zmumu_221_Pt0_70_BFilter,           
+                               Zmumu_221_Pt70_140_BFilter,         
+                               Zmumu_221_Pt140_280_BFilter,        
+                               Zmumu_221_Pt280_500_BFilter,        
+                               Zmumu_221_Pt500_1000,
+                               Zmumu_221_Pt1000_E_CM,    
+                               Ztautau_221_Pt0_70_CVetoBVeto,        
+                               Ztautau_221_Pt70_140_CVetoBVeto,                                    
+                               Ztautau_221_Pt140_280_CVetoBVeto,     
+                               Ztautau_221_Pt280_500_CVetoBVeto,     
+                               Ztautau_221_Pt0_70_CFilterBVeto,      
+                               Ztautau_221_Pt70_140_CFilterBVeto,    
+                               Ztautau_221_Pt140_280_CFilterBVeto,   
+                               Ztautau_221_Pt280_500_CFilterBVeto,   
+                               Ztautau_221_Pt0_70_BFilter,           
+                               Ztautau_221_Pt70_140_BFilter,         
+                               Ztautau_221_Pt140_280_BFilter,        
+                               Ztautau_221_Pt280_500_BFilter,        
+                               Ztautau_221_Pt500_1000,
+                               Ztautau_221_Pt1000_E_CM,   
+                              ],
+                )
+
 #-----
 # Zee Powheg Mass-binned
 #-----
@@ -2475,6 +2512,8 @@ all_mc = []
 
 ### EXOT12 dilep
 all_mc += ZeeSherpa221.daughters
+all_mc += Zmumu221.daughters
+all_mc += Ztautau221.daughters
 # all_mc += MGPy8Zee.daughters
 all_mc += diboson_sherpa222.daughters
 all_mc += top_physics.daughters

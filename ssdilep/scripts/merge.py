@@ -141,7 +141,7 @@ if options.samples in ["FFele","wjet"]:
   data = samples.dataEXOT19
 elif options.samples ==  "ZPeak":
   data = samples.EXOT12_data
-elif options.samples ==  "HNee":
+elif options.samples in  ["HNee","HNmumu"]:
   data = samples.dataEXOT12
 else:
   data = samples.data
@@ -250,13 +250,10 @@ elif options.samples == "HNee":
   ]
 elif options.samples == "HNmumu":
   mc_backgrounds = [
-  samples.Zmumu221,
-  samples.diboson_sherpa221,
+  samples.ZmmSherpa221,
+  samples.diboson_sherpa222,
   samples.top_physics,
   samples.Rare,
-  samples.WenuPowheg,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
   ]
 elif options.samples == "totalSM":
   mc_backgrounds = [
@@ -715,21 +712,18 @@ elif options.samples == "HNee":
   mumu_backgrounds = [
   samples.ZeeSherpa221,
   # samples.MGPy8Zee,
-  fakes_mumu,
   samples.diboson_sherpa222,
   samples.top_physics,
   samples.Rare,
+  fakes_mumu,
   ]
 elif options.samples == "HNmumu":
   mumu_backgrounds = [
-  samples.Zmumu221,
-  fakes_mumu,
-  samples.diboson_sherpa221,
+  samples.ZmmSherpa221,
+  samples.diboson_sherpa222,
   samples.top_physics,
   samples.Rare,
-  samples.WenuPowheg,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
+  fakes_mumu,
   ]
 elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
   mumu_backgrounds = [

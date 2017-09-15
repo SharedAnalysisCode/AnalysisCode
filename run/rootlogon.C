@@ -273,7 +273,7 @@ TH1D* drawComparison2(TCanvas* can, std::vector<TH1D* > *h1vec, TH1D* h2, const 
 	ratioGr->GetXaxis()->SetTitle(Xtitle);
 	ratioGr->GetXaxis()->SetTitleSize(0.15);
 	ratioGr->GetXaxis()->SetTitleOffset(1.0);
-	if(ratioOrSub) ratioGr->GetYaxis()->SetTitle("Ratio");
+	if(ratioOrSub) ratioGr->GetYaxis()->SetTitle("Data / MC");
 	else           ratioGr->GetYaxis()->SetTitle("Difference");
 	//ratio->GetYaxis()->CenterTitle();
 	ratioGr->GetYaxis()->SetTitleSize(0.15);

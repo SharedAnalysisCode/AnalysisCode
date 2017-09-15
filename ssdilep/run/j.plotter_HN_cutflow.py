@@ -192,8 +192,8 @@ def analyze(config):
     # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
     # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwoJets')
     # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwo50GeVJets')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoContainerElectrons')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroMuons')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyTwoOSHNElectrons')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyZeroOSHNMuons')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastTwoJets')
     
     ## weights configuration
@@ -231,10 +231,13 @@ def analyze(config):
     # Electron Channel SR
     # ---------------------------------------
     # ------ test cutflow
+    mcEventNumbers = []
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'electron-Z-SR',
             plot_all = False,
-            ele_container = 'electrons',
+            ele_container = 'electrons_OSHN',
+            mu_container = 'muons_OSHN',
+            array = mcEventNumbers,
             cut_flow = [
                ['PassSingleEleChain',None],
                ['TwoContainerEleTwoJetHT400',None],
@@ -257,6 +260,11 @@ def analyze(config):
             branches_on_file = config.get('branches_on_file'),
             do_var_log = config.get('do_var_log'),
             )
+
+    with open('outfile.txt', 'w') as f:
+        for n in mcEventNumbers:
+            f.write('%d\n' % n)
+
 #______________________________________________________________________________
 if __name__ == '__main__':
     pyframe.config.main(analyze)

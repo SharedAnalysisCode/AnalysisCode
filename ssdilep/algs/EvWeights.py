@@ -261,86 +261,6 @@ class MCEventWeight(pyframe.core.Algorithm):
         return True
 
 #------------------------------------------------------------------------------
-class MuTrigSF(pyframe.core.Algorithm):
-    """
-    Muon trigger scale factor
-    """
-    #__________________________________________________________________________
-    def __init__(self, name="MuTrigSF",
-            #mu_index      = None,
-            is_single_mu   = None,
-            is_di_mu       = None,
-            mu_trig_level  = None,
-            mu_trig_chain  = None,
-            key            = None,
-            scale          = None,
-            ):
-        pyframe.core.Algorithm.__init__(self, name=name)
-        #self.mu_index         = mu_index
-        self.is_single_mu      = is_single_mu
-        self.is_di_mu          = is_di_mu
-        self.mu_trig_level     = mu_trig_level
-        self.mu_trig_chain     = mu_trig_chain
-        self.key               = key
-        self.scale             = scale
-
-        assert key, "Must provide key for storing mu reco sf"
-    #_________________________________________________________________________
-    def initialize(self):
-      allowed_levels = [
-          "Loose_Loose",
-          "Loose_FixedCutTightTrackOnly",
-          ]
-      assert self.mu_trig_level in allowed_levels, "ERROR: mu trig iso level %s is invalid. Check configuration!!!" % self.mu_trig_level
-
-    #_________________________________________________________________________
-    def execute(self, weight):
-        trig_sf=1.0
-        if "mc" in self.sampletype: 
-          muons = self.store['muons']
-          mu_pairs = self.store['mu_pairs']
-          
-          num = 1.0 
-          den = 1.0
-          
-          if self.is_single_mu:
-            for i,m in enumerate(muons):
-              if m.isTruthMatchedToMuon: 
-                #if not m.isMatchedToTrigChain(): continue
-                sf  = getattr(m,"_".join(["TrigEff","SF",str(self.mu_trig_level)])).at(0)
-                eff = getattr(m,"_".join(["TrigMCEff",str(self.mu_trig_level)])).at(0)
-                num *= 1 - sf * eff
-                den *= 1 - eff
-          
-          elif self.is_di_mu:
-            for i,mp in enumerate(mu_pairs):
-              if mp.lead.isTruthMatchedToMuon and mp.sublead.isTruthMatchedToMuon: 
-                #if not m.isMatchedToTrigChain(): continue
-                
-                sf_lead  = getattr(mp.lead,"_".join(["TrigEff","SF",str(self.mu_trig_level)])).at(0)
-                eff_lead = getattr(mp.lead,"_".join(["TrigMCEff",str(self.mu_trig_level)])).at(0)
-                
-                sf_sublead  = getattr(mp.sublead,"_".join(["TrigEff","SF",str(self.mu_trig_level)])).at(0)
-                eff_sublead = getattr(mp.sublead,"_".join(["TrigMCEff",str(self.mu_trig_level)])).at(0)
-               
-                num *= 1 - sf_lead * sf_sublead * eff_lead * eff_sublead
-                den *= 1 - eff_lead * eff_sublead
-          
-          else: pass  
-          
-          num = ( 1 - num )
-          den = ( 1 - den )
-          
-          if den > 0:
-            trig_sf = num / den
-
-          #if self.scale: pass
-       
-        if self.key: 
-          self.store[self.key] = trig_sf
-        return True
-
-#------------------------------------------------------------------------------
 class OneOrTwoBjetsSF(pyframe.core.Algorithm):
     """
     OneOrTwoBjetsSF
@@ -363,9 +283,9 @@ class OneOrTwoBjetsSF(pyframe.core.Algorithm):
       if "mc" in self.sampletype: 
         jets = self.store['jets']
         for jet in jets:
-          if jet.isFix77:
+          if jet.isFix70:
             sf *= getattr(jet,"jvtSF").at(0)
-            sf *= getattr(jet,"SFFix77").at(0)
+            sf *= getattr(jet,"SFFix70").at(0)
 
       if self.key: 
         self.store[self.key] = sf
@@ -418,7 +338,7 @@ class GlobalBjet(pyframe.core.Algorithm):
       if "mc" in self.sampletype: 
         jets = self.store['jets_tight']
         for jet in jets:
-          sf *= getattr(jet,"SFFix77").at(self.bjet_sys)
+          sf *= getattr(jet,"SFFix70").at(self.bjet_sys)
           # print "==============="
           # print sf
 
@@ -2016,6 +1936,7 @@ class MuTrigSF(pyframe.core.Algorithm):
             mu_reco     = None,
             key         = None,
             sys_trig    = None,
+            period      = None,
             ):
         pyframe.core.Algorithm.__init__(self, name=name)
         self.trig_list   = trig_list # if for some reason a different list is needed
@@ -2024,8 +1945,10 @@ class MuTrigSF(pyframe.core.Algorithm):
         self.mu_reco     = mu_reco
         self.key         = key
         self.sys_trig    = sys_trig
+        self.period      = period
 
         assert key, "Must provide key for storing mu reco sf"
+        assert period in [2015,2016], "Must be either 2015 or 2016"
     #_________________________________________________________________________
     def initialize(self):
       
@@ -2050,6 +1973,17 @@ class MuTrigSF(pyframe.core.Algorithm):
     #_________________________________________________________________________
     def execute(self, weight):
         trig_sf=1.0
+
+        if self.sampletype == "mc" :
+          runNumber = self.chain.rand_run_nr
+        else :
+          runNumber = self.chain.runNumber
+
+        if (runNumber < 290000. and self.period==2016) or (runNumber > 290000. and self.period==2015):
+          if self.key: 
+            self.store[self.key] = trig_sf
+          return True
+        trig_sf=1.0
         if "mc" in self.sampletype: 
           muons = self.store['muons']
           
@@ -2066,11 +2000,7 @@ class MuTrigSF(pyframe.core.Algorithm):
                 
                 sf_muon  = getattr(m,"_".join(["TrigEff","SF",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at(self.trig_sys)
                 eff_muon = getattr(m,"_".join(["TrigMCEff",trig,"Reco"+self.mu_reco,"Iso"+self.mu_iso])).at( 0 )
-                
-                # EXOT12 for v1 ntuples
-                #sf_muon  = getattr(m,"_".join(["TrigEff","SF",self.mu_reco,self.mu_iso])).at(0)
-                #eff_muon = getattr(m,"_".join(["TrigMCEff",self.mu_reco,self.mu_iso])).at(0)
-                
+                                
                 eff_data_muon *= 1 - sf_muon * eff_muon
                 eff_mc_muon   *= 1 - eff_muon
               
@@ -2090,11 +2020,8 @@ class MuTrigSF(pyframe.core.Algorithm):
           
           if eff_mc_chain > 0:
             trig_sf = eff_data_chain / eff_mc_chain
-          
-          #if self.scale: pass
-       
+                 
         if self.key: 
           self.store[self.key] = trig_sf
         return True
-
 # EOF

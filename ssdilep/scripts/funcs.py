@@ -298,9 +298,11 @@ def plot_hist(
     if data: 
         h_data = hists[data]
         h_data.SetMarkerSize(0.8)
-        if h_data.GetSumOfWeights()==h_data.GetEntries():
-          h_data.Sumw2(0)
-          h_data.SetBinErrorOption(1)
+        # if h_data.GetSumOfWeights()==h_data.GetEntries():
+        #   h_data.Sumw2(0)
+        #   h_data.SetBinErrorOption(1)
+        h_data.Sumw2(0)
+        h_data.SetBinErrorOption(1)
         if blind: apply_blind(h_data,blind)
         h_ratio = h_data.Clone('%s_ratio'%(h_data.GetName()))
         h_ratioGr = ROOT.TGraphAsymmErrors()

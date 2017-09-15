@@ -277,13 +277,13 @@ void charge_flip_measurement(){
   leg->SetFillStyle(0);
   leg->SetTextSize(0.045);
   leg->AddEntry(NM1.m_flipRateEta,"#font[42]{Data}","lpe0");
-  leg->AddEntry(NM2.m_flipRateEta,"#font[42]{Sherpa 2.21 Z#rightarrow ee}","lpe0");
+  leg->AddEntry(NM2.m_flipRateEta,"#font[42]{Sherpa 2.2.1 Z#rightarrow ee}","lpe0");
 
   TCanvas* c1 = new TCanvas("c1","c1",600,600);
   c1->cd();
   std::vector<TH1D*> c1h1vec;
   c1h1vec.push_back(NM2.m_flipRateEta);
-  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","abs(#eta)",1e-2,20,0,2.47);
+  drawComparison2(c1,&c1h1vec,NM1.m_flipRateEta,"f(#eta)","|#eta|",1e-2,20,0,2.5);
   gROOT->ProcessLine("pad_1->SetLogy();");
   ATLASLabel(0.20,0.83,"Preliminary",1);
   myText(0.20,0.75,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}");

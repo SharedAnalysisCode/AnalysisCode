@@ -313,13 +313,23 @@ def analyze(config):
     #         sys_TTVA_m = sys_TTVA,
     #         )
 
-    # loop += ssdilep.algs.EvWeights.MuTrigSF(
-    #         trig_list     = ["HLT_mu26_ivarmedium_OR_HLT_mu50"],
-    #         mu_reco       = "Medium",
-    #         mu_iso        = "FixedCutTightTrackOnly",
-    #         key           = "MuTrigSF",
-    #         sys_trig      = sys_trig,
-    #         )
+    loop += ssdilep.algs.EvWeights.MuTrigSF(
+            trig_list     = ["HLT_mu26_ivarmedium_OR_HLT_mu50"],
+            mu_reco       = "Medium",
+            mu_iso        = "FixedCutTightTrackOnly",
+            key           = "MuTrigSF2016",
+            sys_trig      = sys_trig,
+            period        = 2016,
+            )
+
+    loop += ssdilep.algs.EvWeights.MuTrigSF(
+            trig_list     = ["HLT_mu26_imedium_OR_HLT_mu50"],
+            mu_reco       = "Medium",
+            mu_iso        = "FixedCutTightTrackOnly",
+            key           = "MuTrigSF2015",
+            sys_trig      = sys_trig,
+            period        = 2015,
+            )
 
     loop += ssdilep.algs.EvWeights.ThreeElectron2e17TrigWeight(
             key='ThreeElectron2e17TrigWeight',
@@ -338,98 +348,9 @@ def analyze(config):
 
     # Electron Channel OS
     # ---------------------------------------
-    # ------ Z peak
+    # ------ Broad Region
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-PEAK',
-            plot_all = False,
-            cut_flow = [
-               ['NoLooseFakesInMC',None],
-               ['PassHLT2e17lhvloose',None],
-               ['ExactlyZeroMuons',None],
-               ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT300',None],
-               ['Mjj110',None],
-               ['Mass60GeV110ele',None],
-               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-PEAK-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['NoLooseFakesInMC',None],
-               ['PassHLT2e17lhvloose',None],
-               ['ExactlyZeroMuons',None],
-               ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT300',None],
-               ['Mjj110',None],
-               ['Mass60GeV110ele',None],
-               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-               ],
-            )
-    # ------ ZCR
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-CR',
-            plot_all = False,
-            cut_flow = [
-               ['NoLooseFakesInMC',None],
-               ['PassHLT2e17lhvloose',None],
-               ['ExactlyZeroMuons',None],
-               ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT300',None],
-               ['Mjj110',None],
-               ['Mass110GeV300ele',None],
-               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-CR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['NoLooseFakesInMC',None],
-               ['PassHLT2e17lhvloose',None],
-               ['ExactlyZeroMuons',None],
-               ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT300',None],
-               ['Mjj110',None],
-               ['Mass110GeV300ele',None],
-               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-               ],
-            )
-    # ---------------------------------------
-    # ------ ZVR
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-VR',
-            plot_all = False,
-            cut_flow = [
-               ['NoLooseFakesInMC',None],
-               ['PassHLT2e17lhvloose',None],
-               ['ExactlyZeroMuons',None],
-               ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT300',None],
-               ['Mjj110',None],
-               ['Mass300GeV400ele',None],
-               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['NoLooseFakesInMC',None],
-               ['PassHLT2e17lhvloose',None],
-               ['ExactlyZeroMuons',None],
-               ['ExactlyTwoLooseElectronOS',None],
-               ['TwoEleTwoJetHT300',None],
-               ['Mjj110',None],
-               ['Mass300GeV400ele',None],
-               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
-               ],
-            )
-    # ---------------------------------------
-    # ------ ZSR
-    loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-SR',
+            region   = 'electron-OS-Z-BROAD',
             plot_all = False,
             cut_flow = [
                ['NoLooseFakesInMC',None],
@@ -438,12 +359,12 @@ def analyze(config):
                ['ExactlyTwoLooseElectronOS',None],
                ['TwoEleTwoJetHT400',None],
                ['Mjj110',None],
-               ['Mass400GeVele',None],
+               ['Mass60GeV2000ele',None],
                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgCRele(
-            region   = 'electron-OS-Z-SR-fakes',
+            region   = 'electron-OS-Z-BROAD-fakes',
             plot_all = False,
             cut_flow = [
                ['NoLooseFakesInMC',None],
@@ -452,13 +373,131 @@ def analyze(config):
                ['ExactlyTwoLooseElectronOS',None],
                ['TwoEleTwoJetHT400',None],
                ['Mjj110',None],
-               ['Mass400GeVele',None],
+               ['Mass60GeV2000ele',None],
                ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
-    # Electron Channel SS
-    # ---------------------------------------
-    # ------ Z PEAK
+    # # ------ Z peak
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-PEAK',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT300',None],
+    #            ['Mjj110',None],
+    #            ['Mass60GeV110ele',None],
+    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-PEAK-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT300',None],
+    #            ['Mjj110',None],
+    #            ['Mass60GeV110ele',None],
+    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # # ------ ZCR
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-CR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT300',None],
+    #            ['Mjj110',None],
+    #            ['Mass110GeV300ele',None],
+    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-CR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT300',None],
+    #            ['Mjj110',None],
+    #            ['Mass110GeV300ele',None],
+    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # # ---------------------------------------
+    # # ------ ZVR
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-VR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT300',None],
+    #            ['Mjj110',None],
+    #            ['Mass300GeV400ele',None],
+    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-VR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT300',None],
+    #            ['Mjj110',None],
+    #            ['Mass300GeV400ele',None],
+    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # # ---------------------------------------
+    # # ------ ZSR
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-SR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT400',None],
+    #            ['Mjj110',None],
+    #            ['Mass400GeVele',None],
+    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgCRele(
+    #         region   = 'electron-OS-Z-SR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['NoLooseFakesInMC',None],
+    #            ['PassHLT2e17lhvloose',None],
+    #            ['ExactlyZeroMuons',None],
+    #            ['ExactlyTwoLooseElectronOS',None],
+    #            ['TwoEleTwoJetHT400',None],
+    #            ['Mjj110',None],
+    #            ['Mass400GeVele',None],
+    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
+    #            ],
+    #         )
+    # # Electron Channel SS
+    # # ---------------------------------------
+    # # ------ Z PEAK
     loop += ssdilep.algs.algs.PlotAlgCRele(
             region   = 'electron-SS-Z-PEAK',
             plot_all = False,
@@ -576,244 +615,187 @@ def analyze(config):
                ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight','GlobalBjet','GlobalJVT']],
                ],
             )
-    # # Muon Channel OS
-    # # ---------------------------------------
+    # Muon Channel OS
+    # ---------------------------------------
+    # ------ BROAD
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-OS-Z-BROAD',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonOS',None],
+               ['TwoMuonTwoJetHT400',None],
+               ['Mjj110',None],
+               ['Mass60GeV2000muon',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-OS-Z-BROAD-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonOS',None],
+               ['TwoMuonTwoJetHT400',None],
+               ['Mjj110',None],
+               ['Mass60GeV2000muon',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
     # # ------ ZCR
     # loop += ssdilep.algs.algs.PlotAlgCRele(
     #         region   = 'muon-OS-Z-CR',
     #         plot_all = False,
     #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
+    #            ['NoFakeMuonsInMC',None],
     #            ['PassORSingleLeptonTriggerMuon',None],
     #            ['ExactlyZeroElectrons',None],
     #            ['ExactlyTwoLooseMuonOS',None],
     #            ['TwoMuonTwoJetHT400',None],
     #            ['Mjj110',None],
     #            ['Mass60GeV110muon',None],
-    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
+    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
     #            ],
     #         )
     # loop += ssdilep.algs.algs.PlotAlgCRele(
     #         region   = 'muon-OS-Z-CR-fakes',
     #         plot_all = False,
     #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
+    #            ['NoFakeMuonsInMC',None],
     #            ['PassORSingleLeptonTriggerMuon',None],
     #            ['ExactlyZeroElectrons',None],
     #            ['ExactlyTwoLooseMuonOS',None],
     #            ['TwoMuonTwoJetHT400',None],
     #            ['Mjj110',None],
     #            ['Mass60GeV110muon',None],
-    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
+    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
     #            ],
     #         )
-    # if DO_FAKE_COMPOSITION:
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-OS-Z-CR-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonOS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass60GeV110muon',None],
-    #              ['ExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-OS-Z-CR-fakes-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonOS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass60GeV110muon',None],
-    #              ['NotExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
     # # ---------------------------------------
     # # ------ ZVR
     # loop += ssdilep.algs.algs.PlotAlgCRele(
     #         region   = 'muon-OS-Z-VR',
     #         plot_all = False,
     #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
+    #            ['NoFakeMuonsInMC',None],
     #            ['PassORSingleLeptonTriggerMuon',None],
     #            ['ExactlyZeroElectrons',None],
     #            ['ExactlyTwoLooseMuonOS',None],
     #            ['TwoMuonTwoJetHT400',None],
     #            ['Mjj110',None],
     #            ['Mass110GeV400muon',None],
-    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
+    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
     #            ],
     #         )
     # loop += ssdilep.algs.algs.PlotAlgCRele(
     #         region   = 'muon-OS-Z-VR-fakes',
     #         plot_all = False,
     #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
+    #            ['NoFakeMuonsInMC',None],
     #            ['PassORSingleLeptonTriggerMuon',None],
     #            ['ExactlyZeroElectrons',None],
     #            ['ExactlyTwoLooseMuonOS',None],
     #            ['TwoMuonTwoJetHT400',None],
     #            ['Mjj110',None],
     #            ['Mass110GeV400muon',None],
-    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
+    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
     #            ],
     #         )
-    # if DO_FAKE_COMPOSITION:
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-OS-Z-VR-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonOS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass110GeV400muon',None],
-    #              ['ExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-OS-Z-VR-fakes-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonOS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass110GeV400muon',None],
-    #              ['NotExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
-    # # Muon Channel SS
-    # # ---------------------------------------
-    # # ------ ZCR
-    # loop += ssdilep.algs.algs.PlotAlgCRele(
-    #         region   = 'muon-SS-Z-CR',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
-    #            ['PassORSingleLeptonTriggerMuon',None],
-    #            ['ExactlyZeroElectrons',None],
-    #            ['ExactlyTwoLooseMuonSS',None],
-    #            ['TwoMuonTwoJetHT400',None],
-    #            ['Mjj110',None],
-    #            ['Mass60GeV110muon',None],
-    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #            ],
-    #         )
-    # loop += ssdilep.algs.algs.PlotAlgCRele(
-    #         region   = 'muon-SS-Z-CR-fakes',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
-    #            ['PassORSingleLeptonTriggerMuon',None],
-    #            ['ExactlyZeroElectrons',None],
-    #            ['ExactlyTwoLooseMuonSS',None],
-    #            ['TwoMuonTwoJetHT400',None],
-    #            ['Mjj110',None],
-    #            ['Mass60GeV110muon',None],
-    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #            ],
-    #         )
-    # if DO_FAKE_COMPOSITION:
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-SS-Z-CR-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonSS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass60GeV110muon',None],
-    #              ['ExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-SS-Z-CR-fakes-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonSS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass60GeV110muon',None],
-    #              ['NotExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
-    # # ---------------------------------------
-    # # ------ ZVR
-    # loop += ssdilep.algs.algs.PlotAlgCRele(
-    #         region   = 'muon-SS-Z-VR',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
-    #            ['PassORSingleLeptonTriggerMuon',None],
-    #            ['ExactlyZeroElectrons',None],
-    #            ['ExactlyTwoLooseMuonSS',None],
-    #            ['TwoMuonTwoJetHT400',None],
-    #            ['Mjj110',None],
-    #            ['Mass110GeV400muon',None],
-    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #            ],
-    #         )
-    # loop += ssdilep.algs.algs.PlotAlgCRele(
-    #         region   = 'muon-SS-Z-VR-fakes',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['NoLooseFakesInMC',None],
-    #            ['PassORSingleLeptonTriggerMuon',None],
-    #            ['ExactlyZeroElectrons',None],
-    #            ['ExactlyTwoLooseMuonSS',None],
-    #            ['TwoMuonTwoJetHT400',None],
-    #            ['Mjj110',None],
-    #            ['Mass110GeV400muon',None],
-    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #            ],
-    #         )
-    # if DO_FAKE_COMPOSITION:
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-SS-Z-VR-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonSS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass110GeV400muon',None],
-    #              ['ExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )
-    #   loop += ssdilep.algs.algs.PlotAlgCRele(
-    #           region   = 'muon-SS-Z-VR-fakes-fakesMC',
-    #           plot_all = False,
-    #           cut_flow = [
-    #              ['atLeastOneLooseFakeInMC',None],
-    #              ['PassORSingleLeptonTriggerMuon',None],
-    #              ['ExactlyZeroElectrons',None],
-    #              ['ExactlyTwoLooseMuonSS',None],
-    #              ['TwoMuonTwoJetHT400',None],
-    #              ['Mjj110',None],
-    #              ['Mass110GeV400muon',None],
-    #              ['NotExactlyTwoTightLeptons',['SuperGenericWeight','MuTrigSF','GlobalBjet','GlobalJVT']],
-    #              ],
-    #           )    
+    # Muon Channel SS
+    # ---------------------------------------
+    # ------ ZCR
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-SS-Z-CR',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['TwoMuonTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass60GeV110muon',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-SS-Z-CR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['TwoMuonTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass60GeV110muon',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    # ---------------------------------------
+    # ------ ZVR
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-SS-Z-VR',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['TwoMuonTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass110GeV400muon',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-SS-Z-VR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['TwoMuonTwoJetHT300',None],
+               ['Mjj110',None],
+               ['Mass110GeV400muon',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    # ---------------------------------------
+    # ------ ZSR
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-SS-Z-SR',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['TwoMuonTwoJetHT400',None],
+               ['Mjj110',None],
+               ['Mass400GeVmuon',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgCRele(
+            region   = 'muon-SS-Z-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['NoFakeMuonsInMC',None],
+               ['PassORSingleLeptonTriggerMuon',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['TwoMuonTwoJetHT400',None],
+               ['Mjj110',None],
+               ['Mass400GeVmuon',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2016','MuTrigSF2015','GlobalBjet','GlobalJVT']],
+               ],
+            )
     loop += pyframe.algs.HistCopyAlg()
 
     ##-------------------------------------------------------------------------

@@ -5,7 +5,10 @@
 *.root
 *.rootrc
 *.pdf
+*.eps
+run/*.root
 atlasstyle*
 run/*.eps
 run/*.root
+*.bak
 run/Plots

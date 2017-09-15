@@ -54,7 +54,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-RUN = "HN_003_SYS"
+RUN = "HN_006_SYS"
 # RUN = "WJets_HN_010"
 # RUN = "FFele_HN_006"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -89,9 +89,9 @@ DO_NOM = True                        # submit the nominal job
 
 DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
-DO_MUON_SYS = False
+DO_MUON_SYS = True
 
-DO_ELECTRON_SYS = True
+DO_ELECTRON_SYS = False
 
 DO_JET_SYS = True
 
@@ -145,16 +145,16 @@ def main():
             ['CF_DN'                                , nominal],
             ['FF_UP'                                , nominal],
             ['FF_DN'                                , nominal],
-            # ['BEAM_UP'                              , nominal],
-            # ['BEAM_DN'                              , nominal],
-            # ['CHOICE_UP'                            , nominal],
-            # ['CHOICE_DN'                            , nominal],
-            # ['PDF_UP'                               , nominal],
-            # ['PDF_DN'                               , nominal],
-            # ['PI_UP'                                , nominal],
-            # ['PI_DN'                                , nominal],
-            # ['SCALE_Z_UP'                           , nominal],
-            # ['SCALE_Z_DN'                           , nominal],
+            ['BEAM_UP'                              , nominal],
+            ['BEAM_DN'                              , nominal],
+            ['CHOICE_UP'                            , nominal],
+            ['CHOICE_DN'                            , nominal],
+            ['PDF_UP'                               , nominal],
+            ['PDF_DN'                               , nominal],
+            ['PI_UP'                                , nominal],
+            ['PI_DN'                                , nominal],
+            ['SCALE_Z_UP'                           , nominal],
+            ['SCALE_Z_DN'                           , nominal],
             ['EG_RESOLUTION_ALL_UP'                 , nominal],
             ['EG_RESOLUTION_ALL_DN'                 , nominal],
             ['EG_SCALE_ALLCORR_UP'                  , nominal],

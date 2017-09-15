@@ -1083,6 +1083,16 @@ Mjj4 = Var(name='Mjj',
               logx   = True
               )
 
+invMassZCRbroad = Var(name='invMass',
+              path   = 'event',
+              xmin   = 60,
+              xmax   = 2000,
+              rebin  = 1,
+              rebinVar  = [60 + 5*x for x in range(0,11)] + generateLogBins(20,119,2000),
+              log    = True,
+              logx   = True,
+              )
+
 invMassZCRpeak = Var(name='invMass',
               path   = 'event',
               xmin   = 60,
@@ -1090,6 +1100,23 @@ invMassZCRpeak = Var(name='invMass',
               rebin  = 2,
               # rebinVar  = bins_invMZCR1,
               log    = False,
+              )
+
+invMassZCRpeak2 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 60,
+              xmax   = 110,
+              rebin  = 10,
+              # rebinVar  = bins_invMZCR1,
+              log    = False,
+              )
+
+invMassZVR = Var(name='invMass',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 400,
+              rebin  = 10,
+              log    = True,
               )
 
 invMassZCR = Var(name='invMass',
@@ -1127,7 +1154,7 @@ invMassZSR1 = Var(name='invMass',
               rebin  = 1,
               rebinVar  = bins_invMZSR1,
               #rebinVar  = bins_Zpeak2,
-              log    = False,
+              log    = True,
               )
 
 invMassZVR2 = Var(name='invMass',
@@ -1147,7 +1174,7 @@ invMassZSR2 = Var(name='invMass',
               rebin  = 1,
               rebinVar  = bins_invMZSR2,
               #rebinVar  = bins_Zpeak2,
-              log    = False,
+              log    = True,
               )
 
 invMassZVR3 = Var(name='invMass',
@@ -1382,6 +1409,9 @@ vars_dict["invMassZCRpeak"] = invMassZCRpeak.__dict__
 vars_dict["HT2Lep2Jet_8"] = HT2Lep2Jet_8.__dict__
 vars_dict["HT2Lep2Jet_5"] = HT2Lep2Jet_5.__dict__
 vars_dict["HT2Lep2Jet_5s"] = HT2Lep2Jet_5s.__dict__
+vars_dict["invMassZCRbroad"] = invMassZCRbroad.__dict__
+vars_dict["invMassZVR"] = invMassZVR.__dict__
+vars_dict["invMassZCRpeak2"] = invMassZCRpeak2.__dict__
 
 ## EOF
 
