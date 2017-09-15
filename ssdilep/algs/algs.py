@@ -2382,11 +2382,12 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_BadJetVeto(self):
-        jets = self.store['jets']
-        for jet in jets:
-          if (not jet.isClean) and jet.JvtPass_Medium:
+      jets = self.store['jets']
+      for jet in jets:
+        if ord(jet.JvtPass_Medium):
+          if not (jet.isClean > 0.5):
             return False
-        return True
+      return True
 
     def cut_NoLooseFakesInMC(self):
       if "mc" not in self.sampletype:
