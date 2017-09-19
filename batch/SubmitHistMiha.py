@@ -33,7 +33,7 @@ print "test"
 # NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
-# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT19and12unskimmed"
+# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
 # NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12_dilepton"
 NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
 

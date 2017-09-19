@@ -123,9 +123,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_AtLeastTwo100GeVJets(self):
       count = 0
       for jet in self.store['jets_tight']:
-        if jet.pt >= 100 * GeV and abs(jet.tlv.Eta()) < 2.0:
+        if jet.pt > 100 * GeV and abs(jet.eta) < 2.0:
           count += 1
       if count > 1:
+        # print " "
+        # print self.chain.mcEventNumber
+        # print " "
         return True
       else:
         return False
@@ -1733,6 +1736,12 @@ class CutAlg(pyframe.core.Algorithm):
         muons = self.store['muons']
         if len(muons)==2: 
           if muons[0].trkcharge*muons[1].trkcharge == -1: return True
+        return False
+
+    def cut_ExactlyTwoLooseElectron(self):
+        muons = self.store['electrons_loose_LooseLLH']
+        if len(muons)==2: 
+          return True
         return False
 
     def cut_ExactlyTwoLooseElectronSS(self):
@@ -4751,13 +4760,13 @@ class VarsAlg(pyframe.core.Algorithm):
         ## make tight jets
         jets_tight = []
         for jet in jets:
-          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) <= 2.5 and jet.tlv.Pt()>20*GeV:
+          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) < 2.5 and jet.pt>20*GeV:
             jets_tight += [jet]
 
         jets_tight.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         if len(jets_tight) > 1:
           assert jets_tight[0].tlv.Pt() >= jets_tight[1].tlv.Pt(), "jets_tight not sorted.."
-        self.store['jets_tight'] = jets_tight        
+        self.store['jets_tight'] = jets_tight   
 
         ## remove fakes from signal
         if ("mc" in self.sampletype) and self.chain.mcChannelNumber in range(306538,306560):
