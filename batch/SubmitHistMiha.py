@@ -33,9 +33,9 @@ print "test"
 # NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
-# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
+NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
 # NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12_dilepton"
-NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
+# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
 
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
@@ -54,9 +54,9 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-RUN = "HN_006_SYS"
+# RUN = "HN_006_SYS"
 # RUN = "WJets_HN_010"
-# RUN = "FFele_HN_006"
+RUN = "FFele_HN_v2_001"
 # RUN = "ZPeak_HN_Dilepton_003"
 
 
@@ -68,12 +68,12 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
@@ -87,13 +87,13 @@ TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 
-DO_MUON_SYS = True
+DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = False
 
-DO_JET_SYS = True
+DO_JET_SYS = False
 
  
 
@@ -127,7 +127,7 @@ def main():
     all_data = samples.all_data
 
     # all_mc = []
-    # all_data = []
+    all_data = []
 
     nominal = all_mc 
     nominal += all_data

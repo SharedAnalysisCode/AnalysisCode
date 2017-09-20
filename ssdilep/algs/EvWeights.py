@@ -416,7 +416,7 @@ class ExactlyOneTightEleSF(pyframe.core.Algorithm):
           for ele in electrons:
             sf *= getattr(ele,"RecoEff_SF").at(0)
             sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
             #sf *= getattr(ele,"TrigMCEff_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
         if self.key: 
@@ -523,7 +523,7 @@ class AllTightEleSF(pyframe.core.Algorithm):
             if (ele.electronType() in [1,2,3,4]) or (self.chain.mcChannelNumber in range(306538,306560)):
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(self.id_sys)
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
@@ -655,7 +655,7 @@ class AllTightLepSF(pyframe.core.Algorithm):
             if (ele.electronType() in [1,2,3,4]) or (self.chain.mcChannelNumber in range(306538,306560)):
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(self.id_sys)
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
@@ -784,7 +784,7 @@ class ExactlyTwoTightEleOStoSS(pyframe.core.Algorithm):
             if ele.electronType() in [1,2,3,4]:
               sf *= getattr(ele,"RecoEff_SF").at(0)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
               sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
         if self.key: 
@@ -825,7 +825,7 @@ class ExactlyOneTightEleSF(pyframe.core.Algorithm):
           for ele in electrons:
             sf *= getattr(ele,"RecoEff_SF").at(0)
             sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
             #sf *= getattr(ele,"TrigMCEff_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
         if self.key: 
@@ -903,22 +903,22 @@ class ExactlyTwoLooseEleFF(pyframe.core.Algorithm):
           sf *= getattr(electrons[1],"RecoEff_SF").at(0)
           if self.typeFF=="TL":
             sf *= getattr(electrons[0],"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
             sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
-            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= alpha*f2*(1.-f1)
           elif self.typeFF=="LT":
             sf *= getattr(electrons[1],"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
             sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
-            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= alpha*f1*(1.-f2)
           elif self.typeFF=="LL":
-            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
-            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= -alpha*f1*f2
 
@@ -1011,7 +1011,7 @@ class ExactlyTwoTightEleSF(pyframe.core.Algorithm):
             if ele.electronType() in [1,2,3,4]:
               sf *= getattr(ele,"RecoEff_SF").at(0)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
               # sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
               sf *= getattr(ele,"TrigEff_SF_DI_E_2015_e12_lhloose_L1EM10VH_2016_e17_lhvloose_nod0_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
 
@@ -1166,7 +1166,7 @@ class GenericFakeFactor(pyframe.core.Algorithm):
         if (ele.isIsolated_Loose and ele.LHMedium) :
           if "mc" in self.sampletype : 
             sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+            sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(self.id_sys)
             sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
             ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
             etaBin = self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) )
@@ -1183,7 +1183,7 @@ class GenericFakeFactor(pyframe.core.Algorithm):
         else :
           sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( ele.tlv.Pt()/GeV, abs( ele.caloCluster_eta ) ) )
           if "mc" in self.sampletype :
-            sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys)
+            sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(self.id_sys)
             sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
           else :
             pass
@@ -1515,7 +1515,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
           if "mc" in self.sampletype :
             if (self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713)) or ele.electronType() in [1,2,3] :
               sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
+              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
             if self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713):
               continue # no charge-flip SF for signal
@@ -1553,7 +1553,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( electron_pt, abs( ele.caloCluster_eta ) ) )
           if "mc" in self.sampletype :
             if True or ele.electronType() in [1,2,3] :
-              sf *= getattr(ele,"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(self.id_sys_e)
+              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
 
       for muon in muons:
@@ -1819,22 +1819,22 @@ class ExactlyTwoLooseEleFakeFactor(pyframe.core.Algorithm):
           sf *= getattr(electrons[1],"RecoEff_SF").at(0)
           if self.typeFF=="TL":
             sf *= getattr(electrons[0],"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
             sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
-            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= F2
           elif self.typeFF=="LT":
             sf *= getattr(electrons[1],"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(0)
-            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[1][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(0)
             sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]+"_"+self.isoLevels[0]).at(0)
-            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= F1
           elif self.typeFF=="LL":
-            sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[0],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
-            sf *= getattr(electrons[1],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+            sf *= getattr(electrons[1],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
             sf *= getattr(electrons[1],"TrigEff_SF_DI_E_2015_e17_lhloose_2016_e17_lhloose_"+self.IDLevels[1]).at(0)
             sf *= -F1*F2
 
@@ -1912,7 +1912,7 @@ class ExactlyOneLooseEleFakeFactor(pyframe.core.Algorithm):
 
         if "mc" in self.sampletype: 
           sf *= getattr(electrons[0],"RecoEff_SF").at(0)
-          sf *= getattr(electrons[0],"PIDEff_SF_LH" + self.IDLevels[0][0:-3] ).at(0)
+          sf *= getattr(electrons[0],"PIDEff_SF_" + self.IDLevels[0][0:-3] ).at(0)
           #sf *= getattr(electrons[0],"TrigMCEff_SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e26_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0_"+self.IDLevels[1]).at(0)
           sf *= F
 

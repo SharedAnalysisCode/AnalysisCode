@@ -167,13 +167,13 @@ if options.samples == "wjet":
   ]
 elif options.samples == "FFele":
   mc_backgrounds = [
-  samples.WenuPowheg,
-  samples.WtaunuPowheg,
-  samples.ZeePowheg,
-  samples.ZtautauPowheg,
-  samples.ttbar_inc,
-  samples.singletop_inc,
+  samples.Wenu221,
+  samples.Wtaunu221,
+  samples.Zee221,
+  samples.Ztautau221,
   samples.diboson_sherpa221_all,
+  samples.singletop_inc,
+  samples.ttbar_inc,
   ]
 elif options.samples == "chargeFlipData":
   mc_backgrounds = [
@@ -574,13 +574,13 @@ if options.samples == "wjet":
   ]
 elif options.samples == "FFele":
   mumu_backgrounds = [
-  samples.WenuPowheg,
-  samples.ZeePowheg,
+  samples.Wenu221,
+  samples.Wtaunu221,
+  samples.Zee221,
+  samples.Ztautau221,
   samples.diboson_sherpa221_all,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
-  samples.ttbar_inc,
   samples.singletop_inc,
+  samples.ttbar_inc,
   ]
 elif options.samples == "chargeFlipData":
   if options.fakest == "ChargeFlip":

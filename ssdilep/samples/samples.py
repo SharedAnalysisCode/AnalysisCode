@@ -82,6 +82,7 @@ for run in GRL:
 list_runs =[globals()[ds_name%(run)] for run in GRL]
 
 EXOT19_data = [
+Sample( name      = "data_merged_0027XXXX_physics_Main", type = "data"),
 Sample( name      = "data_merged_0028XXXX_physics_Main", type = "data"),
 Sample( name      = "data_merged_0029XXXX_physics_Main", type = "data"),
 Sample( name      = "data_merged_00300XXX_physics_Main", type = "data"),
@@ -967,10 +968,125 @@ Wtaunu = Sample( name =   'Wtaunu',
                 ) 
 
 
+#-----------------------------------------------------------------------------
+# W + jets (Sherpa 2.22)
+# Notes:
+#       * cross sections: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryWjetsSherpa22Light (light filter)
+#                         https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryWjetsSherpa22C     (C filter) 
+#                         https://twiki.cern.ch/twiki/bin/view/AtlasProtected/XsecSummaryWjetsSherpa22B     (B filter) 
+#-----------------------------------------------------------------------------
 
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_BFilter           = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_BFilter", xsec =  19135.0   *0.9702*0.04414)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CFilterBVeto      = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CFilterBVeto", xsec =  19130.0   *0.9702*0.1303 )
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CVetoBVeto        = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CVetoBVeto", xsec =  19127.0   *0.9702*0.82447)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV1000_E_CMS             = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV1000_E_CMS", xsec =  1.2334    *0.9702*1.0    )
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_BFilter        = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_BFilter", xsec =  339.48    *0.9702*0.10898)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CFilterBVeto   = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CFilterBVeto", xsec =  339.87    *0.9702*0.28965)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CVetoBVeto     = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CVetoBVeto", xsec =  339.81    *0.9702*0.59691)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_BFilter        = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_BFilter", xsec =  72.113    *0.9702*0.13391)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CFilterBVeto   = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CFilterBVeto", xsec =  72.128    *0.9702*0.31675)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CVetoBVeto     = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CVetoBVeto", xsec =  72.084    *0.9702*0.54441)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV500_1000               = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV500_1000", xsec =  15.04     *0.9702*1.0    )
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_BFilter         = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_BFilter", xsec =  945.15    *0.9702*0.10341)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CFilterBVeto    = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CFilterBVeto", xsec =  945.67    *0.9702*0.22787)
+Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CVetoBVeto      = Sample( name = "Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CVetoBVeto", xsec =  942.58    *0.9702*0.66872)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_BFilter         = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_BFilter", xsec =  19163.0   *0.9702*0.04459)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CFilterBVeto    = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CFilterBVeto", xsec =  19153.0   *0.9702*0.12934)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CVetoBVeto      = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CVetoBVeto", xsec =  19152.0   *0.9702*0.82495)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV1000_E_CMS           = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV1000_E_CMS", xsec =  1.2339    *0.9702*1.0    )
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_BFilter      = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_BFilter", xsec =  339.55    *0.9702*0.11229)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CFilterBVeto = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CFilterBVeto", xsec =  339.63    *0.9702*0.29025)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CVetoBVeto   = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CVetoBVeto", xsec =  339.36    *0.9702*0.59622)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_BFilter      = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_BFilter", xsec =  72.026    *0.9702*0.13426)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CFilterBVeto = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CFilterBVeto", xsec =  71.976    *0.9702*0.31648) 
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CVetoBVeto   = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CVetoBVeto", xsec =  72.048    *0.9702*0.54569) 
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV500_1000             = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV500_1000", xsec =  15.046    *0.9702*1.0    )
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_BFilter       = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_BFilter", xsec =  943.30    *0.9702*0.10396)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CFilterBVeto  = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CFilterBVeto", xsec =  946.73    *0.9702*0.22222)
+Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CVetoBVeto    = Sample( name = "Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CVetoBVeto", xsec =  947.65    *0.9702*0.67382)
+ 
+WenuSherpa221 = Sample( name =   'WenuSherpa221',
+                  tlatex = 'W #rightarrow e#nu',
+                  fill_color = ROOT.kRed+1,
+                  line_color =  ROOT.kRed+2,
+                  marker_color =  ROOT.kRed+2,
+                  daughters = [
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_BFilter           ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CFilterBVeto      ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CVetoBVeto        ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV1000_E_CMS             ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_BFilter        ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CFilterBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CVetoBVeto     ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_BFilter        ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CFilterBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CVetoBVeto     ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV500_1000               ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_BFilter         ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CFilterBVeto    ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CVetoBVeto      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_BFilter         ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CFilterBVeto    ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CVetoBVeto      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV1000_E_CMS           ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_BFilter      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CFilterBVeto ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CVetoBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_BFilter      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CFilterBVeto ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CVetoBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV500_1000             ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_BFilter       ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CFilterBVeto  ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CVetoBVeto    ,
+                              ],
+                ) 
 
+Wenu221 = Sample( name =   'Wenu221',
+                  tlatex = 'W #rightarrow e#nu',
+                  fill_color = ROOT.kRed+1,
+                  line_color =  ROOT.kRed+2,
+                  marker_color =  ROOT.kRed+2,
+                  daughters = [
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_BFilter           ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CFilterBVeto      ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV0_70_CVetoBVeto        ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV1000_E_CMS             ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_BFilter        ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CFilterBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV140_280_CVetoBVeto     ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_BFilter        ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CFilterBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV280_500_CVetoBVeto     ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV500_1000               ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_BFilter         ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CFilterBVeto    ,
+                      Sherpa_221_NNPDF30NNLO_Wenu_MAXHTPTV70_140_CVetoBVeto      ,
+                              ],
+                )
 
-
+Wtaunu221 = Sample( name =   'Wtaunu221',
+                  tlatex = 'W #rightarrow #tau#nu',
+                  fill_color = ROOT.kRed+1,
+                  line_color =  ROOT.kRed+2,
+                  marker_color =  ROOT.kRed+2,
+                  daughters = [
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_BFilter         ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CFilterBVeto    ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV0_70_CVetoBVeto      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV1000_E_CMS           ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_BFilter      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CFilterBVeto ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV140_280_CVetoBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_BFilter      ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CFilterBVeto ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV280_500_CVetoBVeto   ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV500_1000             ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_BFilter       ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CFilterBVeto  ,
+                      Sherpa_221_NNPDF30NNLO_Wtaunu_MAXHTPTV70_140_CVetoBVeto    ,
+                              ],
+                )
 
 #-----------------------------------------------------------------------------
 # W + jets (Powheg)
@@ -2465,9 +2581,9 @@ all_HN = Sample( name =  'all_HN',
 
 all_data = []
 # all_data += data.daughters
-# all_data += dataEXOT19.daughters
+all_data += dataEXOT19.daughters
 # all_data += dataEXOT12_Dilepton.daughters
-all_data += dataEXOT12.daughters
+# all_data += dataEXOT12.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters
@@ -2502,25 +2618,23 @@ all_mc = []
 ## EOF
 
 ### EXOT0 fake rate measurement configuration
+all_mc += WenuSherpa221.daughters
+# all_mc += ZeeSherpa221.daughters
 # all_mc += diboson_sherpa221_all.daughters
-# all_mc += WenuPowheg.daughters
-# all_mc += WtaunuPowheg.daughters
-# all_mc += ZeePowheg.daughters
-# all_mc += ZtautauPowheg.daughters
 # all_mc += singletop_inc.daughters
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-all_mc += ZeeSherpa221.daughters
-all_mc += Zmumu221.daughters
-all_mc += Ztautau221.daughters
+# all_mc += ZeeSherpa221.daughters
+# all_mc += Zmumu221.daughters
+# all_mc += Ztautau221.daughters
 # all_mc += MGPy8Zee.daughters
-all_mc += diboson_sherpa222.daughters
-all_mc += top_physics.daughters
-all_mc += Rare.daughters
+# all_mc += diboson_sherpa222.daughters
+# all_mc += top_physics.daughters
+# all_mc += Rare.daughters
 # signal
 # all_mc += all_DCH.daughters
-all_mc += list_HN
+# all_mc += list_HN
 
 ### EXOT12 ZPeak
 # all_mc += Zee221.daughters

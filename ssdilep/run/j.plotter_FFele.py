@@ -82,10 +82,6 @@ def analyze(config):
 
     ## build MET
     ## ---------------------------------------
-    loop += ssdilep.algs.met.METCLUS(
-        prefix='metFinalClus',
-        key = 'met_clus',
-        )
     loop += ssdilep.algs.met.METTRK(
         prefix='metFinalTrk',
         key = 'met_trk',
@@ -94,13 +90,8 @@ def analyze(config):
     
     ## initialize and/or decorate objects
     ## ---------------------------------------
-    loop += ssdilep.algs.vars.PairsBuilder(
-        obj_keys=['muons'],
-        pair_key='mu_pairs',
-        met_key='met_clus', 
-        )
     
-    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=True, use_simple_truth=False)  
+    loop += ssdilep.algs.algs.VarsAlg(key_muons='muons',key_jets='jets', key_electrons='electrons', require_prompt=False, use_simple_truth=False)  
 
     ## start preselection cutflow 
     ## ---------------------------------------
@@ -174,6 +165,16 @@ def analyze(config):
                ['bjetveto',["GlobalBjet","GlobalJVT"]],
                ['METtrkLow25',None],
                ['AtLeastTwoJets',None],
+               ],
+            )
+
+    loop += ssdilep.algs.algs.PlotAlgFFee(
+            region   = 'FakeEnrichedRegion-Two50Jets',
+            plot_all = False,
+            cut_flow = [
+               ['bjetveto',["GlobalBjet","GlobalJVT"]],
+               ['METtrkLow25',None],
+               ['AtLeastTwo50GeVJets',None],
                ],
             )
 

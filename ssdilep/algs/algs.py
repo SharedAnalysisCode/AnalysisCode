@@ -712,36 +712,6 @@ class CutAlg(pyframe.core.Algorithm):
           if not (p.lead.isTruthMatchedToMuon and p.sublead.isTruthMatchedToMuon): continue
         passed = passed and p.lead.isMedium and p.sublead.isMedium
       return passed 
-    
-    #__________________________________________________________________________
-    def cut_METlow40(self):
-      met = self.store["met_clus"]
-      return met.tlv.Pt() < 40 * GeV
-    
-    #__________________________________________________________________________
-    def cut_METlow50(self):
-      met = self.store["met_clus"]
-      return met.tlv.Pt() < 50 * GeV
-    
-    #__________________________________________________________________________
-    def cut_METlow30(self):
-      met = self.store["met_clus"]
-      return met.tlv.Pt() < 30 * GeV
-    
-    #__________________________________________________________________________
-    def cut_METhigher10(self):
-      met = self.store["met_clus"]
-      return met.tlv.Pt() > 10 * GeV
-    
-    #__________________________________________________________________________
-    def cut_METhigher40(self):
-      met = self.store["met_clus"]
-      return met.tlv.Pt() > 40 * GeV
-    
-    #__________________________________________________________________________
-    def cut_METhigher50(self):
-      met = self.store["met_clus"]
-      return met.tlv.Pt() > 50 * GeV
 
     #__________________________________________________________________________
     def cut_METtrkLow25(self):
@@ -783,20 +753,7 @@ class CutAlg(pyframe.core.Algorithm):
           if abs(lead_ele.tlv.DeltaPhi(jet.tlv)) > 2.8:
             return True
       return False
-   
-    #__________________________________________________________________________
-    def cut_SumCosDPhi02(self):
-      met = self.store["met_clus"]
-      lead_mu = self.store["muons"][0]
-      lead_jet = None
-      if self.store["jets"]:
-        lead_jet = self.store["jets"][0]
-      if lead_jet:
-        scdphi = 0.0
-        scdphi += ROOT.TMath.Cos(met.tlv.Phi() - lead_mu.tlv.Phi())
-        scdphi += ROOT.TMath.Cos(met.tlv.Phi() - lead_jet.tlv.Phi())
-        return scdphi > -0.2
-      else: return False
+
 
     #__________________________________________________________________________
     def cut_MuJetDphi27(self):
@@ -1210,6 +1167,12 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_AtLeastOneLooseEleLooseLLH(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)>0: 
+          return True
+        return False
+
+    def cut_ExactlyOneLooseEleLooseLLH(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==1: 
           return True
         return False
 
@@ -2393,7 +2356,7 @@ class CutAlg(pyframe.core.Algorithm):
     def cut_BadJetVeto(self):
       jets = self.store['jets']
       for jet in jets:
-        if ord(jet.JvtPass_Medium):
+        if jet.JvtPass_Medium:
           if not (jet.isClean > 0.5):
             return False
       return True
@@ -2886,7 +2849,6 @@ class PlotAlg(pyframe.algs.CutFlowAlg,CutAlg):
         #jet_lead   = jets[0]
         
         met_trk    = self.store['met_trk']
-        met_clus   = self.store['met_clus']
         #mupairs    = self.store['mu_pairs']
         
         ## plot directories
@@ -3012,11 +2974,8 @@ class PlotAlg(pyframe.algs.CutFlowAlg,CutAlg):
         """
 
         ## met plots
-        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         
         ## muons pairs
@@ -3166,11 +3125,8 @@ class PlotAlg(pyframe.algs.CutFlowAlg,CutAlg):
 
 
           ## met plots
-          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
-          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
           self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
-          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
           
           """
@@ -3349,7 +3305,6 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         ## get event candidate
         electrons  = self.store['electrons_tight_MediumLLH_isolLoose']
         met_trk    = self.store['met_trk']
-        met_clus   = self.store['met_clus']
 
         jets       = self.store['jets_tight']
         
@@ -3371,11 +3326,8 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(e);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         ## met plots
-        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
@@ -3435,11 +3387,8 @@ class PlotAlgZee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
           ## met plots
-          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
-          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
           self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
-          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
 
           
@@ -3657,7 +3606,6 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         ## get event candidate
         electrons  = self.store['electrons_loose_LooseLLH']
         met_trk    = self.store['met_trk']
-        met_clus   = self.store['met_clus']
         jets       = self.store['jets']
         
         EVT    = os.path.join(region, 'event')
@@ -3675,11 +3623,8 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_nbjets = self.hist('h_nbjets', "ROOT.TH1F('$', ';N_{b};Events', 20, 0, 20)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         ## met plots
-        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
@@ -3725,11 +3670,8 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_njets.Fill(len(jets), weight)
           self.h_nbjets.Fill(nbjets, weight)
           ## met plots
-          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
-          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
           self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
-          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
 
           #electron
@@ -3752,7 +3694,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
             elSF_LooseLLH = 1.
             if("mc" in self.sampletype):
               elSF_LooseLLH *= getattr(ele,"RecoEff_SF").at(0)
-              elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
+              elSF_LooseLLH *= getattr(ele,"PIDEff_SF_LooseAndBLayerLLH").at(0)
             self.h_el_l_pt.Fill(ele.tlv.Pt()/GeV,             weight*elePassTrigger*elSF_LooseLLH)
             self.h_el_l_eta.Fill(ele.eta,                     weight*elePassTrigger*elSF_LooseLLH)
             self.h_el_l_phi.Fill(ele.tlv.Phi(),               weight*elePassTrigger*elSF_LooseLLH)
@@ -3765,7 +3707,7 @@ class PlotAlgFFee(pyframe.algs.CutFlowAlg,CutAlg):
               elSF_MediumLLH_isolLoose =  1.
               if("mc" in self.sampletype):
                 elSF_MediumLLH_isolLoose *= getattr(ele,"RecoEff_SF").at(0)
-                elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(0)
+                elSF_MediumLLH_isolLoose *= getattr(ele,"PIDEff_SF_MediumLLH").at(0)
                 elSF_MediumLLH_isolLoose *= getattr(ele,"IsoEff_SF_MediumLLHisolLoose").at(0)
               self.h_el_t_pt.Fill(ele.tlv.Pt()/GeV,             weight*elePassTrigger*elSF_MediumLLH_isolLoose)
               self.h_el_t_eta.Fill(ele.eta,                     weight*elePassTrigger*elSF_MediumLLH_isolLoose)
@@ -3937,7 +3879,6 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         ## get event candidate
         electrons  = self.store['electrons_loose_LooseLLH']
         met_trk    = self.store['met_trk']
-        met_clus   = self.store['met_clus']
 
         jets       = self.store['jets_tight']
         
@@ -3955,15 +3896,11 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_nelectrons = self.hist('h_nelectrons', "ROOT.TH1F('$', ';N_{e};Events', 8, 0, 8)", dir=EVT)
         self.h_njets = self.hist('h_njets', "ROOT.TH1F('$', ';N_{j};Events', 20, 0, 20)", dir=EVT)
         ## met plots
-        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         self.h_met_trk_mt = self.hist('h_met_trk_mt', "ROOT.TH1F('$', ';m_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_mt = self.hist('h_met_clus_mt', "ROOT.TH1F('$', ';m_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
         self.h_el_pt = self.hist('h_el_pt', "ROOT.TH1F('$', ';p_{T}(e) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=ELECTRONS)
@@ -3999,18 +3936,14 @@ class PlotAlgWJets(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_nelectrons.Fill(len(electrons), weight*elePassTrigger)
           self.h_njets.Fill(len(jets), weight*elePassTrigger)
           ## met plots
-          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight*elePassTrigger)
-          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight*elePassTrigger)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight*elePassTrigger)
           self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight*elePassTrigger)
-          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight*elePassTrigger)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight*elePassTrigger)
 
           ele1T = ROOT.TLorentzVector()
           ele1T.SetPtEtaPhiM( electrons[0].tlv.Pt(), 0., electrons[0].tlv.Phi(), electrons[0].tlv.M() )
 
           self.h_met_trk_mt.Fill ( (ele1T+met_trk.tlv).M()/GeV , weight*elePassTrigger)
-          self.h_met_clus_mt.Fill( (ele1T+met_clus.tlv).M()/GeV, weight*elePassTrigger)
 
           #electron
           self.h_el_pt.Fill(ele.tlv.Pt()/GeV, weight*elePassTrigger)
@@ -4190,7 +4123,6 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         leptons = electrons + muons
 
         met_trk    = self.store['met_trk']
-        met_clus   = self.store['met_clus']
         jets       = self.store['jets']
         
         EVT    = os.path.join(region, 'event')
@@ -4218,11 +4150,8 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ll);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
         # self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
         ## met plots
-        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 10000, 0.0, 10000.0)", dir=MET)
 
 
@@ -4303,11 +4232,8 @@ class PlotAlgThreeLep(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_nbjets.Fill(nbjets, weight)
 
           ## met plots
-          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
-          self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
           self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
-          self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
           #electron
           for lep in leptons:
@@ -4491,7 +4417,6 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         electrons  = self.store[self.ele_container] + self.store[self.mu_container]
 
         met_trk    = self.store['met_trk']
-        met_clus   = self.store['met_clus']
         jets       = self.store['jets_tight']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
@@ -4528,11 +4453,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_truthLink  = self.hist2DVariable('h_truthLink',  [x for x in range(-1,51)], [x for x in range(-1,51)], dir=EVT)
         self.h_firstEgMother  = self.hist2DVariable('h_firstEgMother',  [x for x in range(-1,51)], [x for x in range(-1,51)], dir=EVT)
         ## met plots
-        self.h_met_clus_et = self.hist('h_met_clus_et', "ROOT.TH1F('$', ';E^{miss}_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
-        # self.h_met_clus_phi = self.hist('h_met_clus_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(clus));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
         self.h_met_trk_et = self.hist('h_met_trk_et', "ROOT.TH1F('$', ';E^{miss}_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         # self.h_met_trk_phi = self.hist('h_met_trk_phi', "ROOT.TH1F('$', ';#phi(E^{miss}_{T}(trk));Events / (0.1)', 64, -3.2, 3.2)", dir=MET)
-        # self.h_met_clus_sumet = self.hist('h_met_clus_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(clus) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
         # self.h_met_trk_sumet = self.hist('h_met_trk_sumet', "ROOT.TH1F('$', ';#Sigma E_{T}(trk) [GeV];Events / (1 GeV)', 2000, 0.0, 2000.0)", dir=MET)
 
         ##Electron plots
@@ -4618,11 +4540,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
             self.h_Mjj.Fill( (jets[0].tlv+jets[1].tlv).M()/GeV, weight)
 
           ## met plots
-          self.h_met_clus_et.Fill(met_clus.tlv.Pt()/GeV, weight)
-          # self.h_met_clus_phi.Fill(met_clus.tlv.Phi(), weight)
           self.h_met_trk_et.Fill(met_trk.tlv.Pt()/GeV, weight)
           # self.h_met_trk_phi.Fill(met_trk.tlv.Phi(), weight)
-          # self.h_met_clus_sumet.Fill(met_clus.sumet/GeV, weight)
           # self.h_met_trk_sumet.Fill(met_trk.sumet/GeV, weight)
 
           #electron
@@ -4721,7 +4640,7 @@ class VarsAlg(pyframe.core.Algorithm):
                  name ='VarsAlg',
                  key_muons = 'muons',
                  key_jets = 'jets',
-                 key_met = 'met_clus',
+                 key_met = 'met_trk',
                  key_electrons = 'electrons',
                  require_prompt = False,
                  use_simple_truth = False,
@@ -4760,7 +4679,7 @@ class VarsAlg(pyframe.core.Algorithm):
         ## make tight jets
         jets_tight = []
         for jet in jets:
-          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) < 2.5 and jet.pt>20*GeV:
+          if jet.JvtPass_Medium and jet.fJvtPass_Medium and abs(jet.eta) < 2.5 and jet.pt>20*GeV:
             jets_tight += [jet]
 
         jets_tight.sort(key=lambda x: x.tlv.Pt(), reverse=True )
