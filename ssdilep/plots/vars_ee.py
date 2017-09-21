@@ -977,6 +977,7 @@ bins_mjj  = generateLogBins(30,110,4000)
 bins_mjj2 = generateLogBins(8,110,4000)
 bins_mjj3 = generateLogBins(4,110,4000)
 bins_mjj4 = generateLogBins(3,110,4000)
+bins_mjj5 = generateLogBins(10,11,4000)
 
 
 ## Event variables
@@ -1079,6 +1080,16 @@ Mjj4 = Var(name='Mjj',
               xmax   = 4000,
               rebin  = 1,
               rebinVar  = bins_mjj4,
+              log    = False,
+              logx   = True
+              )
+
+Mjj5 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 10,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_mjj5,
               log    = False,
               logx   = True
               )
@@ -1240,10 +1251,32 @@ HT2Lep2Jet_10 = Var(name='HTlljj',
 
 HT2Lep2Jet_8 = Var(name='HTlljj',
               path   = 'event',
-              xmin   = 300,
+              xmin   = 200,
               xmax   = 4000,
               rebin  = 1,
-              rebinVar  = generateLogBins(8,300,4000),
+              rebinVar  = generateLogBins(8,200,4000),
+              #rebinVar  = bins_Zpeak2,
+              log     = False,
+              logx    = True,
+              )
+
+HT2Lep2Jet_noCut = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 150,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(12,150,4000),
+              #rebinVar  = bins_Zpeak2,
+              log     = False,
+              logx    = True,
+              )
+
+HT2Lep2Jet_noCut_6 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 150,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(6,150,4000),
               #rebinVar  = bins_Zpeak2,
               log     = False,
               logx    = True,
@@ -1394,6 +1427,7 @@ vars_dict["invMass_7"] = invMass_7.__dict__
 vars_dict["Mjj2"] = Mjj2.__dict__
 vars_dict["Mjj3"] = Mjj3.__dict__
 vars_dict["Mjj4"] = Mjj4.__dict__
+vars_dict["Mjj5"] = Mjj5.__dict__
 vars_dict["invMassZVR1"] = invMassZVR1.__dict__
 vars_dict["invMassZVR2"] = invMassZVR2.__dict__
 vars_dict["invMassZVR3"] = invMassZVR3.__dict__
@@ -1409,6 +1443,8 @@ vars_dict["invMassZCRpeak"] = invMassZCRpeak.__dict__
 vars_dict["HT2Lep2Jet_8"] = HT2Lep2Jet_8.__dict__
 vars_dict["HT2Lep2Jet_5"] = HT2Lep2Jet_5.__dict__
 vars_dict["HT2Lep2Jet_5s"] = HT2Lep2Jet_5s.__dict__
+vars_dict["HT2Lep2Jet_noCut"] = HT2Lep2Jet_noCut.__dict__
+vars_dict["HT2Lep2Jet_noCut_6"] = HT2Lep2Jet_noCut_6.__dict__
 vars_dict["invMassZCRbroad"] = invMassZCRbroad.__dict__
 vars_dict["invMassZVR"] = invMassZVR.__dict__
 vars_dict["invMassZCRpeak2"] = invMassZCRpeak2.__dict__

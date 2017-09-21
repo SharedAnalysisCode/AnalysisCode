@@ -106,7 +106,7 @@ class CutAlg(pyframe.core.Algorithm):
     
     #__________________________________________________________________________
     def cut_AtLeastTwoJets(self):
-        return len(self.store['jets_tight']) > 1
+        return len(self.store['jets_analysis']) > 1
  
     #__________________________________________________________________________
     def cut_AtLeastTwo50GeVJets(self):
@@ -121,17 +121,7 @@ class CutAlg(pyframe.core.Algorithm):
 
     #__________________________________________________________________________
     def cut_AtLeastTwo100GeVJets(self):
-      count = 0
-      for jet in self.store['jets_tight']:
-        if jet.pt > 100 * GeV and abs(jet.eta) < 2.0:
-          count += 1
-      if count > 1:
-        # print " "
-        # print self.chain.mcEventNumber
-        # print " "
-        return True
-      else:
-        return False
+      return len(self.store['jets_analysis']) > 1
 
     #__________________________________________________________________________
     def cut_AllMuPt22(self):
@@ -1922,7 +1912,7 @@ class CutAlg(pyframe.core.Algorithm):
         return False
 
     def cut_Mjj110(self):
-        jets = self.store['jets_tight']
+        jets = self.store['jets_analysis']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         if (jets[0].tlv + jets[1].tlv).M() > 110*GeV:
@@ -1945,13 +1935,14 @@ class CutAlg(pyframe.core.Algorithm):
 
     def cut_TwoEleTwoJetHT400(self):
         leptons = self.store['electrons_loose_LooseLLH']
-        jets = self.store['jets_tight']
+        jets = self.store['jets_analysis']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         HT = 0
         for ele in leptons:
           HT += ele.tlv.Pt()
-        HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+        HT += jets[0].tlv.Pt()
+        HT += jets[1].tlv.Pt()
         if HT > 400*GeV:
           return True
         return False
@@ -4492,7 +4483,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
 
         met_trk    = self.store['met_trk']
         met_clus   = self.store['met_clus']
-        jets       = self.store['jets_tight']
+        jets_all   = self.store['jets_tight']
+        jets       = self.store['jets_analysis']
         # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         
@@ -4560,34 +4552,12 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
 
         if passed:
 
-          self.array += [self.chain.mcEventNumber]
-
           nbjets = 0
-          for jet in jets:
+          for jet in jets_all:
             if jet.isFix77:
               nbjets += 1
           self.h_njets.Fill(len(jets), weight)
           self.h_nbjets.Fill(nbjets, weight)
-
-          if self.chain.mcEventNumber == 4733:
-            print "electrons[0].tlv.Pt() ",electrons[0].tlv.Pt()/GeV
-            print "electrons[0].tlv.Eta() ",electrons[0].tlv.Eta()
-            print "electrons[0].LHMedium ",electrons[0].LHMedium
-            print "electrons[0].isIsolated_LooseTrackOnly ",electrons[0].isIsolated_LooseTrackOnly
-            print "electrons[1].tlv.Pt() ",electrons[1].tlv.Pt()/GeV
-            print "electrons[1].tlv.Eta() ",electrons[1].tlv.Eta()
-            print "electrons[1].LHMedium ",electrons[1].LHMedium
-            print "electrons[1].isIsolated_LooseTrackOnly ",electrons[1].isIsolated_LooseTrackOnly
-            print "jets[0].tlv.Pt() ",jets[0].tlv.Pt()/GeV
-            print "jets[0].tlv.Eta() ",jets[0].tlv.Eta()
-            print "jets[1].tlv.Pt() ",jets[1].tlv.Pt()/GeV
-            print "jets[1].tlv.Eta() ",jets[1].tlv.Eta()
-            print "electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+jets[0].tlv.Pt()+jets[1].tlv.Pt() ",electrons[0].tlv.Pt()+electrons[1].tlv.Pt()+jets[0].tlv.Pt()+jets[1].tlv.Pt()/GeV
-            print "(electrons[0].tlv+electrons[1].tlv).M() ",(electrons[0].tlv+electrons[1].tlv).M()/GeV
-            print "(jets[0].tlv+jets[1].tlv).M() ",(jets[0].tlv+jets[1].tlv).M()/GeV
-            print "len(self.store[self.mu_container]) ",len(self.store[self.mu_container])
-            print "nbjets ",nbjets
-            print ""
 
           assert len(electrons)==2, "should have exactly two tight electrons at this point"
           ele1T = ROOT.TLorentzVector()
@@ -4767,6 +4737,17 @@ class VarsAlg(pyframe.core.Algorithm):
         if len(jets_tight) > 1:
           assert jets_tight[0].tlv.Pt() >= jets_tight[1].tlv.Pt(), "jets_tight not sorted.."
         self.store['jets_tight'] = jets_tight   
+
+        ## make analysis jets
+        jets_analysis = []
+        for jet in jets:
+          if ord(jet.JvtPass_Medium) and ord(jet.fJvtPass_Medium) and abs(jet.eta) < 2.0 and jet.pt>50*GeV:
+            jets_analysis += [jet]
+
+        jets_analysis.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        if len(jets_analysis) > 1:
+          assert jets_analysis[0].tlv.Pt() >= jets_analysis[1].tlv.Pt(), "jets_analysis not sorted.."
+        self.store['jets_analysis'] = jets_analysis
 
         ## remove fakes from signal
         if ("mc" in self.sampletype) and self.chain.mcChannelNumber in range(306538,306560):

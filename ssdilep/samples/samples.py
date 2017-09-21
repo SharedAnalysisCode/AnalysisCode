@@ -2512,7 +2512,7 @@ all_mc = []
 
 ### EXOT12 dilep
 all_mc += ZeeSherpa221.daughters
-all_mc += Zmumu221.daughters
+# all_mc += Zmumu221.daughters
 all_mc += Ztautau221.daughters
 # all_mc += MGPy8Zee.daughters
 all_mc += diboson_sherpa222.daughters
@@ -2520,7 +2520,7 @@ all_mc += top_physics.daughters
 all_mc += Rare.daughters
 # signal
 # all_mc += all_DCH.daughters
-all_mc += list_HN
+# all_mc += list_HN
 
 ### EXOT12 ZPeak
 # all_mc += Zee221.daughters

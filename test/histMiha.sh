@@ -7,9 +7,9 @@
 # INPATH="/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed/nominal"
 
 
-INPATH="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
+# INPATH="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT19and12unskimmed"
 # INPATH="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12_dilepton"
-# INPATH="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
+INPATH="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
 
 
 # INPATH="/ceph/grid/home/atlas/miham/ntuples/DiLepAna/v1/HN-unskimmed"
@@ -18,7 +18,7 @@ INSCRIPT="../ssdilep/run"
 # SCRIPT="j.plotter_WJets.py"
 # SCRIPT="j.plotter_ZPeak.py"
 # SCRIPT="j.plotter_ele_allR.py"
-# SCRIPT="j.plotter_HN.py"
+SCRIPT="j.plotter_HN.py"
 # SCRIPT="j.plotter_HN_cutflow.py"
 # SCRIPT="j.plotter_ele_allR_emu.py"
 # SCRIPT="j.plotter_ele_all_SRX.py"
@@ -28,7 +28,7 @@ INSCRIPT="../ssdilep/run"
 # SCRIPT="j.plotter_CReleTTBAR.py"
 # SCRIPT="j.plotter_CReleDiboson.py"
 # SCRIPT="j.plotter_ThreeEleVR.py"
-SCRIPT="j.plotter_FFele.py"
+# SCRIPT="j.plotter_FFele.py"
 
 echo "ASD"
 

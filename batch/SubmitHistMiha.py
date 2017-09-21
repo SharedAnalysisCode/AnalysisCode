@@ -54,7 +54,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-RUN = "HN_006_SYS"
+RUN = "HN_v1_002_NOM"
 # RUN = "WJets_HN_010"
 # RUN = "FFele_HN_006"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -87,13 +87,13 @@ TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 
-DO_MUON_SYS = True
+DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = False
 
-DO_JET_SYS = True
+DO_JET_SYS = False
 
  
 
@@ -126,7 +126,7 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    # all_mc = []
+    all_mc = []
     # all_data = []
 
     nominal = all_mc 
