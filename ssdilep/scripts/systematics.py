@@ -20,14 +20,20 @@ class Systematic(object):
             var_up=None,
             var_dn=None,
             flat_err=None,
+            onesided=None,
+            envelope=None,
+            constituents=None,
             ):
         self.name = name
         if not title: title = name
         self.title = title
         self.var_up=var_up
         self.var_dn=var_dn
-        self.flat_err=flat_err 
-        assert (self.var_up and self.var_dn) or self.flat_err!=None, 'Must provide either up and dn vars or a flat err!'
+        self.flat_err=flat_err
+        self.onesided = onesided
+        self.envelope = envelope
+        self.constituents = constituents
+        assert (self.var_up or self.var_dn) or self.flat_err!=None or (self.envelope!=None and self.constituents!=None), 'Must provide either up and dn vars or a flat err!'
 
 
 sys_dict = {}
@@ -392,13 +398,15 @@ JET_SingleParticle_HighPt = sys_dict['JET_SingleParticle_HighPt'] = Systematic(
 JET_JER_CROSS_CALIB_FORWARD = sys_dict['JET_JER_CROSS_CALIB_FORWARD'] = Systematic(
       'JET_JER_CROSS_CALIB_FORWARD',
       var_up='JET_JER_CROSS_CALIB_FORWARD_UP',
-      var_dn='JET_JER_CROSS_CALIB_FORWARD_DN',
+      var_dn=None,
+      onesided=True,
       )   
 
 JET_JER_NOISE_FORWARD = sys_dict['JET_JER_NOISE_FORWARD'] = Systematic(
       'JET_JER_NOISE_FORWARD',
       var_up='JET_JER_NOISE_FORWARD_UP',
-      var_dn='JET_JER_NOISE_FORWARD_DN',
+      var_dn=None,
+      onesided=True,
       )             
                        
 JET_JER_NP0 = sys_dict['JET_JER_NP0'] = Systematic(
@@ -454,5 +462,104 @@ JET_JER_NP8 = sys_dict['JET_JER_NP8'] = Systematic(
       var_up='JET_JER_NP8_UP',
       var_dn='JET_JER_NP8_DN',
       )                       
+
+## Theory
+# sys_list_theory = [
+# ALPHA_SYS,
+# PDFCHOICE_SYS,
+# MUR_SYS,
+# MUF_SYS,
+# ]
+
+ALPHA_SYS = sys_dict['ALPHA_SYS'] = Systematic(
+        'ALPHA_SYS',
+        var_up='MUR1_MUF1_PDF270000',
+        var_dn='MUR1_MUF1_PDF269000',
+        )
+
+MUR_SYS = sys_dict['MUR_SYS'] = Systematic(
+        'MUR_SYS',
+        var_up='MUR2_MUF1_PDF261000',
+        var_dn='MUR0.5_MUF1_PDF261000'
+        )
+
+MUF_SYS = sys_dict['MUF_SYS'] = Systematic(
+        'MUF_SYS',
+        var_up='MUR1_MUF2_PDF261000',
+        var_dn='MUR1_MUF0.5_PDF261000'
+        )
+
+
+PDFCHOICE_SYS1 = Systematic(
+        'PDFCHOICE_SYS1',
+        var_up='MUR1_MUF1_PDF13000',
+        var_dn=None,
+        onesided=True,
+        )
+
+PDFCHOICE_SYS2 = Systematic(
+        'PDFCHOICE_SYS2',
+        var_up='MUR1_MUF1_PDF25300',
+        var_dn=None,
+        onesided=True,
+        )
+
+PDF_CHOICE = [PDFCHOICE_SYS1, PDFCHOICE_SYS2]
+
+PDF_SYS = []
+for PDFvar in range (1,101):
+    PDFstr = str(PDFvar)
+    while len(PDFstr) != 3:
+        PDFstr = "0" + PDFstr
+    # globals()['PDF261'+PDFstr+'_SYS'] = sys_dict['PDF261'+PDFstr+'_SYS'] = Systematic(
+    temp = Systematic(
+            'PDF261'+PDFstr+'_SYS',
+            var_up='MUR1_MUF1_PDF261'+PDFstr,
+            var_dn=None,
+            onesided=True,
+            )
+    # PDF_SYS += [ sys_dict['PDF261'+PDFstr+'_SYS'] ]
+    PDF_SYS += [ temp ]
+
+QCD_SCALE = []
+for qcd_var in ['MUR1_MUF2','MUR2_MUF1','MUR0.5_MUF1','MUR1_MUF0.5']:
+    temp = Systematic(
+            qcd_var + '_PDF261000',
+            var_up=qcd_var + '_PDF261000',
+            var_dn=None,
+            onesided=True,
+            )
+    QCD_SCALE += [ temp ]
+
+PDF_SYS_ENVELOPE = sys_dict['PDF_SYS_ENVELOPE'] = Systematic(name='PDF_SYS_ENVELOPE',
+title=None,
+var_up=None,
+var_dn=None,
+flat_err=None,
+onesided=None,
+envelope=True,
+constituents=PDF_SYS
+        )
+
+PDF_COICE_ENVELOPE = sys_dict['PDF_COICE_ENVELOPE'] = Systematic(name='PDF_COICE_ENVELOPE',
+title=None,
+var_up=None,
+var_dn=None,
+flat_err=None,
+onesided=None,
+envelope=True,
+constituents=PDF_CHOICE
+        )
+
+QCD_SCALE_ENVELOPE = sys_dict['QCD_SCALE_ENVELOPE'] = Systematic(name='QCD_SCALE_ENVELOPE',
+title=None,
+var_up=None,
+var_dn=None,
+flat_err=None,
+onesided=None,
+envelope=True,
+constituents=QCD_SCALE
+        )
+
 
 ## EOF

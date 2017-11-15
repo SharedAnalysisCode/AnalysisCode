@@ -35,9 +35,9 @@ void fake_rate_measurement_helper(std::string var = "nominal", std::string var3 
   std::cout << var << std::endl;
 
   
-  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_v2_001/hists_el_t_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
-  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_v2_001/hists_el_l_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
-  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_v2_001/hists_el_sl_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
+  TFile* nominal_t   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_v2_002/hists_el_t_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
+  TFile* nominal_l   = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_v2_002/hists_el_l_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
+  TFile* nominal_sl  = new TFile(("/afs/f9.ijs.si/home/miham/AnalysisCode/run/FFele_HN_v2_002/hists_el_sl_2D_pt_Ceta_FakeEnrichedRegion-" + var2 + var3 + ".root").c_str());
   
   std::cout << var << " " << var3 << " " << var4 << std::endl;
   std::cout << nominal_t << " " << nominal_l << " " << nominal_sl << std::endl;
@@ -222,7 +222,7 @@ void fake_rate_measurement_helper(std::string var = "nominal", std::string var3 
   projX4ff->SetLineColor(kBlue);
   projX4ff->SetMarkerColor(kBlue);
 
-  leg = TLegend(0.5,0.2,0.9,0.4);
+  leg = TLegend(0.5,0.5,0.9,0.7);
   leg.SetBorderSize(0);
   leg.SetFillColor(0);
   leg.SetFillStyle(0);
@@ -250,7 +250,7 @@ void fake_rate_measurement_helper(std::string var = "nominal", std::string var3 
 
   TCanvas c2("c2","c2",600,600);
   c2.SetLogx();
-  projX1->GetYaxis()->SetRangeUser(0,1.0);
+  projX1->GetYaxis()->SetRangeUser(0,3.0);
   projX1->GetXaxis()->SetNoExponent();
   projX1->GetXaxis()->SetMoreLogLabels();
   projX1->GetXaxis()->SetTitle("p_{T} [GeV]");
@@ -270,7 +270,7 @@ void fake_rate_measurement_helper(std::string var = "nominal", std::string var3 
   projX1FF->GetXaxis()->SetTitle("p_{T} [GeV]");
   projX1FF->GetYaxis()->SetTitle("fake factor");
   projX1FF->Draw("pe0");
-  projX1FF->GetYaxis()->SetRangeUser(0,2.0);
+  projX1FF->GetYaxis()->SetRangeUser(0,3.0);
   projX3FF->Draw("same");
   projX4FF->Draw("same");
   leg.Draw();
@@ -281,13 +281,13 @@ void fake_rate_measurement_helper(std::string var = "nominal", std::string var3 
 
   TCanvas c4("c4","c4",600,600);
   c4.SetLogx();
-  projX1ff->GetYaxis()->SetRangeUser(0,2.0);
+  projX1ff->GetYaxis()->SetRangeUser(0,3.0);
   projX1ff->GetXaxis()->SetNoExponent();
   projX1ff->GetXaxis()->SetMoreLogLabels();
   projX1ff->GetXaxis()->SetTitle("p_{T} [GeV]");
   projX1ff->GetYaxis()->SetTitle("fake factor");
   projX1ff->Draw("pe0");
-  projX1ff->GetYaxis()->SetRangeUser(0,1.);
+  projX1ff->GetYaxis()->SetRangeUser(0,3.);
   projX3ff->Draw("same");
   projX4ff->Draw("same");
   leg.Draw();
@@ -310,7 +310,7 @@ void fake_rate_measurement(){
   fake_rate_measurement_helper("MET60");
   fake_rate_measurement_helper("MET100");
   // fake_rate_measurement_helper("nominal","_FFNoLooseTrig","-NoLooseTrig");
-  fake_rate_measurement_helper("Two50Jets");
+  fake_rate_measurement_helper("InclusiveJets");
   fake_rate_measurement_helper("mcup");
   fake_rate_measurement_helper("mcdn");
 
@@ -318,7 +318,7 @@ void fake_rate_measurement(){
   TFile* MET60File = new TFile("fakeRate-MET60.root","READ");
   TFile* MET100File = new TFile("fakeRate-MET100.root","READ");
   // TFile* ASjetFile = new TFile("fakeRate-nominal-NoLooseTrig.root","READ");
-  TFile* TwoJetsFile = new TFile("fakeRate-TwoJets.root","READ");
+  TFile* TwoJetsFile = new TFile("fakeRate-InclusiveJets.root","READ");
   TFile* mcupfile = new TFile("fakeRate-mcup.root","READ");
   TFile* mcdnfile = new TFile("fakeRate-mcdn.root","READ");
 
@@ -328,7 +328,7 @@ void fake_rate_measurement(){
   TH2F* fr4 = (TH2F*) mcupfile->Get("fakeFactor-mcup");
   TH2F* fr5 = (TH2F*) mcdnfile->Get("fakeFactor-mcdn");
   TH2F* fr6 = (TH2F*) MET100File->Get("fakeFactor-MET100");
-  TH2F* fr7 = (TH2F*) TwoJetsFile->Get("fakeFactor-TwoJets");
+  TH2F* fr7 = (TH2F*) TwoJetsFile->Get("fakeFactor-InclusiveJets");
 
 
   TH1D* temp1 = new TH1D();
@@ -363,7 +363,7 @@ void fake_rate_measurement(){
   leg.AddEntry(temp2,"#font[42]{MET < 60}","pe0");
   leg.AddEntry(temp7,"#font[42]{MET < 100}","pe0");
   // leg.AddEntry(temp3,"#font[42]{No LooseLH Trig}","pe0");
-  leg.AddEntry(temp8,"#font[42]{two 50 GeV jets}","pe0");
+  leg.AddEntry(temp8,"#font[42]{Inclusive}","pe0");
   leg.AddEntry(temp4,"#font[42]{MC up 10%}","pe0");
   leg.AddEntry(temp5,"#font[42]{MC down 10%}","pe0");
   leg.AddEntry(temp6,"#font[42]{Final Sys. Unc.}","f");

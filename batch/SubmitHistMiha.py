@@ -33,12 +33,13 @@ print "test"
 # NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
-NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
+# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
 # NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12_dilepton"
-# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12"
+NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT12"
 
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
+ARCRUNNERDIR = "/afs/f9.ijs.si/home/miham/arcrunner"
 INTARBALL = os.path.join(JOBDIR,'histtarball_%s.tar.gz' % (time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) )
 
 AUTOBUILD = True                # auto-build tarball using Makefile.tarball
@@ -54,9 +55,9 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-# RUN = "HN_006_SYS"
-# RUN = "WJets_HN_010"
-RUN = "FFele_HN_v2_001"
+RUN = "HN_v2_052_SYS"
+# RUN = "WJets_HN_v2_001"
+# RUN = "FFele_HN_v2_002"
 # RUN = "ZPeak_HN_Dilepton_003"
 
 
@@ -68,35 +69,44 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_WJets.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleDiboson.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ThreeEleVR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_FFele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CRele.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
-# SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
-BEXEC="HistMiha.sh"                  # exec script (probably dont change) 
-
+BEXEC="HistMiha.sh"
 
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_NOM = True                        # submit the nominal job
+DO_NOM = False                        # submit the nominal job
 
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
 DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = False
 
-DO_JET_SYS = False
+DO_JET_SYS = True
+
+DO_THEORY_SYS = False
 
  
-
+QCD = {
+"MUR0.5_MUF0.5":4,
+"MUR0.5_MUF1":5,
+"MUR1_MUF0.5":6,
+# "MUR1_MUF1":7,
+"MUR1_MUF2":8,
+"MUR2_MUF1":9,
+"MUR2_MUF2":10,
+}
 
 
 def main():
@@ -126,8 +136,8 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    # all_mc = []
-    all_data = []
+    all_mc = []
+    # all_data = []
 
     nominal = all_mc 
     nominal += all_data
@@ -137,24 +147,27 @@ def main():
         ['SYS1_DN',                  all_mc],
         ]    
     
-    plot_sys = []
+    plot_sys_el     = []
+    plot_sys_mu     = []
+    plot_sys_jet    = []
+    plot_sys_theory = []
 
     if DO_ELECTRON_SYS:
-        plot_sys += [
+        plot_sys_el += [
             ['CF_UP'                                , nominal],
             ['CF_DN'                                , nominal],
             ['FF_UP'                                , nominal],
             ['FF_DN'                                , nominal],
-            ['BEAM_UP'                              , nominal],
-            ['BEAM_DN'                              , nominal],
-            ['CHOICE_UP'                            , nominal],
-            ['CHOICE_DN'                            , nominal],
-            ['PDF_UP'                               , nominal],
-            ['PDF_DN'                               , nominal],
-            ['PI_UP'                                , nominal],
-            ['PI_DN'                                , nominal],
-            ['SCALE_Z_UP'                           , nominal],
-            ['SCALE_Z_DN'                           , nominal],
+            # ['BEAM_UP'                              , nominal],
+            # ['BEAM_DN'                              , nominal],
+            # ['CHOICE_UP'                            , nominal],
+            # ['CHOICE_DN'                            , nominal],
+            # ['PDF_UP'                               , nominal],
+            # ['PDF_DN'                               , nominal],
+            # ['PI_UP'                                , nominal],
+            # ['PI_DN'                                , nominal],
+            # ['SCALE_Z_UP'                           , nominal],
+            # ['SCALE_Z_DN'                           , nominal],
             ['EG_RESOLUTION_ALL_UP'                 , nominal],
             ['EG_RESOLUTION_ALL_DN'                 , nominal],
             ['EG_SCALE_ALLCORR_UP'                  , nominal],
@@ -172,7 +185,7 @@ def main():
         ]
 
     if DO_MUON_SYS:
-        plot_sys += [
+        plot_sys_mu += [
             ['MUFF_UP'                              , nominal],
             ['MUFF_DN'                              , nominal],
             ['TRIG_UPSTAT'                          , nominal],
@@ -204,7 +217,7 @@ def main():
         ]
 
     if DO_JET_SYS:
-        plot_sys += [
+        plot_sys_jet += [
             ['B_SYS_DN'                             , nominal],
             ['B_SYS_UP'                             , nominal],
             ['C_SYS_DN'                             , nominal],
@@ -280,6 +293,22 @@ def main():
             ['JET_JER_NP8_DN'                       , nominal],
             ['JET_JER_NP8_UP'                       , nominal],
         ]
+    if DO_THEORY_SYS:
+        plot_sys_theory += [
+          ["MUR1_MUF1_PDF269000", nominal],
+          ["MUR1_MUF1_PDF270000", nominal],
+          ["MUR1_MUF1_PDF25300", nominal],
+          ["MUR1_MUF1_PDF13000", nominal],
+        ]
+        for key in QCD.keys():
+            plot_sys_theory += [[key+'_PDF261000' , nominal]]
+        for PDFvar in range (1,101):
+            PDFstr = str(PDFvar)
+            while len(PDFstr) != 3:
+                PDFstr = "0" + PDFstr
+            plot_sys_theory += [['MUR1_MUF1_PDF261'+PDFstr , nominal]]
+
+    # print [a[0] for a in plot_sys]
 
 
     ## ensure output path exists
@@ -297,12 +326,21 @@ def main():
       for sys,samps in ntup_sys:
             submit(sys,sys,samps)
     if DO_PLOT_SYS:
-      print "DO_PLOT_SYS"
-      for sys,samps in plot_sys:
-            submit(sys,'nominal',samps,config={'sys':sys})
+      print "ele sys"
+      for sys,samps in plot_sys_el:
+            submit(sys,'nominal',samps,config={'sys':sys},suffix="ele")
+      print "mu sys"
+      for sys,samps in plot_sys_mu:
+            submit(sys,'nominal',samps,config={'sys':sys},suffix="mu")
+      print "jet sys"
+      for sys,samps in plot_sys_jet:
+            submit(sys,'nominal',samps,config={'sys':sys},suffix="jet")
+      print "jet sys"
+      for sys,samps in plot_sys_theory:
+            submit(sys,'nominal',samps,config={'sys':sys},suffix="theory")
 
 
-def submit(tag,job_sys,samps,config={}):
+def submit(tag,job_sys,samps,config={},suffix="nominal"):
     """
     * construct config file 
     * prepare variable list to pass to job
@@ -343,9 +381,11 @@ def submit(tag,job_sys,samps,config={}):
                 continue
             elif s in samples.all_HN.daughters and config['sys'] in ['CF_UP','CF_DN','FF_DN','FF_UP','MUFF_UP','MUFF_DN']:
                 continue
-            elif s in samples.all_data and config['sys'] not in ['FF_UP','FF_DN','MUFF_UP','MUFF_DN']:
+            elif s in samples.all_data and (config['sys'] not in ['FF_UP','FF_DN','MUFF_UP','MUFF_DN']) and ("JET_JER_NP" not in config['sys']):
                 continue
             elif s not in samples.AZNLOCTEQ6L1_DYee_DYtautau.daughters and config['sys'] in ["BEAM_UP","CHOICE_UP","PDF_UP","BEAM_UP","PI_UP","SCALE_Z_UP","BEAM_DN","CHOICE_DN","PDF_DN","BEAM_DN","PI_DN","SCALE_Z_DN"]:
+                continue
+            elif 'MUR' in config['sys'] and s not in samples.Zee221.daughters + [samples.Sherpa_222_NNPDF30NNLO_llll,samples.Sherpa_222_NNPDF30NNLO_lllv,samples.Sherpa_222_NNPDF30NNLO_llvv]:
                 continue
 
 
@@ -355,15 +395,15 @@ def submit(tag,job_sys,samps,config={}):
         ## sample type
         stype  = s.type
  
-        nlines = 1
-        if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
-            print sinput
-            tempFile = ROOT.TFile.Open(sinput)
-            tempFile.cd("physics")
-            t = ROOT.gDirectory.Get("nominal")
-            nevents = t.GetEntries()
-            print "number of events ",nevents, " lines ",nevents//maxevents+1
-            nlines = nevents//maxevents + 1
+        nlines = 1 if s not in samples.all_data else 10
+        # if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
+        #     print sinput
+        #     tempFile = ROOT.TFile.Open(sinput)
+        #     tempFile.cd("physics")
+        #     t = ROOT.gDirectory.Get("nominal")
+        #     nevents = t.GetEntries()
+        #     print "number of events ",nevents, " lines ",nevents//maxevents+1
+        #     nlines = nevents//maxevents + 1
 
         ## config
         sconfig = {}
@@ -399,19 +439,37 @@ def submit(tag,job_sys,samps,config={}):
  
     assert len(jobnames)==nsubjobs,"weird"
 
+    ## remove old folder
+    # cmd = "rm -r %s" % os.path.join(ARCRUNNERDIR, RUN)
+    # print cmd
+    # m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+    # print m.communicate()[0]
+    ## make new
+    cmd = "mkdir -p %s" % os.path.join(ARCRUNNERDIR, RUN+"_"+suffix)
+    print cmd
+    m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+    print m.communicate()[0]
+
     for line_intiger in range(nsubjobs):
 
-        TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
+        cmd = "mkdir -p %s" % os.path.join(ARCRUNNERDIR, RUN+"_"+suffix, jobnames[line_intiger])
+        print cmd
+        m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
+        print m.communicate()[0]
+
+        # TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
+        TEMPXRSL = os.path.join(ARCRUNNERDIR, RUN+"_"+suffix, jobnames[line_intiger], 'run2.xrsl' )
         JOBLISTF = os.path.join(JOBDIR,'joblist_%s.xml' % (time.strftime("d%d_m%m_y%Y")) )
         cmd =  'printf "'
         cmd += '&\n'
         cmd += '(executable=\\"%s\\")\n' % BEXEC
+        cmd += '(inputFiles=(\\"HistMiha.sh\\" \\"/afs/f9.ijs.si/home/miham/AnalysisCode/batch/HistMiha.sh\\"))'
         cmd += '(jobName=\\"'+jobnames[line_intiger]+'\\")\n'
-        cmd += '(memory=2000)\n'
+        cmd += '(memory=%s)\n' % (2000 if s not in samples.all_data else 4000)
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'
         cmd += '(gmlog="gmlog")\n'
-        cmd += '(cpuTime="300")\n'
+        cmd += '(cpuTime="1000")\n'
         cmd += '(environment=(\\"CONFIG\\" \\"%s\\")\n'    % abscfg
         cmd += '             (\\"INTARBALL\\" \\"%s\\")\n' % absintar
         cmd += '             (\\"OUTFILE\\" \\"%s\\")\n'   % OUTFILE
@@ -420,8 +478,8 @@ def submit(tag,job_sys,samps,config={}):
         cmd += '             (\\"PBS_ARRAYID\\" \\"%s\\"))'   % str(line_intiger+1)
         cmd += '">>' + TEMPXRSL
         # cmd += ';arcsub -c pikolit.ijs.si -S org.ogf.glue.emies.activitycreation -o '+JOBLISTF+' '+TEMPXRSL
-        cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
-        print cmd
+        # cmd += ';arcsub -c pikolit.ijs.si -S org.nordugrid.gridftpjob -o '+JOBLISTF+' '+TEMPXRSL
+        # print cmd
         m = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
         print m.communicate()[0]
 

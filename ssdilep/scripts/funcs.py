@@ -13,6 +13,8 @@ import ROOT
 from pyplot import histutils
 from math import sqrt
 from decimal import Decimal
+from copy import deepcopy
+
 #import sys_conv
 
 
@@ -59,6 +61,11 @@ def get_hists(
       if rebin and len(rebinVar)==0 and h: h.Rebin(rebin)
       elif len(rebinVar)>1 and h:
         # print "Performing variable bin rebining with on " + histname
+        # print "============ ",s.name
+        # if s.name == "data":
+        #   for i in range(h.GetNbinsX()+1):
+        #     if h.GetBinContent(i)>0:
+        #       print h.GetBinContent(i)," ",h.GetBinCenter(i)
         runArray = array('d',rebinVar)
         h = h.Rebin( len(rebinVar)-1, histname+"Var", runArray )
         print "OVERFLOW CHECK FOR ", s.name," ", h.GetBinContent(h.GetNbinsX()+1)
@@ -100,23 +107,52 @@ def get_sys_hists(
     for name,sys in sys_dict.items():
         h_up = h_dn = None
         if sample.estimator.is_affected_by_systematic(sys):
-          if not h_up:
-            h_up = sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='up').Clone() 
-          else:  h_up.Add(sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='up').Clone())
-          if not h_dn: h_dn = sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='dn').Clone() 
-          else:  h_dn.Add(sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='dn').Clone())
+          print name," ",sys," ",sys.envelope
+
+          if sys.envelope == True:
+            print "envelope mode"
+            nominal = deepcopy(sample.hist(region=region,icut=icut,histname=histname).Clone())
+            print nominal.Integral()
+            constituents = []
+            for sysConst in sys.constituents:
+              print "GETTING HIST"
+              tempHisto = deepcopy(sample.hist(region=region,icut=icut,histname=histname,sys=sysConst,mode='up',envelope=True).Clone())
+              print sample.name," ",tempHisto," ",tempHisto.Integral()
+              constituents += [tempHisto]
+            ## rebin in the function
+            h_up,h_dn = make_sys_hists(nominal,constituents,rebin,rebinVar, sqrt(99) if name == "PDF_SYS_ENVELOPE" else 1. )
+
+          else:
+            if not h_up:
+              print "GET UP HIST"
+              h_up = sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='up').Clone() 
+            else:
+              assert 1==0, "not sure what this part of the code is about"
+              h_up.Add(sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='up').Clone())
+            if not h_dn:
+              print "GET DN HIST"
+              h_dn = sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='dn').Clone() 
+            else:
+              assert 1==0, "not sure what this part of the code is about"
+              h_dn.Add(sample.hist(region=region,icut=icut,histname=histname,sys=sys,mode='dn').Clone())
+
+            ## rebin histogram
+            if rebin and len(rebinVar)==0 :
+              if h_up: h_up.Rebin(rebin)
+              if h_dn: h_dn.Rebin(rebin)
+            elif len(rebinVar)>1 :
+              runArray = array('d',rebinVar)
+              print "Performing variable bin rebining with on " + histname + " SYS: " + str(sys) + " " + name
+              if h_up: h_up = h_up.Rebin( len(rebinVar)-1, histname+"Var", runArray )
+              if h_dn: h_dn = h_dn.Rebin( len(rebinVar)-1, histname+"Var", runArray )
+              h_up.SetBinContent(h_up.GetNbinsX(), h_up.GetBinContent(h_up.GetNbinsX()+1) + h_up.GetBinContent(h_up.GetNbinsX()) )
+              h_up.SetBinError(h_up.GetNbinsX(), sqrt(h_up.GetBinError(h_up.GetNbinsX()+1)**2 + h_up.GetBinError(h_up.GetNbinsX())**2) )
+              h_dn.SetBinContent(h_dn.GetNbinsX(), h_dn.GetBinContent(h_dn.GetNbinsX()+1) + h_dn.GetBinContent(h_dn.GetNbinsX()) )
+              h_dn.SetBinError(h_dn.GetNbinsX(), sqrt(h_dn.GetBinError(h_dn.GetNbinsX()+1)**2 + h_dn.GetBinError(h_dn.GetNbinsX())**2) )
+
           h_up.SetName('h_%s_%s_up_%s'%(region,sys.name,sample.name))
           h_dn.SetName('h_%s_%s_dn_%s'%(region,sys.name,sample.name))
-          
-          if rebin and len(rebinVar)==0 :
-            if h_up: h_up.Rebin(rebin)
-            if h_dn: h_dn.Rebin(rebin)
-          elif len(rebinVar)>1 :
-            runArray = array('d',rebinVar)
-            print "Performing variable bin rebining with on " + histname + " SYS: " + str(sys) + " " + name
-            if h_up: h_up = h_up.Rebin( len(rebinVar)-1, histname+"Var", runArray )
-            if h_dn: h_dn = h_dn.Rebin( len(rebinVar)-1, histname+"Var", runArray )
-             
+
         hist_dict[sys] = (h_up,h_dn)
     return hist_dict 
 
@@ -175,7 +211,7 @@ def get_total_stat_sys_hists(hists,sys_dict):
                 hists_dn.append(h)
             else:
                 hists_up.append(h.sys_hists[sys][0] or h)
-                hists_dn.append(h.sys_hists[sys][0] or h)
+                hists_dn.append(h.sys_hists[sys][1] or h)
 
         h_up = histutils.add_hists(hists_up)
         h_dn = histutils.add_hists(hists_dn)
@@ -196,17 +232,26 @@ def get_total_stat_sys_hists(hists,sys_dict):
             n_DN = h_DN.GetBinContent(i)
             v_UP = (n_UP-n)/n if (n_UP!=None and n) else 0.0
             v_DN = (n_DN-n)/n if (n_DN!=None and n) else 0.0
-
-            tot_sys_UP2 += pow(v_UP,2)
-            tot_sys_DN2 += pow(v_DN,2)
+            if sys.onesided:
+              v_DN = v_UP
+            if v_UP > 0.:
+              tot_sys_UP2 += pow(v_UP,2)
+            else:
+              tot_sys_DN2 += pow(v_UP,2)
+            if v_DN > 0.:
+              tot_sys_UP2 += pow(v_DN,2)
+            else:
+              tot_sys_DN2 += pow(v_DN,2)
         tot_sys_UP = sqrt(tot_sys_UP2)            
-        tot_sys_DN = sqrt(tot_sys_DN2)            
+        tot_sys_DN = sqrt(tot_sys_DN2)    
         h_sys_UP.SetBinContent(i,tot_sys_UP)
         h_sys_DN.SetBinContent(i,tot_sys_DN)
         
         stat = h_total_stat.GetBinContent(i)
-        tot_UP = sqrt(pow(tot_sys_UP,2)+pow(stat,2))
-        tot_DN = sqrt(pow(tot_sys_DN,2)+pow(stat,2))
+        # tot_UP = sqrt(pow(tot_sys_UP,2)+pow(stat,2))
+        # tot_DN = sqrt(pow(tot_sys_DN,2)+pow(stat,2))
+        tot_UP = sqrt(pow(tot_sys_UP,2))
+        tot_DN = sqrt(pow(tot_sys_DN,2))
         h_total_UP.SetBinContent(i,tot_UP)
         h_total_DN.SetBinContent(i,tot_DN)
 
@@ -299,10 +344,10 @@ def plot_hist(
         h_data = hists[data]
         h_data.SetMarkerSize(0.8)
         # if h_data.GetSumOfWeights()==h_data.GetEntries():
-        #   h_data.Sumw2(0)
-        #   h_data.SetBinErrorOption(1)
         h_data.Sumw2(0)
         h_data.SetBinErrorOption(1)
+        # h_data.Sumw2(1)
+        # h_data.SetBinErrorOption(1)
         if blind: apply_blind(h_data,blind)
         h_ratio = h_data.Clone('%s_ratio'%(h_data.GetName()))
         h_ratioGr = ROOT.TGraphAsymmErrors()
@@ -364,7 +409,7 @@ def plot_hist(
       leg.AddEntry(hists[b],"#font[42]{"+str(b.tlatex)+"}",'F')
 
     if signal:
-      leg2 = ROOT.TLegend(legXMin/1.2,legYMin+0.05+(legYMax-legYMin)/1.9-0.035*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
+      leg2 = ROOT.TLegend(legXMin/1.2,legYMin+(legYMax-legYMin)/1.9-0.035*len(signal),legXMax+0.08-0.2,legYMin+0.05+(legYMax-legYMin)/1.9)
       leg2.SetBorderSize(0)
       leg2.SetFillColor(0)
       leg2.SetFillStyle(0)
@@ -389,11 +434,18 @@ def plot_hist(
     if xmin==None: xmin = h_total.GetBinLowEdge(1)
     if xmax==None: xmax = h_total.GetBinLowEdge(h_total.GetNbinsX()+1)
     ymin = Ymin if log else 0.000001
-    ymax = h_total.GetMaximum()
-    for b in backgrounds:
-      if not b in hists.keys(): continue
-      ymax = max([ymax,hists[b].GetMaximum()])
-    if data: ymax = max([ymax,h_data.GetMaximum()])
+    yvalues = []
+    for i in range(h_total.FindBin(xmin),h_total.FindBin(xmax)):
+      yvalues += [h_total.GetBinContent(i)]
+    yvaluesdata = []
+    for i in range(h_data.FindBin(xmin),h_data.FindBin(xmax)):
+      yvaluesdata += [h_data.GetBinContent(i)]
+    ymax = max(yvalues)
+    ymaxdata = max(yvaluesdata)
+    # for b in backgrounds:
+    #   if not b in hists.keys(): continue
+    #   ymax = max([ymax,hists[b].GetMaximum()])
+    if data: ymax = max([ymax,ymaxdata])
     if log: ymax *= 4000.
     else:   ymax *= 1.7
     xtitle = h_total.GetXaxis().GetTitle()
@@ -458,7 +510,8 @@ def plot_hist(
     yaxis1.SetNdivisions(510)
 
     h_stack.Draw("SAME,HIST")
-    
+    # ROOT.TGaxis.SetMaxDigits(3)
+
     if signal:
      for s in reversed(signal):
        if not s in hists.keys(): continue
@@ -534,7 +587,7 @@ def plot_hist(
 
       if g_tot: 
          g_tot.Draw("E2")
-         g_stat.Draw("SAME,E2")
+         # g_stat.Draw("SAME,E2")
          leg.AddEntry(g_stat,"#font[42]{"+str("MC Stat.")+"}",'F')
          leg.AddEntry(g_tot, "#font[42]{"+str("Sys. Unc.")+"}",'F')
 
@@ -786,6 +839,39 @@ def list_open_files():
     while obj:
         print obj.GetName()
         obj = itr.Next()
+
+#____________________________________________________________
+def make_sys_hists(nominal, sys, rebin, rebinVar, X):
+  if rebin and len(rebinVar)==0:
+    if nominal: nominal.Rebin(rebin)
+    for i,s in enumerate(sys):
+      if s: s.Rebin(rebin)
+      sys[i] = s
+  elif len(rebinVar)>1:
+    runArray = array('d',rebinVar)
+    nominal = nominal.Rebin( len(rebinVar)-1, nominal.GetName()+"Var", runArray )
+    nominal.SetBinContent(nominal.GetNbinsX(), nominal.GetBinContent(nominal.GetNbinsX()+1) + nominal.GetBinContent(nominal.GetNbinsX()) )
+    nominal.SetBinError(nominal.GetNbinsX(), sqrt(nominal.GetBinError(nominal.GetNbinsX()+1)**2 + nominal.GetBinError(nominal.GetNbinsX())**2) )
+    for i,s in enumerate(sys):
+      s = s.Rebin( len(rebinVar)-1, s.GetName()+"Var"+str(i), runArray )
+      s.SetBinContent(s.GetNbinsX(), s.GetBinContent(s.GetNbinsX()+1) + s.GetBinContent(s.GetNbinsX()) )
+      s.SetBinError(s.GetNbinsX(), sqrt(s.GetBinError(s.GetNbinsX()+1)**2 + s.GetBinError(s.GetNbinsX())**2) )
+      sys[i] = s
+      assert s.GetNbinsX() == nominal.GetNbinsX(), "incompatible histograms "+str(s.GetNbinsX())+" vs "+str(nominal.GetNbinsX())
+
+  h_up = nominal.Clone()
+  h_dn = nominal.Clone()
+
+  for i in range(0,nominal.GetNbinsX()+1):
+    yn = nominal.GetBinContent(i)
+    for s in sys:
+      y  = s.GetBinContent(i)
+      ey = h_up.GetBinContent(i) - yn
+      h_up.SetBinContent( i, yn + sqrt(ey**2 + (y-yn)**2)/X )
+      h_dn.SetBinContent( i, yn - sqrt(ey**2 + (y-yn)**2)/X )
+
+  return (h_up,h_dn)
+
 
 
 ## EOF

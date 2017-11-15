@@ -106,9 +106,9 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='AtLeastOneLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DYVetoTightEleMediumLLHisolLoose')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ExactlyOneLooseEleLooseLLH')
+    # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='ZVetoLooseEleLooseLLH')
+    # loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='DYVetoTightEleMediumLLHisolLoose')
 
     
     ## weights configuration
@@ -136,6 +136,7 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['bjetveto',["GlobalBjet","GlobalJVT"]],
+               ['AtLeastTwo50GeVJets',None],
                ['METtrkLow25',None],
                ],
             )
@@ -145,6 +146,7 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['bjetveto',["GlobalBjet","GlobalJVT"]],
+               ['AtLeastTwo50GeVJets',None],
                ['METtrkLow60',None],
                ],
             )
@@ -154,29 +156,39 @@ def analyze(config):
             plot_all = False,
             cut_flow = [
                ['bjetveto',["GlobalBjet","GlobalJVT"]],
+               ['AtLeastTwo50GeVJets',None],
                ['METtrkLow100',None],
                ],
             )
 
     loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-TwoJets',
+            region   = 'FakeEnrichedRegion-InclusiveJets',
             plot_all = False,
             cut_flow = [
                ['bjetveto',["GlobalBjet","GlobalJVT"]],
                ['METtrkLow25',None],
-               ['AtLeastTwoJets',None],
                ],
             )
 
-    loop += ssdilep.algs.algs.PlotAlgFFee(
-            region   = 'FakeEnrichedRegion-Two50Jets',
-            plot_all = False,
-            cut_flow = [
-               ['bjetveto',["GlobalBjet","GlobalJVT"]],
-               ['METtrkLow25',None],
-               ['AtLeastTwo50GeVJets',None],
-               ],
-            )
+    # loop += ssdilep.algs.algs.PlotAlgFFee(
+    #         region   = 'FakeEnrichedRegion-TwoJets',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['bjetveto',["GlobalBjet","GlobalJVT"]],
+    #            ['METtrkLow25',None],
+    #            ['AtLeastTwoJets',None],
+    #            ],
+    #         )
+
+    # loop += ssdilep.algs.algs.PlotAlgFFee(
+    #         region   = 'FakeEnrichedRegion-Two50Jets',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['bjetveto',["GlobalBjet","GlobalJVT"]],
+    #            ['METtrkLow25',None],
+    #            ['AtLeastTwo50GeVJets',None],
+    #            ],
+    #         )
 
     
     loop += pyframe.algs.HistCopyAlg()

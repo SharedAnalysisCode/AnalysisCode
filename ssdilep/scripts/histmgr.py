@@ -44,8 +44,10 @@ class HistMgr():
         ## get systematics path
         syspath = 'nominal'
         if sys and not sys.flat_err:
-            if mode == 'up': syspath = sys.var_up
-            else:            syspath = sys.var_dn
+            if mode == 'up':
+                syspath = sys.var_up
+            elif not sys.onesided == True:
+                syspath = sys.var_dn
 
         ## get file path
         path_to_file = ''
@@ -62,6 +64,7 @@ class HistMgr():
             icut       = None, 
             sys        = None,
             mode       = None,
+            envelope   = False,
             ):
 
         assert histname,  'must define histname'
@@ -69,6 +72,7 @@ class HistMgr():
         if sys: 
             assert mode in ['up','dn'], "mode must be either 'up' or 'dn'"
 
+        # print "HHIIIST ",region," ",samplename," ",sys," ",mode
         path_to_file = self.get_file_path(samplename,sys,mode)
         f = ROOT.TFile.Open(path_to_file)
         assert f, 'Failed to open input file!'
@@ -124,7 +128,8 @@ class HistMgr():
         f = ROOT.TFile.Open(path_to_file)
         if f: 
             h = f.Get(self.cutflow_histname)
-            if h: nevents = h.GetBinContent(3)
+            assert h!=None, "METADATA HISTOGRAM NOT PRESENT. BIG PROBLEM: "+samplename
+            nevents = h.GetBinContent(3)
             f.Close()
         
         return nevents
@@ -153,13 +158,18 @@ class BaseEstimator(object):
       return htag
         
     #____________________________________________________________
-    def hist(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def hist(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
         """
         Supports list of regions to be added
         """
-        if not self.is_affected_by_systematic(sys): sys=mode=None
+        # print "HIST2 ",sys," ",mode," ",region," "
+        if envelope == False:
+            if not self.is_affected_by_systematic(sys):
+                sys=mode=None
+        # print sys," ",mode
         htag = self.get_hist_tag(histname,region,icut,sys,mode)
         if not isinstance(region,list): region = [region]
+        # print htag
         if not self.hist_store.has_key(htag):
           h_dict = {}
           for r in region:
@@ -169,6 +179,7 @@ class BaseEstimator(object):
                      icut=icut,
                      sys=sys,
                      mode=mode,
+                     envelope=envelope,
                      )
           h = None
           if not all(v is None for v in h_dict.values()):
@@ -211,7 +222,7 @@ class Estimator(BaseEstimator):
    
 
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
         """
         implemenation of nominal hist getter
         """
@@ -221,6 +232,7 @@ class Estimator(BaseEstimator):
                          icut=icut,
                          sys=sys,
                          mode=mode,
+                         envelope=envelope,
                          )
         if h and self.sample.type == 'mc': 
             lumi_frac = self.get_mc_lumi_frac(sys,mode)
@@ -267,7 +279,8 @@ class DataBkgSubEstimator(BaseEstimator):
         self.data_sample = data_sample
         self.background_samples = background_samples
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "DataBkgSubEstimator"
         h = self.data_sample.hist(histname=histname,region=region,icut=icut,sys=sys,mode=mode).Clone()
         if self.background_samples: 
             for b in self.background_samples: 
@@ -309,7 +322,8 @@ class FakeEstimator(BaseEstimator):
         self.data_sample = data_sample
         self.mc_samples = mc_samples
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "FakeEstimator"
         
         # ---------
         # LL REGION
@@ -427,7 +441,8 @@ class FakeEstimator1D(BaseEstimator):
         self.data_sample = data_sample
         self.mc_samples = mc_samples
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "FakeEstimator1D"
         
         # ---------
         # L REGION
@@ -498,7 +513,8 @@ class EstimatorDCH(BaseEstimator):
    
 
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "EstimatorDCH"
         """
         implemenation of nominal hist getter
         """
@@ -623,7 +639,8 @@ class MCFakes(BaseEstimator):
         self.data_sample = data_sample
         self.mc_samples = mc_samples
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "MCFakes"
         
         # ---------
         # MCFakes
@@ -696,7 +713,8 @@ class FakeEstimatorGeneral(BaseEstimator):
         self.data_sample = data_sample
         self.mc_samples = mc_samples
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "FakeEstimatorGeneral"
         
         # ---------
         # L REGION
@@ -771,7 +789,8 @@ class ChargeFlipEsimator(BaseEstimator):
         self.data_sample = data_sample
         self.mc_samples = mc_samples
     #____________________________________________________________
-    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None):
+    def __hist__(self,histname=None,region=None,icut=None,sys=None,mode=None,envelope=False):
+        # print "ChargeFlipEsimator"
         
         # ---------
         # L REGION
@@ -829,10 +848,11 @@ class MergeEstimator(BaseEstimator):
         BaseEstimator.__init__(self,**kw)
         self.samples = samples
     #____________________________________________________________
-    def __hist__(self,region=None,icut=None,histname=None,sys=None,mode=None):
+    def __hist__(self,region=None,icut=None,histname=None,sys=None,mode=None,envelope=False):
+        # print "MergeEstimator"
         hists = []
         for s in self.samples: 
-            h = s.hist(region=region,icut=icut,histname=histname,sys=sys,mode=mode)
+            h = s.hist(region=region,icut=icut,histname=histname,sys=sys,mode=mode,envelope=envelope)
             if h: hists.append(h)
         h = histutils.add_hists(hists)
         return h

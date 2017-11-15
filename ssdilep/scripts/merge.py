@@ -17,11 +17,12 @@ from optparse import OptionParser
 import copy
 
 DO_SYS = True
-ELE_SYS = False
-MU_SYS = False
+ELE_SYS = True
+MU_SYS = True
 
 
 JET_SYS = True
+THEORY_SYS = True
 
 BRee = 0.
 BRem = 0.
@@ -126,6 +127,8 @@ plotsfile.append(options.vname)
 plotsfile.append(options.region)
 plotsfile.append(options.tag)
 
+print plotsfile
+
 plotsfile = "_".join(plotsfile)+".root"
 plotsfile = os.path.join(options.outdir,plotsfile)
 
@@ -141,7 +144,7 @@ if options.samples in ["FFele","wjet"]:
   data = samples.dataEXOT19
 elif options.samples ==  "ZPeak":
   data = samples.EXOT12_data
-elif options.samples in  ["HNee","HNmumu"]:
+elif options.samples in  ["HNee","HNmumu","HNeeFit","HNmumuFit"]:
   data = samples.dataEXOT12
 else:
   data = samples.data
@@ -157,23 +160,23 @@ mc_backgrounds = []
 
 if options.samples == "wjet":
   mc_backgrounds = [
-  samples.WenuPowheg,
-  samples.ZeePowheg,
+  samples.Wenu221,
+  samples.Zee221,
   samples.ttbar_inc,
-  samples.singletop_inc,
   samples.diboson_sherpa221_all,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
+  samples.singletop_inc,
+  samples.Wtaunu221,
+  samples.Ztautau221,
   ]
 elif options.samples == "FFele":
   mc_backgrounds = [
   samples.Wenu221,
-  samples.Wtaunu221,
   samples.Zee221,
-  samples.Ztautau221,
   samples.diboson_sherpa221_all,
-  samples.singletop_inc,
   samples.ttbar_inc,
+  samples.singletop_inc,
+  samples.Wtaunu221,
+  samples.Ztautau221,
   ]
 elif options.samples == "chargeFlipData":
   mc_backgrounds = [
@@ -244,16 +247,41 @@ elif options.samples == "HNee":
   mc_backgrounds = [
   samples.ZeeSherpa221,
   # samples.MGPy8Zee,
-  samples.diboson_sherpa222,
+  # samples.diboson_sherpa222,
+  samples.diboson_sherpa222_llll,
+  samples.diboson_sherpa222_jj,
+  samples.diboson_sherpa222_lllv,
+  samples.diboson_sherpa222_gg,
+  samples.diboson_sherpa222_xxll,
   samples.top_physics,
-  samples.Rare,
+  # samples.Rare,
   ]
 elif options.samples == "HNmumu":
   mc_backgrounds = [
-  samples.ZmmSherpa221,
+  # samples.ZmmSherpa221,
+  # samples.diboson_sherpa222,
+  samples.diboson_sherpa222_llll,
+  samples.diboson_sherpa222_jj,
+  samples.diboson_sherpa222_lllv,
+  samples.diboson_sherpa222_gg,
+  samples.diboson_sherpa222_xxll,
+  samples.top_physics,
+  # samples.Rare,
+  ]
+elif options.samples == "HNeeFit":
+  mc_backgrounds = [
+  samples.ZeeSherpa221,
+  # samples.MGPy8Zee,
   samples.diboson_sherpa222,
   samples.top_physics,
-  samples.Rare,
+  # samples.Rare,
+  ]
+elif options.samples == "HNmumuFit":
+  mc_backgrounds = [
+  # samples.ZmmSherpa221,
+  samples.diboson_sherpa222,
+  samples.top_physics,
+  # samples.Rare,
   ]
 elif options.samples == "totalSM":
   mc_backgrounds = [
@@ -563,24 +591,24 @@ mumu_backgrounds = []
 
 if options.samples == "wjet":
   mumu_backgrounds = [
-  samples.WenuPowheg,
+  samples.Wenu221,
   fakes_mumu,
-  samples.ZeePowheg,
+  samples.Zee221,
   samples.ttbar_inc,
   samples.diboson_sherpa221_all,
   samples.singletop_inc,
-  samples.WtaunuPowheg,
-  samples.ZtautauPowheg,
+  samples.Wtaunu221,
+  samples.Ztautau221,
   ]
 elif options.samples == "FFele":
   mumu_backgrounds = [
   samples.Wenu221,
-  samples.Wtaunu221,
   samples.Zee221,
-  samples.Ztautau221,
   samples.diboson_sherpa221_all,
-  samples.singletop_inc,
   samples.ttbar_inc,
+  samples.singletop_inc,
+  samples.Wtaunu221,
+  samples.Ztautau221,
   ]
 elif options.samples == "chargeFlipData":
   if options.fakest == "ChargeFlip":
@@ -712,17 +740,44 @@ elif options.samples == "HNee":
   mumu_backgrounds = [
   samples.ZeeSherpa221,
   # samples.MGPy8Zee,
-  samples.diboson_sherpa222,
+  # samples.diboson_sherpa222,
+  samples.diboson_sherpa222_llll,
+  samples.diboson_sherpa222_jj,
+  samples.diboson_sherpa222_lllv,
+  samples.diboson_sherpa222_gg,
+  samples.diboson_sherpa222_xxll,
   samples.top_physics,
-  samples.Rare,
+  # samples.Rare,
   fakes_mumu,
   ]
 elif options.samples == "HNmumu":
   mumu_backgrounds = [
-  samples.ZmmSherpa221,
+  # samples.ZmmSherpa221,
+  # samples.diboson_sherpa222,
+  samples.diboson_sherpa222_llll,
+  samples.diboson_sherpa222_jj,
+  samples.diboson_sherpa222_lllv,
+  samples.diboson_sherpa222_gg,
+  samples.diboson_sherpa222_xxll,
+  samples.top_physics,
+  # samples.Rare,
+  fakes_mumu,
+  ]
+elif options.samples == "HNeeFit":
+  mumu_backgrounds = [
+  samples.ZeeSherpa221,
+  # samples.MGPy8Zee,
   samples.diboson_sherpa222,
   samples.top_physics,
-  samples.Rare,
+  # samples.Rare,
+  fakes_mumu,
+  ]
+elif options.samples == "HNmumuFit":
+  mumu_backgrounds = [
+  # samples.ZmmSherpa221,
+  samples.diboson_sherpa222,
+  samples.top_physics,
+  # samples.Rare,
   fakes_mumu,
   ]
 elif options.samples in ["chargeflipPowheg","chargeflipTruthPowheg"]:
@@ -850,6 +905,17 @@ JET_JER_NP7,
 JET_JER_NP8,
 ]
 
+sys_list_theory = [
+ALPHA_SYS,
+PDFCHOICE_SYS1,
+PDFCHOICE_SYS2,
+MUR_SYS,
+MUF_SYS,
+QCD_SCALE_ENVELOPE,
+PDF_COICE_ENVELOPE,
+PDF_SYS_ENVELOPE,
+]
+
 print "MU SYS, ",MU_SYS
 
 if (DO_SYS):
@@ -862,6 +928,9 @@ if (DO_SYS):
     if sample in [samples.dibosonSysSample,samples.ttbar_Py8_up,samples.ttbar_Py8_do,samples.ttbar_Herwig,samples.ttbar_Py8_aMcAtNlo,samples.ttbar_Py8_CF]:
       print "skip sys MC samples in other systematics"
       continue
+    if THEORY_SYS:
+      for sys in sys_list_theory:
+        sample.estimator.add_systematics(sys)  
     if JET_SYS:
       for sys in sys_list_jet:
         sample.estimator.add_systematics(sys)
