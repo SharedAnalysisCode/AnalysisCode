@@ -55,7 +55,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-RUN = "HN_v2_052_SYS"
+RUN = "HN_v2_060_SYS"
 # RUN = "WJets_HN_v2_001"
 # RUN = "FFele_HN_v2_002"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -85,15 +85,15 @@ BEXEC="HistMiha.sh"
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_NOM = False                        # submit the nominal job
+DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 
 DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = False
 
-DO_JET_SYS = True
+DO_JET_SYS = False
 
 DO_THEORY_SYS = False
 
@@ -136,7 +136,7 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    all_mc = []
+    # all_mc = []
     # all_data = []
 
     nominal = all_mc 
@@ -458,7 +458,7 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
         print m.communicate()[0]
 
         # TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
-        TEMPXRSL = os.path.join(ARCRUNNERDIR, RUN+"_"+suffix, jobnames[line_intiger], 'run2.xrsl' )
+        TEMPXRSL = os.path.join(ARCRUNNERDIR, RUN+"_"+suffix, jobnames[line_intiger], 'run.xrsl' )
         JOBLISTF = os.path.join(JOBDIR,'joblist_%s.xml' % (time.strftime("d%d_m%m_y%Y")) )
         cmd =  'printf "'
         cmd += '&\n'

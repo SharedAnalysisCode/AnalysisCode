@@ -272,501 +272,501 @@ def analyze(config):
     #            ],
     #         )
     ## ------ 3LVRee-VR Z veto 30 GeV
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRee-Zveto-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['ExactlyThreeLooseEleLooseLLH',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto30',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRee-Zveto-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['ExactlyThreeLooseEleLooseLLH',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto30',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    ## ------ 3LVRee-VR
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRee-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['ExactlyThreeLooseEleLooseLLH',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRee-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['ExactlyThreeLooseEleLooseLLH',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    ## ------ 3LVRmixed-VR Z veto 30 GeV
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRmixed-Zveto-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OneOrTwoEmus90GeV',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto30',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRmixed-Zveto-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OneOrTwoEmus90GeV',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto30',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    ## ------ 3LVRmixed-VR
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRmixed-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OneOrTwoEmus90GeV',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRmixed-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OneOrTwoEmus90GeV',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    ## ------ 3LVRflipped-VR
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRflip-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OffDiagMixedEvent',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRflip-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OffDiagMixedEvent',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    ## ------ 3LVRflip-VR (ee)m
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRflip-eem-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OffDiagMixedEvent',None],
-               ['ExactlyTwoLooseEleLooseLLH',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRflip-eem-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OffDiagMixedEvent',None],
-               ['ExactlyTwoLooseEleLooseLLH',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    ## ------ 3LVRflip-VR (mm)e
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRflip-mme-VR',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OffDiagMixedEvent',None],
-               ['ExactlyTwoLooseMuonSS',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-    loop += ssdilep.algs.algs.PlotAlgThreeLep(
-            region   = '3LVRflip-mme-VR-fakes',
-            plot_all = False,
-            cut_flow = [
-               ['DCHFilter',None],
-               ['OffDiagMixedEvent',None],
-               ['ExactlyTwoLooseMuonSS',None],
-               ['ExactlyThreeLeptonsSS90M200',None],
-               ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-               ],
-            )
-
-
-    # # Electron Channel
-    # # ---------------------------------------
-    # # ------ two electron optimized
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'two-electron-optimized-SR',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['DCHFilter',None],
-    #            ['ExactlyZeroMuons',None],
-    #            ['ExactlyTwoLooseElectronSS',None],
-    #            ['Mass200GeVLooseLep',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
-    #            ],
-    #         )
-    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'two-electron-optimized-SR-fakes',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['DCHFilter',None],
-    #            ['ExactlyZeroMuons',None],
-    #            ['ExactlyTwoLooseElectronSS',None],
-    #            ['Mass200GeVLooseLep',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
-    #            ],
-    #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'two-electron-optimized-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['ExactlyZeroMuons',None],
-    #                ['ExactlyTwoLooseElectronSS',None],
-    #                ['Mass200GeVLooseLep',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
-    #                ],
-    #             )
-
-    # # ------ three electron optimized
-    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-electron-optimized-SR',
+    #         region   = '3LVRee-Zveto-VR',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
     #            ['ExactlyThreeLooseEleLooseLLH',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['ZVeto',None],
-    #            ['ExactlyThreeTightLep',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto30',None],
+    #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-electron-optimized-SR-fakes',
+    #         region   = '3LVRee-Zveto-VR-fakes',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
     #            ['ExactlyThreeLooseEleLooseLLH',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['ZVeto',None],
-    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor","ThreeElectron2e17TrigWeight"]],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto30',None],
+    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'three-electron-optimized-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['ExactlyThreeLooseEleLooseLLH',None],
-    #                ['ExactlyThreeLooseLepSS200M',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ZVeto',None],
-    #                ['ExactlyThreeTightLep',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
-    #                ],
-    #             )
-
-
-    # # Mixed Channel diagonal
-    # # ---------------------------------------
-    # # ------ two lepton optimized
+    # ## ------ 3LVRee-VR
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'two-lepton-optimized-SR',
+    #         region   = '3LVRee-VR',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
-    #            ['OneOrTwoEmus90GeV',None],
-    #            ['ExactlyTwoLooseLeptons',None],
-    #            ['Mass200GeVLooseLep',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-    #            ],
-    #         )
-    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'two-lepton-optimized-SR-fakes',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['DCHFilter',None],
-    #            ['OneOrTwoEmus90GeV',None],
-    #            ['ExactlyTwoLooseLeptons',None],
-    #            ['Mass200GeVLooseLep',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-    #            ],
-    #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'two-lepton-optimized-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['OneOrTwoEmus90GeV',None],
-    #                ['ExactlyTwoLooseLeptons',None],
-    #                ['Mass200GeVLooseLep',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-    #                ],
-    #             )
-
-    # # ------ three lep optimized
-    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-lepton-optimized-SR',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['DCHFilter',None],
-    #            ['OneOrTwoEmus90GeV',None],
-    #            ['ExactlyThreeLooseLep',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
+    #            ['ExactlyThreeLooseEleLooseLLH',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
     #            ['ZVeto',None],
     #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-lepton-optimized-SR-fakes',
+    #         region   = '3LVRee-VR-fakes',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
-    #            ['OneOrTwoEmus90GeV',None],
-    # #            ['ExactlyThreeLooseLep',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
+    #            ['ExactlyThreeLooseEleLooseLLH',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
     #            ['ZVeto',None],
     #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'three-lepton-optimized-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['OneOrTwoEmus90GeV',None],
-    #                ['ExactlyThreeLooseLep',None],
-    #                ['ExactlyThreeLooseLepSS200M',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ZVeto',None],
-    #                ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-    #                ],
-    #             )
-
-    # # Mixed Channel off-diagonal
-    # # ---------------------------------------
-    # # ------ three lep optimized
+    # ## ------ 3LVRmixed-VR Z veto 30 GeV
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-lepton-optimized-offdiag-SR',
+    #         region   = '3LVRmixed-Zveto-VR',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
-    #            ['OffDiagMixedEvent',None],
-    #            ['ExactlyThreeLooseLep',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
+    #            ['OneOrTwoEmus90GeV',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto30',None],
+    #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = '3LVRmixed-Zveto-VR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['OneOrTwoEmus90GeV',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto30',None],
+    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+    #            ],
+    #         )
+    # ## ------ 3LVRmixed-VR
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = '3LVRmixed-VR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['OneOrTwoEmus90GeV',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
     #            ['ZVeto',None],
     #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-lepton-optimized-offdiag-SR-fakes',
+    #         region   = '3LVRmixed-VR-fakes',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
-    #            ['OffDiagMixedEvent',None],
-    #            ['ExactlyThreeLooseLep',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
+    #            ['OneOrTwoEmus90GeV',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
     #            ['ZVeto',None],
     #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'three-lepton-optimized-offdiag-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['OffDiagMixedEvent',None],
-    #                ['ExactlyThreeLooseLep',None],
-    #                ['ExactlyThreeLooseLepSS200M',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ZVeto',None],
-    #                ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
-    #                ],
-    #             )
-
-    # # Muon Channel
-    # # ---------------------------------------
-    # # ------ two muon optimized
+    # ## ------ 3LVRflipped-VR
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'two-muon-optimized-SR',
+    #         region   = '3LVRflip-VR',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
-    #            ['ExactlyZeroElectrons',None],
-    #            ['ExactlyTwoLooseMuonSS',None],
-    #            ['Mass200GeVLooseLep',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
-    #            ],
-    #         )
-    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'two-muon-optimized-SR-fakes',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['DCHFilter',None],
-    #            ['ExactlyZeroElectrons',None],
-    #            ['ExactlyTwoLooseMuonSS',None],
-    #            ['Mass200GeVLooseLep',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
-    #            ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
-    #            ],
-    #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'two-muon-optimized-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['ExactlyZeroElectrons',None],
-    #                ['ExactlyTwoLooseMuonSS',None],
-    #                ['Mass200GeVLooseLep',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
-    #                ],
-    #             )
-
-    # # ------ three muon optimized
-    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-muon-optimized-SR',
-    #         plot_all = False,
-    #         cut_flow = [
-    #            ['DCHFilter',None],
-    #            ['ExactlyThreeLooseMuon',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
+    #            ['OffDiagMixedEvent',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
     #            ['ZVeto',None],
-    #            ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF']],
+    #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
     # loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #         region   = 'three-muon-optimized-SR-fakes',
+    #         region   = '3LVRflip-VR-fakes',
     #         plot_all = False,
     #         cut_flow = [
     #            ['DCHFilter',None],
-    #            ['ExactlyThreeLooseMuon',None],
-    #            ['ExactlyThreeLooseLepSS200M',None],
-    #            ['SameSignLooseLepDR35',None],
-    #            ['SameSignLooseLepPtZ100',None],
-    #            ['LooseLepHT300',None],
+    #            ['OffDiagMixedEvent',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
     #            ['ZVeto',None],
-    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor","MuTrigSF"]],
+    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
     #            ],
     #         )
-    # for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
-    #     loop += ssdilep.algs.algs.PlotAlgThreeLep(
-    #             region   = 'three-muon-optimized-SR-signal-'+channel,
-    #             plot_all = False,
-    #             cut_flow = [
-    #                ['DCHFilter'+channel,None],
-    #                ['ExactlyThreeLooseMuon',None],
-    #                ['ExactlyThreeLooseLepSS200M',None],
-    #                ['SameSignLooseLepDR35',None],
-    #                ['SameSignLooseLepPtZ100',None],
-    #                ['LooseLepHT300',None],
-    #                ['ZVeto',None],
-    #                ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF']],
-    #                ],
-    #             )
+    # ## ------ 3LVRflip-VR (ee)m
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = '3LVRflip-eem-VR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['OffDiagMixedEvent',None],
+    #            ['ExactlyTwoLooseEleLooseLLH',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto',None],
+    #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = '3LVRflip-eem-VR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['OffDiagMixedEvent',None],
+    #            ['ExactlyTwoLooseEleLooseLLH',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto',None],
+    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+    #            ],
+    #         )
+    # ## ------ 3LVRflip-VR (mm)e
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = '3LVRflip-mme-VR',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['OffDiagMixedEvent',None],
+    #            ['ExactlyTwoLooseMuonSS',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto',None],
+    #            ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+    #            ],
+    #         )
+    # loop += ssdilep.algs.algs.PlotAlgThreeLep(
+    #         region   = '3LVRflip-mme-VR-fakes',
+    #         plot_all = False,
+    #         cut_flow = [
+    #            ['DCHFilter',None],
+    #            ['OffDiagMixedEvent',None],
+    #            ['ExactlyTwoLooseMuonSS',None],
+    #            ['ExactlyThreeLeptonsSS90M200',None],
+    #            ['ZVeto',None],
+    #            ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+    #            ],
+    #         )
+
+
+    # Electron Channel
+    # ---------------------------------------
+    # ------ two electron optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'two-electron-optimized-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyZeroMuons',None],
+               ['ExactlyTwoLooseElectronSS',None],
+               ['Mass200GeVLooseLep',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'two-electron-optimized-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyZeroMuons',None],
+               ['ExactlyTwoLooseElectronSS',None],
+               ['Mass200GeVLooseLep',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'two-electron-optimized-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['ExactlyZeroMuons',None],
+                   ['ExactlyTwoLooseElectronSS',None],
+                   ['Mass200GeVLooseLep',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
+                   ],
+                )
+
+    # ------ three electron optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-electron-optimized-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyThreeLooseEleLooseLLH',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['ExactlyThreeTightLep',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-electron-optimized-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyThreeLooseEleLooseLLH',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor","ThreeElectron2e17TrigWeight"]],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'three-electron-optimized-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['ExactlyThreeLooseEleLooseLLH',None],
+                   ['ExactlyThreeLooseLepSS200M',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ZVeto',None],
+                   ['ExactlyThreeTightLep',['SuperGenericFakeFactor','ThreeElectron2e17TrigWeight']],
+                   ],
+                )
+
+
+    # Mixed Channel diagonal
+    # ---------------------------------------
+    # ------ two lepton optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'two-lepton-optimized-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['OneOrTwoEmus90GeV',None],
+               ['ExactlyTwoLooseLeptons',None],
+               ['Mass200GeVLooseLep',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'two-lepton-optimized-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['OneOrTwoEmus90GeV',None],
+               ['ExactlyTwoLooseLeptons',None],
+               ['Mass200GeVLooseLep',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'two-lepton-optimized-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['OneOrTwoEmus90GeV',None],
+                   ['ExactlyTwoLooseLeptons',None],
+                   ['Mass200GeVLooseLep',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+                   ],
+                )
+
+    # ------ three lep optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-lepton-optimized-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['OneOrTwoEmus90GeV',None],
+               ['ExactlyThreeLooseLep',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-lepton-optimized-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['OneOrTwoEmus90GeV',None],
+    #            ['ExactlyThreeLooseLep',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'three-lepton-optimized-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['OneOrTwoEmus90GeV',None],
+                   ['ExactlyThreeLooseLep',None],
+                   ['ExactlyThreeLooseLepSS200M',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ZVeto',None],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+                   ],
+                )
+
+    # Mixed Channel off-diagonal
+    # ---------------------------------------
+    # ------ three lep optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-lepton-optimized-offdiag-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['OffDiagMixedEvent',None],
+               ['ExactlyThreeLooseLep',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-lepton-optimized-offdiag-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['OffDiagMixedEvent',None],
+               ['ExactlyThreeLooseLep',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'three-lepton-optimized-offdiag-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['OffDiagMixedEvent',None],
+                   ['ExactlyThreeLooseLep',None],
+                   ['ExactlyThreeLooseLepSS200M',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ZVeto',None],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+                   ],
+                )
+
+    # Muon Channel
+    # ---------------------------------------
+    # ------ two muon optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'two-muon-optimized-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['Mass200GeVLooseLep',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'two-muon-optimized-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyZeroElectrons',None],
+               ['ExactlyTwoLooseMuonSS',None],
+               ['Mass200GeVLooseLep',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'two-muon-optimized-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['ExactlyZeroElectrons',None],
+                   ['ExactlyTwoLooseMuonSS',None],
+                   ['Mass200GeVLooseLep',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
+                   ],
+                )
+
+    # ------ three muon optimized
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-muon-optimized-SR',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyThreeLooseMuon',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF']],
+               ],
+            )
+    loop += ssdilep.algs.algs.PlotAlgThreeLep(
+            region   = 'three-muon-optimized-SR-fakes',
+            plot_all = False,
+            cut_flow = [
+               ['DCHFilter',None],
+               ['ExactlyThreeLooseMuon',None],
+               ['ExactlyThreeLooseLepSS200M',None],
+               ['SameSignLooseLepDR35',None],
+               ['SameSignLooseLepPtZ100',None],
+               ['LooseLepHT300',None],
+               ['ZVeto',None],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor","MuTrigSF"]],
+               ],
+            )
+    for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
+        loop += ssdilep.algs.algs.PlotAlgThreeLep(
+                region   = 'three-muon-optimized-SR-signal-'+channel,
+                plot_all = False,
+                cut_flow = [
+                   ['DCHFilter'+channel,None],
+                   ['ExactlyThreeLooseMuon',None],
+                   ['ExactlyThreeLooseLepSS200M',None],
+                   ['SameSignLooseLepDR35',None],
+                   ['SameSignLooseLepPtZ100',None],
+                   ['LooseLepHT300',None],
+                   ['ZVeto',None],
+                   ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF']],
+                   ],
+                )
     
     loop += pyframe.algs.HistCopyAlg()
 

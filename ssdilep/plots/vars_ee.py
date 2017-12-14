@@ -483,6 +483,15 @@ el_sl_2D_pt_Ceta = Var(name='el_sl_2D_pt_Ceta',
                 path   = 'leptons',
                 )
 
+MlljjMljj1 = Var(name='MlljjMljj1',
+                path   = 'event',
+                )
+
+MlljjMljj2 = Var(name='MlljjMljj2',
+                path   = 'event',
+                )
+
+
 ## MET
 ## ---------------------------------------
 
@@ -1874,6 +1883,9 @@ vars_dict["Ml2jj8s"] = Ml2jj8s.__dict__
 vars_dict["Mlljj8s"] = Mlljj8s.__dict__
 vars_dict["Mjj6s"] = Mjj6s.__dict__
 vars_dict["HT8s"] = HT8s.__dict__
+vars_dict["MlljjMljj1"] = MlljjMljj1.__dict__
+vars_dict["MlljjMljj2"] = MlljjMljj2.__dict__
+
 
 ## EOF
 

@@ -127,7 +127,7 @@ plotsfile.append(options.vname)
 plotsfile.append(options.region)
 plotsfile.append(options.tag)
 
-print plotsfile
+print "plotsfile: ",plotsfile
 
 plotsfile = "_".join(plotsfile)+".root"
 plotsfile = os.path.join(options.outdir,plotsfile)

@@ -1,0 +1,5 @@
+python ../ssdilep/scripts/merge.py -y "False" -S True --var="MlljjMljj1" --tag="2D" --reg="electron-SS-Z-SR" --samples="HNeeFit" --icut="8" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_060_SYS" --output="./HN_v060_SYS_root" --makeplot=False --fakest="FakeFactorGeneral"
+python ../ssdilep/scripts/merge.py -y "False" -S True --var="MlljjMljj2" --tag="2D" --reg="electron-SS-Z-SR" --samples="HNeeFit" --icut="8" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_060_SYS" --output="./HN_v060_SYS_root" --makeplot=False --fakest="FakeFactorGeneral"
+python ../ssdilep/scripts/merge.py -y "False" -S True --var="MlljjMljj1" --tag="2D" --reg="muon-SS-Z-SR"     --samples="HNmumuFit" --icut="8" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_060_SYS" --output="./HN_v060_SYS_root" --makeplot=False --fakest="FakeFactorGeneral"
+python ../ssdilep/scripts/merge.py -y "False" -S True --var="MlljjMljj2" --tag="2D" --reg="muon-SS-Z-SR"     --samples="HNmumuFit" --icut="8" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_060_SYS" --output="./HN_v060_SYS_root" --makeplot=False --fakest="FakeFactorGeneral"
+

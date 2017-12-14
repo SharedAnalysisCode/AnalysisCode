@@ -532,7 +532,9 @@ class AllTightEleSF(pyframe.core.Algorithm):
             if (ele.electronType() in [1,2,3,4]) or (self.chain.mcChannelNumber in range(306538,306560)):
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys)
               sf *= getattr(ele,"IsoEff_SF_" + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys)
-              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+              # sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1][0:-3] ).at(self.id_sys)
+              # H++
+              sf *= getattr(ele,"PIDEff_SF_LHMedium" ).at(self.id_sys)
 
             if self.chargeFlipSF and self.chain.mcChannelNumber not in range(306538,306560):
               ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
@@ -1524,7 +1526,9 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
           if "mc" in self.sampletype :
             if (self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561)) or ele.electronType() in [1,2,3] :
               sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
-              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1] ).at(self.id_sys_e)
+              # sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1] ).at(self.id_sys_e)
+              #H++
+              sf *= getattr(ele,"PIDEff_SF_LHMedium"  ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
             if self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561):
               continue # no charge-flip SF for signal
@@ -1562,7 +1566,9 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
             sf *= -self.h_ff.GetBinContent( self.h_ff.FindBin( electron_pt, abs( ele.caloCluster_eta ) ) )
           if "mc" in self.sampletype :
             if True or ele.electronType() in [1,2,3] :
-              sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[0] ).at(self.id_sys_e)
+              # sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[0] ).at(self.id_sys_e)
+              # H++
+              sf *= getattr(ele,"PIDEff_SF_LHLooseAndBLayer").at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
 
       for muon in muons:
@@ -1991,6 +1997,7 @@ class MuTrigSF(pyframe.core.Algorithm):
         if (runNumber < 290000. and self.period==2016) or (runNumber > 290000. and self.period==2015):
           if self.key: 
             self.store[self.key] = trig_sf
+
           return True
         trig_sf=1.0
         if "mc" in self.sampletype: 

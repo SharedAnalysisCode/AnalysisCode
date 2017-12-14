@@ -343,7 +343,7 @@ class Algorithm(object):
             # create new
             xArray = array.array('d',xaxis)
             yArray = array.array('d',yaxis)
-            h = ROOT.TH2D('$'.replace("$", os.path.basename(name)),';', len(xaxis)-1, xArray, len(yaxis)-1, yArray)
+            h = ROOT.TH2D(os.path.basename(name),os.path.basename(name), len(xaxis)-1, xArray, len(yaxis)-1, yArray)
 
             h.SetDirectory(0)
 

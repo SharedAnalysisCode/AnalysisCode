@@ -2290,6 +2290,18 @@ class CutAlg(pyframe.core.Algorithm):
         else:
           return False
 
+    def cut_bjetvetoHpp(self):
+        nbjets = 0
+        jets = self.store['jets']
+        for jet in jets:
+          if abs(jet.eta) < 2.5:
+            if jet.isFix77:
+              nbjets += 1
+        if nbjets == 0:
+          return True
+        else:
+          return False
+
     def cut_Mass60GeV2000ele(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2 :
@@ -2417,6 +2429,13 @@ class CutAlg(pyframe.core.Algorithm):
         if jet.JvtPass_Medium:
           if not (jet.isClean > 0.5):
             return False
+      return True
+
+    def cut_BadJetVetoHpp(self):
+      jets = self.store['jets']
+      for jet in jets:
+        if not (jet.isClean > 0.5):
+          return False
       return True
 
     def cut_NoLooseFakesInMC(self):
@@ -4475,10 +4494,13 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         # should probably make this configurable
         ## get event candidate
         electrons  = self.store[self.ele_container] + self.store[self.mu_container]
+        electrons.sort(key=lambda x: x.tlv.Pt(), reverse=True )
 
         met_trk    = self.store['met_trk']
         jets       = self.store['jets_tight']
-        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+
+
+
         assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
         
         EVT    = os.path.join(region, 'event')
@@ -4511,6 +4533,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_Mljj2 = self.hist('h_Mljj2', "ROOT.TH1F('$', ';m(l_2jj) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_muonType = self.hist('h_muonType', "ROOT.TH1F('$', ';truthOrigin;Events', 10, 0, 10)", dir=EVT)
         self.h_electronType = self.hist('h_electronType', "ROOT.TH1F('$', ';truthOrigin;Events', 10, 0, 10)", dir=EVT)
+        self.h_MlljjMljj1  = self.hist2DVariable('h_MlljjMljj1',  [x for x in range(0,10001,10)], [x for x in range(0,10001,10)], dir=EVT)
+        self.h_MlljjMljj2  = self.hist2DVariable('h_MlljjMljj2',  [x for x in range(0,10001,10)], [x for x in range(0,10001,10)], dir=EVT)
         # self.h_truthType = self.hist('h_truthType', "ROOT.TH1F('$', ';truthType;Events', 51, -1, 50)", dir=EVT)
         # self.h_firstEgMotherTruthOrigin = self.hist('h_firstEgMotherTruthOrigin', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
         # self.h_firstEgMotherTruthType = self.hist('h_firstEgMotherTruthType', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
@@ -4566,6 +4590,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_nbjets.Fill(nbjets, weight)
 
           assert len(electrons)==2, "should have exactly two tight electrons at this point"
+          assert electrons[0].tlv.Pt() >= electrons[1].tlv.Pt(), "not ordered"
           ele1T = ROOT.TLorentzVector()
           ele1T.SetPtEtaPhiM( electrons[0].tlv.Pt(), 0., electrons[0].tlv.Phi(), electrons[0].tlv.M() )
           ele2T = ROOT.TLorentzVector()
@@ -4592,6 +4617,9 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
             self.h_Mlljj.Fill( (electrons[0].tlv+electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
             self.h_Mljj1.Fill( (electrons[0].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
             self.h_Mljj2.Fill( (electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
+
+            self.h_MlljjMljj1.Fill( (electrons[0].tlv+electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, (electrons[0].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
+            self.h_MlljjMljj2.Fill( (electrons[0].tlv+electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, (electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
 
             self.h_jet_lead_pt.Fill(jets[0].tlv.Pt()/GeV, weight)
             self.h_jet_lead_eta.Fill(jets[0].eta, weight)
@@ -4738,15 +4766,16 @@ class VarsAlg(pyframe.core.Algorithm):
         electrons = self.store[self.key_electrons]
 
         ## make tight jets
+        ## comment for H++
         jets_tight = []
-        for jet in jets:
-          if jet.JvtPass_Medium and jet.fJvtPass_Medium and abs(jet.eta) < 2.0 and jet.pt>20*GeV:
-            jets_tight += [jet]
+        # for jet in jets:
+        #   if jet.JvtPass_Medium and jet.fJvtPass_Medium and abs(jet.eta) < 2.0 and jet.pt>20*GeV:
+        #     jets_tight += [jet]
 
-        jets_tight.sort(key=lambda x: x.tlv.Pt(), reverse=True )
-        if len(jets_tight) > 1:
-          assert jets_tight[0].tlv.Pt() >= jets_tight[1].tlv.Pt(), "jets_tight not sorted.."
-        self.store['jets_tight'] = jets_tight   
+        # jets_tight.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        # if len(jets_tight) > 1:
+        #   assert jets_tight[0].tlv.Pt() >= jets_tight[1].tlv.Pt(), "jets_tight not sorted.."
+        # self.store['jets_tight'] = jets_tight   
 
         ## remove fakes from signal
         if ("mc" in self.sampletype) and self.chain.mcChannelNumber in range(306538,306560):
