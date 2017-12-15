@@ -1221,6 +1221,7 @@ bins_mjj3 = generateLogBins(4,110,4000)
 bins_mjj4 = generateLogBins(3,110,4000)
 bins_mjj5 = generateLogBins(12,10,4000)
 bins_mjj6 = [10] + generateLogBins(4,110,4000)
+bins_mjj7 = generateLogBins(6,10,4000)
 
 
 ## Event variables
@@ -1343,6 +1344,16 @@ Mjj6 = Var(name='Mjj',
               xmax   = 4000,
               rebin  = 1,
               rebinVar  = bins_mjj6,
+              log    = False,
+              logx   = True
+              )
+
+Mjj7 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 10,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = bins_mjj7,
               log    = False,
               logx   = True
               )
@@ -1873,6 +1884,7 @@ vars_dict["Ml1jj8s"] = Ml1jj8s.__dict__
 vars_dict["Ml2jj8s"] = Ml2jj8s.__dict__
 vars_dict["Mlljj8s"] = Mlljj8s.__dict__
 vars_dict["Mjj6s"] = Mjj6s.__dict__
+vars_dict["Mjj7"] = Mjj7.__dict__
 vars_dict["HT8s"] = HT8s.__dict__
 
 ## EOF
