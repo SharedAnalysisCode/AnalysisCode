@@ -514,7 +514,7 @@ for samps in signal_samples:
     signal += [s]
 
 
-signal = samples.list_HN
+# signal = samples.list_HN
 
 
 for s in [data] + mc_backgrounds + signal:
@@ -965,30 +965,30 @@ if options.noNorm=="True":
 elif options.noNorm=="False":
   tempNoNorm = False
 
-HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR1050",
-          tlatex = "WR4200 NR1050",
-          line_color = ROOT.kRed-4,
-          fill_color = ROOT.kRed-2,
-          line_width  = 3,
-          line_style = 1,
-          fill_style = 3004,
-          xsec       = 0.002262,
-          )
-histmgr.load_base_estimator(hm,HNsignal1)
+# HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR1050",
+#           tlatex = "WR4200 NR1050",
+#           line_color = ROOT.kRed-4,
+#           fill_color = ROOT.kRed-2,
+#           line_width  = 3,
+#           line_style = 1,
+#           fill_style = 3004,
+#           xsec       = 0.002262,
+#           )
+# histmgr.load_base_estimator(hm,HNsignal1)
 
-HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR1200",
-          tlatex = "WR600 NR1200",
-          line_color = ROOT.kGreen-7,
-          fill_color = ROOT.kGreen-5,
-          line_width  = 3,
-          line_style = 1,
-          fill_style = 3004,
-          xsec       = 0.003102,
-          )
-histmgr.load_base_estimator(hm,HNsignal2)
+# HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR1200",
+#           tlatex = "WR600 NR1200",
+#           line_color = ROOT.kGreen-7,
+#           fill_color = ROOT.kGreen-5,
+#           line_width  = 3,
+#           line_style = 1,
+#           fill_style = 3004,
+#           xsec       = 0.003102,
+#           )
+# histmgr.load_base_estimator(hm,HNsignal2)
 
-if options.rebinToEq!="True":
-  signal = [HNsignal1,HNsignal2]
+# if options.rebinToEq!="True":
+#   signal = [HNsignal1,HNsignal2]
 
 if options.makeplot == "True":
  funcs.plot_hist(

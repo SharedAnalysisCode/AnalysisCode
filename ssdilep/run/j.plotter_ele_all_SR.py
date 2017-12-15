@@ -206,8 +206,8 @@ def analyze(config):
     ## +++++++++++++++++++++++++++++++++++++++
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakesInMC')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='NoFakeMuonsInMC')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVeto')
-    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetveto')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='BadJetVetoHpp')
+    loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='bjetvetoHpp')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='PassHLT')
     loop += ssdilep.algs.algs.CutAlg(cutflow='presel',cut='OneSameSign90GeV')
     
@@ -233,12 +233,30 @@ def analyze(config):
             sys_TTVA_m = sys_TTVA,
             )
 
+    # loop += ssdilep.algs.EvWeights.MuTrigSF(
+    #         trig_list     = ["HLT_mu26_ivarmedium_OR_HLT_mu50"],
+    #         mu_reco       = "Medium",
+    #         mu_iso        = "FixedCutTightTrackOnly",
+    #         key           = "MuTrigSF",
+    #         sys_trig      = sys_trig,
+    #         )
+
     loop += ssdilep.algs.EvWeights.MuTrigSF(
             trig_list     = ["HLT_mu26_ivarmedium_OR_HLT_mu50"],
             mu_reco       = "Medium",
             mu_iso        = "FixedCutTightTrackOnly",
-            key           = "MuTrigSF",
+            key           = "MuTrigSF2016",
             sys_trig      = sys_trig,
+            period        = 2016,
+            )
+
+    loop += ssdilep.algs.EvWeights.MuTrigSF(
+            trig_list     = ["HLT_mu26_imedium_OR_HLT_mu50"],
+            mu_reco       = "Medium",
+            mu_iso        = "FixedCutTightTrackOnly",
+            key           = "MuTrigSF2015",
+            sys_trig      = sys_trig,
+            period        = 2015,
             )
 
     loop += ssdilep.algs.EvWeights.ThreeElectron2e17TrigWeight(
@@ -545,7 +563,7 @@ def analyze(config):
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
-               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -559,7 +577,7 @@ def analyze(config):
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
-               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ['NotExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
@@ -574,7 +592,7 @@ def analyze(config):
                    ['SameSignLooseLepDR35',None],
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
-                   ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+                   ['ExactlyTwoTightLeptons',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                    ],
                 )
 
@@ -591,7 +609,7 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -600,13 +618,13 @@ def analyze(config):
             cut_flow = [
                ['DCHFilter',None],
                ['OneOrTwoEmus90GeV',None],
-    #            ['ExactlyThreeLooseLep',None],
+               ['ExactlyThreeLooseLep',None],
                ['ExactlyThreeLooseLepSS200M',None],
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
@@ -622,7 +640,7 @@ def analyze(config):
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
                    ['ZVeto',None],
-                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                    ],
                 )
 
@@ -641,7 +659,7 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -656,7 +674,7 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
@@ -672,7 +690,7 @@ def analyze(config):
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
                    ['ZVeto',None],
-                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF']],
+                   ['ExactlyThreeTightLep',["SuperGenericFakeFactor",'ThreeElectron2e17TrigWeight','MuTrigSF2015','MuTrigSF2016']],
                    ],
                 )
 
@@ -690,7 +708,7 @@ def analyze(config):
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
-               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
+               ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -704,7 +722,7 @@ def analyze(config):
                ['SameSignLooseLepDR35',None],
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
-               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
+               ['NotExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
@@ -719,7 +737,7 @@ def analyze(config):
                    ['SameSignLooseLepDR35',None],
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
-                   ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF']],
+                   ['ExactlyTwoTightLeptons',['SuperGenericFakeFactor','MuTrigSF2015','MuTrigSF2016']],
                    ],
                 )
 
@@ -735,7 +753,7 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF']],
+               ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     loop += ssdilep.algs.algs.PlotAlgThreeLep(
@@ -749,7 +767,7 @@ def analyze(config):
                ['SameSignLooseLepPtZ100',None],
                ['LooseLepHT300',None],
                ['ZVeto',None],
-               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor","MuTrigSF"]],
+               ['FailExactlyThreeTightLep',["SuperGenericFakeFactor",'MuTrigSF2015','MuTrigSF2016']],
                ],
             )
     for channel in ["eeee","eeem","eemm","emem","emmm","mmmm"]:
@@ -764,7 +782,7 @@ def analyze(config):
                    ['SameSignLooseLepPtZ100',None],
                    ['LooseLepHT300',None],
                    ['ZVeto',None],
-                   ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF']],
+                   ['ExactlyThreeTightLep',['SuperGenericFakeFactor','MuTrigSF2015','MuTrigSF2016']],
                    ],
                 )
     

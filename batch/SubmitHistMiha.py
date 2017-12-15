@@ -30,12 +30,12 @@ print "test"
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v2ntuples36ifb/mergedEXOT19and0' # input NTUP path
 
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT12skimmed'
-# NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys'
+NTUP='/ceph/grid/home/atlas/miham/ntuples/merged/EXOT12SkimmedSys/nominal'
 # NTUP='/ceph/grid/home/atlas/tadej/ntuples/v3ntuples/EXOT19and12unskimmed'
 
 # NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT19and12unskimmed"
 # NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v1/EXOT12_dilepton"
-NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT12"
+# NTUP="/ceph/grid/home/atlas/tadej/ntuples/DiLepAna/v2/EXOT12"
 
 
 JOBDIR = "/ceph/grid/home/atlas/%s/jobdir" % USER # Alright this is twisted...
@@ -50,12 +50,12 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "AllR_v3_023"
 # RUN = "AllR_v3_3LVR"
 # RUN = "AllR_emu_v3_001"
-# RUN = "All_SR_002"
+RUN = "All_SR_001_flashback"
 # RUN = "ZPeak_Paper_003"
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
 
-RUN = "HN_v2_060_SYS"
+# RUN = "HN_v2_060_SYS"
 # RUN = "WJets_HN_v2_001"
 # RUN = "FFele_HN_v2_002"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -74,10 +74,11 @@ QUEUE="long"                        # length of pbs queue (short, long, extralon
 # SCRIPT="./ssdilep/run/j.plotter_CReleTTBAR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ZPeak.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR.py"  # pyframe job script
-SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
+# SCRIPT="./ssdilep/run/j.plotter_HN.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_mu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_allR_emu.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_ele_all_SRX.py"  # pyframe job script
+SCRIPT="./ssdilep/run/j.plotter_ele_all_SR.py"  # pyframe job script
 # SCRIPT="./ssdilep/run/j.plotter_SSVRele.py"  # pyframe job script
 
 BEXEC="HistMiha.sh"
@@ -395,15 +396,15 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
         ## sample type
         stype  = s.type
  
-        nlines = 1 if s not in samples.all_data else 10
-        # if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
-        #     print sinput
-        #     tempFile = ROOT.TFile.Open(sinput)
-        #     tempFile.cd("physics")
-        #     t = ROOT.gDirectory.Get("nominal")
-        #     nevents = t.GetEntries()
-        #     print "number of events ",nevents, " lines ",nevents//maxevents+1
-        #     nlines = nevents//maxevents + 1
+        # nlines = 1 if s not in samples.all_data else 1
+        if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
+            print sinput
+            tempFile = ROOT.TFile.Open(sinput)
+            tempFile.cd("physics")
+            t = ROOT.gDirectory.Get("nominal")
+            nevents = t.GetEntries()
+            print "number of events ",nevents, " lines ",nevents//maxevents+1
+            nlines = nevents//maxevents + 1
 
         ## config
         sconfig = {}

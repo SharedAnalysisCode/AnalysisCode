@@ -721,7 +721,7 @@ class FakeEstimatorGeneral(BaseEstimator):
         # ---------
         region_l_den = region.replace("-CR","-CR-fakes").replace("-VR","-VR-fakes").replace("-SR","-SR-fakes").replace("-PEAK","-PEAK-fakes").replace("-BROAD","-BROAD-fakes")
         print region
-        print region_l_den
+        print "region_l_den: ",region_l_den
         print self.data_sample.name
         print histname
         print sys

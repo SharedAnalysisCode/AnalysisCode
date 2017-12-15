@@ -2703,10 +2703,10 @@ all_HN = Sample( name =  'all_HN',
 #-------------------------------------------------------------------------------
 
 all_data = []
-# all_data += data.daughters
+all_data += data.daughters
 # all_data += dataEXOT19.daughters
 # all_data += dataEXOT12_Dilepton.daughters
-all_data += dataEXOT12.daughters
+# all_data += dataEXOT12.daughters
 
 all_mc = []
 #all_mc += mytestSample.daughters
@@ -2735,7 +2735,7 @@ all_mc = []
 # #all_mc += ttX.daughters
 # all_mc += singletop.daughters
 # all_mc += ttbar.daughters
-#####all_mc += all_DCH.daughters
+all_mc += all_DCH.daughters
 #####all_mc += single_DCH
 
 ## EOF
@@ -2748,20 +2748,21 @@ all_mc = []
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-all_mc += Zee221.daughters
-all_mc += Zmumu221.daughters
-all_mc += Ztautau221.daughters
+# all_mc += Zee221.daughters
+# all_mc += Zmumu221.daughters
+# all_mc += Ztautau221.daughters
 # all_mc += MGPy8Zee.daughters
-all_mc += diboson_sherpa222.daughters
+all_mc += AZNLOCTEQ6L1_DYee_DYtautau.daughters
+# all_mc += diboson_sherpa222.daughters
 all_mc += top_physics.daughters
 # all_mc += Rare.daughters
 # signal
 # all_mc += all_DCH.daughters
-all_mc += list_HN
+# all_mc += list_HN
 
 ### EXOT12 ZPeak
 # all_mc += Zee221.daughters
-# all_mc += diboson_sherpa221.daughters
+all_mc += diboson_sherpa221.daughters
 # all_mc += singletop_inc.daughters
 # all_mc += ttbar_inc.daughters
 # all_mc += ttX.daughters
