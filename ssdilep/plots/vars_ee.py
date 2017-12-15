@@ -250,7 +250,7 @@ invMassSR2ELall = Var(name='invMass',
               rebin  = 1,
               rebinVar  = bins_invMassSR2ELall,
               log    = False,
-              logx   = False
+              logx   = True
               )
 
 invMassSR3EL = Var(name='invMass',

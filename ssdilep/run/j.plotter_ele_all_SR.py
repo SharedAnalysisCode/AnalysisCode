@@ -231,6 +231,7 @@ def analyze(config):
             sys_reco_m = sys_reco,
             sys_iso_m = sys_iso,
             sys_TTVA_m = sys_TTVA,
+            do_FFweight = True,
             )
 
     # loop += ssdilep.algs.EvWeights.MuTrigSF(

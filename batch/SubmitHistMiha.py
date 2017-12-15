@@ -50,7 +50,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "AllR_v3_023"
 # RUN = "AllR_v3_3LVR"
 # RUN = "AllR_emu_v3_001"
-RUN = "All_SR_001_flashback"
+RUN = "All_SR_002_flashback"
 # RUN = "ZPeak_Paper_003"
 # RUN = "HN_004"
 # RUN = "WJets_v3_004"
@@ -86,13 +86,13 @@ BEXEC="HistMiha.sh"
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_NOM = True                        # submit the nominal job
+DO_NOM = False                        # submit the nominal job
 
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
-DO_MUON_SYS = False
+DO_MUON_SYS = True
 
-DO_ELECTRON_SYS = False
+DO_ELECTRON_SYS = True
 
 DO_JET_SYS = False
 
@@ -159,16 +159,16 @@ def main():
             ['CF_DN'                                , nominal],
             ['FF_UP'                                , nominal],
             ['FF_DN'                                , nominal],
-            # ['BEAM_UP'                              , nominal],
-            # ['BEAM_DN'                              , nominal],
-            # ['CHOICE_UP'                            , nominal],
-            # ['CHOICE_DN'                            , nominal],
-            # ['PDF_UP'                               , nominal],
-            # ['PDF_DN'                               , nominal],
-            # ['PI_UP'                                , nominal],
-            # ['PI_DN'                                , nominal],
-            # ['SCALE_Z_UP'                           , nominal],
-            # ['SCALE_Z_DN'                           , nominal],
+            ['BEAM_UP'                              , nominal],
+            ['BEAM_DN'                              , nominal],
+            ['CHOICE_UP'                            , nominal],
+            ['CHOICE_DN'                            , nominal],
+            ['PDF_UP'                               , nominal],
+            ['PDF_DN'                               , nominal],
+            ['PI_UP'                                , nominal],
+            ['PI_DN'                                , nominal],
+            ['SCALE_Z_UP'                           , nominal],
+            ['SCALE_Z_DN'                           , nominal],
             ['EG_RESOLUTION_ALL_UP'                 , nominal],
             ['EG_RESOLUTION_ALL_DN'                 , nominal],
             ['EG_SCALE_ALLCORR_UP'                  , nominal],

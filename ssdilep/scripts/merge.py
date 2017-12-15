@@ -689,9 +689,9 @@ elif options.samples in ["SSVR_emu"]:
 elif options.samples in ["SSVR_mu"]:
   mumu_backgrounds = [
   # samples.AZNLOCTEQ6L1_DYee_DYtautau,
-  fakes_mumu,
   # samples.VV_ee,
   samples.diboson_sherpa221,
+  fakes_mumu,
   samples.top_physics_noSC,
   # samples.singletop,
   # samples.ttX,

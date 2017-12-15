@@ -112,6 +112,7 @@ data = Sample(name         = "data",
               marker_style = 20,
               daughters    = list_runs,
               # daughters    = EXOT19_data,
+              # daughters    = [EXOT12_data],
               )
 
 dataEXOT19 = Sample(name         = "data",
@@ -2789,4 +2790,3 @@ AllSM = Sample( name =   'AllSM',
                   marker_color =  ROOT.kBlack,
                   daughters = Zee221.daughters+top_physics_all.daughters+diboson_sherpa222_all.daughters+Rare.daughters+Ztautau221.daughters+WenuPowheg.daughters+WtaunuPowheg.daughters,
                 ) 
-
