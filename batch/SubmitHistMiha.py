@@ -85,15 +85,15 @@ BEXEC="HistMiha.sh"
 DO_NTUP_SYS = False                  # submit the NTUP systematics jobs
 TESTMODE = False                     # submit only 1 sub-job (for testing)
 
-DO_NOM = False                        # submit the nominal job
+DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = True                  # submit the plot systematics jobs
+DO_PLOT_SYS = False                  # submit the plot systematics jobs
 
 DO_MUON_SYS = False
 
 DO_ELECTRON_SYS = False
 
-DO_JET_SYS = True
+DO_JET_SYS = False
 
 DO_THEORY_SYS = False
 
@@ -136,8 +136,8 @@ def main():
     all_mc   = samples.all_mc
     all_data = samples.all_data
 
-    all_mc = []
-    # all_data = []
+    # all_mc = []
+    all_data = []
 
     nominal = all_mc 
     nominal += all_data
@@ -396,14 +396,14 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
         stype  = s.type
  
         nlines = 1 if s not in samples.all_data else 10
-        # if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
-        #     print sinput
-        #     tempFile = ROOT.TFile.Open(sinput)
-        #     tempFile.cd("physics")
-        #     t = ROOT.gDirectory.Get("nominal")
-        #     nevents = t.GetEntries()
-        #     print "number of events ",nevents, " lines ",nevents//maxevents+1
-        #     nlines = nevents//maxevents + 1
+        if os.stat(sinput).st_size>5e8*(maxevents/1000000.):
+            print sinput
+            tempFile = ROOT.TFile.Open(sinput)
+            tempFile.cd("physics")
+            t = ROOT.gDirectory.Get("nominal")
+            nevents = t.GetEntries()
+            print "number of events ",nevents, " lines ",nevents//maxevents+1
+            nlines = nevents//maxevents + 1
 
         ## config
         sconfig = {}
