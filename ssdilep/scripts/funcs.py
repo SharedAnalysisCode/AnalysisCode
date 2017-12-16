@@ -248,10 +248,10 @@ def get_total_stat_sys_hists(hists,sys_dict):
         h_sys_DN.SetBinContent(i,tot_sys_DN)
         
         stat = h_total_stat.GetBinContent(i)
-        # tot_UP = sqrt(pow(tot_sys_UP,2)+pow(stat,2))
-        # tot_DN = sqrt(pow(tot_sys_DN,2)+pow(stat,2))
-        tot_UP = sqrt(pow(tot_sys_UP,2))
-        tot_DN = sqrt(pow(tot_sys_DN,2))
+        tot_UP = sqrt(pow(tot_sys_UP,2)+pow(stat,2))
+        tot_DN = sqrt(pow(tot_sys_DN,2)+pow(stat,2))
+        # tot_UP = sqrt(pow(tot_sys_UP,2))
+        # tot_DN = sqrt(pow(tot_sys_DN,2))
         h_total_UP.SetBinContent(i,tot_UP)
         h_total_DN.SetBinContent(i,tot_DN)
 
@@ -587,7 +587,7 @@ def plot_hist(
 
       if g_tot: 
          g_tot.Draw("E2")
-         # g_stat.Draw("SAME,E2")
+         g_stat.Draw("SAME,E2")
          leg.AddEntry(g_stat,"#font[42]{"+str("MC Stat.")+"}",'F')
          leg.AddEntry(g_tot, "#font[42]{"+str("Sys. Unc.")+"}",'F')
 

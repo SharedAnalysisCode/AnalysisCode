@@ -21,8 +21,8 @@ ELE_SYS = True
 MU_SYS = True
 
 
-JET_SYS = True
-THEORY_SYS = True
+JET_SYS = False
+THEORY_SYS = False
 
 BRee = 0.
 BRem = 0.
@@ -847,6 +847,11 @@ TRIG,
 ID,
 ISO,
 RECO,
+BEAM,
+CHOICE,
+PDF,
+PI,
+SCALE_Z,
 ]
 
 sys_list_muon = [

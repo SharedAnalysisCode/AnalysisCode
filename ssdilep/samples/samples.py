@@ -1661,10 +1661,10 @@ AZNLOCTEQ6L1_DYtautau = Sample( name =   'Ztautau',
                 )
 
 AZNLOCTEQ6L1_DYee_DYtautau = Sample( name =   'DYZ',
-                  tlatex = 'D-Y Z/#gamma*',
-                  fill_color = ROOT.kWhite,
-                  line_color =  ROOT.kBlack,
-                  marker_color =  ROOT.kBlack,
+                  tlatex = 'DY Z/#gamma*',
+                  fill_color = ROOT.kYellow - 9,
+                  line_color =  ROOT.kYellow - 5,
+                  marker_color =  ROOT.kYellow - 5,
                   daughters = [
                               AZNLOCTEQ6L1_DYee_120M180,        
                               AZNLOCTEQ6L1_DYee_180M250,        
