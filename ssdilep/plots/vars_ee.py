@@ -1441,10 +1441,20 @@ Ml2jj8s = Var(name='Mljj2',
 
 Mlljj8s = Var(name='Mlljj',
               path   = 'event',
-              xmin   = 800,
+              xmin   = 400,
               xmax   = 4000,
               rebin  = 1,
-              rebinVar  = generateLogBins(8,800,4000),
+              rebinVar  = generateLogBins(8,400,4000),
+              log    = False,
+              logx   = True
+              )
+
+Mjj8s = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 110,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar  = generateLogBins(8,110,4000),
               log    = False,
               logx   = True
               )
@@ -1886,6 +1896,7 @@ vars_dict["Mlljj8s"] = Mlljj8s.__dict__
 vars_dict["Mjj6s"] = Mjj6s.__dict__
 vars_dict["Mjj7"] = Mjj7.__dict__
 vars_dict["HT8s"] = HT8s.__dict__
+vars_dict["Mjj8s"] = Mjj8s.__dict__
 
 ## EOF
 

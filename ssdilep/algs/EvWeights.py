@@ -31,6 +31,98 @@ import itertools
 
 GeV = 1000.0
 
+HN_samples =[
+302657,
+302658,
+302659,
+302660,
+302661,
+302662,
+302663,
+302664,
+302665,
+302666,
+302667,
+302668,
+302669,
+302670,
+302671,
+302672,
+302673,
+302674,
+302675,
+302676,
+302677,
+302678,
+302679,
+302680,
+302681,
+302682,
+302683,
+302684,
+302685,
+302686,
+302687,
+302688,
+302689,
+302690,
+302691,
+302692,
+302693,
+302694,
+302695,
+302696,
+302697,
+302698,
+302699,
+302700,
+302701,
+302702,
+302703,
+302704,
+302705,
+302706,
+302707,
+302708,
+302709,
+302710,
+302711,
+302712,
+305641,
+305642,
+305643,
+305644,
+305645,
+305646,
+305647,
+305648,
+305649,
+305650,
+305651,
+305652,
+305653,
+305654,
+305655,
+305656,
+305657,
+306533,
+306534,
+306535,
+306536,
+306537,
+309063,
+309064,
+309065,
+309066,
+309067,
+309068,
+309069,
+309070,
+309071,
+309072,
+]
+
+
 #------------------------------------------------------------------------------
 class MJJReweight(pyframe.core.Algorithm):
     """
@@ -1507,7 +1599,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
         ELECTRONS_T = self.store['electrons_tight_MediumLLH_isolLoose']
         ELECTRONS   = self.store['electrons_loose_LooseLLH']
 
-      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561):
+      if "mc" in self.sampletype and self.chain.mcChannelNumber in range(306538,306560) + HN_samples:
           if len(MUONS_T) != len(MUONS) or len(ELECTRONS) != len(ELECTRONS_T) :
               if self.key:
                 self.store[self.key] = 0.
@@ -1522,11 +1614,11 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
       for ele in electrons:
         if (ele.isIsolated_Loose and ele.LHMedium) :
           if "mc" in self.sampletype :
-            if (self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561)) or ele.electronType() in [1,2,3] :
+            if (self.chain.mcChannelNumber in range(306538,306560) + HN_samples) or ele.electronType() in [1,2,3] :
               sf *= getattr(ele,"IsoEff_SF_"   + self.IDLevels[1] + self.isoLevels[0] ).at(self.iso_sys_e)
               sf *= getattr(ele,"PIDEff_SF_" + self.IDLevels[1] ).at(self.id_sys_e)
               sf *= getattr(ele,"RecoEff_SF").at(self.reco_sys_e)
-            if self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561):
+            if self.chain.mcChannelNumber in range(306538,306560) + HN_samples:
               continue # no charge-flip SF for signal
             ptBin  = self.h_ptFunc.FindBin( ele.tlv.Pt()/GeV )
             etaBin = self.h_etaFunc.FindBin( abs( ele.caloCluster_eta ) )
@@ -1554,7 +1646,7 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
               sf *= ( 1 - probData )/( 1 - probMC )
         else :
           if "mc" in self.sampletype:
-            assert self.chain.mcChannelNumber not in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561), " no fake factor for signal.."
+            assert self.chain.mcChannelNumber not in range(306538,306560) + HN_samples, " no fake factor for signal.."
           if self.do_FFweight:
             electron_pt = ele.tlv.Pt()/GeV
             if electron_pt > 2000.:
@@ -1568,13 +1660,13 @@ class SuperGenericFakeFactor(pyframe.core.Algorithm):
       for muon in muons:
         if (muon.isIsolated_FixedCutTightTrackOnly and muon.trkd0sig <= 3.0) :
           if "mc" in self.sampletype :
-            if (self.chain.mcChannelNumber in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561)) or  muon.isTrueIsoMuon() :
+            if (self.chain.mcChannelNumber in range(306538,306560) + HN_samples) or  muon.isTrueIsoMuon() :
               sf *= getattr(muon,"_".join(["IsoEff","SF","Iso"+"FixedCutTightTrackOnly"])).at(self.iso_sys_m)
               sf *= getattr(muon,"_".join(["RecoEff","SF","Reco"+"Medium"])).at(self.reco_sys_m)
               sf *= getattr(muon,"_".join(["TTVAEff","SF"])).at(self.TTVA_sys_m)
         else :
           if "mc" in self.sampletype:
-            assert self.chain.mcChannelNumber not in range(306538,306560) + range(302657,302713) + range(309063,309073) + range(306533,306561), " no fake factor for signal.."
+            assert self.chain.mcChannelNumber not in range(306538,306560) + HN_samples, " no fake factor for signal.."
           if self.do_FFweight:
             ff_mu = 0.
             eff_up_mu = 0.

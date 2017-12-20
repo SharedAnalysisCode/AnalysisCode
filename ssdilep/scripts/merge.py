@@ -965,8 +965,8 @@ if options.noNorm=="True":
 elif options.noNorm=="False":
   tempNoNorm = False
 
-HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR1050",
-          tlatex = "WR4200 NR1050",
+HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3000_NR1500",
+          tlatex = "WR3000 NR1500",
           line_color = ROOT.kRed-4,
           fill_color = ROOT.kRed-2,
           line_width  = 3,
@@ -976,8 +976,8 @@ HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR42
           )
 histmgr.load_base_estimator(hm,HNsignal1)
 
-HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR1200",
-          tlatex = "WR600 NR1200",
+HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1000_NR700",
+          tlatex = "WR1000 NR700",
           line_color = ROOT.kGreen-7,
           fill_color = ROOT.kGreen-5,
           line_width  = 3,

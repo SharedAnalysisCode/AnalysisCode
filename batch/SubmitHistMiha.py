@@ -87,15 +87,15 @@ TESTMODE = False                     # submit only 1 sub-job (for testing)
 
 DO_NOM = True                        # submit the nominal job
 
-DO_PLOT_SYS = False                  # submit the plot systematics jobs
+DO_PLOT_SYS = True                  # submit the plot systematics jobs
 
-DO_MUON_SYS = False
+DO_MUON_SYS = True
 
-DO_ELECTRON_SYS = False
+DO_ELECTRON_SYS = True
 
-DO_JET_SYS = False
+DO_JET_SYS = True
 
-DO_THEORY_SYS = False
+DO_THEORY_SYS = True
 
  
 QCD = {
