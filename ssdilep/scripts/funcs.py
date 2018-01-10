@@ -150,6 +150,27 @@ def get_sys_hists(
               h_dn.SetBinContent(h_dn.GetNbinsX(), h_dn.GetBinContent(h_dn.GetNbinsX()+1) + h_dn.GetBinContent(h_dn.GetNbinsX()) )
               h_dn.SetBinError(h_dn.GetNbinsX(), sqrt(h_dn.GetBinError(h_dn.GetNbinsX()+1)**2 + h_dn.GetBinError(h_dn.GetNbinsX())**2) )
 
+            ## symmetrizing the sys
+            if sys.symmetrize == True:
+              ## get nominal histo
+              nominal = deepcopy(sample.hist(region=region,icut=icut,histname=histname).Clone())
+              ## rebin nominal histogram
+              if rebin and len(rebinVar)==0 :
+                nominal.Rebin(rebin)
+              elif len(rebinVar)>1 :
+                runArray = array('d',rebinVar)
+                nominal = nominal.Rebin( len(rebinVar)-1, histname+"Var", runArray )
+                nominal.SetBinContent(nominal.GetNbinsX(), nominal.GetBinContent(nominal.GetNbinsX()+1) + nominal.GetBinContent(nominal.GetNbinsX()) )
+                nominal.SetBinError(nominal.GetNbinsX(), sqrt(nominal.GetBinError(nominal.GetNbinsX()+1)**2 + nominal.GetBinError(nominal.GetNbinsX())**2) )
+              print nominal
+              ## the loop
+              for i in range(0,h_up.GetNbinsX()+2):
+                up = abs(nominal.GetBinContent(i) - h_up.GetBinContent(i))
+                dn = abs(nominal.GetBinContent(i) - h_dn.GetBinContent(i))
+                h_up.SetBinContent(i, nominal.GetBinContent(i) + max(up,dn) )
+                h_dn.SetBinContent(i, nominal.GetBinContent(i) - max(up,dn) )
+
+
           h_up.SetName('h_%s_%s_up_%s'%(region,sys.name,sample.name))
           h_dn.SetName('h_%s_%s_dn_%s'%(region,sys.name,sample.name))
 

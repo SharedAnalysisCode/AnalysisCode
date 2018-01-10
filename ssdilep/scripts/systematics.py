@@ -23,6 +23,7 @@ class Systematic(object):
             onesided=None,
             envelope=None,
             constituents=None,
+            symmetrize=None,
             ):
         self.name = name
         if not title: title = name
@@ -33,6 +34,7 @@ class Systematic(object):
         self.onesided = onesided
         self.envelope = envelope
         self.constituents = constituents
+        self.symmetrize = symmetrize
         assert (self.var_up or self.var_dn) or self.flat_err!=None or (self.envelope!=None and self.constituents!=None), 'Must provide either up and dn vars or a flat err!'
 
 
@@ -59,31 +61,31 @@ sys_dict = {}
 # LPX_SCALE_Z_1up/1down   Scale uncertainty of the NC DY process.
 # LPX_SCALE_W_1up/1down   Scale uncertainty of the CC DY process. 
 #_________________________________________________________________________________________
-BEAM = sys_dict['BEAM'] = Systematic(
-        'BEAM',
-        var_up='BEAM_UP',
-        var_dn='BEAM_DN'
-        )
-CHOICE = sys_dict['CHOICE'] = Systematic(
-        'CHOICE',
-        var_up='CHOICE_UP',
-        var_dn='CHOICE_DN'
-        )
-PDF = sys_dict['PDF'] = Systematic(
-        'PDF',
-        var_up='PDF_UP',
-        var_dn='PDF_DN'
-        )
-PI = sys_dict['PI'] = Systematic(
-        'PI',
-        var_up='PI_UP',
-        var_dn='PI_DN'
-        )
-SCALE_Z = sys_dict['SCALE_Z'] = Systematic(
-        'SCALE_Z',
-        var_up='SCALE_Z_UP',
-        var_dn='SCALE_Z_DN'
-        )
+# BEAM = sys_dict['BEAM'] = Systematic(
+#         'BEAM',
+#         var_up='BEAM_UP',
+#         var_dn='BEAM_DN'
+#         )
+# CHOICE = sys_dict['CHOICE'] = Systematic(
+#         'CHOICE',
+#         var_up='CHOICE_UP',
+#         var_dn='CHOICE_DN'
+#         )
+# PDF = sys_dict['PDF'] = Systematic(
+#         'PDF',
+#         var_up='PDF_UP',
+#         var_dn='PDF_DN'
+#         )
+# PI = sys_dict['PI'] = Systematic(
+#         'PI',
+#         var_up='PI_UP',
+#         var_dn='PI_DN'
+#         )
+# SCALE_Z = sys_dict['SCALE_Z'] = Systematic(
+#         'SCALE_Z',
+#         var_up='SCALE_Z_UP',
+#         var_dn='SCALE_Z_DN'
+#         )
 
 #_________________________________________________________________________________________
 # Tree Systematics
@@ -98,7 +100,8 @@ EG_RESOLUTION_ALL = sys_dict['EG_RESOLUTION_ALL'] = Systematic(
 EG_SCALE_ALLCORR = sys_dict['EG_SCALE_ALLCORR'] = Systematic(
         'EG_SCALE_ALLCORR',
         var_up='EG_SCALE_ALLCORR_UP',
-        var_dn='EG_SCALE_ALLCORR_DN'
+        var_dn='EG_SCALE_ALLCORR_DN',
+        symmetrize = True,
         )
 EG_SCALE_E4SCINTILLATOR = sys_dict['EG_SCALE_E4SCINTILLATOR'] = Systematic(
         'EG_SCALE_E4SCINTILLATOR',
@@ -125,7 +128,8 @@ MUON_RESBIAS = sys_dict['MUON_RESBIAS'] = Systematic(
 MUON_RHO = sys_dict['MUON_RHO'] = Systematic(
         'MUON_RHO',
         var_up='MUON_RHO_UP',
-        var_dn='MUON_RHO_DN'
+        var_dn='MUON_RHO_DN',
+        symmetrize = True,
         )
 MUON_SCALE = sys_dict['MUON_SCALE'] = Systematic(
         'MUON_SCALE',
@@ -369,6 +373,7 @@ JET_Pileup_OffsetNPV = sys_dict['JET_Pileup_OffsetNPV'] = Systematic(
       'JET_Pileup_OffsetNPV',
       var_up='JET_Pileup_OffsetNPV_UP',
       var_dn='JET_Pileup_OffsetNPV_DN',
+      symmetrize = True,
       )              
               
 JET_Pileup_PtTerm = sys_dict['JET_Pileup_PtTerm'] = Systematic(
@@ -443,12 +448,14 @@ JET_JER_NP5 = sys_dict['JET_JER_NP5'] = Systematic(
       'JET_JER_NP5',
       var_up='JET_JER_NP5_UP',
       var_dn='JET_JER_NP5_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP6 = sys_dict['JET_JER_NP6'] = Systematic(
       'JET_JER_NP6',
       var_up='JET_JER_NP6_UP',
       var_dn='JET_JER_NP6_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP7 = sys_dict['JET_JER_NP7'] = Systematic(

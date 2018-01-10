@@ -95,7 +95,7 @@ DO_ELECTRON_SYS = True
 
 DO_JET_SYS = True
 
-DO_THEORY_SYS = True
+DO_THEORY_SYS = False
 
  
 QCD = {
