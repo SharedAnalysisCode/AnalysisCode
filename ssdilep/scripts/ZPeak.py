@@ -9,8 +9,8 @@ import re
 
 ROOT.gROOT.SetBatch(True)
 
-ROOT.TGaxis.SetMaxDigits(4)
-ROOT.gStyle.SetHatchesSpacing(0.5)
+ROOT.TGaxis.SetMaxDigits(3)
+ROOT.gStyle.SetHatchesSpacing(0.6)
 ROOT.gStyle.SetPadTickY(0)
 
 
@@ -64,11 +64,11 @@ for i in range(1,OSMC.GetNbinsX()+1):
 OSGr.SetFillStyle(3354)
 SSGr.SetFillStyle(3354)
 
-OSGr.SetFillColor(ROOT.kGray+2)
+OSGr.SetFillColor(ROOT.kGray+3)
 OSGr.SetLineColor(ROOT.kGray+3)
 OSGr.SetLineWidth(2)
-SSGr.SetFillColor(ROOT.kRed-2)
-SSGr.SetLineColor(ROOT.kRed)
+SSGr.SetFillColor(ROOT.kRed+3)
+SSGr.SetLineColor(ROOT.kRed+3)
 SSGr.SetLineWidth(2)
 
 
@@ -78,7 +78,7 @@ OSMC.Draw("same hist")
 
 SSdata.SetMarkerColor(ROOT.kRed)
 SSdata.SetLineColor(ROOT.kRed)
-SSMC.SetLineColor(ROOT.kRed)
+SSMC.SetLineColor(ROOT.kRed+3)
 SSdata.SetMarkerSize(MARKERSIZE)
 SSdata.Scale(scale)
 SSMC.Scale(scale)
@@ -106,7 +106,7 @@ axis.Draw()
 
 
 
-ROOT.ATLASLabel(0.2,0.875,"internal",1)
+ROOT.ATLASLabel(0.2,0.875,"",1)
 ROOT.myText(0.2,0.825,1,"Z #rightarrow ee peak")
 ROOT.myText(0.195,0.768,1,"#sqrt{s} = 13 TeV, 36.1 fb^{-1}")
 leg = ROOT.TLegend(0.45,0.808,0.89,0.911)
@@ -121,7 +121,8 @@ leg.AddEntry(OSGr,"#font[42]{OC SM sim.}","l f")
 leg.AddEntry(SSGr,"#font[42]{SC SM sim.}","l f")
 leg.Draw()
 
-canv.Print("ZPeakPaper.eps")
+canv.Print("ZPeak.eps")
+canv.Print("ZPeak.pdf")
 
  ## EOF
 
