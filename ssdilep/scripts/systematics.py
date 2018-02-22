@@ -355,6 +355,7 @@ JET_Flavor_Composition = sys_dict['JET_Flavor_Composition'] = Systematic(
       'JET_Flavor_Composition',
       var_up='JET_Flavor_Composition_UP',
       var_dn='JET_Flavor_Composition_DN',
+      symmetrize = True,
       )            
             
 JET_Flavor_Response = sys_dict['JET_Flavor_Response'] = Systematic(
@@ -418,30 +419,35 @@ JET_JER_NP0 = sys_dict['JET_JER_NP0'] = Systematic(
       'JET_JER_NP0',
       var_up='JET_JER_NP0_UP',
       var_dn='JET_JER_NP0_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP1 = sys_dict['JET_JER_NP1'] = Systematic(
       'JET_JER_NP1',
       var_up='JET_JER_NP1_UP',
       var_dn='JET_JER_NP1_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP2 = sys_dict['JET_JER_NP2'] = Systematic(
       'JET_JER_NP2',
       var_up='JET_JER_NP2_UP',
       var_dn='JET_JER_NP2_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP3 = sys_dict['JET_JER_NP3'] = Systematic(
       'JET_JER_NP3',
       var_up='JET_JER_NP3_UP',
       var_dn='JET_JER_NP3_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP4 = sys_dict['JET_JER_NP4'] = Systematic(
       'JET_JER_NP4',
       var_up='JET_JER_NP4_UP',
       var_dn='JET_JER_NP4_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP5 = sys_dict['JET_JER_NP5'] = Systematic(
@@ -462,12 +468,14 @@ JET_JER_NP7 = sys_dict['JET_JER_NP7'] = Systematic(
       'JET_JER_NP7',
       var_up='JET_JER_NP7_UP',
       var_dn='JET_JER_NP7_DN',
+      symmetrize = True,
       )                       
                        
 JET_JER_NP8 = sys_dict['JET_JER_NP8'] = Systematic(
       'JET_JER_NP8',
       var_up='JET_JER_NP8_UP',
       var_dn='JET_JER_NP8_DN',
+      symmetrize = True,
       )                       
 
 ## Theory
