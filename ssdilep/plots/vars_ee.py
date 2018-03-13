@@ -472,15 +472,15 @@ el_pt_eta_chf4 = Var(name='el_pt_eta_chf4',
                 )
 
 el_t_2D_pt_Ceta = Var(name='el_t_2D_pt_Ceta',
-                path   = 'leptons',
+                path   = 'electrons',
                 )
 
 el_l_2D_pt_Ceta = Var(name='el_l_2D_pt_Ceta',
-                path   = 'leptons',
+                path   = 'electrons',
                 )
 
 el_sl_2D_pt_Ceta = Var(name='el_sl_2D_pt_Ceta',
-                path   = 'leptons',
+                path   = 'electrons',
                 )
 
 ## MET
@@ -1297,6 +1297,15 @@ Mjj = Var(name='Mjj',
               logx   = True
               )
 
+Mjj0 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 4000,
+              rebin  = 100,
+              log    = False,
+              logx   = False
+              )
+
 Mjj2 = Var(name='Mjj',
               path   = 'event',
               xmin   = 110,
@@ -1330,10 +1339,10 @@ Mjj4 = Var(name='Mjj',
 
 Mjj5 = Var(name='Mjj',
               path   = 'event',
-              xmin   = 10,
-              xmax   = 4000,
+              xmin   = 30,
+              xmax   = 900,
               rebin  = 1,
-              rebinVar  = bins_mjj5,
+              rebinVar  = generateLogBins(8,30,900),
               log    = False,
               logx   = True
               )
@@ -1341,9 +1350,9 @@ Mjj5 = Var(name='Mjj',
 Mjj6 = Var(name='Mjj',
               path   = 'event',
               xmin   = 10,
-              xmax   = 4000,
+              xmax   = 1629.0,
               rebin  = 1,
-              rebinVar  = bins_mjj6,
+              rebinVar  = bins_mjj6[:-1],
               log    = False,
               logx   = True
               )
@@ -1387,6 +1396,15 @@ Mlljj15 = Var(name='Mlljj',
               rebinVar  = generateLogBins(15,100,4000),
               log    = False,
               logx   = True
+              )
+
+Mlljj0 = Var(name='Mlljj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 4000,
+              rebin  = 100,
+              log    = False,
+              logx   = False
               )
 
 Ml1jj5 = Var(name='Mljj1',
@@ -1467,6 +1485,15 @@ Mjj6s = Var(name='Mjj',
               rebinVar  = generateLogBins(6,110,4000),
               log    = False,
               logx   = True
+              )
+
+HTlljj = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 4000,
+              rebin  = 100,
+              log    = False,
+              logx   = False
               )
 
 HT8s = Var(name='HTlljj',
@@ -1589,6 +1616,14 @@ invMassZVR3 = Var(name='invMass',
               path   = 'event',
               xmin   = 300,
               xmax   = 400,
+              rebin  = 25,
+              log    = False,
+              )
+
+invMassSignalHN = Var(name='invMass',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 1000,
               rebin  = 25,
               log    = False,
               )
@@ -1897,6 +1932,10 @@ vars_dict["Mjj6s"] = Mjj6s.__dict__
 vars_dict["Mjj7"] = Mjj7.__dict__
 vars_dict["HT8s"] = HT8s.__dict__
 vars_dict["Mjj8s"] = Mjj8s.__dict__
+vars_dict["invMassSignalHN"] = invMassSignalHN.__dict__
+vars_dict["HTlljj"] = HTlljj.__dict__
+vars_dict["Mjj0"] = Mjj0.__dict__
+vars_dict["Mlljj0"] = Mlljj0.__dict__
 
 ## EOF
 

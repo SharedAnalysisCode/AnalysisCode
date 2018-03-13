@@ -377,6 +377,8 @@ elif options.samples == "allSamples_emu":
   ]
 elif options.samples == "signalEigenVectors":
   mc_backgrounds = samples.list_DCH
+elif options.samples == "nothing":
+  mc_backgrounds = []
 
 
 fakes_mumu = samples.fakes.copy()
@@ -836,6 +838,8 @@ elif options.samples == "allSamples_emu":
   ]
 elif options.samples == "signalEigenVectors":
   mumu_backgrounds = samples.list_DCH
+elif options.samples == "nothing":
+  mumu_backgrounds = []
 
 
 sys_list_ele = [
@@ -961,25 +965,25 @@ if options.noNorm=="True":
 elif options.noNorm=="False":
   tempNoNorm = False
 
-HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3000_NR1500",
-          tlatex = "WR3000 NR1500",
+HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR500",
+          tlatex = "WR600 NR500",
           line_color = ROOT.kRed-4,
           fill_color = ROOT.kRed-2,
           line_width  = 3,
           line_style = 1,
           fill_style = 3004,
-          xsec       = 0.002262,
+          xsec       = 8.7848,
           )
 histmgr.load_base_estimator(hm,HNsignal1)
 
-HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1000_NR700",
-          tlatex = "WR1000 NR700",
+HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3000_NR2250",
+          tlatex = "WR3000 NR2250",
           line_color = ROOT.kGreen-7,
           fill_color = ROOT.kGreen-5,
           line_width  = 3,
           line_style = 1,
           fill_style = 3004,
-          xsec       = 0.003102,
+          xsec       = 0.0078485,
           )
 histmgr.load_base_estimator(hm,HNsignal2)
 
@@ -990,7 +994,7 @@ if options.makeplot == "True":
  funcs.plot_hist(
     backgrounds   = mumu_backgrounds,
     signal        = signal if options.signal=="True" else None, 
-    data          = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg"] else None,
+    data          = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg","nothing"] else None,
     region        = options.region,
     label         = options.label if options.label else mumu_vdict[options.vname]['label'],
     histname      = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
@@ -1014,7 +1018,7 @@ else:
  funcs.write_hist(
          backgrounds = mumu_backgrounds,
          signal      = signal if options.signal=="True" else None, 
-         data        = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg","signalEigenVectors"] else None,
+         data        = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg","signalEigenVectors","nothing"] else None,
          region      = options.region,
          icut        = int(options.icut),
          histname    = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),

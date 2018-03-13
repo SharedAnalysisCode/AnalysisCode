@@ -105,6 +105,26 @@ HN_samples =[
 309070,
 309071,
 309072,
+309576,
+309585,
+309593,
+309594,
+309600,
+309610,
+309618,
+309620,
+309634,
+309635,
+309636,
+309637,
+309638,
+309639,
+309640,
+309641,
+309642,
+309643,
+309644,
+309645,
 ]
 
 ## logging
@@ -2421,6 +2441,14 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_Mass60GeVele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 60*GeV < tempMass :
+            return True;
+        return False
+
     def cut_Mass200GeV400ele(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2 :
@@ -2475,6 +2503,14 @@ class CutAlg(pyframe.core.Algorithm):
         if len(electrons)==2 :
           tempMass = (electrons[0].tlv + electrons[1].tlv).M()
           if 60*GeV < tempMass <= 300*GeV :
+            return True;
+        return False
+
+    def cut_Mass60GeVmuon(self):
+        electrons = self.store['muons']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 60*GeV < tempMass :
             return True;
         return False
 
@@ -4592,6 +4628,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_ZbosonPt = self.hist('h_ZbosonPt', "ROOT.TH1F('$', ';p_{T}(Z) [GeV];Events / (1 GeV)', 2000, 0, 2000)", dir=EVT)
         self.h_ZbosonEta = self.hist('h_ZbosonEta', "ROOT.TH1F('$', ';#eta(l);Events / (0.1)', 120, -6.0, 6.0)", dir=EVT)
         self.h_DR = self.hist('h_DR', "ROOT.TH1F('$', ';#DeltaR(ll);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
+        self.h_DRZj  = self.hist('h_DRZj', "ROOT.TH1F('$', ';#DeltaR(ll,j);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
+        self.h_DRZjj = self.hist('h_DRZjj', "ROOT.TH1F('$', ';#DeltaR(ll,jj);Events / (0.1)', 60, 0, 6.0)", dir=EVT)
         # self.h_mTtot = self.hist('h_mTtot', "ROOT.TH1F('$', ';m^{tot}_{T} [GeV];Events / (1 GeV)', 10000, 0.0, 10000.)", dir=EVT)
         self.h_HT = self.hist('h_HT', "ROOT.TH1F('$', ';H_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_HTlljj = self.hist('h_HTlljj', "ROOT.TH1F('$', ';Hlljj_{T} [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
@@ -4600,8 +4638,8 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
         self.h_Mlljj = self.hist('h_Mlljj', "ROOT.TH1F('$', ';m(lljj) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_Mljj1 = self.hist('h_Mljj1', "ROOT.TH1F('$', ';m(l_1jj) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
         self.h_Mljj2 = self.hist('h_Mljj2', "ROOT.TH1F('$', ';m(l_2jj) [GeV];Events / (1 GeV)', 10000, 0, 10000)", dir=EVT)
-        self.h_muonType = self.hist('h_muonType', "ROOT.TH1F('$', ';truthOrigin;Events', 10, 0, 10)", dir=EVT)
-        self.h_electronType = self.hist('h_electronType', "ROOT.TH1F('$', ';truthOrigin;Events', 10, 0, 10)", dir=EVT)
+        # self.h_muonType = self.hist('h_muonType', "ROOT.TH1F('$', ';truthOrigin;Events', 10, 0, 10)", dir=EVT)
+        # self.h_electronType = self.hist('h_electronType', "ROOT.TH1F('$', ';truthOrigin;Events', 10, 0, 10)", dir=EVT)
         # self.h_truthType = self.hist('h_truthType', "ROOT.TH1F('$', ';truthType;Events', 51, -1, 50)", dir=EVT)
         # self.h_firstEgMotherTruthOrigin = self.hist('h_firstEgMotherTruthOrigin', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
         # self.h_firstEgMotherTruthType = self.hist('h_firstEgMotherTruthType', "ROOT.TH1F('$', ';truthOrigin;Events', 51, -1, 50)", dir=EVT)
@@ -4669,7 +4707,7 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
           self.h_invMass.Fill( (electrons[0].tlv+electrons[1].tlv).M()/GeV, weight)
           self.h_ZbosonPt.Fill( (electrons[0].tlv+electrons[1].tlv).Pt()/GeV, weight)
           self.h_ZbosonEta.Fill( (electrons[0].tlv+electrons[1].tlv).Eta(), weight)
-          self.h_DR.Fill( electrons[0].tlv.DeltaR(electrons[1].tlv), weight)
+          self.h_DR   .Fill( electrons[0].tlv.DeltaR(electrons[1].tlv), weight)
           self.h_HT.Fill( (electrons[0].tlv.Pt()+electrons[1].tlv.Pt())/GeV, weight )
           if "mc" in self.sampletype:
             self.h_MCWeights.Fill( self.chain.mcEventWeight )
@@ -4683,6 +4721,9 @@ class PlotAlgCRele(pyframe.algs.CutFlowAlg,CutAlg):
             self.h_Mlljj.Fill( (electrons[0].tlv+electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
             self.h_Mljj1.Fill( (electrons[0].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
             self.h_Mljj2.Fill( (electrons[1].tlv+jets[0].tlv+jets[1].tlv).M()/GeV, weight)
+            self.h_DRZj .Fill( (electrons[0].tlv+electrons[1].tlv).DeltaR(jets[0].tlv), weight)
+            self.h_DRZjj.Fill( (electrons[0].tlv+electrons[1].tlv).DeltaR(jets[0].tlv+jets[1].tlv), weight)
+
 
             self.h_jet_lead_pt.Fill(jets[0].tlv.Pt()/GeV, weight)
             self.h_jet_lead_eta.Fill(jets[0].eta, weight)

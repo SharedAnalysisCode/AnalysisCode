@@ -33,6 +33,15 @@ ROOT.SetAtlasStyle()
 
 
 # - - - - - - - - - - function defs - - - - - - - - - - - - #
+def fixFakes(histo,FF):
+  if not histo:
+    print "YYYYYYYYYYYYY no histo"
+    return
+  for i in range(1,histo.GetNbinsX()+1):
+    if histo.GetBinContent(i) == 0:
+      histo.SetBinContent(i,1e-3)
+      histo.SetBinError(i,1.14*2/3*FF-1.14/3*FF**2)
+
 #____________________________________________________________
 def apply_blind(h,blind_min):
     for i in range(1,h.GetNbinsX()+1):
@@ -582,7 +591,7 @@ def plot_hist(
 
     if do_ratio_plot:
       pad2.cd()
-      fr2 = pad2.DrawFrame(xmin,0.49,xmax,1.51,';%s;Data / Bkg.'%(xtitle))
+      fr2 = pad2.DrawFrame(xmin,0.0,xmax,2.0,';%s;Data / Bkg.'%(xtitle))
       xaxis2 = fr2.GetXaxis()
       yaxis2 = fr2.GetYaxis()
       scale = (1. / rsplit)
@@ -595,7 +604,7 @@ def plot_hist(
       xaxis2.SetTickLength( xaxis2.GetTickLength() * scale )
       xaxis2.SetTitleOffset( 3.2* xaxis2.GetTitleOffset() / scale / 1.2  )
       xaxis2.SetLabelOffset( 2.5* xaxis2.GetLabelOffset() / scale )
-      yaxis2.SetNdivisions(510)
+      yaxis2.SetNdivisions(505)
       xaxis2.SetNdivisions(510)
 
 
@@ -623,24 +632,24 @@ def plot_hist(
         h_ratioGr.SetLineWidth(2)
         for bin_itr in range(1,h_ratio.GetNbinsX()+1):
           if (h_total.GetBinContent(bin_itr)==0 or h_data.GetBinContent(bin_itr)==0): continue
-          if (h_ratio.GetBinContent(bin_itr)-h_data.GetBinErrorLow(bin_itr)/h_total.GetBinContent(bin_itr)) > 1.51:
+          if (h_ratio.GetBinContent(bin_itr)-h_data.GetBinErrorLow(bin_itr)/h_total.GetBinContent(bin_itr)) > 2.01:
             print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
             arrowX = h_ratio.GetBinCenter(bin_itr)
-            arrow = ROOT.TArrow(arrowX,1.35,arrowX,1.5,0.012,"=>");
+            arrow = ROOT.TArrow(arrowX,1.85,arrowX,2.0,0.012,"=>");
             arrow.SetLineWidth(2)
             arrow.SetLineColor(ROOT.kRed+1)
             arrow.SetFillColor(ROOT.kRed+1)
             arrows += [arrow]
             arrow.Draw()
-          elif (h_ratio.GetBinContent(bin_itr)+h_data.GetBinErrorUp(bin_itr)/h_total.GetBinContent(bin_itr)) < 0.49 and h_ratio.GetBinContent(bin_itr) not in [-100,0]:
-            print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
-            arrowX = h_ratio.GetBinCenter(bin_itr)
-            arrow = ROOT.TArrow(arrowX,0.50,arrowX,0.65,0.012,"<=");
-            arrow.SetLineWidth(2)
-            arrow.SetLineColor(ROOT.kRed+1)
-            arrow.SetFillColor(ROOT.kRed+1)
-            arrows += [arrow]
-            arrow.Draw()
+          # elif (h_ratio.GetBinContent(bin_itr)+h_data.GetBinErrorUp(bin_itr)/h_total.GetBinContent(bin_itr)) < 0.49 and h_ratio.GetBinContent(bin_itr) not in [-100,0]:
+          #   print h_ratio.GetBinCenter(bin_itr)," ",h_ratio.GetBinContent(bin_itr)
+          #   arrowX = h_ratio.GetBinCenter(bin_itr)
+          #   arrow = ROOT.TArrow(arrowX,0.50,arrowX,0.65,0.012,"<=");
+          #   arrow.SetLineWidth(2)
+          #   arrow.SetLineColor(ROOT.kRed+1)
+          #   arrow.SetFillColor(ROOT.kRed+1)
+          #   arrows += [arrow]
+          #   arrow.Draw()
       pad2.RedrawAxis()
       pad2.RedrawAxis("g")
 
@@ -739,7 +748,9 @@ def write_hist(
                 hNorm.SetBinContent(i,binVal)
                 hNorm.SetBinError(i,binErr)
             hNorm.Rebin(nbins)
-
+            if s.name == "fakes":
+              print "XXXXXXXXXXXXXXXXXXX fixing fakes with 0 entries ",s.name, " ",region
+              fixFakes(hEquiDistant,0.5 if "elect" in region else 0.9)
             fout.WriteTObject(hEquiDistant,hname)
             hNormOut = ROOT.TH1F(hnameNorm,hnameNorm,1,0.5,1.5)
             hNormOut.SetBinContent(1,hNorm.GetBinContent(1))
@@ -820,6 +831,9 @@ def write_hist(
                     hdnNorm.Rebin(nbins)
 
                 if rebinToEq:
+                    if s.name == "fakes":
+                      fixFakes(hupEquiDistant,0.5 if "elect" in region else 0.9)
+                      fixFakes(hdnEquiDistant,0.5 if "elect" in region else 0.9)
                     fout.WriteTObject(hupEquiDistant,hname_sys_up)
                     fout.WriteTObject(hdnEquiDistant,hname_sys_dn)
                     hupNormOut = ROOT.TH1F(hname_sys_upNorm,hname_sys_upNorm,1,0.5,1.5)

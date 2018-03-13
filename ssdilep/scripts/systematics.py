@@ -387,6 +387,7 @@ JET_Pileup_RhoTopology = sys_dict['JET_Pileup_RhoTopology'] = Systematic(
       'JET_Pileup_RhoTopology',
       var_up='JET_Pileup_RhoTopology_UP',
       var_dn='JET_Pileup_RhoTopology_DN',
+      symmetrize = True,
       )            
             
 JET_PunchThrough_MC15 = sys_dict['JET_PunchThrough_MC15'] = Systematic(

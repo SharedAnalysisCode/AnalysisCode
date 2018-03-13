@@ -2524,7 +2524,6 @@ all_DCH = Sample( name =  'all_DCH',
 
 single_DCH = [Pythia8EvtGen_A14NNPDF23LO_DCH300]
 
-
 HN_SAMPLE_NAMES = [
 "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR50",
 "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR600_NR150",
@@ -2614,6 +2613,27 @@ HN_SAMPLE_NAMES = [
 "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5000_NR2500",
 "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5000_NR3750",
 "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5000_NR4900",
+
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1000_NR1400",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1500_NR1600",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1500_NR1800",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2100_NR1500",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2100_NR1800",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2100_NR2200",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2700_NR300",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3500_NR400",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3800_NR3000",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR200",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR400",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4500_NR800",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4750_NR3000",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5200_NR1000",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5200_NR2000",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5200_NR3000",
+"MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR1000",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR2000",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR3000",
+# "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR500",
 ]
 
 
@@ -2720,6 +2740,28 @@ MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5000_NR2500.xsec = 0.00028817
 MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5000_NR3750.xsec = 0.00011102
 MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5000_NR4900.xsec = 2.2329e-06
 
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1000_NR1400.xsec = 2.104E-03
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1500_NR1600.xsec = 2.974E-03
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1500_NR1800.xsec = 6.805E-04
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2100_NR1500.xsec = 9.009E-02
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2100_NR1800.xsec = 2.943E-02
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2100_NR2200.xsec = 6.315E-04
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR2700_NR300.xsec = 5.322E-02
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3500_NR400.xsec = 1.040E-02
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3800_NR3000.xsec = 1.059E-03
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR200.xsec = 3.051E-03
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR400.xsec = 2.584E-03
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4500_NR800.xsec = 1.417E-03
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4750_NR3000.xsec = 3.673E-04
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5200_NR1000.xsec = 3.842E-04
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5200_NR2000.xsec = 2.393E-04
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5200_NR3000.xsec = 1.430E-04
+MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR1000.xsec = 1.522E-04
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR2000.xsec = 9.097E-05
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR3000.xsec = 5.481E-05
+# MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR5800_NR500.xsec = 2.236E-04
+
+
 list_HN =[globals()[name] for name in HN_SAMPLE_NAMES]
 
 all_HN = Sample( name =  'all_HN',
@@ -2784,12 +2826,12 @@ all_mc = []
 # all_mc += ttbar_inc.daughters
 
 ### EXOT12 dilep
-# all_mc += Zee221.daughters
-# all_mc += Zmumu221.daughters
-# all_mc += Ztautau221.daughters
+all_mc += Zee221.daughters
+all_mc += Zmumu221.daughters
+all_mc += Ztautau221.daughters
 # all_mc += MGPy8Zee.daughters
-# all_mc += diboson_sherpa222.daughters
-# all_mc += top_physics.daughters
+all_mc += diboson_sherpa222.daughters
+all_mc += top_physics.daughters
 # all_mc += Rare.daughters
 # signal
 # all_mc += all_DCH.daughters
