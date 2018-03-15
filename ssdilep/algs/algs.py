@@ -2044,6 +2044,141 @@ class CutAlg(pyframe.core.Algorithm):
           return True
         return False
 
+    def cut_Meejj400(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() > 400*GeV:
+            return True
+        return False
+
+    def cut_Mmmjj400(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() > 400*GeV:
+            return True
+        return False
+
+    def cut_Meejj600(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() > 600*GeV:
+            return True
+        return False
+
+    def cut_Mmmjj600(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() > 600*GeV:
+            return True
+        return False
+
+    def cut_Meejj800(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() > 800*GeV:
+            return True
+        return False
+
+    def cut_Mmmjj800(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() > 800*GeV:
+            return True
+        return False
+
+    def cut_AntiMeejj600(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 600*GeV:
+            return True
+        return False
+
+    def cut_AntiMmmjj600(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 600*GeV:
+            return True
+        return False
+
+    def cut_AntiMeejj800(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 800*GeV:
+            return True
+        return False
+
+    def cut_AntiMmmjj800(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 800*GeV:
+            return True
+        return False
+
+    def cut_AntiMeejj400(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 400*GeV:
+            return True
+        return False
+
+    def cut_AntiMmmjj400(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 400*GeV:
+            return True
+        return False
+
+    def cut_Meejj400_flip110mll(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv).M() < 110*GeV:
+            if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 400*GeV:
+              return True
+            else:
+              return False
+          elif (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() >= 400*GeV:
+            return True
+        return False
+
+    def cut_Mmmjj400_flip110mll(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        if len(leptons) == 2:
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          if (leptons[0].tlv + leptons[1].tlv).M() < 110*GeV:
+            if (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() < 400*GeV:
+              return True
+            else:
+              return False
+          elif (leptons[0].tlv + leptons[1].tlv + jets[0].tlv + jets[1].tlv).M() >= 400*GeV:
+            return True
+        return False
 
     def cut_TwoContainerEleTwoJetHT400(self):
         leptons = self.store['electrons_OSHN']
@@ -2069,6 +2204,38 @@ class CutAlg(pyframe.core.Algorithm):
         HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
         if HT > 400*GeV:
           return True
+        return False
+
+    def cut_TwoEleTwoJetHT400_off110mll(self):
+        leptons = self.store['electrons_loose_LooseLLH']
+        jets = self.store['jets_tight']
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        if len(leptons) == 2:
+          if (leptons[0].tlv + leptons[1].tlv).M() < 110*GeV:
+            return True
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          HT = 0
+          for ele in leptons:
+            HT += ele.tlv.Pt()
+          HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+          if HT > 400*GeV:
+            return True
+        return False
+
+    def cut_TwoMuonTwoJetHT400_off110mll(self):
+        leptons = self.store['muons']
+        jets = self.store['jets_tight']
+        # jets.sort(key=lambda x: x.tlv.Pt(), reverse=True )
+        if len(leptons) == 2:
+          if (leptons[0].tlv + leptons[1].tlv).M() < 110*GeV:
+            return True
+          assert jets[0].tlv.Pt() >= jets[1].tlv.Pt(), "jets not sorted.."
+          HT = 0
+          for ele in leptons:
+            HT += ele.tlv.Pt()
+          HT += jets[0].tlv.Pt() + jets[1].tlv.Pt()
+          if HT > 400*GeV:
+            return True
         return False
 
     def cut_TwoEleTwoJetHT300(self):

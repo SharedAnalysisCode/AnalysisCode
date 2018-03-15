@@ -56,7 +56,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "WJets_v3_004"
 
 # RUN = "HN_v2_052_SYS"
-RUN = "HN_v2_CR_test_06"
+RUN = "HN_v2_CR_test_10"
 # RUN = "WJets_HN_v2_001"
 # RUN = "FFele_HN_v2_002"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -138,7 +138,7 @@ def main():
     all_data = samples.all_data
 
     # all_mc = []
-    all_data = []
+    # all_data = []
 
     nominal = all_mc 
     nominal += all_data
@@ -396,15 +396,16 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
         ## sample type
         stype  = s.type
  
-        nlines = 1 if s not in samples.all_data else 20
-        # if os.stat(sinput).st_size>5e8*(maxevents/500000.):
-        #     print sinput
-        #     tempFile = ROOT.TFile.Open(sinput)
-        #     tempFile.cd("physics")
-        #     t = ROOT.gDirectory.Get("nominal")
-        #     nevents = t.GetEntries()
-        #     print "number of events ",nevents, " lines ",nevents//maxevents+1
-        #     nlines = nevents//maxevents + 1
+        if s in samples.all_data:
+            nlines = 20
+        else:
+            print sinput
+            tempFile = ROOT.TFile.Open(sinput)
+            tempFile.cd("physics")
+            t = ROOT.gDirectory.Get("nominal")
+            nevents = t.GetEntries()
+            print "number of events ",nevents, " lines ",nevents//maxevents+1
+            nlines = nevents//maxevents + 1
 
         ## config
         sconfig = {}
@@ -462,14 +463,14 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
         print m.communicate()[0]
 
         # TEMPXRSL = os.path.join(JOBDIR,'temp_'+ str(time.strftime("d%d_m%m_y%Y_H%H_M%M_S%S")) +'_PBS_ID_' + str(line_intiger+1) + '.xrsl' )
-        TEMPXRSL = os.path.join(ARCRUNNERDIR, RUN+suffix, jobnames[line_intiger], 'run2.xrsl' )
+        TEMPXRSL = os.path.join(ARCRUNNERDIR, RUN+suffix, jobnames[line_intiger], 'run.xrsl' )
         JOBLISTF = os.path.join(JOBDIR,'joblist_%s.xml' % (time.strftime("d%d_m%m_y%Y")) )
         cmd =  'printf "'
         cmd += '&\n'
         cmd += '(executable=\\"%s\\")\n' % BEXEC
         cmd += '(inputFiles=(\\"HistMiha.sh\\" \\"/afs/f9.ijs.si/home/miham/AnalysisCode/batch/HistMiha.sh\\"))'
         cmd += '(jobName=\\"'+jobnames[line_intiger]+'\\")\n'
-        cmd += '(memory=%s)\n' % 2000
+        cmd += '(memory=%s)\n' % (16000 if "physics" in jobnames[line_intiger] else 2000)
         cmd += '(join=yes)\n'
         cmd += '(stdout="cp.out")\n'
         cmd += '(gmlog="gmlog")\n'

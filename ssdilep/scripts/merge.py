@@ -971,24 +971,36 @@ HNsignal1 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR60
           fill_color = ROOT.kRed-2,
           line_width  = 3,
           line_style = 1,
-          fill_style = 3004,
+          fill_style = 0,
           xsec       = 8.7848,
           )
 histmgr.load_base_estimator(hm,HNsignal1)
 
-HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR3000_NR2250",
-          tlatex = "WR3000 NR2250",
+HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1000_NR700",
+          tlatex = "WR1000 NR700",
           line_color = ROOT.kGreen-7,
           fill_color = ROOT.kGreen-5,
           line_width  = 3,
           line_style = 1,
-          fill_style = 3004,
-          xsec       = 0.0078485,
+          fill_style = 0,
+          xsec       = 2.7778,
           )
 histmgr.load_base_estimator(hm,HNsignal2)
 
+HNsignal3 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1200_NR600",
+          tlatex = "WR1200 NR600",
+          line_color = ROOT.kBlue-7,
+          fill_color = ROOT.kBlue-5,
+          line_width  = 3,
+          line_style = 1,
+          fill_style = 0,
+          xsec       = 2.3153,
+          )
+histmgr.load_base_estimator(hm,HNsignal3)
+
+
 if options.rebinToEq!="True":
-  signal = [HNsignal1,HNsignal2]
+  signal = [HNsignal1,HNsignal2,HNsignal3]
 
 if options.makeplot == "True":
  funcs.plot_hist(

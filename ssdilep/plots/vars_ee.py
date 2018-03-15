@@ -162,6 +162,22 @@ DR = Var(name='DR',
               log    = True,
               )
 
+DRZj = Var(name='DRZj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 6,
+              rebin  = 1,
+              log    = True,
+              )
+
+DRZjj = Var(name='DRZjj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 6,
+              rebin  = 1,
+              log    = True,
+              )
+
 DR2 = Var(name='DR',
               path   = 'event',
               xmin   = 0,
@@ -1853,6 +1869,8 @@ vars_dict["HTmet"] = HTmet.__dict__
 vars_dict["mTtot"] = mTtot.__dict__
 vars_dict["DR2"] = DR2.__dict__
 vars_dict["DR4"] = DR4.__dict__
+vars_dict["DRZj"] = DRZj.__dict__
+vars_dict["DRZjj"] = DRZjj.__dict__
 vars_dict["ZbosonPt_SR"] = ZbosonPt_SR.__dict__
 vars_dict["ZbosonPt_SR_2"] = ZbosonPt_SR_2.__dict__
 vars_dict["invMass_fit"] = invMass_fit.__dict__
