@@ -6,6 +6,8 @@
 *.rootrc
 *.pdf
 *.eps
+*.pyc
+*.txt
 run/*.root
 atlasstyle*
 run/*.eps
