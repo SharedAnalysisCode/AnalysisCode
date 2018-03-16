@@ -1317,7 +1317,16 @@ Mjj0 = Var(name='Mjj',
               path   = 'event',
               xmin   = 0,
               xmax   = 4000,
-              rebin  = 100,
+              rebin  = 200,
+              log    = False,
+              logx   = False
+              )
+
+Mjj1 = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 500,
+              rebin  = 50,
               log    = False,
               logx   = False
               )
@@ -1418,7 +1427,16 @@ Mlljj0 = Var(name='Mlljj',
               path   = 'event',
               xmin   = 0,
               xmax   = 4000,
-              rebin  = 100,
+              rebin  = 200,
+              log    = False,
+              logx   = False
+              )
+
+Mlljj1 = Var(name='Mlljj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 500,
+              rebin  = 50,
               log    = False,
               logx   = False
               )
@@ -1507,7 +1525,16 @@ HTlljj = Var(name='HTlljj',
               path   = 'event',
               xmin   = 0,
               xmax   = 4000,
-              rebin  = 100,
+              rebin  = 200,
+              log    = False,
+              logx   = False
+              )
+
+HTlljj1 = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 700,
+              rebin  = 50,
               log    = False,
               logx   = False
               )
@@ -1640,7 +1667,23 @@ invMassSignalHN = Var(name='invMass',
               path   = 'event',
               xmin   = 0,
               xmax   = 1000,
-              rebin  = 25,
+              rebin  = 50,
+              log    = False,
+              )
+
+invMassSignalHN2 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 400,
+              rebin  = 50,
+              log    = False,
+              )
+
+invMassSignalHN3 = Var(name='invMass',
+              path   = 'event',
+              xmin   = 50,
+              xmax   = 120,
+              rebin  = 2,
               log    = False,
               )
 
@@ -1951,9 +1994,14 @@ vars_dict["Mjj7"] = Mjj7.__dict__
 vars_dict["HT8s"] = HT8s.__dict__
 vars_dict["Mjj8s"] = Mjj8s.__dict__
 vars_dict["invMassSignalHN"] = invMassSignalHN.__dict__
+vars_dict["invMassSignalHN2"] = invMassSignalHN2.__dict__
+vars_dict["invMassSignalHN3"] = invMassSignalHN3.__dict__
 vars_dict["HTlljj"] = HTlljj.__dict__
+vars_dict["HTlljj1"] = HTlljj1.__dict__
 vars_dict["Mjj0"] = Mjj0.__dict__
+vars_dict["Mjj1"] = Mjj1.__dict__
 vars_dict["Mlljj0"] = Mlljj0.__dict__
+vars_dict["Mlljj1"] = Mlljj1.__dict__
 
 ## EOF
 

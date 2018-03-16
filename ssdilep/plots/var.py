@@ -28,6 +28,7 @@ class Var(object):
             logx  = None,
             do_ratio_plot  = True,
             label  = None,
+            label2  = None,
             xlabel  = None,
             blind  = None,
             signal  = None,
@@ -51,6 +52,7 @@ class Var(object):
         self.logx  = logx
         self.do_ratio_plot  = do_ratio_plot
         self.label  = label
+        self.label2  = label2
         self.xlabel  = xlabel
         self.blind  = blind
         self.signal  = signal

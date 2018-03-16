@@ -39,6 +39,8 @@ parser.add_option('-r', '--reg', dest='region',
                   help='region name',metavar='REG',default=None)
 parser.add_option('-l', '--lab', dest='label',
                   help='region label',metavar='LAB',default=None)
+parser.add_option('', '--lab2', dest='label2',
+                  help='region label2',metavar='LAB2',default=None)
 parser.add_option('-c', '--icut', dest='icut',
                   help='number of cuts',metavar='ICUT',default=None)
 parser.add_option('-p', '--makeplot', dest='makeplot',
@@ -144,7 +146,7 @@ if options.samples in ["FFele","wjet"]:
   data = samples.dataEXOT19
 elif options.samples ==  "ZPeak":
   data = samples.EXOT12_data
-elif options.samples in  ["HNee","HNmumu","HNeeFit","HNmumuFit"]:
+elif options.samples in  ["HNee","HNmumu","HNeeFit","HNmumuFit","ALLHN","HNeeFitNoPt0_70_CVetoBVeto"]:
   data = samples.dataEXOT12
 else:
   data = samples.data
@@ -270,6 +272,19 @@ elif options.samples == "HNeeFit":
   samples.top_physics,
   # samples.Rare,
   ]
+elif options.samples == "HNeeFitNoPt0_70_CVetoBVeto":
+  mc_backgrounds = [
+  samples.ZeeSherpa221NoPt0_70_CVetoBVeto,
+  # samples.MGPy8Zee,
+  samples.diboson_sherpa222,
+  samples.top_physics,
+  # samples.Rare,
+  ]
+elif options.samples == "ALLHN":
+  mc_backgrounds = []
+  mc_backgrounds += [x for x in samples.AllDiboson]
+  mc_backgrounds += [x for x in samples.AllZSherpa221]
+  mc_backgrounds += [x for x in samples.AllTop]
 elif options.samples == "HNmumuFit":
   mc_backgrounds = [
   # samples.ZmmSherpa221,
@@ -768,6 +783,21 @@ elif options.samples == "HNeeFit":
   # samples.Rare,
   fakes_mumu,
   ]
+elif options.samples == "HNeeFitNoPt0_70_CVetoBVeto":
+  mumu_backgrounds = [
+  samples.ZeeSherpa221NoPt0_70_CVetoBVeto,
+  # samples.MGPy8Zee,
+  samples.diboson_sherpa222,
+  samples.top_physics,
+  # samples.Rare,
+  fakes_mumu,
+  ]
+elif options.samples == "ALLHN":
+  mumu_backgrounds = []
+  mumu_backgrounds += [x for x in samples.AllDiboson]
+  mumu_backgrounds += [x for x in samples.AllZSherpa221]
+  mumu_backgrounds += [x for x in samples.AllTop]
+  mumu_backgrounds += [fakes_mumu]
 elif options.samples == "HNmumuFit":
   mumu_backgrounds = [
   # samples.ZmmSherpa221,
@@ -1003,6 +1033,7 @@ if options.makeplot == "True":
     data          = data if options.samples not in ["chargeflipTruth","chargeflipTruthPowheg","nothing"] else None,
     region        = options.region,
     label         = options.label if options.label else mumu_vdict[options.vname]['label'],
+    label2        = options.label2 if options.label2 else "",
     histname      = os.path.join(mumu_vdict[options.vname]['path'],mumu_vdict[options.vname]['hname']),
     xmin          = mumu_vdict[options.vname]['xmin'],
     xmax          = mumu_vdict[options.vname]['xmax'],

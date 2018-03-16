@@ -479,6 +479,20 @@ Sherpa_CT10_lllvjj_EW6          = Sample( name = "Sherpa_CT10_lllvjj_EW6",      
 Sherpa_CT10_llvvjj_ss_EW4       = Sample( name = "Sherpa_CT10_llvvjj_ss_EW4",       xsec =    0.02347527  )
 Sherpa_CT10_llvvjj_ss_EW6       = Sample( name = "Sherpa_CT10_llvvjj_ss_EW6",       xsec =    0.03913364  )
 
+AllDiboson = [
+Sherpa_222_NNPDF30NNLO_llll,
+Sherpa_222_NNPDF30NNLO_lllv,
+Sherpa_222_NNPDF30NNLO_llvv,
+Sherpa_221_NNPDF30NNLO_WqqZll,
+Sherpa_221_NNPDF30NNLO_ZqqZll,
+Sherpa_CT10_ggllll,
+Sherpa_CT10_ggllvv,
+Sherpa_CT10_lllljj_EW6,
+# Sherpa_CT10_lllvjj_EW6,
+Sherpa_CT10_llvvjj_ss_EW4,
+Sherpa_CT10_llvvjj_ss_EW6,
+]
+
 #-----------------------------------------------------------------------------
 # Powheg diboson (sys)
 # Notes:
@@ -1415,6 +1429,37 @@ Ztautau_221_Pt280_500_BFilter         = Sample( name =  "Sherpa_221_NNPDF30NNLO_
 Ztautau_221_Pt500_1000                = Sample( name =  "Sherpa_221_NNPDF30NNLO_Ztautau_MAXHTPTV500_1000",                 xsec =  1.76454096      )
 Ztautau_221_Pt1000_E_CM               = Sample( name =  "Sherpa_221_NNPDF30NNLO_Ztautau_MAXHTPTV1000_E_CMS",               xsec =  0.144646334     )
 
+AllZSherpa221 = [
+Zee_221_Pt0_70_CVetoBVeto,        
+Zee_221_Pt70_140_CVetoBVeto,                                    
+Zee_221_Pt140_280_CVetoBVeto,     
+Zee_221_Pt280_500_CVetoBVeto,     
+Zee_221_Pt0_70_CFilterBVeto,      
+Zee_221_Pt70_140_CFilterBVeto,    
+Zee_221_Pt140_280_CFilterBVeto,   
+Zee_221_Pt280_500_CFilterBVeto,   
+Zee_221_Pt0_70_BFilter,           
+Zee_221_Pt70_140_BFilter,         
+Zee_221_Pt140_280_BFilter,        
+Zee_221_Pt280_500_BFilter,        
+Zee_221_Pt500_1000,
+Zee_221_Pt1000_E_CM,   
+Ztautau_221_Pt0_70_CVetoBVeto,        
+Ztautau_221_Pt70_140_CVetoBVeto,                                    
+Ztautau_221_Pt140_280_CVetoBVeto,     
+Ztautau_221_Pt280_500_CVetoBVeto,     
+Ztautau_221_Pt0_70_CFilterBVeto,      
+Ztautau_221_Pt70_140_CFilterBVeto,    
+Ztautau_221_Pt140_280_CFilterBVeto,   
+Ztautau_221_Pt280_500_CFilterBVeto,   
+Ztautau_221_Pt0_70_BFilter,           
+Ztautau_221_Pt70_140_BFilter,         
+Ztautau_221_Pt140_280_BFilter,        
+Ztautau_221_Pt280_500_BFilter,        
+Ztautau_221_Pt500_1000,
+Ztautau_221_Pt1000_E_CM,   
+]
+
 Zee221 = Sample( name =   'Zee221',
                   tlatex = 'Z #rightarrow ee',
                   fill_color = ROOT.kYellow - 9,
@@ -1491,6 +1536,43 @@ ZeeSherpa221 = Sample( name =   'SherpaDY221',
                   marker_color =  ROOT.kYellow - 5,
                   daughters = [
                                Zee_221_Pt0_70_CVetoBVeto,        
+                               Zee_221_Pt70_140_CVetoBVeto,                                    
+                               Zee_221_Pt140_280_CVetoBVeto,     
+                               Zee_221_Pt280_500_CVetoBVeto,     
+                               Zee_221_Pt0_70_CFilterBVeto,      
+                               Zee_221_Pt70_140_CFilterBVeto,    
+                               Zee_221_Pt140_280_CFilterBVeto,   
+                               Zee_221_Pt280_500_CFilterBVeto,   
+                               Zee_221_Pt0_70_BFilter,           
+                               Zee_221_Pt70_140_BFilter,         
+                               Zee_221_Pt140_280_BFilter,        
+                               Zee_221_Pt280_500_BFilter,        
+                               Zee_221_Pt500_1000,
+                               Zee_221_Pt1000_E_CM,   
+                               Ztautau_221_Pt0_70_CVetoBVeto,        
+                               Ztautau_221_Pt70_140_CVetoBVeto,                                    
+                               Ztautau_221_Pt140_280_CVetoBVeto,     
+                               Ztautau_221_Pt280_500_CVetoBVeto,     
+                               Ztautau_221_Pt0_70_CFilterBVeto,      
+                               Ztautau_221_Pt70_140_CFilterBVeto,    
+                               Ztautau_221_Pt140_280_CFilterBVeto,   
+                               Ztautau_221_Pt280_500_CFilterBVeto,   
+                               Ztautau_221_Pt0_70_BFilter,           
+                               Ztautau_221_Pt70_140_BFilter,         
+                               Ztautau_221_Pt140_280_BFilter,        
+                               Ztautau_221_Pt280_500_BFilter,        
+                               Ztautau_221_Pt500_1000,
+                               Ztautau_221_Pt1000_E_CM,   
+                              ],
+                )
+
+ZeeSherpa221NoPt0_70_CVetoBVeto = Sample( name =   'SherpaDY221',
+                  tlatex = 'Drell-Yan',
+                  fill_color = ROOT.kYellow - 9,
+                  line_color =  ROOT.kYellow - 5,
+                  marker_color =  ROOT.kYellow - 5,
+                  daughters = [
+                               # Zee_221_Pt0_70_CVetoBVeto,        
                                Zee_221_Pt70_140_CVetoBVeto,                                    
                                Zee_221_Pt140_280_CVetoBVeto,     
                                Zee_221_Pt280_500_CVetoBVeto,     
@@ -2091,6 +2173,22 @@ PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_nonallhad_CF    = Sample( name =  "Pow
 PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad  = Sample( name =  "PowhegPythia8EvtGen_A14v3cDo_ttbar_hdamp258p75_nonallhad",  xsec =  452.3360408  )
 PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad   = Sample( name =  "PowhegPythia8EvtGen_A14v3cUp_ttbar_hdamp517p5_nonallhad",  xsec =  452.2944528   )
 aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad   = Sample( name =  "aMcAtNloPythia8EvtGen_MEN30NLO_A14N23LO_ttbar_nonallhad",  xsec =  455.097484    )
+
+AllTop = [
+PowhegPythia8EvtGen_A14_ttbar_hdamp258p75_dil,
+PowhegPythiaEvtGen_P2012_singletop_tchan_lept_antitop,    
+PowhegPythiaEvtGen_P2012_singletop_tchan_lept_top,
+PowhegPythiaEvtGen_P2012_Wt_dilepton_antitop,       
+PowhegPythiaEvtGen_P2012_Wt_dilepton_top,
+# PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_antitop,
+# PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top,
+ttW_Np0,                
+ttW_Np1,        
+ttW_Np2,        
+MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np0,       
+MadGraphPythia8EvtGen_A14NNPDF23LO_ttZllonshell_Np1,       
+ttH125, 
+]
 
 ttbar_Py8_alt = Sample( name =  'ttbar_Py8_alt',
                     tlatex = 't#bar{t} Py8',

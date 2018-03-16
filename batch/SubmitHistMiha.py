@@ -56,7 +56,7 @@ AUTOBUILD = True                # auto-build tarball using Makefile.tarball
 # RUN = "WJets_v3_004"
 
 # RUN = "HN_v2_052_SYS"
-RUN = "HN_v2_CR_test_10"
+RUN = "HN_v2_inclusive_SR_02"
 # RUN = "WJets_HN_v2_001"
 # RUN = "FFele_HN_v2_002"
 # RUN = "ZPeak_HN_Dilepton_003"
@@ -399,13 +399,14 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
         if s in samples.all_data:
             nlines = 20
         else:
-            print sinput
-            tempFile = ROOT.TFile.Open(sinput)
-            tempFile.cd("physics")
-            t = ROOT.gDirectory.Get("nominal")
-            nevents = t.GetEntries()
-            print "number of events ",nevents, " lines ",nevents//maxevents+1
-            nlines = nevents//maxevents + 1
+            nlines = 1
+            # print sinput
+            # tempFile = ROOT.TFile.Open(sinput)
+            # tempFile.cd("physics")
+            # t = ROOT.gDirectory.Get("nominal")
+            # nevents = t.GetEntries()
+            # print "number of events ",nevents, " lines ",nevents//maxevents+1
+            # nlines = nevents//maxevents + 1
 
         ## config
         sconfig = {}
@@ -448,7 +449,7 @@ def submit(tag,job_sys,samps,config={},suffix="nominal"):
     # print m.communicate()[0]
     ## make new
 
-    suffix = ""
+    # suffix = ""
     # suffix = "_temporary"
     cmd = "mkdir -p %s" % os.path.join(ARCRUNNERDIR, RUN+suffix)
     print cmd

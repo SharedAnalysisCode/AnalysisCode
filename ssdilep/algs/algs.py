@@ -2616,6 +2616,14 @@ class CutAlg(pyframe.core.Algorithm):
             return True;
         return False
 
+    def cut_Mass110GeVele(self):
+        electrons = self.store['electrons_loose_LooseLLH']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 110*GeV < tempMass :
+            return True;
+        return False
+
     def cut_Mass200GeV400ele(self):
         electrons = self.store['electrons_loose_LooseLLH']
         if len(electrons)==2 :
@@ -2678,6 +2686,14 @@ class CutAlg(pyframe.core.Algorithm):
         if len(electrons)==2 :
           tempMass = (electrons[0].tlv + electrons[1].tlv).M()
           if 60*GeV < tempMass :
+            return True;
+        return False
+
+    def cut_Mass110GeVmuon(self):
+        electrons = self.store['muons']
+        if len(electrons)==2 :
+          tempMass = (electrons[0].tlv + electrons[1].tlv).M()
+          if 110*GeV < tempMass :
             return True;
         return False
 

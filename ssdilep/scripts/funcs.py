@@ -296,6 +296,7 @@ def plot_hist(
     data          = None,
     region        = None,
     label         = None,
+    label2        = None,
     icut          = None,
     histname      = None,
     log           = False,
@@ -577,6 +578,11 @@ def plot_hist(
       #for i,line in enumerate(label):
       #  tlatex.DrawLatex(tx,latex_y-i*0.06,"#scale[%lf]{%s}"%(textsize,line))
       tlatex.DrawLatex(tx,latex_y - 0.04,"#font[42]{%s}"%label)
+    if label2:
+      latex_y -= 0.06
+      #for i,line in enumerate(label):
+      #  tlatex.DrawLatex(tx,latex_y-i*0.06,"#scale[%lf]{%s}"%(textsize,line))
+      tlatex.DrawLatex(tx,latex_y - 0.025,"#font[42]{%s}"%label2)
     if blind:
         line = ROOT.TLine()
         line.SetLineColor(ROOT.kBlack)
