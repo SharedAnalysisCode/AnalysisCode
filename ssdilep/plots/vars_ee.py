@@ -1322,6 +1322,26 @@ Mjj0 = Var(name='Mjj',
               logx   = False
               )
 
+Mjj0_SRmu = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 2600,
+              rebin  = 1,
+              rebinVar = range(0,2800,200),
+              log    = False,
+              logx   = False
+              )
+
+Mjj0_SRel = Var(name='Mjj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar = range(0,4200,200),
+              log    = False,
+              logx   = False
+              )
+
 Mjj1 = Var(name='Mjj',
               path   = 'event',
               xmin   = 0,
@@ -1426,8 +1446,28 @@ Mlljj15 = Var(name='Mlljj',
 Mlljj0 = Var(name='Mlljj',
               path   = 'event',
               xmin   = 0,
-              xmax   = 4000,
+              xmax   = 6000,
               rebin  = 200,
+              log    = False,
+              logx   = False
+              )
+
+Mlljj0_SRmu = Var(name='Mlljj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 4000,
+              rebin  = 1,
+              rebinVar = range(0,4200,200),
+              log    = False,
+              logx   = False
+              )
+
+Mlljj0_SRel = Var(name='Mlljj',
+              path   = 'event',
+              xmin   = 0,
+              xmax   = 5000,
+              rebin  = 1,
+              rebinVar = range(0,5200,200),
               log    = False,
               logx   = False
               )
@@ -1535,6 +1575,26 @@ HTlljj1 = Var(name='HTlljj',
               xmin   = 0,
               xmax   = 700,
               rebin  = 50,
+              log    = False,
+              logx   = False
+              )
+
+HTlljj1_CRel = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 150,
+              xmax   = 400,
+              rebin  = 1,
+              rebinVar = range(150,450,50),
+              log    = False,
+              logx   = False
+              )
+
+HTlljj1_CRmu = Var(name='HTlljj',
+              path   = 'event',
+              xmin   = 150,
+              xmax   = 400,
+              rebin  = 1,
+              rebinVar = range(150,450,50),
               log    = False,
               logx   = False
               )
@@ -1681,9 +1741,10 @@ invMassSignalHN2 = Var(name='invMass',
 
 invMassSignalHN3 = Var(name='invMass',
               path   = 'event',
-              xmin   = 50,
-              xmax   = 120,
-              rebin  = 2,
+              xmin   = 60,
+              xmax   = 110,
+              rebin  = 1,
+              rebinVar = range(60,112,2),
               log    = False,
               )
 
@@ -1998,9 +2059,15 @@ vars_dict["invMassSignalHN2"] = invMassSignalHN2.__dict__
 vars_dict["invMassSignalHN3"] = invMassSignalHN3.__dict__
 vars_dict["HTlljj"] = HTlljj.__dict__
 vars_dict["HTlljj1"] = HTlljj1.__dict__
+vars_dict["HTlljj1_CRel"] = HTlljj1_CRel.__dict__
+vars_dict["HTlljj1_CRmu"] = HTlljj1_CRmu.__dict__
 vars_dict["Mjj0"] = Mjj0.__dict__
+vars_dict["Mjj0_SRmu"] = Mjj0_SRmu.__dict__
+vars_dict["Mjj0_SRel"] = Mjj0_SRel.__dict__
 vars_dict["Mjj1"] = Mjj1.__dict__
 vars_dict["Mlljj0"] = Mlljj0.__dict__
+vars_dict["Mlljj0_SRel"] = Mlljj0_SRel.__dict__
+vars_dict["Mlljj0_SRmu"] = Mlljj0_SRmu.__dict__
 vars_dict["Mlljj1"] = Mlljj1.__dict__
 
 ## EOF

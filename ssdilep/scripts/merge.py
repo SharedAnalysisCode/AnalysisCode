@@ -1011,14 +1011,14 @@ HNsignal2 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR10
           )
 histmgr.load_base_estimator(hm,HNsignal2)
 
-HNsignal3 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR1200_NR600",
-          tlatex = "WR1200 NR600",
+HNsignal3 = samples.Sample( name = "MadGraphPythia8EvtGen_A14NNPDF23LO_LRSM_WR4200_NR2100",
+          tlatex = "WR4200 NR2100",
           line_color = ROOT.kBlue-7,
           fill_color = ROOT.kBlue-5,
           line_width  = 3,
           line_style = 1,
           fill_style = 0,
-          xsec       = 2.3153,
+          xsec       = 0.0014893,
           )
 histmgr.load_base_estimator(hm,HNsignal3)
 

@@ -1,0 +1,14 @@
+#### SR
+python ../ssdilep/scripts/merge.py --varName="obs_mjj"   --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="Mjj0_SRel"   --reg="electron-SS-Z-inclusive-SR" --tag="SSZSRee" --samples="HNeeFitNoPt0_70_CVetoBVeto" --icut="7" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True
+python ../ssdilep/scripts/merge.py --varName="obs_mlljj" --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="Mlljj0_SRel" --reg="electron-SS-Z-inclusive-SR" --tag="SSZSRee" --samples="HNeeFitNoPt0_70_CVetoBVeto" --icut="7" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True --noNorm="True"
+python ../ssdilep/scripts/merge.py --varName="obs_mjj"   --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="Mjj0_SRmu"   --reg="muon-SS-Z-inclusive-SR"     --tag="SSZSRmm" --samples="HNeeFit"                    --icut="7" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True
+python ../ssdilep/scripts/merge.py --varName="obs_mlljj" --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="Mlljj0_SRmu" --reg="muon-SS-Z-inclusive-SR"     --tag="SSZSRmm" --samples="HNeeFit"                    --icut="7" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True --noNorm="True"
+
+### CR
+python ../ssdilep/scripts/merge.py --varName="obs_HTlljj" --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="HTlljj1_CRel" --reg="electron-SS-Z-inclusive-CR" --tag="SSZCRee" --samples="HNeeFit" --icut="6" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True
+python ../ssdilep/scripts/merge.py --varName="obs_HTlljj" --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="HTlljj1_CRmu" --reg="muon-SS-Z-inclusive-CR"     --tag="SSZCRmm" --samples="HNeeFit" --icut="6" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True
+
+
+#### VR
+python ../ssdilep/scripts/merge.py --varName="obs_mll" --rebinToEq="True" --makeplot=False -y "True" --elesys="True" --musys="True" --var="invMassSignalHN3" --reg="electron-SS-Z-inclusive-VR" --tag="SSZVRee" --samples="HNeeFit" --icut="5" --input="/ceph/grid/home/atlas/miham/AnalysisCode/HN_v2_inclusive_SR_02" --output="./HN_v2_inclusive_SR_02_root" --fakest="FakeFactorGeneral" -S True
+
